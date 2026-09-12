@@ -27,3 +27,7 @@ dist-ssr
 
 # Generated design exports (scripts/exportBackground.ts) — regenerable, not source
 design-exports
+
+# Gemini's draft recipe proposals — unverified, never shipped until a human
+# applies the rubric and hand-copies the result into src/data/gameData.ts
+data/staging
