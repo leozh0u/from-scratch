@@ -596,3 +596,10 @@ contradict each other.
 
 `explaintest.ts` now pins the fallback share under a fifth, so adding elements
 without adding grammar fails the build.
+
+**One copy bug caught by playing production rather than reading the diff.**
+`fibre-and-mineral` fired on the fibre PHASE, which covers bark, tinder and raw
+plant fibre as well as cloth, so knapping bark against a stone was answered with
+"cloth and stone do not take to each other" — true of cloth and nonsense about
+bark. Narrowed to the textile KIND; raw organic fibre now falls through to a
+line that is actually about it.

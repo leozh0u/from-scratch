@@ -111,10 +111,15 @@ const RULES: Rule[] = [
     worthAsking: true,
   },
   {
-    id: 'fibre-and-mineral',
-    when: (a, b) =>
-      (a.phase === 'fibre' && b.kind === 'mineral') ||
-      (b.phase === 'fibre' && a.kind === 'mineral'),
+    /*
+     * Narrowed to actual cloth. It used to fire on the `fibre` PHASE, which
+     * also covers bark, tinder and raw plant fibre, so knapping bark against a
+     * stone was answered with "cloth and stone do not take to each other" —
+     * true of cloth, and nonsense about bark. Raw organic fibre now falls
+     * through to `organic-and-mineral`, which says something accurate about it.
+     */
+    id: 'cloth-and-mineral',
+    when: (a, b) => pair(a, b, 'kind', 'textile', 'mineral'),
     message: 'Cloth and stone do not take to each other.',
   },
   {
