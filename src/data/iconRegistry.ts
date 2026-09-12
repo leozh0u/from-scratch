@@ -202,6 +202,31 @@ const PLACEHOLDER = FLAME
  * replaces them.
  */
 export const COMPOSED: Record<string, { form: FormId; colour: string }> = {
+  copper_ore: { form: 'lump', colour: '#7a8c5a' },
+  copper: { form: 'ingot', colour: '#c4713a' },
+  bronze: { form: 'ingot', colour: '#772222' },
+  copper_wire: { form: 'coil', colour: '#d98a4a' },
+  insulated_wire: { form: 'coil', colour: '#4a7fd9' },
+  electromagnet: { form: 'machine', colour: '#6a5ac4' },
+  electric_motor: { form: 'machine', colour: '#4a9ac4' },
+  generator: { form: 'machine', colour: '#c4a54a' },
+  battery: { form: 'bottle', colour: '#4ac47a' },
+  filament: { form: 'fibre', colour: '#ffcf6a' },
+  light_bulb: { form: 'bottle', colour: '#ffe9a0' },
+  lamp: { form: 'tool', colour: '#e8c46a' },
+  silicon: { form: 'crystal', colour: '#8e93a8' },
+  silicon_wafer: { form: 'sheet', colour: '#6f7aa0' },
+  microchip: { form: 'board', colour: '#2f6b4a' },
+  circuit_board: { form: 'board', colour: '#772222' },
+  phone: { form: 'board', colour: '#26262e' },
+  solar_cell: { form: 'sheet', colour: '#2a3f8a' },
+  steel_spring: { form: 'coil', colour: '#9aa4b0' },
+  bearing: { form: 'wheel', colour: '#aab0bc' },
+  bicycle: { form: 'machine', colour: '#772222' },
+  gear: { form: 'wheel', colour: '#8a7a5a' },
+  clock: { form: 'wheel', colour: '#d8c48a' },
+  engine: { form: 'machine', colour: '#846315' },
+  car: { form: 'machine', colour: '#c4453a' },
   ethylene: { form: 'gas', colour: '#9fd8e8' },
   polyethylene: { form: 'pellet', colour: '#dfe4ea' },
   plastic_bottle: { form: 'bottle', colour: '#6fc2d8' },
@@ -215,7 +240,7 @@ export const COMPOSED: Record<string, { form: FormId; colour: string }> = {
   pipe: { form: 'coil', colour: '#cfd6d9' },
   propylene: { form: 'gas', colour: '#846315' },
   polypropylene: { form: 'pellet', colour: '#846315' },
-  rope: { form: 'coil', colour: '#d0a75f' },
+  rope: { form: 'coil', colour: '#772222' },
   acetylene: { form: 'flame', colour: '#7ec8ff' },
   welded_steel: { form: 'ingot', colour: '#6f7c8c' },
   steel_frame: { form: 'machine', colour: '#8a94a3' },
@@ -234,10 +259,10 @@ export const COMPOSED: Record<string, { form: FormId; colour: string }> = {
   soap: { form: 'bar', colour: '#b9d4ad' },
   slag: { form: 'lump', colour: '#772222' },
   slag_cement: { form: 'powder', colour: '#5d6b7a' },
-  hardened_steel: { form: 'ingot', colour: '#772222' },
-  tempered_steel: { form: 'ingot', colour: '#846315' },
+  hardened_steel: { form: 'ingot', colour: '#846315' },
+  tempered_steel: { form: 'ingot', colour: '#4f5a3f' },
   plank: { form: 'board', colour: '#d8a86a' },
-  cart_wheel: { form: 'wheel', colour: '#7a4f2c' },
+  cart_wheel: { form: 'wheel', colour: '#772222' },
   book: { form: 'book', colour: '#8e3242' },
   cardboard: { form: 'sheet', colour: '#4f5a3f' },
   reinforced_concrete: { form: 'brick', colour: '#8d8d91' },
@@ -253,7 +278,7 @@ export const COMPOSED: Record<string, { form: FormId; colour: string }> = {
    * reads as a wick. Neither is wood or rope.
    */
   wood: { form: 'log', colour: '#8a5a33' },
-  cordage: { form: 'coil', colour: '#772222' },
+  cordage: { form: 'coil', colour: '#846315' },
 }
 
 /** Memoised: composing is cheap but it happens on every tile render. */

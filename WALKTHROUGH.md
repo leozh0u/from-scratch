@@ -2,7 +2,7 @@
 
 **Generated from `src/data/gameData.ts` by `npm run walkthrough`. Do not edit by hand.**
 
-109 elements, 112 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
+134 elements, 137 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
 
 ## Survival
 
@@ -43,7 +43,7 @@ The main game. Everything a person can point at, and what it actually cost to ma
 
 **You start with 9:** Water, Soil, Limestone, Bauxite, Iron Ore, Crude Oil, Natural Gas, Beeswax, Textile Waste
 
-**Carried over from Survival:** Stone, Wood, Plant Fibre, Cordage, Bark, Fire, Charcoal — these are real dependencies, which is why Survival comes first.
+**Carried over from Survival:** Stone, Wood, Plant Fibre, Sharp Stone, Cordage, Bark, Fire, Charcoal — these are real dependencies, which is why Survival comes first.
 
 | # | Combine | | Gives | How | Cost |
 | --- | --- | --- | --- | --- | --- |
@@ -118,8 +118,8 @@ The main game. Everything a person can point at, and what it actually cost to ma
 | 69 | Concrete | + High-Carbon Steel | Reinforced Concrete | reinforcing | — |
 | 70 | Slaked Lime | + Water | Whitewash | thinning | — |
 | 71 | Distillate | + Water | Ethylene | steam cracking | — |
-| 72 | Ethylene | + Ethylene | Polyethylene | polymerising | — |
-| 73 | Polyethylene | + High-Carbon Steel | Plastic Bottle | blow moulding | — |
+| 72 | Ethylene | + Ethylene | Polythene | polymerising | — |
+| 73 | Polythene | + High-Carbon Steel | Plastic Bottle | blow moulding | — |
 | 74 | Ethylene | + Water | Ethanol | hydrating | — |
 | 75 | Ethanol | + Clay | Butadiene | coupling | — |
 | 76 | Butadiene | + Butadiene | Synthetic Rubber | polymerising | — |
@@ -129,8 +129,8 @@ The main game. Everything a person can point at, and what it actually cost to ma
 | 80 | Vinyl Chloride | + Vinyl Chloride | PVC | polymerising | — |
 | 81 | PVC | + High-Carbon Steel | Pipe | extruding | — |
 | 82 | Distillate | + Quicklime | Propylene | dehydrogenating | — |
-| 83 | Propylene | + Propylene | Polypropylene | polymerising | — |
-| 84 | Polypropylene | + Cordage | Rope | laying | — |
+| 83 | Propylene | + Propylene | Polyprop | polymerising | — |
+| 84 | Polyprop | + Cordage | Rope | laying | — |
 | 85 | Quicklime | + Charcoal | Acetylene | carbide smelting | — |
 | 86 | Acetylene | + High-Carbon Steel | Welded Steel | welding | — |
 | 87 | Welded Steel | + Reinforced Concrete | Steel Frame | erecting | — |
@@ -141,6 +141,31 @@ The main game. Everything a person can point at, and what it actually cost to ma
 | 92 | Slaked Lime | + Wood Ash | Plaster | gauging | — |
 | 93 | Carbon Black | + Tannin | Ink | grinding | — |
 | 94 | Ink | + Paper | Newspaper | printing | — |
+| 95 | Stone | + Sharp Stone | Copper Ore | prospecting | — |
+| 96 | Copper Ore | + Charcoal | Copper | smelting | — |
+| 97 | Copper | + Slag | Bronze | alloying | — |
+| 98 | Copper | + Hardened Steel | Copper Wire | drawing | — |
+| 99 | Copper Wire | + PVC | Insulated Wire | sheathing | — |
+| 100 | Insulated Wire | + Wrought Iron | Magnet Coil | winding | — |
+| 101 | Magnet Coil | + Tempered Steel | Electric Motor | assembling | — |
+| 102 | Electric Motor | + Steel Frame | Generator | driving | — |
+| 103 | Copper | + Sodium Hydroxide | Battery | stacking cells | — |
+| 104 | Carbon Black | + Copper Wire | Filament | carbonising | — |
+| 105 | Filament | + Glass Bottle | Light Bulb | evacuating | — |
+| 106 | Light Bulb | + Insulated Wire | Lamp | wiring | — |
+| 107 | Silica Sand | + Charcoal | Silicon | carbothermic reduction | — |
+| 108 | Silicon | + Hardened Steel | Silicon Wafer | slicing | — |
+| 109 | Silicon Wafer | + Copper | Microchip | etching | — |
+| 110 | Microchip | + Insulated Wire | Circuit Board | soldering | — |
+| 111 | Circuit Board | + Glass Pane | Phone | assembling | — |
+| 112 | Silicon Wafer | + Glass Pane | Solar Cell | doping | — |
+| 113 | Tempered Steel | + Copper Wire | Steel Spring | coiling | — |
+| 114 | Hardened Steel | + Bronze | Bearing | grinding | — |
+| 115 | Bearing | + Tyre | Bicycle | building | — |
+| 116 | Bronze | + Welded Steel | Gear | cutting teeth | — |
+| 117 | Gear | + Steel Spring | Clock | escaping | — |
+| 118 | Gear | + Distillate | Engine | firing | — |
+| 119 | Engine | + Bicycle | Car | assembling | — |
 
 All 3 targets reachable. ✅
 
@@ -165,4 +190,4 @@ Elements with more than one real way to make them. The receipt tells you which r
 
 ## How much of the board is a dead end
 
-109 elements make 5,886 possible pairs, and 112 of them are recipes. **98.1% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
+134 elements make 8,911 possible pairs, and 137 of them are recipes. **98.5% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
