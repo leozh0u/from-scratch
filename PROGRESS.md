@@ -241,16 +241,17 @@ Everything Leo has asked for, with a state and, for anything marked done, the
 check that proved it. Nothing leaves this list silently. The **oldest** open
 item is the one most at risk, so it is first.
 
-Last verified: 2026-09-12, against commit `36ba79b` and the live deployment.
+Last verified: 2026-09-12, against the current commit and the live deployment.
 
 ## Open
 
 | # | Asked | State | Next |
 | --- | --- | --- | --- |
 | 1 | `UNLOCK_EVERYTHING` back to `false` | **open — blocks submission.** Verified still `true` at `src/App.tsx:30`. | One-line change. Leo asked for it on while iterating on Everyday Objects; Survival is now ~15 combinations so the gate is reasonable again. Must flip before 09:00. |
-| 2 | *"we want things that cant go together also explained why"* — the instant failure copy | **open.** Nine rules and a fallback; pairs with no matching clause still get "nothing obvious happens". The pair count went from 903 to 1,596 with the rebuild, so this matters more than it did. | Widen the rule table. It is local, instant and cannot be wrong, unlike the model. |
-| 3 | *"should we add a small chat for more questions"* | **open — needs Leo's call.** Recommended against: the endpoint never sees the recipe list, which is what makes "the model cannot grant a discovery" structural rather than a promise. A free-form chat gives that up. | His decision. |
-| 4 | Silkscreen is caps-only, so the wordmark reads FROM SCRATCH | **open — needs Leo's call.** Verified by rendering `a` and `A` and comparing bitmaps. Jersey 10/15/25 are pixel sans faces with true lowercase and a distinct `c`, checked the same way. | One-line swap either way. |
+| 2 | *"we need to add more combinations"* | **open — first batch done.** Six sourced recipes added from the adjudicator's own "that's actually real" answers; `npm run probe` found 56 in a sample of 90, so there are more to mine. | Run the probe wider and hand-verify the next batch. |
+| 3 | *"we want things that cant go together also explained why"* — the instant failure copy | **open.** Nine rules and a fallback; pairs with no matching clause still get "nothing obvious happens". The pair count is now 1,711, so this matters more than it did. | Widen the rule table. It is local, instant and cannot be wrong, unlike the model. |
+| 4 | *"should we add a small chat for more questions"* | **open — needs Leo's call.** Recommended against: the endpoint never sees the recipe list, which is what makes "the model cannot grant a discovery" structural rather than a promise. A free-form chat gives that up. | His decision. |
+| 5 | Silkscreen is caps-only, so the wordmark reads FROM SCRATCH | **open — needs Leo's call.** Verified by rendering `a` and `A` and comparing bitmaps. Jersey 10/15/25 are pixel sans faces with true lowercase and a distinct `c`, checked the same way. | One-line swap either way. |
 
 ## Blocked on Leo
 
@@ -279,7 +280,8 @@ Last verified: 2026-09-12, against commit `36ba79b` and the live deployment.
 | *"the city background is bad"* | Rasterised his SVG and PNG at 512 and diffed: **60% of pixels differ**, the SVG is a lossy trace. Switched to the PNG with `image-rendering: pixelated`. Verified in the DOM and live. |
 | *"make it mobile friendly / not bug out in different orientations"* | `scripts/layouttest.ts`: 24 device orientations plus a sweep of every size from 320x320 to 2560x1440, zero overflows. Verified in-browser at 390x844 and 844x390 that no button is off-screen. |
 | *"why is there nothing now"* — empty shelf | Reproduced by seeding an old save, then fixed twice (prune on load, and a starter fallback). Verified the shelf shows stone/wood/plant fibre with a fully stale save. |
-| *"is the gemini api key working right now"* | Hit production twice with new-element pairs; both returned real answers. |
+| *"is the gemini api key working right now"* | Hit production twice with new-element pairs; both returned real answers. It serves one thing: the *why not?* button. |
+| *"we need to add more combinations"* (first batch) | Six added, each sourced. `npm run solve` reports all 59 elements reachable; `iron ore + natural gas -> pig iron` verified by playing it in the browser. |
 | *"can you also put it on github to launch"* | Live on Vercel from `main`. Verified the deployed bundle contains this commit's work (`big-city.png`, `padBlock`, Silkscreen). |
 | *"occasional shooting stars"* | Retuned after they proved invisible; `scripts/startest.ts` measures one every ~6.5s, on screen 17% of the time, 14px tail. |
 | *"ACCURATE LOOKING pixelated emoji things for every object"* | All 57 elements have distinct art; `datatest.ts` fails the build if any falls back to the flame or shares a sprite. |
