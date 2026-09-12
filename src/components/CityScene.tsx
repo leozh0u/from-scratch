@@ -120,7 +120,13 @@ export function carAt(
   seed: number,
   width: number,
 ): { x: number; frame: number; flip: boolean } {
-  const speed = 42 + hash(seed * 41) * 34
+  /*
+   * Crawling. This is an intersection in traffic, not a motorway — the whole
+   * character of a city street at eye level is that the cars are barely
+   * moving while the people are not. An earlier pass had them at 42-76 px/s
+   * and the street read as a racetrack.
+   */
+  const speed = 5 + hash(seed * 41) * 7
   const dir = hash(seed * 53) > 0.5 ? 1 : -1
   const span = width + 80
   const travelled = (now / 1000) * speed + hash(seed * 59) * span
@@ -190,8 +196,10 @@ export function CityScene({ pixelScale = 4, className }: CitySceneProps) {
     // The pavement and road bands, as fractions of the frame. Everything walks
     // or drives on one of these, so they are the only numbers to change if the
     // backdrop's horizon moves.
-    const ROAD_Y = Math.round(height * 0.8)
-    const PAVEMENT_Y = Math.round(height * 0.92)
+    // Tied to drawStreet's kerb: the road band sits above it, the pavement
+    // below, so moving the horizon moves everything together.
+    const ROAD_Y = Math.round(height * 0.68)
+    const PAVEMENT_Y = Math.round(height * 0.79)
 
     /**
      * A plain street, drawn once per frame behind the actors.
@@ -205,57 +213,156 @@ export function CityScene({ pixelScale = 4, className }: CitySceneProps) {
      * Flat bands and rectangular windows, seeded so the skyline is the same
      * every load.
      */
+    /**
+     * The street, at eye level, at an intersection.
+     *
+     * WHAT THIS IS TRYING TO BE
+     *
+     * Not a skyline seen from above — that was the first pass and it read as a
+     * chart of buildings. A pedestrian standing on a corner sees facades
+     * flanking them, a crossing in front, and the street furniture that
+     * actually makes a place legible as a city: traffic lights, lamp posts,
+     * signs, awnings, fire escapes. The detail near the viewer is the point;
+     * the distance can be simple.
+     *
+     * Still a placeholder for composed art, and still seeded so it is the same
+     * street every load.
+     */
     function drawStreet() {
-      // Sky, then a lighter band at the horizon where the haze sits.
-      ctx.fillStyle = '#7fb4d8'
-      ctx.fillRect(0, 0, width, height)
-      ctx.fillStyle = '#a8cfe4'
-      ctx.fillRect(0, Math.round(height * 0.42), width, Math.round(height * 0.2))
+      const horizon = Math.round(height * 0.58)
+      const kerbY = Math.round(height * 0.74)
 
-      /*
-       * Two ranks of towers. The far rank is hazier and shorter, which is the
-       * only depth cue available without gradients: nearer things are darker
-       * and taller, and they overlap.
-       */
-      const ranks = [
-        { colour: '#8fa8c4', window: '#b9cde0', top: 0.3, spread: 26, depth: 0.58 },
-        { colour: '#5d6f92', window: '#8ea4c0', top: 0.22, spread: 34, depth: 0.7 },
-        { colour: '#3f4a68', window: '#d8c98a', top: 0.14, spread: 44, depth: 0.82 },
-      ]
-      for (const rank of ranks) {
-        for (let i = 0; i * rank.spread < width + rank.spread; i++) {
-          const seed = Math.round(rank.spread * 131 + i * 29)
-          const x = i * rank.spread + Math.round((hash(seed) - 0.5) * rank.spread * 0.5)
-          const w = Math.round(rank.spread * (0.6 + hash(seed * 3) * 0.5))
-          const top = Math.round(height * (rank.top + hash(seed * 5) * 0.16))
-          const bottom = Math.round(height * rank.depth)
+      // Sky, pale toward the horizon where the haze sits.
+      ctx.fillStyle = '#79b0d6'
+      ctx.fillRect(0, 0, width, horizon)
+      ctx.fillStyle = '#a9cee6'
+      ctx.fillRect(0, Math.round(horizon - height * 0.12), width, Math.round(height * 0.12))
 
-          ctx.fillStyle = rank.colour
-          ctx.fillRect(x, top, w, bottom - top)
-
-          // Windows: a regular grid, because a building's windows ARE a
-          // regular grid, with some unlit so it does not read as graph paper.
-          ctx.fillStyle = rank.window
-          for (let wy = top + 4; wy < bottom - 3; wy += 5) {
-            for (let wx = x + 2; wx < x + w - 2; wx += 4) {
-              if (hash(wx * 7 + wy * 13) > 0.42) ctx.fillRect(wx, wy, 2, 2)
-            }
+      /** Rows of lit and unlit windows across a facade. */
+      function windows(x: number, y: number, w: number, h: number, seed: number, lit: string, dark: string) {
+        for (let wy = y + 3; wy < y + h - 4; wy += 7) {
+          for (let wx = x + 3; wx < x + w - 4; wx += 6) {
+            const on = hash(wx * 31 + wy * 17 + seed) > 0.62
+            ctx.fillStyle = on ? lit : dark
+            ctx.fillRect(wx, wy, 3, 4)
           }
         }
       }
 
-      // Road, kerb, pavement — three flat bands.
-      ctx.fillStyle = '#4a4658'
-      ctx.fillRect(0, Math.round(height * 0.78), width, height)
-      ctx.fillStyle = '#6e6a80'
-      ctx.fillRect(0, Math.round(height * 0.9), width, Math.round(height * 0.012))
-      ctx.fillStyle = '#8a8698'
-      ctx.fillRect(0, Math.round(height * 0.912), width, height)
+      // Buildings across the far side of the intersection — simple, hazy.
+      for (let i = 0; i * 30 < width + 30; i++) {
+        const seed = i * 71 + 5
+        const w = 20 + Math.round(hash(seed) * 16)
+        const x = i * 30 + Math.round((hash(seed * 3) - 0.5) * 10)
+        const top = horizon - Math.round(height * (0.14 + hash(seed * 5) * 0.2))
+        ctx.fillStyle = '#8ca4bd'
+        ctx.fillRect(x, top, w, horizon - top)
+        windows(x, top, w, horizon - top, seed, '#cfdceb', '#7890a8')
+      }
 
-      // Centre line, dashed in whole pixels rather than by a CSS dash.
+      /*
+       * The two near facades, flanking the view. These are the detailed ones —
+       * a pedestrian's eye is a few metres from this brickwork, and it is
+       * where awnings, shopfronts and fire escapes live.
+       */
+      const facades: Array<{ x: number; w: number; brick: string; trim: string }> = [
+        { x: 0, w: Math.round(width * 0.2), brick: '#8a4a3c', trim: '#6a362b' },
+        { x: Math.round(width * 0.8), w: Math.round(width * 0.2), brick: '#7a5a3c', trim: '#5c422b' },
+      ]
+      for (const f of facades) {
+        ctx.fillStyle = f.brick
+        ctx.fillRect(f.x, 0, f.w, kerbY)
+        // Storey bands.
+        ctx.fillStyle = f.trim
+        for (let y = 14; y < kerbY; y += 22) ctx.fillRect(f.x, y, f.w, 2)
+        windows(f.x + 2, 4, f.w - 4, kerbY - 30, f.x, '#f2d98a', '#3d2b26')
+
+        // Shopfront at street level: awning, then a lit window under it.
+        const shopTop = kerbY - 26
+        ctx.fillStyle = '#2e2b3d'
+        ctx.fillRect(f.x, shopTop, f.w, 26)
+        ctx.fillStyle = '#cfa24a'
+        ctx.fillRect(f.x, shopTop, f.w, 4)
+        // Awning stripes, in whole pixels.
+        ctx.fillStyle = '#a33b3b'
+        for (let x = f.x; x < f.x + f.w; x += 8) ctx.fillRect(x, shopTop, 4, 4)
+        ctx.fillStyle = '#f2e2a8'
+        ctx.fillRect(f.x + 3, shopTop + 8, f.w - 6, 12)
+
+        // Fire escape: a ladder of rails up the facade.
+        ctx.fillStyle = '#2a2733'
+        const escX = f.x + Math.round(f.w * 0.55)
+        for (let y = 16; y < shopTop; y += 22) ctx.fillRect(f.x + 2, y, f.w - 6, 2)
+        for (let y = 16; y < shopTop; y += 3) ctx.fillRect(escX, y, 2, 2)
+      }
+
+      // Road, kerb, pavement.
+      ctx.fillStyle = '#4c4858'
+      ctx.fillRect(0, horizon, width, height)
+      ctx.fillStyle = '#7d7990'
+      ctx.fillRect(0, kerbY, width, 3)
+      ctx.fillStyle = '#93909f'
+      ctx.fillRect(0, kerbY + 3, width, height)
+
+      /*
+       * The crossing. Zebra stripes drawn as whole-pixel bars rather than with
+       * a dashed border — the same reason the combine slots stopped being CSS
+       * dashes.
+       */
+      ctx.fillStyle = '#c9c6d4'
+      const zebraY = Math.round(height * 0.63)
+      for (let x = Math.round(width * 0.3); x < width * 0.7; x += 9) {
+        ctx.fillRect(x, zebraY, 5, Math.round(height * 0.09))
+      }
+
+      // Centre line.
       ctx.fillStyle = '#c8b45e'
-      const laneY = Math.round(height * 0.862)
-      for (let x = 0; x < width; x += 12) ctx.fillRect(x, laneY, 6, 1)
+      const laneY = Math.round(height * 0.695)
+      for (let x = 0; x < width; x += 14) ctx.fillRect(x, laneY, 7, 1)
+
+      /** A pole with something on top — lamp or signal. */
+      function pole(x: number, topY: number) {
+        ctx.fillStyle = '#26232e'
+        ctx.fillRect(x, topY, 2, kerbY - topY)
+        ctx.fillRect(x - 2, kerbY - 2, 6, 3)
+      }
+
+      // Traffic signals either side of the crossing. The lit lamp is chosen
+      // from the clock, so the junction actually cycles.
+      const phase = Math.floor(Date.now() / 4000) % 3
+      for (const sx of [Math.round(width * 0.27), Math.round(width * 0.71)]) {
+        const top = Math.round(height * 0.4)
+        pole(sx, top)
+        ctx.fillStyle = '#1b1924'
+        ctx.fillRect(sx - 3, top - 14, 8, 16)
+        const lamps = ['#d94b3a', '#e0b23c', '#4fb85c']
+        for (let i = 0; i < 3; i++) {
+          ctx.fillStyle = phase === i ? lamps[i] : '#332f3d'
+          ctx.fillRect(sx - 1, top - 12 + i * 5, 4, 3)
+        }
+      }
+
+      // Street lamps, arched over the road.
+      for (const lx of [Math.round(width * 0.12), Math.round(width * 0.52), Math.round(width * 0.88)]) {
+        const top = Math.round(height * 0.34)
+        pole(lx, top)
+        ctx.fillStyle = '#26232e'
+        ctx.fillRect(lx, top, 9, 2)
+        ctx.fillStyle = '#f4e6a8'
+        ctx.fillRect(lx + 7, top + 2, 4, 3)
+      }
+
+      // Street signs on a shared post, and a stop sign.
+      const signX = Math.round(width * 0.62)
+      pole(signX, Math.round(height * 0.52))
+      ctx.fillStyle = '#3f7a4a'
+      ctx.fillRect(signX - 12, Math.round(height * 0.52), 26, 6)
+      ctx.fillStyle = '#dfe6ea'
+      ctx.fillRect(signX - 9, Math.round(height * 0.52) + 2, 20, 2)
+      ctx.fillStyle = '#b03a32'
+      ctx.fillRect(signX - 10, Math.round(height * 0.56), 20, 8)
+      ctx.fillStyle = '#e8e2ee'
+      ctx.fillRect(signX - 6, Math.round(height * 0.585), 12, 2)
     }
 
     function draw(now: number) {
