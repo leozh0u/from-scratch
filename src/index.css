@@ -1,0 +1,101 @@
+@import 'tailwindcss';
+
+/*
+ * Two layers, deliberately different.
+ *
+ *   The SCENE is 8-bit: hard-stop colour bands, notched edges, whole-pixel
+ *   offsets, no smoothing. Press Start 2P appears here and only here — as the
+ *   wordmark.
+ *
+ *   The UI sitting on top of it is clean and modern: Nunito, real radii, one
+ *   soft shadow, generous space. Retro backdrop, crisp panel.
+ *
+ * Keeping the two separate is what makes it read as intentional rather than as
+ * a pixel theme applied unevenly. Don't leak scene styling into the panel.
+ */
+@theme {
+  --font-display: 'Press Start 2P', ui-monospace, monospace;
+  --font-body: 'Nunito', ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  /* Brand red — the wordmark */
+  --color-brand: #e03e3e;
+  --color-brand-deep: #a32828;
+
+  /* Sky bands, dark to light — hard stops, never a smooth gradient */
+  --color-sky-1: #3fb8de;
+  --color-sky-2: #58c7e8;
+  --color-sky-3: #76d5ef;
+  --color-sky-4: #97e1f3;
+  --color-sky-5: #b8ecf7;
+  --color-sky-6: #d6f4fa;
+
+  /* Terrain */
+  --color-grass-light: #7ed04a;
+  --color-grass: #6abe30;
+  --color-grass-dark: #4a8c22;
+  --color-dirt: #8b5a2b;
+  --color-dirt-dark: #6b4220;
+  --color-dirt-light: #a9703a;
+  --color-stone: #7e7e7e;
+
+  /* UI text — warm dark slate, not black */
+  --color-ink: #232a33;
+  --color-muted: #6b7785;
+  --color-hairline: #e6e8ec;
+
+  /* Realm accents */
+  --color-survival: #e07a34;
+  --color-survival-soft: #fdf1e7;
+  --color-everyday: #14919b;
+  --color-everyday-soft: #e8f5f6;
+
+  --radius-panel: 1.25rem;
+  --radius-row: 0.875rem;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    background-color: var(--color-sky-6);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  button {
+    font-family: inherit;
+  }
+}
+
+@layer components {
+  /*
+   * Scoped to sprites only. A blanket `svg { image-rendering: pixelated }`
+   * also hits the clean vector icons in the panel.
+   */
+  .pixel-art {
+    image-rendering: pixelated;
+  }
+
+  /*
+   * Hard outline for the wordmark, which sits directly on the sky. Offsets are
+   * in `em` because the title is fluid-sized: a fixed px outline that reads
+   * correctly at 34px smears at 16px.
+   */
+  .wordmark-outline {
+    text-shadow:
+      -0.055em 0 var(--color-brand-deep),
+      0.055em 0 var(--color-brand-deep),
+      0 -0.055em var(--color-brand-deep),
+      0 0.055em var(--color-brand-deep),
+      -0.055em -0.055em var(--color-brand-deep),
+      0.055em -0.055em var(--color-brand-deep),
+      -0.055em 0.055em var(--color-brand-deep),
+      0.055em 0.055em var(--color-brand-deep);
+  }
+}
