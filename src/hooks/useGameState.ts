@@ -1,0 +1,109 @@
+import { useCallback, useEffect, useState } from 'react'
+import type { RealmId, RecipeData, RecipeDef } from '../data/types'
+
+const STORAGE_KEY = 'from-scratch:discovered'
+
+type StoredState = Record<RealmId, string[]>
+
+function readStorage(): StoredState | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (!raw) return null
+    return JSON.parse(raw) as StoredState
+  } catch {
+    // Corrupt or blocked storage (private mode, quota) — start fresh rather
+    // than crash the app over save data.
+    return null
+  }
+}
+
+function writeStorage(state: StoredState) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+  } catch {
+    // Best-effort. A failed save shouldn't break the current session.
+  }
+}
+
+/** Order-independent lookup key for a recipe's two inputs. */
+function pairKey(a: string, b: string): string {
+  return [a, b].sort().join('+')
+}
+
+function buildRecipeIndex(data: RecipeData): Map<string, RecipeDef> {
+  const index = new Map<string, RecipeDef>()
+  for (const recipe of data.recipes) {
+    index.set(pairKey(recipe.inputs[0], recipe.inputs[1]), recipe)
+  }
+  return index
+}
+
+export type CombineResult =
+  | { status: 'discovered'; recipe: RecipeDef; alreadyKnown: false }
+  | { status: 'already-known'; recipe: RecipeDef; alreadyKnown: true }
+  | { status: 'no-match' }
+
+export function useGameState(data: RecipeData) {
+  const [recipeIndex] = useState(() => buildRecipeIndex(data))
+
+  const [discovered, setDiscovered] = useState<StoredState>(() => {
+    const stored = readStorage()
+    return {
+      survival: stored?.survival ?? [...data.starters.survival],
+      everyday: stored?.everyday ?? [...data.starters.everyday],
+    }
+  })
+
+  useEffect(() => {
+    writeStorage(discovered)
+  }, [discovered])
+
+  const isDiscovered = useCallback(
+    (elementId: string) =>
+      discovered.survival.includes(elementId) || discovered.everyday.includes(elementId),
+    [discovered],
+  )
+
+  const inventoryFor = useCallback(
+    (realm: RealmId) => discovered[realm],
+    [discovered],
+  )
+
+  /**
+   * Attempts to combine two elements. Elements carry over across realms (one
+   * graph, two windows) — a match is found by input pair regardless of which
+   * realm the player is currently in, and the result lands in its own
+   * recipe's realm rather than the player's current one.
+   */
+  const combine = useCallback(
+    (inputA: string, inputB: string): CombineResult => {
+      const recipe = recipeIndex.get(pairKey(inputA, inputB))
+      if (!recipe) return { status: 'no-match' }
+
+      if (isDiscovered(recipe.output)) {
+        return { status: 'already-known', recipe, alreadyKnown: true }
+      }
+
+      const outputRealm = data.elements.find((el) => el.id === recipe.output)?.realm
+      if (!outputRealm) return { status: 'no-match' }
+
+      setDiscovered((prev) => ({
+        ...prev,
+        [outputRealm]: [...prev[outputRealm], recipe.output],
+      }))
+
+      return { status: 'discovered', recipe, alreadyKnown: false }
+    },
+    [recipeIndex, isDiscovered, data.elements],
+  )
+
+  const reset = useCallback(() => {
+    const fresh: StoredState = {
+      survival: [...data.starters.survival],
+      everyday: [...data.starters.everyday],
+    }
+    setDiscovered(fresh)
+  }, [data.starters])
+
+  return { discovered, inventoryFor, isDiscovered, combine, reset }
+}

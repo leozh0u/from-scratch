@@ -1,10 +1,11 @@
 import { CLOUD, FLAME, GROUND, PINE, SHIRT } from '../art/sprites'
+import type { RealmId } from '../data/types'
 import type { Sprite } from './PixelArt'
 import { useViewport } from '../hooks/useViewport'
 import { PixelArt, PixelTile } from './PixelArt'
 
 type Realm = {
-  id: string
+  id: RealmId
   name: string
   blurb: string
   icon: Sprite
@@ -32,6 +33,10 @@ const REALMS: Realm[] = [
     soft: 'var(--color-everyday-soft)',
   },
 ]
+
+type StartScreenProps = {
+  onSelectRealm: (realm: RealmId) => void
+}
 
 const SKY = `linear-gradient(
   to bottom,
@@ -62,7 +67,7 @@ const TREES = [
 const clamp = (value: number, min: number, max: number) =>
   Math.min(Math.max(value, min), max)
 
-export function StartScreen() {
+export function StartScreen({ onSelectRealm }: StartScreenProps) {
   const { width, height } = useViewport()
 
   /*
@@ -182,6 +187,7 @@ export function StartScreen() {
                   <button
                     type="button"
                     data-realm={realm.id}
+                    onClick={() => onSelectRealm(realm.id)}
                     className="group flex w-full cursor-pointer items-center gap-4 rounded-row border-2 border-hairline bg-white px-4 text-left transition-colors duration-150 hover:border-(--accent) hover:bg-(--soft) focus-visible:border-(--accent) focus-visible:bg-(--soft) focus-visible:outline-none"
                     style={
                       {
