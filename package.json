@@ -28,7 +28,8 @@
     "load:api": "k6 run load/adjudicate.js",
     "test:ask": "tsx scripts/asktest.ts",
     "test:earth": "tsx scripts/earthtest.ts",
-    "links": "tsx scripts/links.ts"
+    "links": "tsx scripts/links.ts",
+    "import": "tsx scripts/import.ts"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",

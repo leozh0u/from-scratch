@@ -21,6 +21,7 @@ import { FLAME } from '../src/art/sprites'
 import { checkForms, composeSprite } from '../src/art/forms'
 import { COMPOSED } from '../src/data/iconRegistry'
 import { GAME_DATA } from '../src/data/gameData'
+import { wouldCycle, structuralProblems } from './import'
 import { SEED_DATA } from '../src/data/seed'
 import { runSolver, computeFootprint, computeFootprintDetail } from '../src/solver/solver'
 import type { RecipeData } from '../src/data/types'
@@ -457,6 +458,61 @@ console.log('\n=== a number never rests on a machine-checked link ===')
   })
   ok('survival still costs nothing, deliberately', survivalWithCost.length === 0,
      "water and CO2 are the other realm's lesson")
+}
+
+/*
+ * THE IMPORT GATE.
+ *
+ * `npm run import` throws away everything provably wrong before a human opens
+ * a single citation, and the whole point of it is the hour it saves per batch.
+ * A gate that quietly stops rejecting is worse than no gate, because the
+ * rejects then arrive looking approved.
+ *
+ * The cycle check is the one that cannot be exercised through a staging file,
+ * because a chain that references its own later output is caught by the
+ * forward-reference rule first. It gets a direct test instead — and it earns
+ * it: the solver has rejected two genuinely real recipes on these grounds,
+ * recycling a finished t-shirt back into cotton and heat-treating stone for
+ * better knapping.
+ */
+console.log('\n=== the import gate rejects what it should ===')
+{
+  const existing = GAME_DATA.recipes.map((r) => ({ output: r.output, inputs: [...r.inputs] as string[] }))
+
+  ok('a straight chain is not a cycle',
+     wouldCycle([{ output: 'a', inputs: ['wood', 'stone'] }, { output: 'b', inputs: ['a', 'water'] }], existing)
+       .length === 0)
+  ok('a chain that eats its own output is',
+     wouldCycle(
+       [{ output: 'a', inputs: ['b', 'water'] }, { output: 'b', inputs: ['a', 'stone'] }],
+       existing,
+     ).length === 2,
+     'both edges of the loop are named')
+  ok('and so is one that loops through the existing graph',
+     wouldCycle([{ output: 'wood', inputs: ['charcoal', 'water'] }], existing).length === 1,
+     'charcoal is made from wood, so wood from charcoal closes it')
+
+  const introduced = new Set<string>()
+  const good = {
+    output_id: 'rubber_tyre', output_name: 'Rubber Tyre', inputs: ['crude_oil', 'charcoal'],
+    process: 'vulcanising', rationale: 'x',
+    suggested_sources: [{ label: 'Vulcanization', url: 'https://en.wikipedia.org/wiki/Vulcanization' }],
+  }
+  ok('a clean proposal has no structural problems',
+     structuralProblems(good, introduced).length === 0)
+  ok('a duplicate id is caught',
+     structuralProblems({ ...good, output_id: 'charcoal' }, introduced)
+       .some((p) => p.includes('already exists')))
+  ok('an unknown input is caught',
+     structuralProblems({ ...good, inputs: ['unobtanium', 'water'] }, introduced)
+       .some((p) => p.includes('does not exist')))
+  ok('a pair that is already spoken for is caught',
+     structuralProblems({ ...good, inputs: ['stone', 'wood'] }, introduced)
+       .some((p) => p.includes('already makes')))
+  ok('and a placeholder verb is caught',
+     structuralProblems({ ...good, process: 'making' }, introduced)
+       .some((p) => p.includes('placeholder verb')),
+     'the process word is shown to the player as what they just did')
 }
 
 console.log(`\n${fail === 0 ? 'Game data and solver hold.' : `${fail} FAILED`}  (${pass} checks)`)

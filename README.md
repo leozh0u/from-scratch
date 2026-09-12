@@ -98,7 +98,7 @@ element. Only a real lookup in the recipe index does that.
 ```bash
 npm install
 npm run dev          # http://localhost:5173
-npm test             # type-check, 199 assertions, production build
+npm test             # type-check, 207 assertions, production build
 npm run solve        # reachability and cost report over the recipe graph
 npm run walkthrough  # regenerate WALKTHROUGH.md from the data
 npm run probe        # ask the live adjudicator which missing pairs are real
@@ -109,6 +109,8 @@ npm run load         # k6 load test against that preview
 npm run load:api     # k6 against the one serverless function
 npm run links        # fetch every citation and check it still exists
 npm run links -- --new   # only the ones not already passing
+npm run propose "X" "Y"  # ask Gemini for draft chains toward named targets
+npm run import       # throw out every draft that is provably wrong
 ```
 
 There is a dev-only styleguide at `/styleguide`.
@@ -121,7 +123,7 @@ the top.
 
 ## The tests
 
-199 assertions, because a project whose claim is rigour should be able to prove
+207 assertions, because a project whose claim is rigour should be able to prove
 it. The ones worth knowing about are the ones that caught something:
 
 - **The footprint accumulator does not double-count.** The graph is a DAG where
@@ -181,7 +183,28 @@ exists" is no evidence at all for "this costs 2,340 litres", and `npm test`
 fails the build if a recipe with a non-zero cost has nothing hand-read behind
 it. That is the one rule that does not bend as the element count grows.
 
-First real run over all 79 distinct URLs: 79 answer and match their label. It
+### The gate between a model and the game
+
+`npm run propose` writes draft chains to `data/staging/`, which is gitignored
+and which `src/` cannot import from. `npm run import` then throws away
+everything provably wrong before a human opens a single citation: a URL that
+404s, a label that leads to a different article, an id that already exists, an
+input that does not, a pair another recipe already owns, a chain that closes a
+loop, a placeholder verb like "making" where the real process word belongs.
+
+What it deliberately does not do is write to `gameData.ts`. Judgement — does
+this transformation really happen, does the page really say so — stays human,
+and every survivor it prints is marked `referenced` with a zero footprint, so
+nothing that comes through this route can quietly become a claim about a
+number. The model proposes; it never ships.
+
+Exercised against a staged file carrying one good proposal and six bad ones:
+all six rejected, each for the right reason, including a fabricated Wikipedia
+URL caught by its 404 and a real URL under a label belonging to a different
+article.
+
+First real run of the link checker over all 79 distinct URLs: 79 answer and
+match their label. It
 also caught a live mismatch on the way in — a citation labelled "Mercerised
 cotton" pointing at a page titled "Mercerisation" — which is a redirect rather
 than a broken link, and is why the matcher compares word prefixes. English does
