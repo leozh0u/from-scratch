@@ -69,6 +69,23 @@ Rules:
 - Do NOT suggest what the player should make or try next.
 - If you do not know what this is, say so plainly in one sentence rather than guessing.`
 
+/**
+ * Drops a trailing half-sentence.
+ *
+ * The model can be cut off by its own token ceiling mid-clause, and a game
+ * panel that ends "it helps purify and freshen" reads as a broken feature
+ * rather than as a short answer. Two complete sentences are a fine answer;
+ * three and a fragment are not. If there is no complete sentence at all,
+ * returns null and the card falls back to the blurb it already had.
+ */
+export function toWholeSentences(text: string): string | null {
+  const end = Math.max(text.lastIndexOf('.'), text.lastIndexOf('!'), text.lastIndexOf('?'))
+  if (end < 0) return null
+  const whole = text.slice(0, end + 1).trim()
+  // A single stub like "Charcoal." is worse than nothing.
+  return whole.length >= 20 ? whole : null
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
     res.status(405).json({ message: null })
@@ -103,10 +120,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       body: JSON.stringify({
         contents: [{ parts: [{ text: PROMPT(name, question as QuestionKey) }] }],
         generationConfig: {
-          // Headroom rather than suppression — see the note in adjudicate.ts.
-          // This prompt asks for three sentences instead of one, so the
-          // ceiling is higher.
-          maxOutputTokens: 700,
+          /*
+           * Headroom rather than suppression — see the note in adjudicate.ts.
+           * This prompt asks for three sentences instead of one, so the
+           * ceiling is higher, and 700 was not enough: the "where" answer for
+           * charcoal came back live ending "it helps purify and freshen", cut
+           * off mid-clause by MAX_TOKENS. The trim below is the belt to this
+           * pair of braces, because a bigger ceiling makes a truncation rarer
+           * without making it impossible.
+           */
+          maxOutputTokens: 1200,
           thinkingConfig: { thinkingBudget: 0 },
         },
       }),
@@ -126,7 +149,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return
     }
 
-    res.status(200).json({ message: trimmed })
+    const whole = toWholeSentences(trimmed)
+    if (!whole) {
+      res.status(200).json({ message: null })
+      return
+    }
+
+    res.status(200).json({ message: whole })
   } catch {
     res.status(200).json({ message: null })
   }

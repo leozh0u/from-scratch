@@ -18,6 +18,7 @@
  */
 import { readFileSync } from 'node:fs'
 import { QUESTION_KEYS, QUESTION_LABELS } from '../src/adjudicator/questions'
+import { toWholeSentences } from '../api/ask'
 
 let pass = 0, fail = 0
 const ok = (l: string, c: boolean, d = '') => {
@@ -97,6 +98,29 @@ console.log('\n=== the prompt keeps the rules the game is built on ===')
      'no import reaches the game data')
   ok('and fails quiet rather than erroring at the player',
      (handler.match(/message: null/g) ?? []).length >= 4)
+}
+
+console.log('\n=== a cut-off answer never reaches the panel ===')
+{
+  /*
+   * Live, charcoal's "where" answer came back ending "it helps purify and
+   * freshen" — the model's own token ceiling, mid-clause. Two whole sentences
+   * are a fine answer; three and a fragment look like a broken feature.
+   */
+  ok('a truncated tail is dropped',
+     toWholeSentences('It is burned to cook. It is used for art. Additionally it helps purify and freshen')
+       === 'It is burned to cook. It is used for art.')
+  ok('a complete answer is left alone',
+     toWholeSentences('It is burned to cook. It is used for drawing. It also filters.')
+       === 'It is burned to cook. It is used for drawing. It also filters.')
+  ok('question and exclamation marks end a sentence too',
+     toWholeSentences('So why does the process work at all? Because the air is kept out')
+       === 'So why does the process work at all?')
+  ok('no complete sentence means no answer at all',
+     toWholeSentences('the process begins when the wood is') === null)
+  ok('and neither does a stub',
+     toWholeSentences('Charcoal.') === null,
+     'shorter than twenty characters is not an answer')
 }
 
 console.log('\n=== the credit cannot be burned by holding the button ===')
