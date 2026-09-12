@@ -324,6 +324,8 @@ export function PixelButton({
           background: OUTLINE,
           clipPath: shape,
           display: down ? 'none' : 'block',
+          // So the legend below can size itself from the button's real width.
+          containerType: 'inline-size',
         }}
       >
         <span
@@ -342,35 +344,61 @@ export function PixelButton({
            * It sits inside the extruded base rather than under the button, so
            * it travels with the press: push the key and the side face is
            * covered by the face landing on it, exactly as it would be.
+           *
+           * The wrapper is exactly the STRIP OF BASE THAT IS ACTUALLY VISIBLE
+           * — the bottom `depth` pixels, less the outline — so centring inside
+           * it centres on the side face. The first version pinned the text to
+           * an offset from the bottom, which meant the size and the position
+           * had to be kept in agreement by hand, and it sat low and off to the
+           * left. Flex centring holds at any size.
            */
           <span
+            aria-hidden="true"
             style={{
               position: 'absolute',
-              left: border + unit * 3,
-              /*
-               * Pinned to the BOTTOM, not centred.
-               *
-               * The base span runs from `depth` down to the bottom of the
-               * button, so it is as tall as the face and almost all of it
-               * hides behind it. Only the last `depth` pixels are the visible
-               * side of the key, and a legend centred in the span sat behind
-               * the face entirely.
-               */
-              bottom: Math.round(unit * 0.9),
-              transform: 'skewX(-18deg) scaleY(0.62)',
-              transformOrigin: 'left bottom',
-              fontFamily: 'var(--font-display)',
-              fontSize: Math.max(8, Math.round(unit * 1.4)),
-              lineHeight: 1,
-              letterSpacing: '0.08em',
-              textTransform: 'lowercase',
-              whiteSpace: 'nowrap',
-              // Lighter than the base it sits on, the way a moulded legend
-              // catches the light on the side of a real keycap.
-              color: c.hi,
+              left: border,
+              right: border,
+              bottom: border,
+              height: depth - border,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              overflow: 'hidden',
             }}
           >
-            {side}
+            <span
+              style={{
+                /*
+                 * Sized from the BUTTON'S OWN WIDTH, not from the unit alone.
+                 *
+                 * Press Start 2P advances exactly 1em a character, so the width
+                 * a legend needs is computable: characters x 1.08em (the extra
+                 * being the letter-spacing), plus the horizontal shear the skew
+                 * adds. A container query turns that into a real fit with no
+                 * measuring pass — the locked legend is nearly twice the length
+                 * of "the tutorial" and would otherwise run off the key.
+                 */
+                fontSize: `min(${Math.round(unit * 2.1)}px, calc((100cqw - ${unit * 4}px) / ${(side.length * 1.08 + 0.25).toFixed(2)}))`,
+                /*
+                 * Squashed less than it was. The skew is what sells the
+                 * receding face; the vertical squash only adds to it, and at
+                 * 0.62 it was eating the one-pixel stems that pixel type is
+                 * made of. 0.72 still reads as foreshortened and keeps the
+                 * letterforms.
+                 */
+                transform: 'skewX(-18deg) scaleY(0.72)',
+                fontFamily: 'var(--font-display)',
+                lineHeight: 1,
+                letterSpacing: '0.08em',
+                textTransform: 'lowercase',
+                whiteSpace: 'nowrap',
+                // Lighter than the base it sits on, the way a moulded legend
+                // catches the light on the side of a real keycap.
+                color: c.hi,
+              }}
+            >
+              {side}
+            </span>
           </span>
         )}
       </span>
