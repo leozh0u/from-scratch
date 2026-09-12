@@ -193,8 +193,74 @@ export function CityScene({ pixelScale = 4, className }: CitySceneProps) {
     const ROAD_Y = Math.round(height * 0.8)
     const PAVEMENT_Y = Math.round(height * 0.92)
 
+    /**
+     * A plain street, drawn once per frame behind the actors.
+     *
+     * NOT trying to be the finished backdrop — a composed piece of pixel art
+     * will replace it, and that art will be better, exactly as the forest's
+     * was. This exists so the realm is a place rather than a flat blue field
+     * while that art is found, and so the pedestrians have a pavement to be
+     * standing on.
+     *
+     * Flat bands and rectangular windows, seeded so the skyline is the same
+     * every load.
+     */
+    function drawStreet() {
+      // Sky, then a lighter band at the horizon where the haze sits.
+      ctx.fillStyle = '#7fb4d8'
+      ctx.fillRect(0, 0, width, height)
+      ctx.fillStyle = '#a8cfe4'
+      ctx.fillRect(0, Math.round(height * 0.42), width, Math.round(height * 0.2))
+
+      /*
+       * Two ranks of towers. The far rank is hazier and shorter, which is the
+       * only depth cue available without gradients: nearer things are darker
+       * and taller, and they overlap.
+       */
+      const ranks = [
+        { colour: '#8fa8c4', window: '#b9cde0', top: 0.3, spread: 26, depth: 0.58 },
+        { colour: '#5d6f92', window: '#8ea4c0', top: 0.22, spread: 34, depth: 0.7 },
+        { colour: '#3f4a68', window: '#d8c98a', top: 0.14, spread: 44, depth: 0.82 },
+      ]
+      for (const rank of ranks) {
+        for (let i = 0; i * rank.spread < width + rank.spread; i++) {
+          const seed = Math.round(rank.spread * 131 + i * 29)
+          const x = i * rank.spread + Math.round((hash(seed) - 0.5) * rank.spread * 0.5)
+          const w = Math.round(rank.spread * (0.6 + hash(seed * 3) * 0.5))
+          const top = Math.round(height * (rank.top + hash(seed * 5) * 0.16))
+          const bottom = Math.round(height * rank.depth)
+
+          ctx.fillStyle = rank.colour
+          ctx.fillRect(x, top, w, bottom - top)
+
+          // Windows: a regular grid, because a building's windows ARE a
+          // regular grid, with some unlit so it does not read as graph paper.
+          ctx.fillStyle = rank.window
+          for (let wy = top + 4; wy < bottom - 3; wy += 5) {
+            for (let wx = x + 2; wx < x + w - 2; wx += 4) {
+              if (hash(wx * 7 + wy * 13) > 0.42) ctx.fillRect(wx, wy, 2, 2)
+            }
+          }
+        }
+      }
+
+      // Road, kerb, pavement — three flat bands.
+      ctx.fillStyle = '#4a4658'
+      ctx.fillRect(0, Math.round(height * 0.78), width, height)
+      ctx.fillStyle = '#6e6a80'
+      ctx.fillRect(0, Math.round(height * 0.9), width, Math.round(height * 0.012))
+      ctx.fillStyle = '#8a8698'
+      ctx.fillRect(0, Math.round(height * 0.912), width, height)
+
+      // Centre line, dashed in whole pixels rather than by a CSS dash.
+      ctx.fillStyle = '#c8b45e'
+      const laneY = Math.round(height * 0.862)
+      for (let x = 0; x < width; x += 12) ctx.fillRect(x, laneY, 6, 1)
+    }
+
     function draw(now: number) {
       ctx.clearRect(0, 0, width, height)
+      drawStreet()
 
       // Pigeons first: they are furthest away and everything else overlaps
       // them.

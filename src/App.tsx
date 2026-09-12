@@ -14,6 +14,21 @@ import { useGameState } from './hooks/useGameState'
 const isStyleguide =
   import.meta.env.DEV && window.location.pathname === '/styleguide'
 
+/**
+ * TEMPORARY: both realms open, regardless of progress.
+ *
+ * The gate itself is intact just below — Everyday is meant to stay locked
+ * until Survival's targets are done, and the recipe graph genuinely requires
+ * that order (Everyday's aluminium chain cokes crude oil over Survival's
+ * fire). This only short-circuits the check.
+ *
+ * It is on because the realm needs to be iterated on and filmed, and playing
+ * through Survival before every look at it is minutes an hour that nobody
+ * has. Set it back to false before submitting — the progression is part of
+ * the design, not scaffolding.
+ */
+const UNLOCK_EVERYTHING = true
+
 function Game() {
   const [realm, setRealm] = useState<RealmId | null>(null)
   // An overlay, not a third state alongside `realm` — closing it returns to
@@ -31,9 +46,9 @@ function Game() {
    * disagree with what the player has actually done and survives any reset
    * for free.
    */
-  const everydayUnlocked = GAME_DATA.targets.survival.every((id) =>
-    game.isDiscovered(id),
-  )
+  const everydayUnlocked =
+    UNLOCK_EVERYTHING ||
+    GAME_DATA.targets.survival.every((id) => game.isDiscovered(id))
 
   if (showInventory) {
     return <Inventory data={GAME_DATA} game={game} onBack={() => setShowInventory(false)} />
