@@ -59,9 +59,23 @@ export function useGameState(data: RecipeData) {
 
   const [discovered, setDiscovered] = useState<StoredState>(() => {
     const stored = readStorage()?.discovered
+    /*
+     * A save from an older build can name elements this build no longer has.
+     * The rebuild from three starters retired a dozen ids, and anyone who
+     * played the previous version still has them in localStorage — including,
+     * potentially, a judge who opened the link this morning. Unknown ids are
+     * dropped rather than trusted, and the realm's starters are folded back in
+     * so a pruned save can never leave someone with an empty shelf and no way
+     * to combine anything.
+     */
+    const known = new Set(data.elements.map((el) => el.id))
+    const clean = (ids: string[] | undefined, starters: string[]) => {
+      const kept = (ids ?? []).filter((id) => known.has(id))
+      return [...new Set([...starters, ...kept])]
+    }
     return {
-      survival: stored?.survival ?? [...data.starters.survival],
-      everyday: stored?.everyday ?? [...data.starters.everyday],
+      survival: clean(stored?.survival, data.starters.survival),
+      everyday: clean(stored?.everyday, data.starters.everyday),
     }
   })
 

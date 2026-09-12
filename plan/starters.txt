@@ -11,3 +11,4 @@ E|iron_ore
 E|crude_oil
 E|natural_gas
 E|beeswax
+E|textile_waste

@@ -38,6 +38,21 @@ import {
   SODIUM_HYDROXIDE,
   SODIUM_SILICATE,
   TEXTILE_WASTE,
+  STONE,
+  BARK,
+  SPINDLE,
+  FIRE_BOARD,
+  BOW,
+  HAND_DRILL,
+  BOW_DRILL,
+  EMBER,
+  TORCH,
+  LIT_TORCH,
+  SOIL,
+  IRON_ORE,
+  AMMONIA,
+  QUICKLIME,
+  DISTILLATE,
   SPARK,
   TINDER,
   WATER,
@@ -106,6 +121,39 @@ const REGISTRY: Record<string, Sprite> = {
   limestone: LIMESTONE,
   sodium_silicate: SODIUM_SILICATE,
   textile_waste: TEXTILE_WASTE,
+
+  /*
+   * The rebuild retired some elements and added more. Where an existing sprite
+   * already draws the new thing, it is repointed rather than redrawn: the old
+   * Flint is exactly a knapped sharp stone, the old Wick is a braided cord, the
+   * old Kindling is a stick, and Petroleum Coke was already a black lump of
+   * carbon. Redrawing them would have been work for no picture.
+   */
+  stone: STONE,
+  wood: KINDLING,
+  plant_fibre: COTTON_FIBER,
+  sharp_stone: FLINT,
+  cordage: WICK,
+  hand_drill: HAND_DRILL,
+  tinder_bundle: TINDER,
+  bark: BARK,
+  torch: TORCH,
+  spindle: SPINDLE,
+  fire_board: FIRE_BOARD,
+  bow: BOW,
+  bow_drill: BOW_DRILL,
+  ember: EMBER,
+  burning_tinder: GLOWING_TINDER,
+  charcoal: PETROLEUM_COKE,
+  lit_torch: LIT_TORCH,
+
+  soil: SOIL,
+  iron_ore: IRON_ORE,
+  ammonia: AMMONIA,
+  quicklime: QUICKLIME,
+  pig_iron: MANGANESE,
+  distillate: DISTILLATE,
+  paraffin_wax: PARAFFIN,
   molten_glass: MOLTEN_GLASS,
   glass_bottle: GLASS_BOTTLE,
 }

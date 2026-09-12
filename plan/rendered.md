@@ -17,14 +17,14 @@
 | 11 | Hand Drill | + Fire Board | = **Ember** |
 | 12 | Bow Drill | + Fire Board | = **Ember** |
 | 13 | Bark | + Sharp Stone | = **Tinder Bundle** |
-| 14 | Ember | + Tinder Bundle | = **Flame** |
-| 15 | Flame | + Wood | = **Fire** |
+| 14 | Ember | + Tinder Bundle | = **Burning Tinder** |
+| 15 | Burning Tinder | + Wood | = **Fire** |
 | 16 | Fire | + Wood | = **Charcoal** |
 | 17 | Torch | + Fire | = **Lit Torch** |
 
 ### Everyday Objects
 
-**You start with 8:** Water · Soil · Limestone · Bauxite · Iron Ore · Crude Oil · Natural Gas · Beeswax
+**You start with 9:** Water · Soil · Limestone · Bauxite · Iron Ore · Crude Oil · Natural Gas · Beeswax · Textile Waste
 
 | # | | | |
 | --- | --- | --- | --- |
@@ -44,24 +44,23 @@
 | 14 | Bauxite | + Sodium Hydroxide | = **Alumina** |
 | 15 | Crude Oil | + Fire | = **Distillate** |
 | 16 | Distillate | + Fire | = **Paraffin Wax** |
-| 17 | Alumina | + Charcoal | = **Molten Aluminium** |
-| 18 | Molten Aluminium | + High-Carbon Steel | = **Aluminium Sheet** |
-| 19 | Aluminium Sheet | + High-Carbon Steel | = **Aluminium Can** |
+| 17 | Alumina | + Charcoal | = **Molten Aluminum** |
+| 18 | Molten Aluminum | + High-Carbon Steel | = **Aluminum Sheet** |
+| 19 | Aluminum Sheet | + High-Carbon Steel | = **Aluminum Can** |
 | 20 | Farmland | + Water | = **Raw Cotton** |
 | 21 | Raw Cotton | + Cotton Gin | = **Ginned Cotton** |
-| 22 | Ginned Cotton | + Ginned Cotton | = **Cotton Yarn** |
-| 23 | Cotton Yarn | + Cotton Yarn | = **Cotton Jersey** |
-| 24 | Plant Fibre | + Water | = **Dye** |
-| 25 | Iron Ore | + Fire | = **Dye** |
-| 26 | Cotton Jersey | + Dye | = **Dyed Cotton Fabric** |
-| 27 | Cotton Yarn | + Paraffin Wax | = **Sewing Thread** |
-| 28 | Dyed Cotton Fabric | + Sewing Thread | = **Cotton T-Shirt** |
-| 29 | Cotton T-Shirt | + Sharp Stone | = **Textile Waste** |
+| 22 | Textile Waste | + Cotton Gin | = **Ginned Cotton** |
+| 23 | Ginned Cotton | + Ginned Cotton | = **Cotton Yarn** |
+| 24 | Cotton Yarn | + Cotton Yarn | = **Cotton Jersey** |
+| 25 | Plant Fibre | + Water | = **Dye** |
+| 26 | Iron Ore | + Fire | = **Dye** |
+| 27 | Cotton Jersey | + Dye | = **Dyed Cotton Fabric** |
+| 28 | Cotton Yarn | + Paraffin Wax | = **Sewing Thread** |
+| 29 | Dyed Cotton Fabric | + Sewing Thread | = **Cotton T-Shirt** |
 | 30 | Paraffin Wax | + Cordage | = **Candle** |
 | 31 | Natural Gas | + Fire | = **Butane** |
 | 32 | Butane | + High-Carbon Steel | = **Lighter** |
 | 33 | Beeswax | + Cordage | = **Candle** |
 | 34 | Beeswax | + Cotton Yarn | = **Sewing Thread** |
-| 35 | Textile Waste | + Cotton Gin | = **Ginned Cotton** |
 
-57 elements, 52 recipes.
+57 elements, 51 recipes.

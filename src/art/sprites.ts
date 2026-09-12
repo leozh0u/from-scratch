@@ -1222,3 +1222,273 @@ export const TEXTILE_WASTE: Sprite = {
     B: '#34507a',
   },
 }
+
+/** A rock. Rounded, lit from the upper left, three greys. */
+export const STONE: Sprite = {
+  rows: [
+    '...........',
+    '....kkkk...',
+    '...kllggk..',
+    '..kllgggdk.',
+    '.kllggggddk',
+    '.klggggdddk',
+    '.kgggggdddk',
+    '..kgggddddk',
+    '...kkkkkkk.',
+    '...........',
+    '...........',
+  ],
+  palette: { k: '#1d1b26', l: '#b9bcc9', g: '#8b8f9e', d: '#5f6372' },
+}
+
+/** A strip knocked off a trunk. The ridges are what say bark rather than plank. */
+export const BARK: Sprite = {
+  rows: [
+    '...........',
+    '..kkkkkkk..',
+    '.kbBbbBbbk.',
+    '.kbbBbbBbk.',
+    '.kBbbBbbBk.',
+    '.kbbBbbbBk.',
+    '.kbBbbBbbk.',
+    '.kbbBbbBbk.',
+    '..kkkkkkk..',
+    '...........',
+    '...........',
+  ],
+  palette: { k: '#241a14', b: '#8a5a33', B: '#5f3d22' },
+}
+
+/** A carved shaft, pointed at the top and blunt at the foot. */
+export const SPINDLE: Sprite = {
+  rows: [
+    '.....k.....',
+    '....klk....',
+    '....klk....',
+    '....klk....',
+    '....klk....',
+    '....klk....',
+    '....klk....',
+    '...kllLk...',
+    '...kllLk...',
+    '...kkkkk...',
+    '...........',
+  ],
+  palette: { k: '#2a1f14', l: '#c09257', L: '#8e6838' },
+}
+
+/** A plank with the socket burnt into it and the notch cut beside it, which is the part that matters. */
+export const FIRE_BOARD: Sprite = {
+  rows: [
+    '...........',
+    '...........',
+    'kkkkkkkkkkk',
+    'kbbbbbbbbbk',
+    'kbbkkkbbbbk',
+    'kbkdDdkbbbk',
+    'kbkddDkbbbk',
+    'kbbkkkbbbbk',
+    'kbbbbbbbbbk',
+    'kkkkkkkkkkk',
+    '...........',
+  ],
+  palette: { k: '#2a1f14', b: '#b08a52', d: '#4a3520', D: '#2e2114' },
+}
+
+/** A springy branch with cordage strung across it. */
+export const BOW: Sprite = {
+  rows: [
+    '...kk......',
+    '..kbbk..s..',
+    '.kbbk...s..',
+    '.kbk....s..',
+    '.kbk.....s.',
+    '.kbk.....s.',
+    '.kbk....s..',
+    '.kbbk...s..',
+    '..kbbk..s..',
+    '...kk...s..',
+    '...........',
+  ],
+  palette: { k: '#2a1f14', b: '#9c6b3a', s: '#d8cba8' },
+}
+
+/** A stick between two palms. The marks either side are the spin, which is the only thing separating it from a stick. */
+export const HAND_DRILL: Sprite = {
+  rows: [
+    '..m.....m..',
+    '...m...m...',
+    '.....k.....',
+    '....klk....',
+    '....klk....',
+    '....klk....',
+    '....klk....',
+    '...kbbbk...',
+    '..kbbbbbk..',
+    '..kkkkkkk..',
+    '...........',
+  ],
+  palette: { k: '#2a1f14', l: '#c09257', b: '#b08a52', m: '#7b7596' },
+}
+
+/** Bow, spindle and board assembled. More work to build, far less to use. */
+export const BOW_DRILL: Sprite = {
+  rows: [
+    '.....k.....',
+    '....klk....',
+    '.kk.klk.kk.',
+    'kbbkklkkbbk',
+    'kbsssssssbk',
+    'kbbkklkkbbk',
+    '.kk.klk.kk.',
+    '....klk....',
+    '..kkbbbkk..',
+    '..kkkkkkk..',
+    '...........',
+  ],
+  palette: { k: '#2a1f14', l: '#c09257', b: '#9c6b3a', s: '#d8cba8' },
+}
+
+/** A coal about the size of a match head, which is all friction ever gives you. */
+export const EMBER: Sprite = {
+  rows: [
+    '...........',
+    '...........',
+    '....kkk....',
+    '...koooyk..',
+    '..koyyyyok.',
+    '..koyywyok.',
+    '..kooyyook.',
+    '...kkoook..',
+    '.....kkk...',
+    '...........',
+    '...........',
+  ],
+  palette: { k: '#2a1410', o: '#8f3410', y: '#e0741f', w: '#ffcf6b' },
+}
+
+/** Fibre wound round the head of a stick. Unlit it is a stick. */
+export const TORCH: Sprite = {
+  rows: [
+    '...kkkkk...',
+    '..kfFffFk..',
+    '..kffFffk..',
+    '..kFffFfk..',
+    '..kffFffk..',
+    '...kkkkk...',
+    '....kbk....',
+    '....kbk....',
+    '....kbk....',
+    '....kbk....',
+    '....kkk....',
+  ],
+  palette: { k: '#241a14', f: '#c8a76a', F: '#8f7440', b: '#8a5a33' },
+}
+
+/** The same torch, going. Fire that can travel. */
+export const LIT_TORCH: Sprite = {
+  rows: [
+    '.....w.....',
+    '....wyw....',
+    '...wyoyw...',
+    '...kyoyk...',
+    '..kfFffk...',
+    '..kffFfk...',
+    '...kkkk....',
+    '....kbk....',
+    '....kbk....',
+    '....kbk....',
+    '....kkk....',
+  ],
+  palette: { k: '#241a14', f: '#c8a76a', F: '#8f7440', b: '#8a5a33', o: '#c9491a', y: '#f0902c', w: '#ffd978' },
+}
+
+/** Dirt. It grows almost nothing until someone puts the nitrogen back. */
+export const SOIL: Sprite = {
+  rows: [
+    '...........',
+    '...........',
+    '..kkkkkkk..',
+    '.kbdbbdbbk.',
+    'kbbbdbbbdbk',
+    'kdbbbdbbbdk',
+    'kbbdbbbdbbk',
+    '.kbbbdbbbk.',
+    '..kkkkkkk..',
+    '...........',
+    '...........',
+  ],
+  palette: { k: '#20150e', b: '#6b4a2c', d: '#42301c' },
+}
+
+/** Iron already stuck to oxygen. The rust is the point. */
+export const IRON_ORE: Sprite = {
+  rows: [
+    '...........',
+    '....kkkk...',
+    '...krrRgk..',
+    '..krrrRRgk.',
+    '.krgrrrRRRk',
+    '.kggrrrRRRk',
+    '.kgrrgrRRRk',
+    '..kgrrRRRk.',
+    '...kkkkkk..',
+    '...........',
+    '...........',
+  ],
+  palette: { k: '#1d1410', r: '#a05a33', R: '#6d3a20', g: '#8a8a94' },
+}
+
+/** Nitrogen out of the air, hydrogen out of methane. It feeds about half the planet. */
+export const AMMONIA: Sprite = {
+  rows: [
+    '....kkk....',
+    '....kgk....',
+    '...kkgkk...',
+    '...kggak...',
+    '..kgaaagk..',
+    '..kaaaaak..',
+    '.kgaaaaagk.',
+    '.kaaaaaaak.',
+    '.kggaaaggk.',
+    '..kkkkkkk..',
+    '...........',
+  ],
+  palette: { k: '#171a24', g: '#9fb4c4', a: '#6fd6a8' },
+}
+
+/** Limestone burnt until the carbon dioxide walks out of it. */
+export const QUICKLIME: Sprite = {
+  rows: [
+    '...........',
+    '.....kk....',
+    '....kwwk...',
+    '..kkwwwlk..',
+    '.kwwlwwwlk.',
+    '.kwlwwwllk.',
+    'kwwwlwwlllk',
+    'kwwlwwlllLk',
+    'kkkkkkkkkkk',
+    '...........',
+    '...........',
+  ],
+  palette: { k: '#232430', w: '#f2f0ea', l: '#cdc9bd', L: '#a5a094' },
+}
+
+/** Crude oil in a column, separated by weight. Light at the top, tar at the bottom. */
+export const DISTILLATE: Sprite = {
+  rows: [
+    '...kkkkk...',
+    '...kyyyk...',
+    '...kyyyk...',
+    '...kkkkk...',
+    '...kgggk...',
+    '...kgggk...',
+    '...kkkkk...',
+    '...kbbbk...',
+    '...kbbbk...',
+    '...kkkkk...',
+    '...........',
+  ],
+  palette: { k: '#1b1722', y: '#e8c45c', g: '#b07a3a', b: '#4b3520' },
+}

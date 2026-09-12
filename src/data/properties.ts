@@ -58,40 +58,71 @@ const P = (phase: Phase, kind: Kind, stage: Stage): Properties => ({ phase, kind
  * file exists to remove. `everyElementIsTagged` below asserts it.
  */
 export const PROPERTIES: Record<string, Properties> = {
-  // Survival — starters
-  tinder: P('fibre', 'organic', 'raw'),
-  kindling: P('solid', 'organic', 'raw'),
-  flint: P('solid', 'mineral', 'raw'),
-  high_carbon_steel: P('solid', 'tool', 'finished'),
-  cotton_fiber: P('fibre', 'organic', 'raw'),
-  beeswax: P('solid', 'organic', 'raw'),
+  // Survival - the three you are given
+  stone: P('solid', 'mineral', 'raw'),
+  wood: P('solid', 'organic', 'raw'),
+  plant_fibre: P('fibre', 'organic', 'raw'),
+
+  // Survival - tools and parts
+  sharp_stone: P('solid', 'tool', 'processed'),
+  cordage: P('fibre', 'textile', 'processed'),
+  hand_drill: P('solid', 'tool', 'processed'),
+  spindle: P('solid', 'tool', 'processed'),
+  fire_board: P('solid', 'tool', 'processed'),
+  bow: P('solid', 'tool', 'processed'),
+  bow_drill: P('solid', 'tool', 'finished'),
+
+  // Survival - the fire chain
+  bark: P('fibre', 'organic', 'raw'),
+  tinder_bundle: P('fibre', 'organic', 'processed'),
+  ember: P('energy', 'energy', 'processed'),
+  burning_tinder: P('energy', 'energy', 'processed'),
+  fire: P('energy', 'energy', 'processed'),
+  charcoal: P('solid', 'fuel', 'processed'),
+  torch: P('solid', 'product', 'processed'),
+  lit_torch: P('energy', 'product', 'finished'),
+
+  // Everyday - what you dig up and pump
+  water: P('liquid', 'chemical', 'raw'),
+  soil: P('granular', 'place', 'raw'),
+  limestone: P('solid', 'mineral', 'raw'),
+  bauxite: P('granular', 'mineral', 'raw'),
+  iron_ore: P('solid', 'mineral', 'raw'),
   crude_oil: P('liquid', 'fuel', 'raw'),
   natural_gas: P('gas', 'fuel', 'raw'),
-
-  // Survival — crafted
-  spark: P('energy', 'energy', 'processed'),
-  glowing_tinder: P('energy', 'energy', 'processed'),
-  fire: P('energy', 'energy', 'processed'),
-  wick: P('fibre', 'textile', 'processed'),
-  paraffin: P('solid', 'chemical', 'processed'),
-  butane: P('gas', 'fuel', 'processed'),
-  candle: P('solid', 'product', 'finished'),
-  lighter: P('solid', 'product', 'finished'),
-
-  // Everyday — starters
-  farmland: P('place', 'place', 'raw'),
-  water: P('liquid', 'chemical', 'raw'),
-  cotton_gin: P('solid', 'tool', 'finished'),
-  dye: P('liquid', 'chemical', 'raw'),
-  salt: P('granular', 'mineral', 'raw'),
-  bauxite: P('granular', 'mineral', 'raw'),
-  manganese: P('solid', 'metal', 'raw'),
-  silica_sand: P('granular', 'mineral', 'raw'),
-  soda_ash: P('granular', 'chemical', 'raw'),
-  limestone: P('solid', 'mineral', 'raw'),
+  beeswax: P('solid', 'organic', 'raw'),
   textile_waste: P('fibre', 'textile', 'raw'),
 
-  // Everyday — cotton
+  // Everyday - chemistry
+  salt: P('granular', 'mineral', 'processed'),
+  ammonia: P('gas', 'chemical', 'processed'),
+  farmland: P('place', 'place', 'processed'),
+  silica_sand: P('granular', 'mineral', 'processed'),
+  quicklime: P('granular', 'chemical', 'processed'),
+  soda_ash: P('granular', 'chemical', 'processed'),
+  sodium_hydroxide: P('liquid', 'chemical', 'processed'),
+  dye: P('liquid', 'chemical', 'processed'),
+
+  // Everyday - metal
+  pig_iron: P('solid', 'metal', 'processed'),
+  high_carbon_steel: P('solid', 'tool', 'finished'),
+  cotton_gin: P('solid', 'tool', 'finished'),
+  alumina: P('granular', 'chemical', 'processed'),
+  molten_aluminum: P('liquid', 'metal', 'processed'),
+  aluminum_sheet: P('solid', 'metal', 'processed'),
+  aluminum_can: P('solid', 'product', 'finished'),
+
+  // Everyday - glass
+  sodium_silicate: P('solid', 'chemical', 'processed'),
+  molten_glass: P('liquid', 'mineral', 'processed'),
+  glass_bottle: P('solid', 'product', 'finished'),
+
+  // Everyday - oil
+  distillate: P('liquid', 'fuel', 'processed'),
+  paraffin_wax: P('solid', 'chemical', 'processed'),
+  butane: P('gas', 'fuel', 'processed'),
+
+  // Everyday - cotton
   raw_cotton: P('fibre', 'organic', 'processed'),
   ginned_cotton: P('fibre', 'organic', 'processed'),
   cotton_yarn: P('fibre', 'textile', 'processed'),
@@ -100,18 +131,9 @@ export const PROPERTIES: Record<string, Properties> = {
   sewing_thread: P('fibre', 'textile', 'processed'),
   cotton_t_shirt: P('fibre', 'product', 'finished'),
 
-  // Everyday — aluminium
-  sodium_hydroxide: P('liquid', 'chemical', 'processed'),
-  alumina: P('granular', 'chemical', 'processed'),
-  petroleum_coke: P('solid', 'fuel', 'processed'),
-  molten_aluminum: P('liquid', 'metal', 'processed'),
-  aluminum_sheet: P('solid', 'metal', 'processed'),
-  aluminum_can: P('solid', 'product', 'finished'),
-
-  // Everyday — glass
-  sodium_silicate: P('solid', 'chemical', 'processed'),
-  molten_glass: P('liquid', 'mineral', 'processed'),
-  glass_bottle: P('solid', 'product', 'finished'),
+  // Everyday - the two side products
+  candle: P('solid', 'product', 'finished'),
+  lighter: P('solid', 'product', 'finished'),
 }
 
 /** True when every element in the shipping graph carries tags. */

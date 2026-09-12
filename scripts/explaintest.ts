@@ -63,9 +63,9 @@ console.log('\n=== the rules that matter actually fire ===')
   const cases: Array<[string, string, string]> = [
     ['high_carbon_steel', 'cotton_gin', 'tool'],
     ['candle', 'lighter', 'finished'],
-    ['flint', 'limestone', 'rocks'],
+    ['stone', 'limestone', 'rocks'],
     ['natural_gas', 'butane', 'gases'],
-    ['fire', 'spark', 'heat'],
+    ['fire', 'ember', 'heat'],
   ]
   for (const [a, b, expect] of cases) {
     const { message } = explainFailure(a, b)

@@ -44,7 +44,6 @@ E|iron_ore+fire|dye
 E|cotton_jersey+dye|dyed_cotton_fabric
 E|cotton_yarn+paraffin_wax|sewing_thread
 E|dyed_cotton_fabric+sewing_thread|cotton_t_shirt
-E|cotton_t_shirt+sharp_stone|textile_waste
 E|paraffin_wax+cordage|candle
 E|natural_gas+fire|butane
 E|butane+high_carbon_steel|lighter

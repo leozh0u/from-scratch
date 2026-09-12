@@ -637,9 +637,9 @@ so it is listed first.
 
 | # | Asked | Status |
 | --- | --- | --- |
-| 1 | *"we want the scope to be huge... we want things that cant go together also explained why"* — Little Alchemy scale | **open — in progress.** Planned in full (`GAMEPLAN.md`, `plan/graph.txt`, checked by `npm test`). `gameData.ts` is still the old 43/26 graph. This is the oldest open item and the biggest. |
+| 1 | *"we want the scope to be huge"* — Little Alchemy scale | **done.** Rebuilt: 57 elements, 51 recipes, three starters. Played through end to end in the browser, both realms. |
 | 2 | `UNLOCK_EVERYTHING` back to `false` | **open — blocks submission.** `src/App.tsx:30`. Must flip before 09:00. |
-| 3 | *"the details are the most important"* — the instant failure copy | **open.** Flint + beeswax says only "nothing obvious happens"; the rule table has no clause for an inert mineral meeting a wax. Thin for a game whose pitch is explaining failure. |
+| 3 | *"the details are the most important"* — the instant failure copy | **open.** The rule table has nine clauses and a fallback; pairs it has no clause for still get "nothing obvious happens". Thin for a game whose pitch is explaining failure, and the pair count just went from 903 to 1,596. |
 | 4 | Backdrop scale — *"more zoomed out"* | **open, awaiting Leo.** The pixelated-SVG bug is fixed; whether it is still too zoomed is his call, and the fix trades filling the window against showing the whole square. |
 
 ## Blocked on Leo
@@ -675,3 +675,31 @@ so it is listed first.
 | Procedural city with walkers, cars, pigeons | Leo rejected it; composed art beat generated art for the third time. `src/art/city.ts` deleted. |
 | Chains around locked items | *"acutalltg ignore the chains, that padlock was good enough"* |
 | *"maybe even looking like an intendo"* | Read as the centred-panel framing, which is in. Reopen if he meant a console bezel. |
+
+
+## The rebuild, done
+
+`gameData.ts` is now the planned graph: **three starters** (Stone, Wood, Plant
+Fibre), 57 elements, 51 recipes. Played through in the browser, both realms.
+
+Survival runs 3 starters to 3 targets in fifteen combinations, and all six
+opening pairs work, so a new player's first guess lands whatever they try.
+Everyday needs Survival's fire and charcoal for real: the aluminium can's
+receipt lists twenty-two ancestors and they run back through the ember and the
+hand drill to stone, wood and plant fibre. 178 g CO2, sourced.
+
+Two things the tests caught that review would not have:
+
+**The solver rejected a cycle.** Recycling your own finished t-shirt back into
+the cotton chain closes a loop, and the footprint accumulator walks ancestors,
+so a cycle either recurses forever or silently double-counts the field it was
+meant to skip. Textile waste went back to being a starter, which is also how
+the industry works: a mill buys old clothes the way it buys ore.
+
+**The art test caught all 24 missing sprites.** Fifteen were drawn; nine were
+repointed from sprites whose elements had been retired, as the old Flint is
+exactly a knapped sharp stone and the old Wick is a braided cord.
+
+Old saves are now pruned on load. A save from the previous build names a dozen
+ids this build does not have, and anyone who opened the link earlier still has
+them.

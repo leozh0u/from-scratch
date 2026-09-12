@@ -329,7 +329,7 @@ console.log('\n=== the solver survives a graph that is wrong ===')
     recipes: [
       ...GAME_DATA.recipes,
       {
-        inputs: ['does_not_exist', 'tinder'],
+        inputs: ['does_not_exist', 'wood'],
         output: 'fire',
         process: 'nonsense',
         cost: { waterL: 0, co2kg: 0 },
