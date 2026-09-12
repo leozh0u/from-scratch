@@ -88,7 +88,20 @@ export function wouldCycle(
 }
 
 /** Everything checkable without the network. */
-export function structuralProblems(p: Proposal, introduced: Set<string>): string[] {
+export function structuralProblems(
+  p: Proposal,
+  introduced: Set<string>,
+  /**
+   * Pairs already claimed by EARLIER PROPOSALS IN THIS BATCH.
+   *
+   * The gate checked every proposal against the shipping graph and not against
+   * its siblings, so two entries in one file could claim the same pair and both
+   * pass. That happened: a tap and a valve both from brass and a washer, caught
+   * afterwards by `npm test` rather than here, which is a round trip the gate
+   * exists to save.
+   */
+  claimed: Set<string> = new Set(),
+): string[] {
   const problems: string[] = []
 
   if (!/^[a-z][a-z0-9_]*$/.test(p.output_id)) problems.push(`id "${p.output_id}" is not snake_case`)
@@ -106,6 +119,9 @@ export function structuralProblems(p: Proposal, introduced: Set<string>): string
 
   if (p.inputs?.length === 2) {
     const key = pairKey(p.inputs[0], p.inputs[1])
+    if (claimed.has(key)) {
+      problems.push(`pair ${p.inputs.join(' + ')} is already claimed earlier in this batch`)
+    }
     if (usedPairs.has(key)) {
       const taken = GAME_DATA.recipes.find((r) => pairKey(r.inputs[0], r.inputs[1]) === key)
       problems.push(`pair ${p.inputs.join(' + ')} already makes ${taken?.output}`)
@@ -198,10 +214,11 @@ async function main() {
      * after it.
      */
     const introduced = new Set<string>()
+    const claimed = new Set<string>()
     const chainEdges: { output: string; inputs: string[] }[] = []
 
     for (const p of proposals) {
-      const problems = structuralProblems(p, introduced)
+      const problems = structuralProblems(p, introduced, claimed)
 
       if (problems.length === 0 && !noFetch) {
         for (const source of p.suggested_sources) {
@@ -212,6 +229,7 @@ async function main() {
 
       if (problems.length === 0) {
         introduced.add(p.output_id)
+        if (p.inputs?.length === 2) claimed.add(pairKey(p.inputs[0], p.inputs[1]))
         chainEdges.push({ output: p.output_id, inputs: p.inputs })
         accepted.push(p)
         console.log(`  keep    ${p.inputs.join(' + ')} -> ${p.output_name}  [${p.process}]`)

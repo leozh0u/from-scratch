@@ -2,7 +2,7 @@
 
 **Generated from `src/data/gameData.ts` by `npm run walkthrough`. Do not edit by hand.**
 
-302 elements, 305 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
+362 elements, 365 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
 
 ## Survival
 
@@ -334,6 +334,66 @@ The main game. Everything a person can point at, and what it actually cost to ma
 | 285 | Slide | + Antiseptic | Vaccine | attenuating | — |
 | 286 | Yeast | + Slide | Penicillin | culturing | — |
 | 287 | Glass Bottle | + Steel Wire | Syringe | grinding | — |
+| 288 | Slag | + Coke | Zinc | retorting | — |
+| 289 | Zinc | + High-Carbon Steel | Galvanised Steel | dipping | — |
+| 290 | Galvanised Steel | + Chain | Bucket | seaming | — |
+| 291 | Slag | + Charcoal | Tin | smelting | — |
+| 292 | Tin | + Aluminium Sheet | Tin Can | seaming | — |
+| 293 | Tin | + Lead | Pewter | alloying | — |
+| 294 | Stone | + Filtered Water | Gold | panning | — |
+| 295 | Gold | + Anvil | Coin | striking | — |
+| 296 | Gold | + Hammer | Gold Leaf | beating | — |
+| 297 | Stone | + Sulfuric Acid | Cinnabar | prospecting | — |
+| 298 | Cinnabar | + Fire | Mercury | roasting | — |
+| 299 | Mercury | + Glass Bottle | Vacuum | evacuating | — |
+| 300 | Cast Iron | + Lathe | Piston | boring | — |
+| 301 | Vacuum | + Piston | Vacuum Pump | pumping | — |
+| 302 | Piston | + Steel Spring | Pressure Gauge | calibrating | — |
+| 303 | Electric Motor | + Ammonia | Fridge | compressing | — |
+| 304 | Fridge | + Filtered Water | Ice | freezing | — |
+| 305 | Fridge | + Propeller | Air Conditioner | ducting | — |
+| 306 | Electric Motor | + Washing Soda | Washing Machine | agitating | — |
+| 307 | Electric Motor | + Sewing Thread | Sewing Machine | lockstitching | — |
+| 308 | Gear | + Cotton Yarn | Loom | weaving | — |
+| 309 | Cotton Yarn | + Synthetic Dye | Denim | weaving | — |
+| 310 | Denim | + Zip | Jeans | riveting | — |
+| 311 | Nylon | + Wire Mesh | Velcro | hooking | — |
+| 312 | Leather | + Filtered Water | Glue | boiling | — |
+| 313 | Cardboard | + Glue | Box | folding | — |
+| 314 | Plywood | + Nail | Pallet | nailing | — |
+| 315 | Galvanised Steel | + Welded Steel | Container | corrugating | — |
+| 316 | Electric Motor | + Chain | Crane | jibbing | — |
+| 317 | Crane | + Container | Port | berthing | — |
+| 318 | Coal | + Pressure Gauge | Graphite | compressing | — |
+| 319 | Stone | + Chisel | Mortar | hollowing | — |
+| 320 | Wire Mesh | + Brass | Sieve | stretching | — |
+| 321 | Brass | + Bearing | Balance | calibrating | — |
+| 322 | Clay | + Graphite | Crucible | firing | — |
+| 323 | Brick | + Bellows | Furnace | building | — |
+| 324 | Furnace | + Coke | Blast Furnace | charging | — |
+| 325 | Liquid Oxygen | + Pressure Gauge | Oxygen | boiling | — |
+| 326 | Liquid Oxygen | + Sieve | Nitrogen | fractionating | — |
+| 327 | Nitrogen | + Prism | Argon | separating | — |
+| 328 | Blast Furnace | + Oxygen | Steel Ingot | blowing | — |
+| 329 | Argon | + Acetylene | Welding Torch | regulating | — |
+| 330 | Slag | + Aluminium Sheet | Chromium | reducing | — |
+| 331 | Steel Ingot | + Chromium | Stainless Steel | alloying | — |
+| 332 | Stainless Steel | + Mould | Cutlery | pressing | — |
+| 333 | Stainless Steel | + Pipe | Sink | pressing | — |
+| 334 | Synthetic Rubber | + Sieve | Washer | punching | — |
+| 335 | Brass | + Washer | Tap | threading | — |
+| 336 | Washer | + Pipe | Valve | seating | — |
+| 337 | Valve | + Piston | Pump | reciprocating | — |
+| 338 | Pump | + Cast Iron | Hydraulic Press | pressurising | — |
+| 339 | Hydraulic Press | + Galvanised Steel | Stamped Part | stamping | — |
+| 340 | Stamped Part | + Welded Steel | Car Body | spot welding | — |
+| 341 | Car Body | + Chain | Assembly Line | conveying | — |
+| 342 | Concrete | + Pitch | Road | paving | — |
+| 343 | Steel Frame | + Reinforced Concrete | Bridge | spanning | — |
+| 344 | Hydraulic Press | + Brick Wall | Tunnel | boring | — |
+| 345 | Lamp | + Transistor | Traffic Light | sequencing | — |
+| 346 | Lamp | + Steel Frame | Street Lamp | erecting | — |
+| 347 | Road | + Street Lamp | City | planning | — |
 
 All 3 targets reachable. ✅
 
@@ -358,4 +418,4 @@ Elements with more than one real way to make them. The receipt tells you which r
 
 ## How much of the board is a dead end
 
-302 elements make 45,451 possible pairs, and 305 of them are recipes. **99.3% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
+362 elements make 65,341 possible pairs, and 365 of them are recipes. **99.4% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.

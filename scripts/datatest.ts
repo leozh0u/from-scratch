@@ -580,6 +580,16 @@ console.log('\n=== the import gate rejects what it should ===')
   ok('a pair that is already spoken for is caught',
      structuralProblems({ ...good, inputs: ['stone', 'wood'] }, introduced)
        .some((p) => p.includes('already makes')))
+  /*
+   * And a pair claimed by an EARLIER PROPOSAL in the same batch. The gate
+   * checked each proposal against the shipping graph and not against its
+   * siblings, so a tap and a valve both made from brass and a washer both
+   * passed and the collision surfaced in npm test instead — a round trip the
+   * gate exists to save.
+   */
+  ok('and one claimed earlier in the same batch',
+     structuralProblems({ ...good, inputs: ['copper', 'chalk'] }, introduced,
+       new Set(['chalk+copper'])).some((p) => p.includes('earlier in this batch')))
   ok('and a placeholder verb is caught',
      structuralProblems({ ...good, process: 'making' }, introduced)
        .some((p) => p.includes('placeholder verb')),
