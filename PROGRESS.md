@@ -55,6 +55,12 @@ Not recommended: the target list (it already has its own bar directly above,
 and duplicating it is worse than leaving the space empty) or the last few
 discoveries (the inventory below is already that, in full).
 
+| 12 | *"that screenshot is the gemini api. thats an issue. i dont want that happening. it needs to be a thing"* | **open — diagnosed, and it is the prompt asking the wrong question.** Swept all 152 Survival pairs that have no recipe: **88 of them came back "that's actually real"**. Reading them, almost none are missing recipes — "torch + ember: the flame transfers", "fire + fire: merging flames makes a larger fire". The model is answering *would something happen*, which is nearly always yes, when the game's question is *does this produce a distinct new thing*. | Rewrite the adjudicator prompt around "a distinct new material or object", re-sweep, and add the handful that really are recipes. |
+| 13 | *"the arrow is still so tiny"* (← realms) | **open.** | |
+| 14 | *"the point of everything is not to get the cotton t-shirt, but to unlock every possible thing"*, targets section replaced with things-missing, hint mode right of Combine, 3 hints per realm then 1 per 10 found | **open — the biggest remaining design change.** | |
+| 15 | *"what should be on the left of the combine then, in that empty space"* | **open — needs a decision alongside 14.** | |
+| 16 | *"where did the upclose bird go. i want more small moving stuff"* | **open.** `birdAt` exists with a 34-80s period and an 8-13s crossing, so the near bird is on screen roughly a sixth of the time. Not yet verified that CityScene still draws it. | |
+
 ## Blocked on Leo
 
 | Asked | State |
