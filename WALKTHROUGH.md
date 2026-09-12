@@ -2,7 +2,7 @@
 
 **Generated from `src/data/gameData.ts` by `npm run walkthrough`. Do not edit by hand.**
 
-572 elements, 575 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
+602 elements, 605 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
 
 ## Survival
 
@@ -604,6 +604,36 @@ The main game. Everything a person can point at, and what it actually cost to ma
 | 555 | Pipeline | + Distillate | Refinery | cracking | — |
 | 556 | Refinery | + Lead | Petrol | blending | — |
 | 557 | Petrol | + Pump | Petrol Station | forecourting | — |
+| 558 | Seaweed | + Hammer | Papyrus | laminating | — |
+| 559 | Papyrus | + Rope | Scroll | rolling | — |
+| 560 | Scroll | + Shop | Library | cataloguing | — |
+| 561 | Lead | + Mould | Movable Type | casting | — |
+| 562 | Movable Type | + Book | Printed Book | setting | — |
+| 563 | Printed Book | + Ink | Dictionary | compiling | — |
+| 564 | Dictionary | + Library | Compendium | editing | — |
+| 565 | Printing Plate | + Steam Engine | Rotary Press | rotating | — |
+| 566 | Morse Code | + Postal Service | Telegram | delivering | — |
+| 567 | Insulated Wire | + Cargo Ship | Undersea Cable | laying | — |
+| 568 | Telephone | + Copper Wire | Switchboard | patching | — |
+| 569 | Switchboard | + Bakelite | Dial Phone | pulsing | — |
+| 570 | Tape Recorder | + Dial Phone | Answering Machine | triggering | — |
+| 571 | Modem | + Scanner | Fax | scanning | — |
+| 572 | Printing Plate | + Laser | Photocopier | fusing | — |
+| 573 | Photocopier | + Computer | Printer | rasterising | — |
+| 574 | Magnetic Tape | + Polyprop | Floppy Disk | slitting | — |
+| 575 | Polyprop | + Laser | Compact Disc | pressing | — |
+| 576 | Memory Chip | + Transistor | Flash Memory | trapping | — |
+| 577 | Flash Memory | + Polyprop | USB Drive | moulding | — |
+| 578 | Bearing | + Transistor | Mouse | tracking | — |
+| 579 | Computer | + Punched Card | Operating System | scheduling | — |
+| 580 | Operating System | + Dictionary | Compiler | compiling | — |
+| 581 | Compiler | + Hard Drive | Database | indexing | — |
+| 582 | Database | + Internet | Search Engine | crawling | — |
+| 583 | Compiler | + Memory Chip | Encryption | keying | — |
+| 584 | RFID Tag | + Encryption | Bank Card | embossing | — |
+| 585 | Bank Card | + Cash Register | Cashpoint | dispensing | — |
+| 586 | Plastic Film | + Glue | Label | die cutting | — |
+| 587 | Label | + Box | Packaging | packing | — |
 
 All 3 targets reachable. ✅
 
@@ -628,4 +658,4 @@ Elements with more than one real way to make them. The receipt tells you which r
 
 ## How much of the board is a dead end
 
-572 elements make 163,306 possible pairs, and 575 of them are recipes. **99.6% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
+602 elements make 180,901 possible pairs, and 605 of them are recipes. **99.7% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
