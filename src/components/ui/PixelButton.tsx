@@ -1,6 +1,7 @@
 import { useRef, useState, type ButtonHTMLAttributes, type ReactNode } from 'react'
 import { PixelArt } from '../PixelArt'
 import { PADLOCK } from '../../art/sprites'
+import { playPress, playRelease, playHover, playLocked } from '../../audio/sfx'
 
 /**
  * The button, and the thing every other control in the game inherits from.
@@ -261,15 +262,23 @@ export function PixelButton({
   const innerShape = steppedNotch(unit, 2)
 
   function press(from: 'pointer' | 'key') {
-    if (inert) return
+    // A locked control still answers — with a dull thud rather than silence.
+    // Silence is indistinguishable from a broken button, and the one thing a
+    // locked door has to do is feel locked rather than feel dead.
+    if (inert) {
+      if (locked) playLocked()
+      return
+    }
     source.current = from
     setPressed(true)
+    playPress()
   }
 
   function release(from: 'pointer' | 'key') {
     if (source.current !== from) return
     source.current = null
     setPressed(false)
+    playRelease()
   }
 
   return (
@@ -285,7 +294,10 @@ export function PixelButton({
         release('pointer')
         onPointerUp?.(e)
       }}
-      onPointerEnter={() => setHovered(true)}
+      onPointerEnter={() => {
+        setHovered(true)
+        if (!inert) playHover()
+      }}
       onPointerLeave={(e) => {
         setHovered(false)
         release('pointer')
