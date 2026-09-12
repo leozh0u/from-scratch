@@ -2,7 +2,7 @@
 
 **Generated from `src/data/gameData.ts` by `npm run walkthrough`. Do not edit by hand.**
 
-452 elements, 455 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
+482 elements, 485 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
 
 ## Survival
 
@@ -484,6 +484,36 @@ The main game. Everything a person can point at, and what it actually cost to ma
 | 435 | Glass Bottle | + Balance | Rain Gauge | graduating | — |
 | 436 | Rain Gauge | + Weather Vane | Weather Station | logging | — |
 | 437 | Weather Station | + Computer | Forecast | modelling | — |
+| 438 | Beeswax | + Sugar | Honey | extracting | — |
+| 439 | Honey | + Yeast | Mead | fermenting | — |
+| 440 | Salt | + Pot | Salted Fish | curing | — |
+| 441 | Salted Fish | + Charcoal | Smoked Food | smoking | — |
+| 442 | Tin Can | + Steam Boiler | Canned Food | retorting | — |
+| 443 | Canned Food | + Thermometer | Pasteurised Milk | pasteurising | — |
+| 444 | Sugar | + Butter | Chocolate | conching | — |
+| 445 | Farmland | + Fire | Coffee | roasting | — |
+| 446 | Farmland | + Filtered Water | Tea | oxidising | — |
+| 447 | Glaze | + Kettle | Teapot | throwing | — |
+| 448 | Clay | + Chalk | Porcelain | vitrifying | — |
+| 449 | Porcelain | + Wood Ash | Bone China | calcining | — |
+| 450 | Glaze | + Copper | Enamel | firing | — |
+| 451 | Enamel | + Cast Iron | Bathtub | enamelling | — |
+| 452 | Tap | + Pipe | Shower | plumbing | — |
+| 453 | Cotton Jersey | + Loom | Towel | pile weaving | — |
+| 454 | Stainless Steel | + Hydraulic Press | Razor | honing | — |
+| 455 | Stainless Steel | + Washer | Scissors | pivoting | — |
+| 456 | Steel Wire | + File | Needle | pointing | — |
+| 457 | Porcelain | + Needle | Button | drilling | — |
+| 458 | Cotton Jersey | + Button | Shirt | tailoring | — |
+| 459 | Wool | + Sewing Machine | Suit | tailoring | — |
+| 460 | Felt | + Steam Boiler | Hat | blocking | — |
+| 461 | Leather | + Needle | Glove | stitching | — |
+| 462 | Woollen Yarn | + Loom | Sock | knitting | — |
+| 463 | Leather | + Rubber Pad | Boot | welting | — |
+| 464 | Clock | + Steel Spring | Watch | miniaturising | — |
+| 465 | Gold | + File | Ring | sizing | — |
+| 466 | Graphite | + Hydraulic Press | Diamond | compressing | — |
+| 467 | Diamond | + Steel Wire | Drill Bit | bonding | — |
 
 All 3 targets reachable. ✅
 
@@ -508,4 +538,4 @@ Elements with more than one real way to make them. The receipt tells you which r
 
 ## How much of the board is a dead end
 
-452 elements make 101,926 possible pairs, and 455 of them are recipes. **99.6% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
+482 elements make 115,921 possible pairs, and 485 of them are recipes. **99.6% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
