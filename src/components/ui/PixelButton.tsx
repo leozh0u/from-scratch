@@ -384,7 +384,19 @@ export function PixelButton({
             textShadow: `${Math.max(1, Math.round(unit / 2))}px ${Math.max(1, Math.round(unit / 2))}px 0 ${c.textShadow}`,
           }}
         >
-          <span style={{ position: 'relative', zIndex: 1, display: 'inline-flex', alignItems: 'center', gap: unit * 2 }}>
+          {/* A button label never wraps. "← realms" in the HUD broke after the
+            * arrow and doubled the button's height next to its neighbour, which
+            * is a layout fault rather than a long label. */}
+          <span
+            style={{
+              position: 'relative',
+              zIndex: 1,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: unit * 2,
+              whiteSpace: 'nowrap',
+            }}
+          >
             {icon}
             {children}
           </span>

@@ -11,8 +11,8 @@ S|bow+spindle|bow_drill
 S|hand_drill+fire_board|ember
 S|bow_drill+fire_board|ember
 S|bark+sharp_stone|tinder_bundle
-S|ember+tinder_bundle|flame
-S|flame+wood|fire
+S|ember+tinder_bundle|burning_tinder
+S|burning_tinder+wood|fire
 S|fire+wood|charcoal
 S|torch+fire|lit_torch
 E|water+fire|salt
@@ -31,9 +31,9 @@ E|molten_glass+high_carbon_steel|glass_bottle
 E|bauxite+sodium_hydroxide|alumina
 E|crude_oil+fire|distillate
 E|distillate+fire|paraffin_wax
-E|alumina+charcoal|molten_aluminium
-E|molten_aluminium+high_carbon_steel|aluminium_sheet
-E|aluminium_sheet+high_carbon_steel|aluminium_can
+E|alumina+charcoal|molten_aluminum
+E|molten_aluminum+high_carbon_steel|aluminum_sheet
+E|aluminum_sheet+high_carbon_steel|aluminum_can
 E|farmland+water|raw_cotton
 E|raw_cotton+cotton_gin|ginned_cotton
 E|textile_waste+cotton_gin|ginned_cotton

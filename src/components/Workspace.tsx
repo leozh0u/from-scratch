@@ -15,7 +15,7 @@ import { ProgressBar } from './ui/ProgressBar'
 import { HudBar, EmptySlot } from './ui/HudBar'
 import { ForestScene } from './ForestScene'
 import { CityScene } from './CityScene'
-import { playPress, playHover, playDiscovery, playNoMatch } from '../audio/sfx'
+import { playPress, playDiscovery, playNoMatch } from '../audio/sfx'
 
 type WorkspaceProps = {
   realm: RealmId
@@ -232,33 +232,26 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
        * realms" — a status bar is one line by definition, and a two-line one
        * reads as a layout fault rather than a long title.
        *
-       * `shrink-0` on the two buttons keeps them whole, `nowrap` forbids the
-       * wrap outright, and the flex-1 spacers either side of the title keep it
-       * optically centred whatever the two labels weigh. The realm name is a
-       * step smaller than it was, which is what actually buys the room.
+       * The flex-1 spacers either side of the title keep it optically centred
+       * whatever the two buttons weigh, and `nowrap` forbids the wrap outright.
+       *
+       * Both actions are real PixelButtons rather than bare text. They were
+       * 11px labels with no box around them, which read as tiny next to the
+       * slabs everything else in the game is built from, and gave a tap target
+       * the height of the type. A small unit keeps them inside the strip.
        */}
       <HudBar className="flex items-center gap-3">
-        <button
-          type="button"
-          onClick={() => { playPress(); onBack() }}
-          onPointerEnter={playHover}
-          className="shrink-0 cursor-pointer font-display text-[11px] whitespace-nowrap lowercase tracking-wide text-star-mid hover:text-white"
-        >
+        <PixelButton tone="default" unit={3} onClick={onBack}>
           ← realms
-        </button>
+        </PixelButton>
         <span className="flex-1" aria-hidden="true" />
         <h1 className="shrink-0 font-display text-[11px] whitespace-nowrap lowercase tracking-wide text-white">
           {REALM_LABEL[realm]}
         </h1>
         <span className="flex-1" aria-hidden="true" />
-        <button
-          type="button"
-          onClick={() => { playPress(); onOpenInventory() }}
-          onPointerEnter={playHover}
-          className="shrink-0 cursor-pointer font-display text-[11px] whitespace-nowrap lowercase tracking-wide text-star-mid hover:text-white"
-        >
+        <PixelButton tone="default" unit={3} onClick={onOpenInventory}>
           inventory
-        </button>
+        </PixelButton>
       </HudBar>
 
       {targets.length > 0 && (

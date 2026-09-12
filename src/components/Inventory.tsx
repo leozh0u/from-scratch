@@ -8,7 +8,7 @@ import { ElementTile } from './ui/ElementTile'
 import { PixelButton } from './ui/PixelButton'
 import { ConfirmDialog } from './ui/ConfirmDialog'
 import { HudBar } from './ui/HudBar'
-import { playPress, playHover } from '../audio/sfx'
+import { playPress } from '../audio/sfx'
 
 type InventoryProps = {
   data: RecipeData
@@ -74,17 +74,17 @@ export function Inventory({ data, game, onBack, onReset }: InventoryProps) {
     <main className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-6 px-5 py-8">
       {/* The same opaque HUD strip the workspace uses, so the two screens
         * read as the same machine. */}
-      <HudBar className="flex items-center justify-between">
-        <button
-          type="button"
-          onClick={() => { playPress(); onBack() }}
-          onPointerEnter={playHover}
-          className="cursor-pointer font-display text-[11px] lowercase tracking-wide text-muted hover:text-white"
-        >
+      <HudBar className="flex items-center gap-3">
+        <PixelButton tone="default" unit={3} onClick={onBack}>
           ← back
-        </button>
-        <h1 className="font-display text-[13px] lowercase tracking-wide text-white">inventory</h1>
-        <span className="w-12" aria-hidden="true" />
+        </PixelButton>
+        <span className="flex-1" aria-hidden="true" />
+        <h1 className="shrink-0 font-display text-[11px] whitespace-nowrap lowercase tracking-wide text-white">
+          inventory
+        </h1>
+        <span className="flex-1" aria-hidden="true" />
+        {/* Balances the back button so the heading sits optically centred. */}
+        <span className="shrink-0" style={{ width: 92 }} aria-hidden="true" />
       </HudBar>
 
       {crafted.length === 0 ? (
