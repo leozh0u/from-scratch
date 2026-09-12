@@ -64,8 +64,18 @@ export function useGameState(data: RecipeData) {
     [discovered],
   )
 
-  const inventoryFor = useCallback(
-    (realm: RealmId) => discovered[realm],
+  /*
+   * Flattened across every realm, not scoped to one. "Discovered" is a single
+   * global fact per element id — each id has exactly one home realm and one
+   * recipe set, so the survival/everyday split above is just storage
+   * bookkeeping (which array a new discovery lands in), not a real per-realm
+   * distinction. A player who found paraffin in Survival needs it selectable
+   * while working in Everyday — that's the cross-realm carryover the concept
+   * is built on ("one graph viewed through four windows"), so anything less
+   * than a full union silently breaks it.
+   */
+  const allDiscovered = useCallback(
+    () => [...discovered.survival, ...discovered.everyday],
     [discovered],
   )
 
@@ -105,5 +115,5 @@ export function useGameState(data: RecipeData) {
     setDiscovered(fresh)
   }, [data.starters])
 
-  return { discovered, inventoryFor, isDiscovered, combine, reset }
+  return { discovered, allDiscovered, isDiscovered, combine, reset }
 }

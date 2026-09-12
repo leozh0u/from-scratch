@@ -138,41 +138,41 @@ function detectCycles(data: RecipeData): string[][] {
 }
 
 /**
- * Fixpoint reachability per realm: an element is reachable once some recipe
- * producing it has both inputs already reachable. Ordinary graph BFS doesn't
- * apply because a recipe needs BOTH inputs, not just one incoming edge, so
- * this iterates to a fixpoint instead.
+ * Fixpoint reachability across the WHOLE graph, not per realm: an element is
+ * reachable once some recipe producing it has both inputs already reachable.
+ * Ordinary graph BFS doesn't apply because a recipe needs BOTH inputs, not
+ * just one incoming edge, so this iterates to a fixpoint instead.
+ *
+ * This has to be global rather than realm-scoped because cross-realm
+ * carryover is a real mechanic (useGameState.allDiscovered), not a
+ * theoretical one: Everyday's `sewing_thread` genuinely depends on
+ * Survival's `paraffin`. A per-realm closure seeded only from that realm's
+ * own starters would report every such dependency as unreachable, which is
+ * exactly the bug this used to have.
  */
-function computeReachability(data: RecipeData): Map<RealmId, Set<string>> {
+function computeReachability(data: RecipeData): Set<string> {
   const recipesByOutput = buildRecipesByOutput(data)
-  const result = new Map<RealmId, Set<string>>()
+  const reachable = new Set(allStarterIds(data))
 
-  for (const [realm, starters] of Object.entries(data.starters) as [RealmId, string[]][]) {
-    const reachable = new Set(starters)
-    const realmElements = data.elements.filter((el) => el.realm === realm)
-
-    let changed = true
-    let guard = 0
-    while (changed && guard <= realmElements.length + 1) {
-      changed = false
-      guard++
-      for (const el of realmElements) {
-        if (reachable.has(el.id)) continue
-        const options = recipesByOutput.get(el.id) ?? []
-        const craftable = options.some(
-          (r) => reachable.has(r.inputs[0]) && reachable.has(r.inputs[1]),
-        )
-        if (craftable) {
-          reachable.add(el.id)
-          changed = true
-        }
+  let changed = true
+  let guard = 0
+  while (changed && guard <= data.elements.length + 1) {
+    changed = false
+    guard++
+    for (const el of data.elements) {
+      if (reachable.has(el.id)) continue
+      const options = recipesByOutput.get(el.id) ?? []
+      const craftable = options.some(
+        (r) => reachable.has(r.inputs[0]) && reachable.has(r.inputs[1]),
+      )
+      if (craftable) {
+        reachable.add(el.id)
+        changed = true
       }
     }
-
-    result.set(realm, reachable)
   }
 
-  return result
+  return reachable
 }
 
 /**
@@ -258,7 +258,7 @@ export function runSolver(data: RecipeData): SolverReport {
 
   const recipesByOutput = buildRecipesByOutput(data)
   const starterSet = allStarterIds(data)
-  const reachabilityByRealm = computeReachability(data)
+  const reachable = computeReachability(data)
   const depths = computeDepths(data)
 
   for (const cycle of detectCycles(data)) {
@@ -269,8 +269,7 @@ export function runSolver(data: RecipeData): SolverReport {
   const targetIds = new Set(Object.values(data.targets).flat())
 
   const elements: ElementReport[] = data.elements.map((el) => {
-    const reachable =
-      starterSet.has(el.id) || (reachabilityByRealm.get(el.realm)?.has(el.id) ?? false)
+    const isReachable = reachable.has(el.id)
     const hasRecipe = starterSet.has(el.id) || (recipesByOutput.get(el.id)?.length ?? 0) > 0
 
     if (!hasRecipe) {
@@ -278,15 +277,15 @@ export function runSolver(data: RecipeData): SolverReport {
         level: 'error',
         message: `"${el.id}" has no recipe and is not a starter — it can never be produced`,
       })
-    } else if (!reachable) {
+    } else if (!isReachable) {
       issues.push({
         level: 'error',
-        message: `"${el.id}" is unreachable from ${el.realm}'s starters (inputs never all become available)`,
+        message: `"${el.id}" is unreachable — its inputs never all become available across any realm`,
       })
     }
 
     // A target is *meant* to be terminal — that's not the dead end this warns about.
-    if (reachable && !starterSet.has(el.id) && !consumedIds.has(el.id) && !targetIds.has(el.id)) {
+    if (isReachable && !starterSet.has(el.id) && !consumedIds.has(el.id) && !targetIds.has(el.id)) {
       issues.push({
         level: 'warning',
         message: `"${el.id}" is a dead end — nothing in the game consumes it`,
@@ -299,9 +298,9 @@ export function runSolver(data: RecipeData): SolverReport {
       id: el.id,
       name: el.name,
       realm: el.realm,
-      depth: reachable && depth !== undefined ? depth : null,
-      reachable,
-      footprint: reachable ? computeFootprint(data, el.id) : null,
+      depth: isReachable && depth !== undefined ? depth : null,
+      reachable: isReachable,
+      footprint: isReachable ? computeFootprint(data, el.id) : null,
     }
   })
 

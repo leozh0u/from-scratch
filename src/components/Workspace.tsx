@@ -37,7 +37,9 @@ export function Workspace({ realm, data, game, onBack }: WorkspaceProps) {
   const [feedback, setFeedback] = useState<Feedback | null>(null)
   const [discovery, setDiscovery] = useState<Discovery | null>(null)
 
-  const inventory = game.inventoryFor(realm)
+  // Global, not realm-scoped — an element discovered in one realm has to stay
+  // selectable in another (cross-realm carryover; see useGameState).
+  const inventory = game.allDiscovered()
   const elementById = (id: string) => data.elements.find((el) => el.id === id)!
 
   const discoveredIds = new Set(inventory)
@@ -53,7 +55,10 @@ export function Workspace({ realm, data, game, onBack }: WorkspaceProps) {
    * disappears for good after the first real discovery. No tutorial screen,
    * no modal — the empty slots plus this sentence are the whole explanation.
    */
-  const isFirstRun = inventory.length === data.starters[realm].length
+  // "First run" is global too — once a player has combined anything, in
+  // either realm, they've learned the verb and don't need reminding again.
+  const totalStarters = data.starters.survival.length + data.starters.everyday.length
+  const isFirstRun = inventory.length === totalStarters
   const showHint = isFirstRun && !feedback && slots[0] === null && slots[1] === null
 
   /*

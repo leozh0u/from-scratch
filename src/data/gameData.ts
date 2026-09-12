@@ -21,7 +21,22 @@ import type { RecipeData } from './types'
  * "time and effort" numbers dressed up in water/CO2 fields would be worse
  * than leaving them at zero.
  *
- * Everyday is empty until step 15.
+ * Everyday (step 15, in progress): starting with the cotton t-shirt spine.
+ * The headline number — water used to grow and dye the cotton in one
+ * t-shirt — comes from a real primary source: Chapagain, Hoekstra et al.
+ * 2006, "The Water Footprint of Cotton Consumption" (Water Footprint
+ * Network), Table 9. For a standard 250g t-shirt it gives blue water
+ * (irrigation) 1,230L + green water (rainfall) 1,110L + dilution water
+ * (diluting dyeing effluent) 380L = 2,720L total — which is where the
+ * commonly-quoted "~2,700 liters" figure actually comes from.
+ *
+ * The two Everyday recipes below that carry real cost split that total
+ * exactly the way the source does: 2,340L (irrigation+rainfall) at growing,
+ * 380L (dilution) at dyeing. Every other step is mechanically real but water-
+ * light, so it stays at zero rather than getting an invented number.
+ *
+ * `sewing_thread` deliberately reuses `paraffin` from Survival — thread is
+ * waxed before sewing, and it's a real example of "one graph, many windows."
  */
 
 const ZERO_COST = { waterL: 0, co2kg: 0 }
@@ -103,6 +118,85 @@ export const GAME_DATA: RecipeData = {
       blurb: "A classic flint-wheel lighter is the fire striker's trick, miniaturized: spinning the wheel throws a spark straight into a jet of butane.",
       sources: [{ label: 'Lighter — Wikipedia', url: 'https://en.wikipedia.org/wiki/Lighter' }],
     },
+
+    // Everyday — starters
+    { id: 'farmland', name: 'Farmland', icon: 'farmland', realm: 'everyday', blurb: 'Land given over to a crop — for cotton, that mostly means land committed to irrigation.', sources: [] },
+    { id: 'water', name: 'Water', icon: 'water', realm: 'everyday', blurb: 'Cotton is one of the thirstiest crops grown at scale — about 8,000–10,000 liters per kilogram of fiber, globally averaged.', sources: [{ label: 'Cotton — Wikipedia', url: 'https://en.wikipedia.org/wiki/Cotton' }] },
+    { id: 'cotton_gin', name: 'Cotton Gin', icon: 'cotton_gin', realm: 'everyday', blurb: 'A machine that separates cotton fiber from its seeds — its invention in 1793 multiplied how fast raw cotton could be processed.', sources: [{ label: 'Cotton gin — Wikipedia', url: 'https://en.wikipedia.org/wiki/Cotton_gin' }] },
+    { id: 'dye', name: 'Dye', icon: 'dye', realm: 'everyday', blurb: 'Colorant applied to fabric — one of the most water-intensive steps between raw fiber and a finished garment.', sources: [{ label: 'Dyeing — Wikipedia', url: 'https://en.wikipedia.org/wiki/Dyeing' }] },
+
+    // Everyday — crafted
+    {
+      id: 'raw_cotton',
+      name: 'Raw Cotton',
+      icon: 'raw_cotton',
+      realm: 'everyday',
+      blurb: 'Growing enough cotton for one t-shirt takes about 2,340 liters of water — irrigation and rainfall combined — before a single thread is spun.',
+      sources: [
+        { label: 'The Water Footprint of Cotton Consumption (Chapagain et al., 2006) — Water Footprint Network', url: 'https://www.waterfootprint.org/resources/multimediahub/Chapagain_et_al_2006_cotton_2.pdf' },
+        { label: 'Cotton — Wikipedia', url: 'https://en.wikipedia.org/wiki/Cotton' },
+      ],
+    },
+    {
+      id: 'ginned_cotton',
+      name: 'Ginned Cotton',
+      icon: 'ginned_cotton',
+      realm: 'everyday',
+      blurb: 'Ginning pulls the seeds out, leaving pure cotton fiber ready to spin.',
+      sources: [{ label: 'Cotton gin — Wikipedia', url: 'https://en.wikipedia.org/wiki/Cotton_gin' }],
+    },
+    {
+      id: 'cotton_yarn',
+      name: 'Cotton Yarn',
+      icon: 'cotton_yarn',
+      realm: 'everyday',
+      blurb: 'Raw fiber is drawn out and twisted together — spinning is what turns a puff of cotton into a continuous, usable thread.',
+      sources: [{ label: 'Spinning (textiles) — Wikipedia', url: 'https://en.wikipedia.org/wiki/Spinning_(textiles)' }],
+    },
+    {
+      id: 'cotton_jersey',
+      name: 'Cotton Jersey',
+      icon: 'cotton_jersey',
+      realm: 'everyday',
+      blurb: 'Interlooped on a circular knitting machine, cotton yarn becomes jersey — the standard knit fabric almost every t-shirt is cut from.',
+      sources: [
+        { label: 'Jersey (fabric) — Wikipedia', url: 'https://en.wikipedia.org/wiki/Jersey_(fabric)' },
+        { label: 'Circular knitting — Wikipedia', url: 'https://en.wikipedia.org/wiki/Circular_knitting' },
+      ],
+    },
+    {
+      id: 'dyed_cotton_fabric',
+      name: 'Dyed Cotton Fabric',
+      icon: 'dyed_cotton_fabric',
+      realm: 'everyday',
+      blurb: "Turning plain fabric into something you'd actually wear costs another 380 liters of water — most of it used to dilute and treat the leftover dye.",
+      sources: [
+        { label: 'The Water Footprint of Cotton Consumption (Chapagain et al., 2006) — Water Footprint Network', url: 'https://www.waterfootprint.org/resources/multimediahub/Chapagain_et_al_2006_cotton_2.pdf' },
+        { label: 'Dyeing — Wikipedia', url: 'https://en.wikipedia.org/wiki/Dyeing' },
+      ],
+    },
+    {
+      id: 'sewing_thread',
+      name: 'Sewing Thread',
+      icon: 'sewing_thread',
+      realm: 'everyday',
+      blurb: "Cotton yarn gets a coat of paraffin wax before it's wound onto a spool — the wax keeps it from fraying or snapping under a sewing machine's tension.",
+      sources: [
+        { label: 'Thread (yarn) — Wikipedia', url: 'https://en.wikipedia.org/wiki/Thread_(yarn)' },
+        { label: 'Paraffin wax — Wikipedia', url: 'https://en.wikipedia.org/wiki/Paraffin_wax' },
+      ],
+    },
+    {
+      id: 'cotton_t_shirt',
+      name: 'Cotton T-Shirt',
+      icon: 'cotton_t_shirt',
+      realm: 'everyday',
+      blurb: 'Fabric is cut using a pattern and stitched together — by the time a plain cotton t-shirt is finished, growing and dyeing its cotton alone used about 2,700 liters of water.',
+      sources: [
+        { label: 'Pattern (sewing) — Wikipedia', url: 'https://en.wikipedia.org/wiki/Pattern_(sewing)' },
+        { label: 'The Water Footprint of Cotton Consumption (Chapagain et al., 2006) — Water Footprint Network', url: 'https://www.waterfootprint.org/resources/multimediahub/Chapagain_et_al_2006_cotton_2.pdf' },
+      ],
+    },
   ],
   recipes: [
     {
@@ -173,6 +267,78 @@ export const GAME_DATA: RecipeData = {
       cost: ZERO_COST,
       sources: [{ label: 'Lighter — Wikipedia', url: 'https://en.wikipedia.org/wiki/Lighter' }],
     },
+
+    // Everyday
+    {
+      inputs: ['farmland', 'water'],
+      output: 'raw_cotton',
+      process: 'cultivating',
+      // The two real numbers in this chain: irrigation (blue) + rainfall
+      // (green) water, per Chapagain et al. 2006 Table 9 (250g t-shirt).
+      cost: { waterL: 1230 + 1110, co2kg: 0 },
+      sources: [
+        { label: 'The Water Footprint of Cotton Consumption (Chapagain et al., 2006) — Water Footprint Network', url: 'https://www.waterfootprint.org/resources/multimediahub/Chapagain_et_al_2006_cotton_2.pdf' },
+        { label: 'Cotton — Wikipedia', url: 'https://en.wikipedia.org/wiki/Cotton' },
+      ],
+    },
+    {
+      inputs: ['raw_cotton', 'cotton_gin'],
+      output: 'ginned_cotton',
+      process: 'ginning',
+      cost: ZERO_COST,
+      sources: [{ label: 'Cotton gin — Wikipedia', url: 'https://en.wikipedia.org/wiki/Cotton_gin' }],
+    },
+    {
+      inputs: ['ginned_cotton', 'ginned_cotton'],
+      output: 'cotton_yarn',
+      process: 'spinning',
+      cost: ZERO_COST,
+      sources: [{ label: 'Spinning (textiles) — Wikipedia', url: 'https://en.wikipedia.org/wiki/Spinning_(textiles)' }],
+    },
+    {
+      inputs: ['cotton_yarn', 'cotton_yarn'],
+      output: 'cotton_jersey',
+      process: 'knitting',
+      cost: ZERO_COST,
+      sources: [
+        { label: 'Jersey (fabric) — Wikipedia', url: 'https://en.wikipedia.org/wiki/Jersey_(fabric)' },
+        { label: 'Circular knitting — Wikipedia', url: 'https://en.wikipedia.org/wiki/Circular_knitting' },
+      ],
+    },
+    {
+      inputs: ['cotton_jersey', 'dye'],
+      output: 'dyed_cotton_fabric',
+      process: 'dyeing',
+      // The second real number: dilution water for treating dye effluent,
+      // same source, same table.
+      cost: { waterL: 380, co2kg: 0 },
+      sources: [
+        { label: 'The Water Footprint of Cotton Consumption (Chapagain et al., 2006) — Water Footprint Network', url: 'https://www.waterfootprint.org/resources/multimediahub/Chapagain_et_al_2006_cotton_2.pdf' },
+        { label: 'Dyeing — Wikipedia', url: 'https://en.wikipedia.org/wiki/Dyeing' },
+      ],
+    },
+    {
+      // Reuses Survival's paraffin — a real cross-realm dependency, not a
+      // coincidence: thread genuinely is waxed with paraffin before sewing.
+      inputs: ['cotton_yarn', 'paraffin'],
+      output: 'sewing_thread',
+      process: 'waxing',
+      cost: ZERO_COST,
+      sources: [
+        { label: 'Thread (yarn) — Wikipedia', url: 'https://en.wikipedia.org/wiki/Thread_(yarn)' },
+        { label: 'Paraffin wax — Wikipedia', url: 'https://en.wikipedia.org/wiki/Paraffin_wax' },
+      ],
+    },
+    {
+      inputs: ['dyed_cotton_fabric', 'sewing_thread'],
+      output: 'cotton_t_shirt',
+      process: 'sewing',
+      cost: ZERO_COST,
+      sources: [
+        { label: 'Pattern (sewing) — Wikipedia', url: 'https://en.wikipedia.org/wiki/Pattern_(sewing)' },
+        { label: 'The Water Footprint of Cotton Consumption (Chapagain et al., 2006) — Water Footprint Network', url: 'https://www.waterfootprint.org/resources/multimediahub/Chapagain_et_al_2006_cotton_2.pdf' },
+      ],
+    },
   ],
   starters: {
     survival: [
@@ -185,10 +351,10 @@ export const GAME_DATA: RecipeData = {
       'crude_oil',
       'natural_gas',
     ],
-    everyday: [],
+    everyday: ['farmland', 'water', 'cotton_gin', 'dye'],
   },
   targets: {
     survival: ['fire', 'candle', 'lighter'],
-    everyday: [],
+    everyday: ['cotton_t_shirt'],
   },
 }
