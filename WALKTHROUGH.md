@@ -2,7 +2,7 @@
 
 **Generated from `src/data/gameData.ts` by `npm run walkthrough`. Do not edit by hand.**
 
-542 elements, 545 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
+572 elements, 575 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
 
 ## Survival
 
@@ -574,6 +574,36 @@ The main game. Everything a person can point at, and what it actually cost to ma
 | 525 | Compost Heap | + Pipe | Biogas | digesting | — |
 | 526 | Tractor | + Stamped Part | Bulldozer | tracking | — |
 | 527 | Bulldozer | + Clay | Landfill | capping | — |
+| 528 | Furnace | + Limestone | Lime Kiln | calcining | — |
+| 529 | Furnace | + Plank | Charcoal Kiln | smouldering | — |
+| 530 | Furnace | + Anvil | Forge | striking | — |
+| 531 | Wrought Iron | + Forge | Tongs | drawing out | — |
+| 532 | Brass | + Hammer | Buckle | forging | — |
+| 533 | Leather | + Buckle | Harness | stitching | — |
+| 534 | Cart Wheel | + Harness | Cart | yoking | — |
+| 535 | Leather | + Plywood | Saddle | tree building | — |
+| 536 | Cast Iron | + Harness | Stirrup | casting | — |
+| 537 | Clay | + Spade | Canal | puddling | — |
+| 538 | Canal | + Plank | Canal Lock | mitring | — |
+| 539 | Boat | + Canal | Barge | towing | — |
+| 540 | Lens | + Lathe | Fresnel Lens | cutting rings | — |
+| 541 | Fresnel Lens | + Brick Wall | Lighthouse | flashing | — |
+| 542 | Compressed Air | + Trumpet | Foghorn | sounding | — |
+| 543 | Boat | + Cork | Lifeboat | buoying | — |
+| 544 | Cast Iron | + Chain | Anchor | forging | — |
+| 545 | Rope | + Needle | Net | netting | — |
+| 546 | Net | + Boat | Fishing Boat | rigging | — |
+| 547 | Quarry | + Concrete | Breakwater | armouring | — |
+| 548 | Breakwater | + Crane | Quay | piling | — |
+| 549 | Breakwater | + Quay | Harbour | dredging | — |
+| 550 | Quay | + Pump | Dry Dock | dewatering | — |
+| 551 | Dry Dock | + Welded Steel | Shipyard | blocking | — |
+| 552 | Shipyard | + Container | Cargo Ship | launching | — |
+| 553 | Cargo Ship | + Steel Frame | Icebreaker | reinforcing | — |
+| 554 | Pipe | + Welding Torch | Pipeline | laying | — |
+| 555 | Pipeline | + Distillate | Refinery | cracking | — |
+| 556 | Refinery | + Lead | Petrol | blending | — |
+| 557 | Petrol | + Pump | Petrol Station | forecourting | — |
 
 All 3 targets reachable. ✅
 
@@ -598,4 +628,4 @@ Elements with more than one real way to make them. The receipt tells you which r
 
 ## How much of the board is a dead end
 
-542 elements make 146,611 possible pairs, and 545 of them are recipes. **99.6% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
+572 elements make 163,306 possible pairs, and 575 of them are recipes. **99.6% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
