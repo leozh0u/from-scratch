@@ -16,6 +16,7 @@ import { HudBar, EmptySlot } from './ui/HudBar'
 import { ForestScene } from './ForestScene'
 import { CityScene } from './CityScene'
 import { playPress, playDiscovery, playNoMatch } from '../audio/sfx'
+import { useViewport } from '../hooks/useViewport'
 
 type WorkspaceProps = {
   realm: RealmId
@@ -56,6 +57,15 @@ const REALM_LABEL: Record<RealmId, string> = {
 
 export function Workspace({ realm, data, game, onBack, onOpenInventory }: WorkspaceProps) {
   const [slots, setSlots] = useState<Slots>([null, null])
+  const { width: viewportWidth } = useViewport()
+  /*
+   * The HUD's two buttons plus the realm name have to share one strip. At a
+   * 335px viewport the three of them wanted 383px and the title was clipped
+   * off the right-hand end, so the buttons step down a unit on a narrow
+   * screen rather than the bar silently eating its own contents.
+   */
+  const hudUnit = viewportWidth < 520 ? 2 : 3
+
   const [feedback, setFeedback] = useState<Feedback | null>(null)
   const [discovery, setDiscovery] = useState<Discovery | null>(null)
   const [receiptElement, setReceiptElement] = useState<ElementDef | null>(null)
@@ -256,12 +266,21 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
        * the height of the type. A small unit keeps them inside the strip.
        */}
       <HudBar className="flex items-center gap-3">
-        <PixelButton tone="default" unit={3} onClick={onBack}>
+        <PixelButton tone="default" unit={hudUnit} onClick={onBack}>
           ← realms
         </PixelButton>
         <span className="flex-1" aria-hidden="true" />
         <h1
-          className="shrink-0 whitespace-nowrap lowercase text-white"
+          /*
+           * The title yields, the buttons never do.
+           *
+           * All three were `shrink-0`, so when the row wanted more width than
+           * the bar had, the overflow came off the right-hand end and it was
+           * the INVENTORY button that got cut in half. A clipped label is
+           * untidy; a clipped control is broken, and on a phone it is the only
+           * way into the inventory.
+           */
+          className="min-w-0 overflow-hidden whitespace-nowrap lowercase text-white"
           style={{
             fontFamily: 'var(--font-display)',
             /*
@@ -275,14 +294,14 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
              * narrow window. 1.9vw is the widest slope that still clears them
              * at 440px, measured rather than guessed.
              */
-            fontSize: 'clamp(9px, 1.9vw, 22px)',
+            fontSize: 'clamp(8px, 1.9vw, 22px)',
             letterSpacing: '0.04em',
           }}
         >
           {REALM_LABEL[realm]}
         </h1>
         <span className="flex-1" aria-hidden="true" />
-        <PixelButton tone="default" unit={3} onClick={onOpenInventory}>
+        <PixelButton tone="default" unit={hudUnit} onClick={onOpenInventory}>
           inventory
         </PixelButton>
       </HudBar>

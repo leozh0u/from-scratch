@@ -810,3 +810,40 @@ number that belonged to Pixelify Sans. Silkscreen's widest glyph is exactly 1.0,
 so the letters overlapped. The two ratios the layout stands on are named
 constants now rather than numbers buried in three places, because they are
 properties of whichever font is in the slot.
+
+## The city backdrop: it was the wrong file all along
+
+Leo: "the city background is bad. why cant you just use the actual svg i gave
+you." I was using it. The SVG is the problem.
+
+He supplied "Big City.svg" and "Big City.png". The SVG looked like the obvious
+choice, being vector, and an earlier check sampled five points in both and
+found them matching. Rasterised side by side at 512 and compared properly,
+**sixty percent of the pixels differ**: the SVG is a lossy trace of the PNG,
+not the artwork.
+
+The PNG is now the backdrop, with `image-rendering: pixelated`, which is
+correct for a bitmap and was exactly wrong for the vector it replaced. Every
+source pixel becomes a clean block at roughly 3x instead of a smeared trace.
+
+Five sampled points is not a comparison. Diff the whole thing.
+
+## Mobile and orientation
+
+`startLayout.ts` computes every size on the title screen from BOTH axes, by
+searching down from the largest that fits rather than by thresholds. The bug it
+fixes: at 844x390, a phone held sideways, width said there was plenty of room
+so everything was drawn near desktop size and all three menu buttons fell below
+the fold of a screen that clips its overflow. The game could not be started in
+landscape at all.
+
+Three separate misses along the way, each caught by a test rather than by
+looking: height thresholds still failed at 194 sizes in a sweep from 320 to
+2560, first at 915x528; `menuButtonHeight` was modelled from PixelButton's
+source and came out ten pixels short; and the content column's own vertical
+padding was left out of the sum entirely, which is eighty pixels at unit 5.
+
+In the HUD the title now yields and the buttons never do. All three were
+`shrink-0`, so a narrow screen pushed the overflow onto the right-hand end and
+cut the INVENTORY button in half. A clipped label is untidy; a clipped control
+is broken, and on a phone that button is the only way into the inventory.
