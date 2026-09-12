@@ -2,7 +2,7 @@
 
 **Generated from `src/data/gameData.ts` by `npm run walkthrough`. Do not edit by hand.**
 
-722 elements, 725 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
+752 elements, 755 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
 
 ## Survival
 
@@ -754,6 +754,36 @@ The main game. Everything a person can point at, and what it actually cost to ma
 | 705 | Polyprop | + Water | Contact Lens | moulding | — |
 | 706 | Spectacles | + Carbon Black | Sunglasses | tinting | — |
 | 707 | Sunglasses | + Synthetic Rubber | Goggles | sealing | — |
+| 708 | Stone | + Fire | Obsidian | quenching | — |
+| 709 | Quarry | + Hammer | Flint | knapping | — |
+| 710 | Flint | + Hardened Steel | Fire Steel | striking | — |
+| 711 | Fire Steel | + Steel Spring | Flintlock | cocking | — |
+| 712 | Seaweed | + Knife | Reed | cutting | — |
+| 713 | Clay | + Quill | Clay Tablet | impressing | — |
+| 714 | Clay Tablet | + Reed | Cuneiform | wedging | — |
+| 715 | Reed | + Water | Basket | soaking | — |
+| 716 | Reed | + Chisel | Flute | boring | — |
+| 717 | Flute | + Leather | Bagpipes | inflating | — |
+| 718 | Timber Frame | + Steel Wire | Harp | stringing | — |
+| 719 | Clock | + Lead | Metronome | weighting | — |
+| 720 | Movable Type | + Paper | Sheet Music | engraving | — |
+| 721 | Sheet Music | + Violin | Orchestra | conducting | — |
+| 722 | Orchestra | + Plaster | Concert Hall | tuning | — |
+| 723 | Transistor | + Transformer | Amplifier | biasing | — |
+| 724 | Guitar | + Magnet Coil | Electric Guitar | winding | — |
+| 725 | Amplifier | + Keyboard | Synthesiser | oscillating | — |
+| 726 | Synthesiser | + Tape Recorder | Mixing Desk | mixing | — |
+| 727 | Mixing Desk | + Insulation | Studio | isolating | — |
+| 728 | PVC | + Mixing Desk | Vinyl Record | mastering | — |
+| 729 | Antenna | + Studio | Radio Station | transmitting | — |
+| 730 | Camera | + Celluloid | Film Camera | cranking | — |
+| 731 | Film Camera | + Street Lamp | Film Set | lighting | — |
+| 732 | Film Set | + Scissors | Editing Bench | splicing | — |
+| 733 | Editing Bench | + Painting | Animation | cel painting | — |
+| 734 | Magnetic Tape | + Television | Video Tape | helical scanning | — |
+| 735 | Microchip | + Television | Games Console | rendering | — |
+| 736 | Lever | + Transistor | Joystick | gimballing | — |
+| 737 | Games Console | + Screen | Pixel Art | dithering | — |
 
 All 3 targets reachable. ✅
 
@@ -778,4 +808,4 @@ Elements with more than one real way to make them. The receipt tells you which r
 
 ## How much of the board is a dead end
 
-722 elements make 260,281 possible pairs, and 725 of them are recipes. **99.7% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
+752 elements make 282,376 possible pairs, and 755 of them are recipes. **99.7% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.

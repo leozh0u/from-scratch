@@ -16,7 +16,7 @@
  * `seed.ts` exists precisely as a hand-computed fixture for that trap, with
  * the right answers written in its header, and nothing was reading them.
  */
-import { COMPOSED, resolveIcon } from '../src/data/iconRegistry'
+import { COMPOSED, REGISTRY, resolveIcon } from '../src/data/iconRegistry'
 import { FLAME } from '../src/art/sprites'
 import { checkForms, composeSprite } from '../src/art/forms'
 
@@ -628,6 +628,28 @@ console.log('\n=== hints are earned by playing ===')
     seen.add(key(a, b))
   }
   ok('the same pair in either order counts once', seen.size === 1, `${seen.size} of 3 tries`)
+}
+
+/*
+ * A DEAD LINE IN THE HAND-DRAWN REGISTRY IS NOT DEAD, IT IS A TRAP.
+ *
+ * `flint: FLINT` sat in the registry for months, left over from a version of
+ * Survival that had a Flint starter, pointing at the same sprite sharp stone
+ * uses. Harmless while nothing in the game was called flint — and the moment
+ * a real Flint element arrived six hundred elements later it silently
+ * inherited a sharp stone, because the hand-drawn registry wins over the
+ * composed one.
+ *
+ * So: every key in the hand-drawn registry must belong to an element that
+ * exists. An entry for nobody is a landmine for whoever names an element that
+ * way next.
+ */
+console.log('\n=== the hand-drawn registry has no entries for nobody ===')
+{
+  const ids = new Set(GAME_DATA.elements.map((e) => e.icon))
+  const orphans = Object.keys(REGISTRY).filter((key) => !ids.has(key))
+  ok('every hand-drawn icon key belongs to an element', orphans.length === 0,
+     orphans.length ? orphans.join(', ') : `${Object.keys(REGISTRY).length} keys, all claimed`)
 }
 
 console.log(`\n${fail === 0 ? 'Game data and solver hold.' : `${fail} FAILED`}  (${pass} checks)`)
