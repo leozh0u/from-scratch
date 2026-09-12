@@ -93,23 +93,6 @@ export function StartScreen({
       >
         <ArcTitle text="From Scratch" unit={titleUnit} />
 
-        <p
-          style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: unit * 2.5,
-            lineHeight: 1.9,
-            color: 'var(--color-star-mid)',
-            textAlign: 'center',
-            margin: 0,
-            textTransform: 'lowercase',
-            // A hard one-pixel drop shadow, not a blur. This is how console
-            // UIs kept text legible over a busy background, and it is the
-            // only kind of shadow this design allows.
-            textShadow: '2px 2px 0 var(--color-space-deep)',
-          }}
-        >
-          find out how things are really made
-        </p>
 
         <div
           style={{
