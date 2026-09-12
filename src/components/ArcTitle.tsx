@@ -29,9 +29,11 @@ type ArcTitleProps = {
   /** Sprite-pixel unit, matching the buttons. */
   unit?: number
   /**
-   * How far the ends of the word drop, in degrees across the whole word.
-   * Positive bends the line downward at both ends, following the top of a
-   * sphere sitting below it.
+   * The total sweep of the arc in degrees, end to end. This is the angle the
+   * whole word subtends at the centre of its circle, so it is also exactly how
+   * far the last letter is rotated relative to the first. Around 34 reads as
+   * following the curve of the planet below; past about 50 it stops looking
+   * like a horizon and starts looking like a logo on a beach ball.
    */
   spread?: number
   className?: string
@@ -40,19 +42,33 @@ type ArcTitleProps = {
 export function ArcTitle({
   text,
   unit = 4,
-  spread = 46,
+  spread = 34,
   className,
 }: ArcTitleProps) {
   const letters = [...text]
   const size = unit * 10
 
   /*
-   * The arc is described by an angle per letter and a vertical drop that
-   * follows a cosine — the letters near the ends sit lower, as they would on
-   * the rim of a circle. Both are rounded: degrees to integers, pixels to
-   * whole numbers.
+   * A TRUE CIRCULAR ARC, not a rotation and a separate hand-tuned drop.
+   *
+   * The first version rotated each letter linearly across the word and sank it
+   * by `(1 - cos(t * 0.9))`, with the 0.9 picked by eye. Those two curves do
+   * not describe the same circle, so the letters leaned as though they were on
+   * an arc while sitting on a shape that was not one — the ends looked snapped
+   * downward rather than curved, which is what "should look rounder, curving
+   * with the earth" is pointing at.
+   *
+   * Both numbers now come off one circle. A letter at angle theta from the top
+   * sits at height R(1 - cos theta) below the apex and is rotated by exactly
+   * theta. R is derived from the word's own width so the arc always spans the
+   * requested sweep regardless of how many letters there are.
    */
-  const step = letters.length > 1 ? spread / (letters.length - 1) : 0
+  const sweep = (spread * Math.PI) / 180
+  const advance = size * 0.82
+  const chord = advance * Math.max(1, letters.length - 1)
+  // The radius that puts the whole word on an arc of exactly `sweep`.
+  const radius = chord / (2 * Math.sin(sweep / 2))
+  const step = letters.length > 1 ? sweep / (letters.length - 1) : 0
 
   return (
     <h1
@@ -66,14 +82,15 @@ export function ArcTitle({
         // Space letters tighter than the font's own advance, because each one
         // is rotated into its neighbour's gap.
         gap: Math.round(unit * 0.5),
-        // The dropped ends need vertical room or they clip the element box.
-        paddingBottom: Math.round(unit * 6),
+        // The dropped ends need exactly this much room or they clip the box.
+        paddingBottom: Math.round(radius * (1 - Math.cos(sweep / 2))) + unit * 2,
       }}
     >
       {letters.map((letter, i) => {
-        const angle = Math.round(-spread / 2 + i * step)
-        const fromCentre = (i - (letters.length - 1) / 2) / ((letters.length - 1) / 2 || 1)
-        const drop = Math.round((1 - Math.cos(fromCentre * 0.9)) * unit * 11)
+        const theta = -sweep / 2 + i * step
+        // Same circle for both: the drop and the lean cannot disagree.
+        const drop = Math.round(radius * (1 - Math.cos(theta)))
+        const angle = Math.round((theta * 180) / Math.PI)
 
         // A space carries the gap but must not carry a glyph box, or the word
         // spacing fights the rotation.

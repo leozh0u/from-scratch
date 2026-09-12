@@ -1,6 +1,6 @@
 import { useRef, useState, type ButtonHTMLAttributes, type ReactNode } from 'react'
 import { PixelArt } from '../PixelArt'
-import { CHAIN_LINK, PADLOCK } from '../../art/sprites'
+import { PADLOCK } from '../../art/sprites'
 
 /**
  * The button, and the thing every other control in the game inherits from.
@@ -138,98 +138,40 @@ function notch(c: number) {
 }
 
 /**
- * The chain, laid across a locked button like a chest nobody has opened yet.
+ * The padlock hung on a locked control.
  *
- * A greyed-out control tells you that you cannot press it. A chained one tells
- * you there is something inside worth getting to, which is the whole point of
- * locking Everyday behind Survival — it has to read as a prize, not as a
- * disabled form field.
+ * WHY THERE IS NO CHAIN HERE ANY MORE
  *
- * Built from one repeated link sprite rather than one long drawn chain, so it
- * fits a button of any width without stretching. Stretching pixel art is the
- * one thing that always looks wrong.
+ * Three versions of a chain were tried and all three failed the same way. A
+ * tiled ring read as a row of little circles; a thin two-link pair read as
+ * "oIoIoI"; a heavy pair still read as a decorative border. A short row of
+ * repeated links inside a wide, low button always will.
+ *
+ * Leo's reference settled it: a chest with heavy padlocks hanging off the
+ * front, and no chain anywhere in the picture. The lock is the statement. One
+ * big one, hung over the left end so the label keeps the middle of the button
+ * to itself.
+ *
+ * It deliberately overhangs the button's top and bottom edges, which is why it
+ * is a sibling of the face rather than a child — the face is clipped to its
+ * octagon and anything inside it gets cut off at the bevel.
  */
-function Chain({ unit }: { unit: number }) {
-  /*
-   * Sized from the button, not picked by eye.
-   *
-   * Half the unit gave ~50 tiny links across the button, which read as a row
-   * of little circles. Twice the unit made the padlock taller than the button
-   * itself, so it was clipped into an unrecognisable blob. The sprites are 10
-   * and 12 rows tall, and the button's face is about 12 units, so one unit per
-   * sprite pixel is the scale that fits both inside it.
-   */
-  const scale = Math.max(2, unit)
+function Lock({ unit }: { unit: number }) {
   return (
     <span
       aria-hidden="true"
       style={{
         position: 'absolute',
-        inset: 0,
-        overflow: 'hidden',
+        // Measured from the left edge rather than centred: dead centre puts it
+        // straight through the label.
+        left: unit * 5,
+        top: '50%',
+        transform: 'translateY(-50%)',
+        zIndex: 2,
         pointerEvents: 'none',
-        /*
-         * BEHIND the label, not over it.
-         *
-         * The first pass drew the chain across the front and the padlock dead
-         * centre, which buried the word it was supposed to be locking. The
-         * chain has to say "shut" without making the button illegible — so it
-         * runs behind the text, and the lock hangs off to one side rather than
-         * sitting on top of the label.
-         */
-        zIndex: 0,
       }}
     >
-      {/*
-       * TWO RUNS WITH A GAP, not one continuous band.
-       *
-       * A chain straight across the middle put links directly behind every
-       * letter of the label and smothered it. Real chain on a chest wraps the
-       * body and leaves the front plate readable, so this does the same:
-       * a run in from each edge, a clear span in the middle for the word, and
-       * the padlock hanging where the right-hand run stops.
-       */}
-      <span
-        style={{
-          position: 'absolute',
-          top: '50%',
-          left: 0,
-          width: '30%',
-          transform: 'translateY(-50%)',
-          display: 'flex',
-          overflow: 'hidden',
-        }}
-      >
-        {Array.from({ length: 8 }).map((_, i) => (
-          <PixelArt key={i} sprite={CHAIN_LINK} scale={scale} />
-        ))}
-      </span>
-      <span
-        style={{
-          position: 'absolute',
-          top: '50%',
-          right: 0,
-          width: '30%',
-          transform: 'translateY(-50%)',
-          display: 'flex',
-          justifyContent: 'flex-end',
-          overflow: 'hidden',
-        }}
-      >
-        {Array.from({ length: 8 }).map((_, i) => (
-          <PixelArt key={i} sprite={CHAIN_LINK} scale={scale} />
-        ))}
-      </span>
-      <span
-        style={{
-          position: 'absolute',
-          top: '50%',
-          left: '68%',
-          transform: 'translateY(-50%)',
-        }}
-      >
-        <PixelArt sprite={PADLOCK} scale={scale} />
-      </span>
+      <PixelArt sprite={PADLOCK} scale={Math.max(2, Math.round(unit * 0.9))} />
     </span>
   )
 }
@@ -410,13 +352,14 @@ export function PixelButton({
             textShadow: `${Math.max(1, Math.round(unit / 2))}px ${Math.max(1, Math.round(unit / 2))}px 0 ${c.textShadow}`,
           }}
         >
-          {locked && <Chain unit={unit} />}
           <span style={{ position: 'relative', zIndex: 1, display: 'inline-flex', alignItems: 'center', gap: unit * 2 }}>
             {icon}
             {children}
           </span>
         </span>
       </span>
+
+      {locked && <Lock unit={unit} />}
     </button>
   )
 }

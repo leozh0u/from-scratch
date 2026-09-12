@@ -1086,76 +1086,59 @@ export const GROUND: Sprite = {
 }
 
 /*
- * CHAIN AND PADLOCK — laid across a locked control.
+ * PADLOCK — hung on a locked control.
  *
- * A greyed-out button says "you cannot press this". A chained one says "there
- * is something in here worth getting to", which is what locking the Everyday
- * realm behind Survival is for: it has to read as a prize, not as a disabled
- * form field.
+ * Leo's reference is a treasure chest with heavy padlocks hanging off the
+ * front. The locks ARE the statement there; there is no chain in the picture
+ * at all. An earlier version of this file tried three increasingly heavy
+ * chain-link sprites and every one read as a decorative border rather than as
+ * chain, because a thin row of repeated links inside a wide short button
+ * always will. The chain is gone.
  *
- * The chain is ONE LINK, repeated, rather than a single long drawn chain.
- * A button is whatever width its label makes it, and stretching pixel art to
- * fit is the one thing that always looks wrong — a repeated link tiles to any
- * width with every pixel still square.
- *
- * Light from above-left, matching PINE and the rest of the set.
+ * So this is drawn big and with real weight: a two-tone steel shackle, a brass
+ * body with a lit face and a shadowed base, and a hard outline the whole way
+ * round. Light from above-left, matching PINE and the rest of the set.
  */
-export const CHAIN_LINK: Sprite = {
-  /*
-   * TWO links, not one — a flat oval followed by one seen edge-on.
-   *
-   * A real chain alternates: each link sits at ninety degrees to its
-   * neighbour, so you see one as a ring and the next as a narrow bar. Tiling a
-   * single ring instead produces a row of identical little circles that reads
-   * as a decorative border, which is exactly what the first attempt looked
-   * like. Repeating a PAIR is what makes it read as chain.
-   */
-  rows: [
-    '............',
-    '..llll..lll.',
-    '.lhhhhl.lhl.',
-    'lhl..lhllhhl',
-    'lh....hllhhl',
-    'lh....hllhhl',
-    'lhl..lhllhhl',
-    '.lddddl.ldl.',
-    '..llll..lll.',
-    '............',
-  ],
-  palette: {
-    // Cold grey iron, deliberately not the same greys as the locked button
-    // face, or the chain disappears into it.
-    l: '#2a2840',
-    h: '#c6c3de',
-    d: '#75729a',
-  },
-}
-
-/** Hangs at the centre of the chain run. Slightly wider than a link so it
- * reads as the thing holding the chain together rather than part of it. */
 export const PADLOCK: Sprite = {
   rows: [
-    '...SSSS...',
-    '..Sh..hS..',
-    '..S....S..',
-    '..S....S..',
-    '.bBBBBBBb.',
-    'bBhhhhhhBb',
-    'bBhhKKhhBb',
-    'bBhhKKhhBb',
-    'bBhhhKhhBb',
-    'bBhhhhhhBb',
-    '.bBBBBBBb.',
-    '..bbbbbb..',
+    '................',
+    '.....KKKKKK.....',
+    '....KSSSSSSK....',
+    '...KSSKKKKSSK...',
+    '...KSK....KsK...',
+    '...KSK....KsK...',
+    '...KSK....KsK...',
+    '...KSK....KsK...',
+    '..KKKKKKKKKKKK..',
+    '..KBBBBBBBBBBK..',
+    '..KBBBBBBBBBBK..',
+    '..KBBBBhhBBBBK..',
+    '..KBBBBhhBBBBK..',
+    '..KBbBBhhBBbBK..',
+    '..KBbBBBhBBbBK..',
+    '..KbbbBhBBbbcK..',
+    '..KbbbbbbbbbcK..',
+    '..KccccccccccK..',
+    '..KKKKKKKKKKKK..',
+    '................',
   ],
   palette: {
-    // Shackle — the same iron as the chain.
-    S: '#8e8bad',
-    // Body — brass, so the lock reads as the focal point of the run.
-    B: '#c8922f',
-    b: '#7d5713',
-    h: '#efc463',
-    // Keyhole.
-    K: '#3a2a08',
+    K: '#120f1a',
+    // Shackle — steel, lit on the left arm and shadowed on the right so it
+    // reads as a bent rod rather than two posts.
+    S: '#d8d5e8',
+    s: '#8d8aa8',
+    /*
+     * Body — STEEL, not brass.
+     *
+     * Brass reads as treasure: a gold padlock on a dark panel is a chest, and
+     * this is a locked door, not loot. Cool grey keeps it as a plain heavy
+     * lock. It is still the brightest thing on a dead button, which is what
+     * makes it the first thing the eye lands on.
+     */
+    B: '#cdcae0',
+    b: '#9895b4',
+    c: '#605d7c',
+    h: '#3a2a08',
   },
 }
