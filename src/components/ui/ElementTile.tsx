@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { Sprite } from '../PixelArt'
 import { PixelArt } from '../PixelArt'
 import { steppedNotch, OUTLINE } from './pixelShape'
+import { fitFontSize } from './labelFit'
 import { playSelect, playHover } from '../../audio/sfx'
 
 /**
@@ -64,6 +65,16 @@ export function ElementTile({
   const hi = selected ? SELECTED_HI : HI
   const lo = selected ? SELECTED_LO : LO
   const base = selected ? SELECTED_BASE : BASE
+
+  /*
+   * The line the label has to fit on is the face minus its bevel — the raised
+   * lip is a real pixel edge and type crossing it reads as a rendering fault,
+   * not as a tight fit. So "manganese" cannot have ten-pixel type at all: nine
+   * characters is ninety pixels and there are eighty-eight. It takes the next
+   * step down and sits on one line, which is the right trade. A word split
+   * across lines mid-letter is a bug; a word one pixel smaller is not.
+   */
+  const labelSize = fitFontSize(label, unit * 22, [unit * 2.5, unit * 2.25, unit * 2], 2)
 
   return (
     <button
@@ -205,23 +216,18 @@ export function ElementTile({
             style={{
               fontFamily: 'var(--font-display)',
               /*
-               * Was unit*2, which came out at six pixels and was genuinely
-               * unreadable. A pixel font does not degrade gracefully — below
-               * about nine pixels the strokes start landing on half-pixels and
-               * the letterforms dissolve. This is the floor, not a preference.
+               * Chosen by `fitFontSize` rather than by a length threshold —
+               * see labelFit.ts. The old rule measured the whole label, which
+               * is not what has to fit on a line, and broke "manganese" into
+               * "manganes" and a stranded "e".
                */
-              /*
-               * Long names step down one size rather than wrapping to a third
-               * line. Two lines is what the box has room for; a pixel font
-               * below about eight pixels dissolves, so this is the one step of
-               * headroom available and the box is sized to fit the rest.
-               */
-              fontSize: label.length > 13 ? unit * 2 : unit * 2.5,
+              fontSize: labelSize,
               lineHeight: 1.6,
               display: '-webkit-box',
               WebkitLineClamp: 2,
               WebkitBoxOrient: 'vertical',
               overflow: 'hidden',
+              width: '100%',
               textAlign: 'center',
               color: '#ffffff',
               // Near-black, not the face's own shadow tone: the label needs to

@@ -9,11 +9,12 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "solve": "tsx scripts/solve.ts",
-    "test": "tsc -b && tsx scripts/shapetest.ts && tsx scripts/datatest.ts && tsx scripts/explaintest.ts && tsx scripts/swaytest.ts && vite build",
+    "test": "tsc -b && tsx scripts/shapetest.ts && tsx scripts/datatest.ts && tsx scripts/explaintest.ts && tsx scripts/swaytest.ts && tsx scripts/labeltest.ts && vite build",
     "test:data": "tsx scripts/datatest.ts",
     "test:sway": "tsx scripts/swaytest.ts",
     "test:explain": "tsx scripts/explaintest.ts",
-    "test:shape": "tsx scripts/shapetest.ts"
+    "test:shape": "tsx scripts/shapetest.ts",
+    "test:label": "tsx scripts/labeltest.ts"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
