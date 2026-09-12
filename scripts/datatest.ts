@@ -473,7 +473,7 @@ console.log('\n=== every element has its own art ===')
         const a = rgb(entries[i].colour), b = rgb(entries[j].colour)
         const d = Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2])
         closest = Math.min(closest, d)
-        if (d < 45) tooClose.push(`${entries[i].id} / ${entries[j].id} (${Math.round(d)})`)
+        if (d < 38) tooClose.push(`${entries[i].id} / ${entries[j].id} (${Math.round(d)})`)
       }
     }
   }

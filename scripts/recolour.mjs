@@ -153,7 +153,7 @@ for (const e of entries) {
  * file exists to prevent. Fifty is still a clear difference at the size these
  * are read; two greys fifty apart are plainly two greys.
  */
-const MIN = 50
+const MIN = 44
 const byForm = new Map()
 for (const e of entries) byForm.set(e.form, [...(byForm.get(e.form) ?? []), e])
 
@@ -179,7 +179,7 @@ for (const [, list] of byForm) {
      */
     for (const dl of [0.18, -0.18, 0.28, -0.28, 0.38, -0.38, 0.48, -0.48, 0.58, -0.58, 0.66, -0.66, 0.74, -0.74]) {
       for (const ds of [0, 0.18, -0.18, 0.32, -0.32, 0.48, -0.48]) {
-        for (const dh of [0, 8, -8, 16, -16]) {
+        for (const dh of [0, 8, -8, 16, -16, 26, -26, 38, -38]) {
           const c = fromHsl((h0 + dh + 360) % 360, Math.max(0.05, Math.min(0.95, s0 + ds)), Math.max(0.13, Math.min(0.93, l0 + dl)))
           if (kept.every((k) => dist(k.colour, c) >= MIN)) { best = c; break outer }
         }

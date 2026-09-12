@@ -2,7 +2,7 @@
 
 **Generated from `src/data/gameData.ts` by `npm run walkthrough`. Do not edit by hand.**
 
-752 elements, 755 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
+782 elements, 785 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
 
 ## Survival
 
@@ -784,6 +784,36 @@ The main game. Everything a person can point at, and what it actually cost to ma
 | 735 | Microchip | + Television | Games Console | rendering | — |
 | 736 | Lever | + Transistor | Joystick | gimballing | — |
 | 737 | Games Console | + Screen | Pixel Art | dithering | — |
+| 738 | Synthetic Rubber | + Printing Plate | Rubber Stamp | vulcanising | — |
+| 739 | Carbon Black | + Tissue | Carbon Paper | coating | — |
+| 740 | Galvanised Steel | + Bearing | Filing Cabinet | drawer slides | — |
+| 741 | Cardboard | + Filing Cabinet | Index Card | ruling | — |
+| 742 | Printed Book | + Index Card | Ledger | ruling | — |
+| 743 | Banknote | + Seal | Cheque | countersigning | — |
+| 744 | Stainless Steel | + Lock | Safe | fireproofing | — |
+| 745 | Safe | + Reinforced Concrete | Bank Vault | time locking | — |
+| 746 | Brass | + File | Key | cutting | — |
+| 747 | Key | + Hardened Steel | Padlock | shackling | — |
+| 748 | Tin | + Needle | Drawing Pin | pressing | — |
+| 749 | Brass | + Drawing Pin | Hinge | knuckling | — |
+| 750 | Plywood | + Hinge | Cupboard | carcassing | — |
+| 751 | Cupboard | + Bearing | Drawer | running | — |
+| 752 | Drawer | + Table | Desk | fitting | — |
+| 753 | Desk | + Filing Cabinet | Office | laying out | — |
+| 754 | Lamp | + Steel Spring | Desk Lamp | counterbalancing | — |
+| 755 | Chair | + Bearing | Swivel Chair | castoring | — |
+| 756 | Enamel | + Plastic Film | Whiteboard | laminating | — |
+| 757 | Ink | + Felt | Marker Pen | wicking | — |
+| 758 | Steel Wire | + Ink | Ballpoint | ball seating | — |
+| 759 | Gold | + Chisel | Gold Nib | slitting | — |
+| 760 | Gold Nib | + Ink | Fountain Pen | filling | — |
+| 761 | Synthetic Rubber | + Chalk | Eraser | abrading | — |
+| 762 | Plywood | + Printing Plate | Ruler | graduating | — |
+| 763 | Steel Wire | + Steel Spring | Stapler | clinching | — |
+| 764 | Steel Wire | + Clamp | Paperclip | bending | — |
+| 765 | Cork | + Timber Frame | Noticeboard | backing | — |
+| 766 | Noticeboard | + Whiteboard | School | timetabling | — |
+| 767 | School | + Printer | Exam Paper | invigilating | — |
 
 All 3 targets reachable. ✅
 
@@ -808,4 +838,4 @@ Elements with more than one real way to make them. The receipt tells you which r
 
 ## How much of the board is a dead end
 
-752 elements make 282,376 possible pairs, and 755 of them are recipes. **99.7% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
+782 elements make 305,371 possible pairs, and 785 of them are recipes. **99.7% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
