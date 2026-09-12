@@ -524,3 +524,27 @@ six-element ancestor chain. That screen was completely blank this morning.
 | DREAD: 66 Claude co-author trailers | Public repo, breaks his own standing rule |
 | DREAD: video | Not shot |
 | Two submissions allowed? | Needs an organiser |
+
+## 2026-09-12, mid-afternoon — run-through and the city verdict
+
+**Full run-through, first real one.** Solver: all 43 elements reachable, no
+issues. In-browser: title -> Survival -> flint + high-carbon steel combines,
+flint + beeswax fails and offers *why not?*, fallback copy appears when the
+endpoint is absent. Production endpoint answered live and correctly.
+
+**The city is rejected.** Leo: "the background hella ugly... i like the forrest
+but this is just not it." He is right, and it is the same lesson as the forest:
+procedural art loses to composed art. Two things are wrong beyond taste —
+the palette (brick orange + sky blue) shares nothing with the indigo UI, and
+the UI covers the centre, so the only visible parts of the scene are the two
+flat side walls, which is the worst part of the image.
+
+`CityScene.tsx` procedural work is **dropped**, not paused. Waiting on an SVG
+backdrop from Leo, same route as `forest-hillside.svg`.
+
+**Open:**
+- City backdrop SVG (blocked on Leo)
+- `UNLOCK_EVERYTHING` back to `false` before submission
+- Pixie URL + licence for `forest-hillside.svg` (blocked on Leo)
+- Local failure copy is thin — flint + beeswax gives only "nothing obvious
+  happens." The rule table has no clause for inert mineral + wax.
