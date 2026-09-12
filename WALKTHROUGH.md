@@ -2,7 +2,7 @@
 
 **Generated from `src/data/gameData.ts` by `npm run walkthrough`. Do not edit by hand.**
 
-362 elements, 365 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
+392 elements, 395 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
 
 ## Survival
 
@@ -394,6 +394,36 @@ The main game. Everything a person can point at, and what it actually cost to ma
 | 345 | Lamp | + Transistor | Traffic Light | sequencing | — |
 | 346 | Lamp | + Steel Frame | Street Lamp | erecting | — |
 | 347 | Road | + Street Lamp | City | planning | — |
+| 348 | Clock | + Brick Wall | Clock Tower | erecting | — |
+| 349 | Battery | + Insulated Wire | Telegraph | keying | — |
+| 350 | Telegraph | + Paper | Morse Code | encoding | — |
+| 351 | Keyboard | + Ink | Typewriter | levering | — |
+| 352 | Cardboard | + Loom | Punched Card | punching | — |
+| 353 | Punched Card | + Gear | Calculator | cranking | — |
+| 354 | Microscope | + Water | Cell | observing | — |
+| 355 | Filtered Water | + Compost | Seaweed | harvesting | — |
+| 356 | Cell | + Seaweed | Agar | boiling | — |
+| 357 | Seaweed | + Sulfuric Acid | Iodine | subliming | — |
+| 358 | Iodine | + Ethanol | Tincture | dissolving | — |
+| 359 | Ethanol | + Chlorine | Anaesthetic | chlorinating | — |
+| 360 | Vacuum | + Copper Wire | X-Ray | exciting | — |
+| 361 | Pipe | + Drum | Stethoscope | listening | — |
+| 362 | Sulfuric Acid | + Paraffin Wax | Detergent | sulfonating | — |
+| 363 | Chalk | + Glaze | Toothpaste | milling | — |
+| 364 | Nylon | + Polyprop | Toothbrush | tufting | — |
+| 365 | Silver | + Glass Pane | Silvered Glass | depositing | — |
+| 366 | Film | + Silver | Photograph | developing | — |
+| 367 | Photograph | + Antiseptic | Negative | fixing | — |
+| 368 | Zinc | + Synthetic Dye | Printing Plate | etching | — |
+| 369 | Printing Plate | + Paper | Poster | lithography | — |
+| 370 | Cotton Jersey | + Printing Plate | Banknote | intaglio | — |
+| 371 | Glue | + Poster | Stamp | perforating | — |
+| 372 | Paper | + Glue | Envelope | folding | — |
+| 373 | Cast Iron | + Paint | Postbox | casting | — |
+| 374 | Chain | + Gear | Bicycle Chain | meshing | — |
+| 375 | Synthetic Rubber | + Glue | Rubber Pad | moulding | — |
+| 376 | Rubber Pad | + Steel Wire | Brake | cabling | — |
+| 377 | Polyprop | + Felt | Helmet | moulding | — |
 
 All 3 targets reachable. ✅
 
@@ -418,4 +448,4 @@ Elements with more than one real way to make them. The receipt tells you which r
 
 ## How much of the board is a dead end
 
-362 elements make 65,341 possible pairs, and 365 of them are recipes. **99.4% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
+392 elements make 76,636 possible pairs, and 395 of them are recipes. **99.5% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
