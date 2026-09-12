@@ -197,6 +197,95 @@ export const GAME_DATA: RecipeData = {
         { label: 'The Water Footprint of Cotton Consumption (Chapagain et al., 2006) — Water Footprint Network', url: 'https://www.waterfootprint.org/resources/multimediahub/Chapagain_et_al_2006_cotton_2.pdf' },
       ],
     },
+
+    // Everyday — aluminum can starters
+    { id: 'salt', name: 'Salt', icon: 'salt', realm: 'everyday', blurb: 'Sodium chloride — dissolved in water and run through an electric current, it splits into chlorine, hydrogen, and the caustic soda used all over industry.', sources: [{ label: 'Chloralkali process — Wikipedia', url: 'https://en.wikipedia.org/wiki/Chloralkali_process' }] },
+    { id: 'bauxite', name: 'Bauxite', icon: 'bauxite', realm: 'everyday', blurb: 'The ore aluminum actually comes from — a rusty-looking rock that has to be dissolved out of, not melted down, to get at the aluminum inside.', sources: [{ label: 'Bayer process — Wikipedia', url: 'https://en.wikipedia.org/wiki/Bayer_process' }] },
+    { id: 'manganese', name: 'Manganese', icon: 'manganese', realm: 'everyday', blurb: 'The alloying element that turns plain aluminum into can stock — it makes the metal strong enough to hold pressure without getting brittle.', sources: [{ label: 'Aluminium alloy — Wikipedia', url: 'https://en.wikipedia.org/wiki/Aluminium_alloy' }] },
+
+    // Everyday — aluminum can, crafted
+    {
+      id: 'sodium_hydroxide',
+      name: 'Sodium Hydroxide',
+      icon: 'sodium_hydroxide',
+      realm: 'everyday',
+      blurb: "Made today by running electric current through salt water, not the older lime-and-soda-ash reaction it replaced — that method was fully phased out.",
+      sources: [{ label: 'Chloralkali process — Wikipedia', url: 'https://en.wikipedia.org/wiki/Chloralkali_process' }],
+    },
+    {
+      id: 'alumina',
+      name: 'Alumina',
+      icon: 'alumina',
+      realm: 'everyday',
+      blurb: 'Bauxite ore is dissolved in hot caustic soda under pressure — what comes out, once separated back out, is pure aluminum oxide.',
+      sources: [{ label: 'Bayer process — Wikipedia', url: 'https://en.wikipedia.org/wiki/Bayer_process' }],
+    },
+    {
+      id: 'petroleum_coke',
+      name: 'Petroleum Coke',
+      icon: 'petroleum_coke',
+      realm: 'everyday',
+      blurb: 'A carbon-rich leftover from cracking heavy crude oil — refineries turn it into the anodes that aluminum smelters consume by the ton.',
+      sources: [{ label: 'Petroleum coke — Wikipedia', url: 'https://en.wikipedia.org/wiki/Petroleum_coke' }],
+    },
+    {
+      id: 'molten_aluminum',
+      name: 'Molten Aluminum',
+      icon: 'molten_aluminum',
+      realm: 'everyday',
+      blurb: "Smelting alumina into aluminum is one of the most electricity-hungry things a factory can do — about 12.7 kg of CO2 per kg of aluminum, worldwide average.",
+      sources: [{ label: 'Hall–Héroult process — Wikipedia', url: 'https://en.wikipedia.org/wiki/Hall%E2%80%93H%C3%A9roult_process' }],
+    },
+    {
+      id: 'aluminum_sheet',
+      name: 'Aluminum Sheet',
+      icon: 'aluminum_sheet',
+      realm: 'everyday',
+      blurb: 'Alloying molten aluminum with manganese before rolling it flat is what actually makes "aluminum" cans — pure aluminum alone is too soft to hold pressure.',
+      sources: [{ label: 'Aluminium alloy — Wikipedia', url: 'https://en.wikipedia.org/wiki/Aluminium_alloy' }],
+    },
+    {
+      id: 'aluminum_can',
+      name: 'Aluminum Can',
+      icon: 'aluminum_can',
+      realm: 'everyday',
+      blurb: 'A flat disc of aluminum sheet is drawn into a cup, then ironed thinner against steel tooling — the whole seamless body comes from one piece of metal, no welds.',
+      sources: [
+        { label: 'Beverage can — Wikipedia', url: 'https://en.wikipedia.org/wiki/Beverage_can' },
+        { label: 'Deep drawing — Wikipedia', url: 'https://en.wikipedia.org/wiki/Deep_drawing' },
+      ],
+    },
+
+    // Everyday — glass bottle starters
+    { id: 'silica_sand', name: 'Silica Sand', icon: 'silica_sand', realm: 'everyday', blurb: 'Fine sand rich in silicon dioxide — melt it hot enough and it becomes glass, though pure silica alone melts at an impractical 1,713°C.', sources: [{ label: 'Sodium silicate — Wikipedia', url: 'https://en.wikipedia.org/wiki/Sodium_silicate' }] },
+    { id: 'soda_ash', name: 'Soda Ash', icon: 'soda_ash', realm: 'everyday', blurb: "Sodium carbonate — added to silica sand as a flux, it drops the melting point hundreds of degrees so glass can actually be made at industrial scale.", sources: [{ label: 'Sodium silicate — Wikipedia', url: 'https://en.wikipedia.org/wiki/Sodium_silicate' }] },
+    { id: 'limestone', name: 'Limestone', icon: 'limestone', realm: 'everyday', blurb: "The calcium source in most real glass batches — added as raw limestone, not pre-processed lime, since the furnace's own heat breaks it down.", sources: [{ label: 'Soda–lime glass — Wikipedia', url: 'https://en.wikipedia.org/wiki/Soda%E2%80%93lime_glass' }] },
+
+    // Everyday — glass bottle, crafted
+    {
+      id: 'sodium_silicate',
+      name: 'Sodium Silicate',
+      icon: 'sodium_silicate',
+      realm: 'everyday',
+      blurb: "Soda ash acts as a flux on silica sand, letting the two fuse into glass at a temperature furnaces can actually reach.",
+      sources: [{ label: 'Sodium silicate — Wikipedia', url: 'https://en.wikipedia.org/wiki/Sodium_silicate' }],
+    },
+    {
+      id: 'molten_glass',
+      name: 'Molten Glass',
+      icon: 'molten_glass',
+      realm: 'everyday',
+      blurb: "Soda alone makes glass that dissolves in water — adding lime is what makes it durable enough to actually hold a drink.",
+      sources: [{ label: 'Soda–lime glass — Wikipedia', url: 'https://en.wikipedia.org/wiki/Soda%E2%80%93lime_glass' }],
+    },
+    {
+      id: 'glass_bottle',
+      name: 'Glass Bottle',
+      icon: 'glass_bottle',
+      realm: 'everyday',
+      blurb: 'A measured gob of molten glass drops into a steel mold and gets blown hollow with compressed air — the same idea as glassblowing, just automated.',
+      sources: [{ label: 'Container glass — Wikipedia', url: 'https://en.wikipedia.org/wiki/Container_glass' }],
+    },
   ],
   recipes: [
     {
@@ -339,6 +428,79 @@ export const GAME_DATA: RecipeData = {
         { label: 'The Water Footprint of Cotton Consumption (Chapagain et al., 2006) — Water Footprint Network', url: 'https://www.waterfootprint.org/resources/multimediahub/Chapagain_et_al_2006_cotton_2.pdf' },
       ],
     },
+
+    // Everyday — aluminum can. Reuses Survival's `fire` and `crude_oil` for
+    // coking — a real cross-realm dependency, same pattern as sewing_thread.
+    {
+      inputs: ['salt', 'water'],
+      output: 'sodium_hydroxide',
+      process: 'electrolyzing',
+      cost: ZERO_COST,
+      sources: [{ label: 'Chloralkali process — Wikipedia', url: 'https://en.wikipedia.org/wiki/Chloralkali_process' }],
+    },
+    {
+      inputs: ['bauxite', 'sodium_hydroxide'],
+      output: 'alumina',
+      process: 'digesting',
+      cost: ZERO_COST,
+      sources: [{ label: 'Bayer process — Wikipedia', url: 'https://en.wikipedia.org/wiki/Bayer_process' }],
+    },
+    {
+      inputs: ['crude_oil', 'fire'],
+      output: 'petroleum_coke',
+      process: 'coking',
+      cost: ZERO_COST,
+      sources: [{ label: 'Petroleum coke — Wikipedia', url: 'https://en.wikipedia.org/wiki/Petroleum_coke' }],
+    },
+    {
+      inputs: ['alumina', 'petroleum_coke'],
+      output: 'molten_aluminum',
+      process: 'smelting',
+      // 12.7 kg CO2 per kg of aluminum (Hall–Héroult, 2012 global estimate)
+      // times ~14g of aluminum in a standard can (Beverage can, 2011 figure).
+      cost: { waterL: 0, co2kg: 0.178 },
+      sources: [{ label: 'Hall–Héroult process — Wikipedia', url: 'https://en.wikipedia.org/wiki/Hall%E2%80%93H%C3%A9roult_process' }],
+    },
+    {
+      inputs: ['molten_aluminum', 'manganese'],
+      output: 'aluminum_sheet',
+      process: 'alloying',
+      cost: ZERO_COST,
+      sources: [{ label: 'Aluminium alloy — Wikipedia', url: 'https://en.wikipedia.org/wiki/Aluminium_alloy' }],
+    },
+    {
+      inputs: ['aluminum_sheet', 'high_carbon_steel'],
+      output: 'aluminum_can',
+      process: 'drawing',
+      cost: ZERO_COST,
+      sources: [
+        { label: 'Beverage can — Wikipedia', url: 'https://en.wikipedia.org/wiki/Beverage_can' },
+        { label: 'Deep drawing — Wikipedia', url: 'https://en.wikipedia.org/wiki/Deep_drawing' },
+      ],
+    },
+
+    // Everyday — glass bottle
+    {
+      inputs: ['silica_sand', 'soda_ash'],
+      output: 'sodium_silicate',
+      process: 'fusing',
+      cost: ZERO_COST,
+      sources: [{ label: 'Sodium silicate — Wikipedia', url: 'https://en.wikipedia.org/wiki/Sodium_silicate' }],
+    },
+    {
+      inputs: ['sodium_silicate', 'limestone'],
+      output: 'molten_glass',
+      process: 'melting',
+      cost: ZERO_COST,
+      sources: [{ label: 'Soda–lime glass — Wikipedia', url: 'https://en.wikipedia.org/wiki/Soda%E2%80%93lime_glass' }],
+    },
+    {
+      inputs: ['molten_glass', 'high_carbon_steel'],
+      output: 'glass_bottle',
+      process: 'blowing',
+      cost: ZERO_COST,
+      sources: [{ label: 'Container glass — Wikipedia', url: 'https://en.wikipedia.org/wiki/Container_glass' }],
+    },
   ],
   starters: {
     survival: [
@@ -351,10 +513,21 @@ export const GAME_DATA: RecipeData = {
       'crude_oil',
       'natural_gas',
     ],
-    everyday: ['farmland', 'water', 'cotton_gin', 'dye'],
+    everyday: [
+      'farmland',
+      'water',
+      'cotton_gin',
+      'dye',
+      'salt',
+      'bauxite',
+      'manganese',
+      'silica_sand',
+      'soda_ash',
+      'limestone',
+    ],
   },
   targets: {
     survival: ['fire', 'candle', 'lighter'],
-    everyday: ['cotton_t_shirt'],
+    everyday: ['cotton_t_shirt', 'aluminum_can', 'glass_bottle'],
   },
 }
