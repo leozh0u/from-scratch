@@ -98,11 +98,15 @@ element. Only a real lookup in the recipe index does that.
 ```bash
 npm install
 npm run dev          # http://localhost:5173
-npm test             # type-check, 135 assertions, production build
+npm test             # type-check, 152 assertions, production build
 npm run solve        # reachability and cost report over the recipe graph
 npm run walkthrough  # regenerate WALKTHROUGH.md from the data
 npm run probe        # ask the live adjudicator which missing pairs are real
 npm run snap         # snap traced pixel art back onto its real grid
+npm run sheet        # every sprite on one page at the size it is used
+npm run preview      # serve the production build on :4173
+npm run load         # k6 load test against that preview
+npm run load:api     # k6 against the one serverless function
 ```
 
 There is a dev-only styleguide at `/styleguide`.
@@ -115,7 +119,7 @@ the top.
 
 ## The tests
 
-135 assertions, because a project whose claim is rigour should be able to prove
+152 assertions, because a project whose claim is rigour should be able to prove
 it. The ones worth knowing about are the ones that caught something:
 
 - **The footprint accumulator does not double-count.** The graph is a DAG where
@@ -151,6 +155,62 @@ it. The ones worth knowing about are the ones that caught something:
 
 ---
 
+## Can it take a crowd
+
+The honest answer is that there is almost nothing to take a crowd *with*, and
+that is the design rather than a gap in it.
+
+**There is no database, no accounts and no session state.** The whole thing is
+static files on a CDN plus exactly one serverless function, `api/adjudicate.ts`,
+whose only job is to keep the Gemini key off the client. It remembers nothing
+between invocations, by construction.
+
+**A player is one page load and then silence.** The recipe graph, the solver,
+the sprites and your progress all live in the tab once the page is up.
+Combining two elements is a lookup in a Map on your own machine — no request is
+made, nothing is written anywhere else, and that stays true whether you play
+for one minute or an hour. So the server does zero work per move, and two
+people playing at the same time never touch the same thing, because there is no
+shared thing to touch.
+
+**Progress is `localStorage`, which is why there are no accounts.** It is
+per-browser, it never leaves the machine, and the game asks for no personal
+information at all — there is nothing to sign in *to*. The cost is that
+progress does not follow you to another device, which for a game about making a
+t-shirt from soil is the right trade.
+
+The one shared resource is the Gemini quota, and it is protected on the client
+where it can actually be protected: every answer is cached in `localStorage`
+forever, and a session is capped at 20 calls, five a minute. A thousand
+simultaneous players are bounded by that cap, not by the function.
+
+### The load test
+
+`load/gameplay.js` models **arrivals** rather than a fixed pool of users,
+because the load is new players showing up, not existing players doing work. It
+ramps to 250 new players a second, and reads the hashed bundle name out of
+`index.html` at setup so it cannot end up measuring 404s after a rebuild.
+
+Measured against the production build on `npm run preview`: **48,151 requests,
+16,050 complete player sessions, 401 requests a second, zero failures, p95 of
+4ms for a full cold page load.** Against the live deployment before the run was
+stopped, p95 was 179ms for the same thing.
+
+It was stopped because it worked. Pointed at production, the ramp did 48,000
+requests in two minutes and Vercel's automatic DDoS mitigation denied the whole
+IP — `x-vercel-mitigated: deny`, in a browser as well as from curl. Nothing was
+wrong with the project; the platform did exactly what it should. Both scripts
+default to localhost now, and the reason is written at the top of each file.
+
+`load/adjudicate.js` splits the serverless function in two. The **cold** path
+sends a body the handler rejects at its own validation step, so it never
+reaches Gemini and costs nothing, and can be run at any volume — that is the
+one that answers whether the function survives concurrency. The **live** path
+is capped at 20 calls and has to be asked for by name, because that one spends
+money.
+
+---
+
 ## Sources
 
 The headline number is real. Chapagain & Hoekstra et al. 2006, *The Water
@@ -172,6 +232,18 @@ than the fuel. Concrete is the most used material on earth after water, and
 cement alone is roughly eight percent of human CO₂.
 
 Every element links to its own reference in-game.
+
+---
+
+## Built with
+
+React 19, TypeScript and Vite, styled with Tailwind, linted with Oxlint,
+deployed on Vercel from `main`. The pixel art is not image files: sprites are
+authored as arrays of strings, one character per pixel, and a renderer merges
+horizontal runs of the same colour into `<rect>` elements — so every icon in
+the game is editable in a text editor and an 11×11 tile costs tens of SVG
+nodes rather than hundreds. Load testing is k6. The scene backdrops are the
+only bitmaps.
 
 ---
 
