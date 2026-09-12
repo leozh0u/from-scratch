@@ -22,15 +22,40 @@ Last verified: 2026-09-12, against the current commit and the live deployment.
 | 1 | `UNLOCK_EVERYTHING` back to `false` | **open — blocks submission.** Verified still `true` at `src/App.tsx:30`. | One-line change. Leo asked for it on while iterating on Everyday Objects; Survival is now ~15 combinations so the gate is reasonable again. Must flip before 09:00. |
 | 2 | *"we are talking teaching how everything is made"* — get to Little Alchemy scale | **open — unlock 1 of 3 is built.** The sprite vocabulary is in: 20 forms, composed from one colour, verified rendering in the game. That was the hard cap. Still to build: the Referenced citation tier with a link checker (~1h) and the probe-and-propose import pipeline (~2h). Then authoring runs at 60-100 elements an hour. | Build unlocks 2 and 3, then author. The video is being shot now, so the night is free for this. |
 | 2b | *"add more and more combinations"* | **open, and it stays open on purpose — 72 elements, 74 recipes, up from 43 and 26.** Three batches: the adjudicator's own findings, the cement chain, then the second-road batch. The probe still turns up real pairs faster than they can be sourced, so this is a seam to keep mining rather than a job that finishes. | Run `npm run probe`, hand-verify, source each one. |
+| 6 | *"implement something for testing if the Web app can handle many people at one time"* | **open — written, not yet run clean.** `load/gameplay.js` and `load/adjudicate.js` are in, with `npm run load` and `npm run load:api`. The first run measured p95 179ms for a full cold page load at 400 req/s before the firewall stopped it, so the number is real but the run is not a clean pass. | Re-run against `npm run preview` on localhost, which is now the default target. |
 | ~~2c~~ | Combining more than two at once | **dropped — Leo decided.** "lets stick with two things combined but lets increasen number of things." |
 | 3 | *"should we add a small chat for more questions"* | **open — needs Leo's call.** Recommended against: the endpoint never sees the recipe list, which is what makes "the model cannot grant a discovery" structural rather than a promise. A free-form chat gives that up. | His decision. |
 | 4 | Silkscreen is caps-only, so the wordmark reads FROM SCRATCH | **open — needs Leo's call.** Verified by rendering `a` and `A` and comparing bitmaps. Jersey 10/15/25 are pixel sans faces with true lowercase and a distinct `c`, checked the same way. | One-line swap either way. |
+
+| 5 | *"lets plan what to do with the empty space on either side"* | **open — needs Leo's call.** The three panels are the same width again and the bench has room either side of the slots. Proposal below. | His decision on which, then it is an hour. |
+
+### The empty space either side of the bench — the proposal
+
+The panel is 620px wide and the two slots plus the key use about 200 of it.
+Two things earn that room, and both are things the game is going to need
+anyway once there are hundreds of elements rather than seventy-two:
+
+1. **A search box, on the right.** There is no way to find an element except
+   scrolling the grid. At 72 that is mildly annoying; at 250 it is the thing
+   that makes the game unplayable, and it is the single change that pays off
+   most as the scale goes up. Pixel text field, same slab construction as
+   everything else.
+2. **The running footprint, on the left.** Water and CO2 for everything made
+   so far. It is the whole point of the project and it is currently only
+   visible inside a receipt you have to open. Sourced numbers only — the
+   standing rule does not relax for a running total, so unsourced steps add
+   zero and the label says how many of them there were.
+
+Not recommended: the target list (it already has its own bar directly above,
+and duplicating it is worse than leaving the space empty) or the last few
+discoveries (the inventory below is already that, in full).
 
 ## Blocked on Leo
 
 | Asked | State |
 | --- | --- |
 | Teammates filming the old UI | **blocked.** They need https://from-scratch-three.vercel.app and almost certainly a re-shoot; the UI is unrecognisable from this morning. |
+| **The live link is blocked from this network** | **blocked — mine, and it is being waited out.** A k6 ramp at production did 48,000 requests in two minutes and Vercel's automatic mitigation denied the IP: `x-vercel-mitigated: deny`, 403 in a real browser as well as from curl, after about a minute of refused TLS handshakes before that. It is IP-scoped, not a deploy problem — the build is fine and `main` deployed clean. Waiting it out and polling every 30s. A phone off wifi, or anyone on another network, is unaffected. Both load scripts now default to localhost so it cannot recur. |
 
 ## Done, with the check that proved it
 
