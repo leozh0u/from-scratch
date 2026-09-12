@@ -124,6 +124,7 @@ export const GAME_DATA: RecipeData = {
     { id: 'water', name: 'Water', icon: 'water', realm: 'everyday', blurb: 'Cotton is one of the thirstiest crops grown at scale — about 8,000–10,000 liters per kilogram of fiber, globally averaged.', sources: [{ label: 'Cotton — Wikipedia', url: 'https://en.wikipedia.org/wiki/Cotton' }] },
     { id: 'cotton_gin', name: 'Cotton Gin', icon: 'cotton_gin', realm: 'everyday', blurb: 'A machine that separates cotton fiber from its seeds — its invention in 1793 multiplied how fast raw cotton could be processed.', sources: [{ label: 'Cotton gin — Wikipedia', url: 'https://en.wikipedia.org/wiki/Cotton_gin' }] },
     { id: 'dye', name: 'Dye', icon: 'dye', realm: 'everyday', blurb: 'Colorant applied to fabric — one of the most water-intensive steps between raw fiber and a finished garment.', sources: [{ label: 'Dyeing — Wikipedia', url: 'https://en.wikipedia.org/wiki/Dyeing' }] },
+    { id: 'textile_waste', name: 'Textile Waste', icon: 'textile_waste', realm: 'everyday', blurb: "Cotton reclaimed from old garments and factory scraps — recycling it back into fiber means never planting a new crop for it.", sources: [{ label: 'Recycling — Wikipedia', url: 'https://en.wikipedia.org/wiki/Recycling' }] },
 
     // Everyday — crafted
     {
@@ -142,7 +143,7 @@ export const GAME_DATA: RecipeData = {
       name: 'Ginned Cotton',
       icon: 'ginned_cotton',
       realm: 'everyday',
-      blurb: 'Ginning pulls the seeds out, leaving pure cotton fiber ready to spin.',
+      blurb: 'Two real routes lead here: gin it fresh from a harvested crop, or shred it out of textile waste that already exists — same fiber, very different water bill.',
       sources: [{ label: 'Cotton gin — Wikipedia', url: 'https://en.wikipedia.org/wiki/Cotton_gin' }],
     },
     {
@@ -374,8 +375,21 @@ export const GAME_DATA: RecipeData = {
       inputs: ['raw_cotton', 'cotton_gin'],
       output: 'ginned_cotton',
       process: 'ginning',
+      route: 'virgin',
       cost: ZERO_COST,
       sources: [{ label: 'Cotton gin — Wikipedia', url: 'https://en.wikipedia.org/wiki/Cotton_gin' }],
+    },
+    {
+      // The replay mechanic: this bypasses `raw_cotton` (and its 2,340L
+      // cultivation cost) entirely rather than just charging a lower number
+      // for the same step — recycling doesn't grow a new crop, so there's no
+      // cultivation stage to have a cost at all.
+      inputs: ['textile_waste', 'textile_waste'],
+      output: 'ginned_cotton',
+      process: 'shredding',
+      route: 'recycled',
+      cost: ZERO_COST,
+      sources: [{ label: 'Recycling — Wikipedia', url: 'https://en.wikipedia.org/wiki/Recycling' }],
     },
     {
       inputs: ['ginned_cotton', 'ginned_cotton'],
@@ -524,6 +538,7 @@ export const GAME_DATA: RecipeData = {
       'silica_sand',
       'soda_ash',
       'limestone',
+      'textile_waste',
     ],
   },
   targets: {

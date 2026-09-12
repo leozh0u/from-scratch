@@ -223,14 +223,66 @@ export type FootprintStep = {
   process: string
 }
 
+export type RouteOption = {
+  route?: string
+  process: string
+  /** Total cost of this route's whole subtree, not just this one recipe's own cost. */
+  cost: Footprint
+}
+
+export type RouteComparison = {
+  id: string
+  name: string
+  chosen: RouteOption
+  alternate: RouteOption
+}
+
 export type FootprintDetail = {
   total: Footprint
   /** Every ancestor in the dependency tree (including starters), deduped, in visit order. */
   ancestors: { id: string; name: string; isStarter: boolean }[]
   /** Only the steps that carry a nonzero cost — what the receipt highlights. */
   costSteps: FootprintStep[]
+  /**
+   * Nodes with more than one real recipe, where the road not taken would
+   * have changed the total — the replay mechanic. Only populated when the
+   * two routes actually differ; two zero-cost routes (Survival's candle
+   * currently) aren't worth surfacing as a comparison.
+   */
+  routeComparisons: RouteComparison[]
   /** Every source cited anywhere in the chain, deduped by URL. */
   sources: Source[]
+}
+
+/**
+ * Cost of a recipe's own subtree in isolation — its direct cost plus every
+ * ancestor's, deduped within just this walk. Used to compare "what if this
+ * fork had gone the other way," which for a route like recycled cotton isn't
+ * a single recipe's cost changing — it's an entire upstream node (raw
+ * cultivation) not existing on that path at all.
+ */
+function computeSubtreeCost(
+  recipe: RecipeDef,
+  recipesByOutput: Map<string, RecipeDef[]>,
+  starterSet: Set<string>,
+): Footprint {
+  const visited = new Set<string>()
+  let waterL = recipe.cost.waterL
+  let co2kg = recipe.cost.co2kg
+
+  function walk(id: string) {
+    if (visited.has(id) || starterSet.has(id)) return
+    visited.add(id)
+    const options = recipesByOutput.get(id)
+    if (!options || options.length === 0) return
+    const r = cheapestRoute(options)
+    waterL += r.cost.waterL
+    co2kg += r.cost.co2kg
+    for (const input of r.inputs) walk(input)
+  }
+
+  for (const input of recipe.inputs) walk(input)
+  return { waterL, co2kg: Math.round(co2kg * 1e6) / 1e6 }
 }
 
 /**
@@ -243,18 +295,43 @@ export type FootprintDetail = {
  * Returns the full tree, not just the total, so the receipt screen can show
  * its work — which steps carried real numbers, what the whole chain cites —
  * rather than presenting a total as if it fell from the sky.
+ *
+ * `chosenRoutes` maps an element id to the route the player actually used to
+ * discover it (from useGameState). Without it, a node with more than one
+ * real recipe falls back to `cheapestRoute`'s pick — but "cheapest" only
+ * compares each recipe's own direct cost, which is identical (often zero)
+ * for routes like virgin vs recycled cotton, where the real difference lives
+ * upstream. Left to that fallback, the receipt would show whichever route
+ * happens to be declared first in the data, regardless of what the player
+ * did — passing the player's actual choice is what makes "same target, a
+ * different way" describe reality instead of a coin flip.
  */
-export function computeFootprintDetail(data: RecipeData, targetId: string): FootprintDetail {
+export function computeFootprintDetail(
+  data: RecipeData,
+  targetId: string,
+  chosenRoutes?: Record<string, string | undefined>,
+): FootprintDetail {
   const recipesByOutput = buildRecipesByOutput(data)
   const starterSet = allStarterIds(data)
   const elementById = new Map(data.elements.map((el) => [el.id, el]))
   const visited = new Set<string>()
   const ancestors: FootprintDetail['ancestors'] = []
   const costSteps: FootprintStep[] = []
+  const routeComparisons: RouteComparison[] = []
   const sourcesSeen = new Set<string>()
   const sources: Source[] = []
   let waterL = 0
   let co2kg = 0
+
+  function pickRecipe(id: string, options: RecipeDef[]): RecipeDef {
+    if (options.length === 1) return options[0]
+    const wantedRoute = chosenRoutes?.[id]
+    if (wantedRoute !== undefined) {
+      const match = options.find((o) => o.route === wantedRoute)
+      if (match) return match
+    }
+    return cheapestRoute(options)
+  }
 
   function addSources(list: Source[]) {
     for (const source of list) {
@@ -275,7 +352,7 @@ export function computeFootprintDetail(data: RecipeData, targetId: string): Foot
     const options = recipesByOutput.get(id)
     if (!options || options.length === 0) return
 
-    const recipe = cheapestRoute(options)
+    const recipe = pickRecipe(id, options)
     addSources(recipe.sources)
     if (recipe.cost.waterL > 0 || recipe.cost.co2kg > 0) {
       costSteps.push({
@@ -285,6 +362,23 @@ export function computeFootprintDetail(data: RecipeData, targetId: string): Foot
         process: recipe.process,
       })
     }
+
+    if (options.length > 1) {
+      const alt = options.find((o) => o !== recipe)
+      if (alt) {
+        const chosenCost = computeSubtreeCost(recipe, recipesByOutput, starterSet)
+        const altCost = computeSubtreeCost(alt, recipesByOutput, starterSet)
+        if (chosenCost.waterL !== altCost.waterL || chosenCost.co2kg !== altCost.co2kg) {
+          routeComparisons.push({
+            id,
+            name: elementById.get(id)?.name ?? id,
+            chosen: { route: recipe.route, process: recipe.process, cost: chosenCost },
+            alternate: { route: alt.route, process: alt.process, cost: altCost },
+          })
+        }
+      }
+    }
+
     waterL += recipe.cost.waterL
     co2kg += recipe.cost.co2kg
     for (const input of recipe.inputs) visit(input)
@@ -296,6 +390,7 @@ export function computeFootprintDetail(data: RecipeData, targetId: string): Foot
     total: { waterL, co2kg: Math.round(co2kg * 1e6) / 1e6 },
     ancestors,
     costSteps,
+    routeComparisons,
     sources,
   }
 }

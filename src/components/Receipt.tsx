@@ -16,7 +16,16 @@ import { Card } from './ui/Card'
 type ReceiptProps = {
   element: ElementDef
   data: RecipeData
+  /** Which route the player actually took for each multi-route id (see useGameState). */
+  routes: Record<string, string | undefined>
   onClose: () => void
+}
+
+/** "2,340 L" or "178 g CO₂" — whichever side of a footprint is nonzero. */
+function formatFootprint(cost: { waterL: number; co2kg: number }): string {
+  if (cost.waterL > 0) return `${cost.waterL.toLocaleString()} L`
+  if (cost.co2kg > 0) return `${(cost.co2kg * 1000).toLocaleString()} g CO₂`
+  return '0'
 }
 
 /**
@@ -25,9 +34,9 @@ type ReceiptProps = {
  * asserting a total: the dependency tree, which specific steps carried a
  * real cost, and every source cited anywhere in the chain.
  */
-export function Receipt({ element, data, onClose }: ReceiptProps) {
-  const detail: FootprintDetail = computeFootprintDetail(data, element.id)
-  const { total, ancestors, costSteps, sources } = detail
+export function Receipt({ element, data, routes, onClose }: ReceiptProps) {
+  const detail: FootprintDetail = computeFootprintDetail(data, element.id, routes)
+  const { total, ancestors, costSteps, routeComparisons, sources } = detail
 
   // Ancestors minus the target itself — "what went into this."
   const ingredients = ancestors.filter((a) => a.id !== element.id)
@@ -118,6 +127,60 @@ export function Receipt({ element, data, onClose }: ReceiptProps) {
                   </li>
                 ))}
               </ul>
+            </div>
+          )}
+
+          {routeComparisons.length > 0 && (
+            <div className="flex flex-col gap-3">
+              <p className="text-xs font-extrabold tracking-wide text-muted uppercase">
+                Same target, a different way
+              </p>
+              {routeComparisons.map((rc) => {
+                // Compared per-dimension, not summed across units — water and
+                // CO2 are never meaningfully addable, and today no target has
+                // both nonzero at once anyway.
+                const waterDiff = rc.chosen.cost.waterL - rc.alternate.cost.waterL
+                const co2Diff = rc.chosen.cost.co2kg - rc.alternate.cost.co2kg
+                const saved =
+                  waterDiff > 0 || co2Diff > 0
+                    ? formatFootprint({
+                        waterL: Math.max(waterDiff, 0),
+                        co2kg: Math.max(co2Diff, 0),
+                      })
+                    : null
+                return (
+                  <div
+                    key={rc.id}
+                    className="flex flex-col gap-2 rounded-row border border-hairline p-3"
+                  >
+                    <p className="text-sm font-extrabold text-ink">{rc.name}</p>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="font-semibold text-ink">
+                        This time: {rc.chosen.route ?? rc.chosen.process} (
+                        {rc.chosen.process})
+                      </span>
+                      <span className="font-bold text-everyday">
+                        {formatFootprint(rc.chosen.cost)}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="font-semibold text-muted">
+                        Alternative: {rc.alternate.route ?? rc.alternate.process} (
+                        {rc.alternate.process})
+                      </span>
+                      <span className="font-bold text-muted">
+                        {formatFootprint(rc.alternate.cost)}
+                      </span>
+                    </div>
+                    {saved && (
+                      <p className="text-xs font-bold text-brand">
+                        The other route would have saved {saved}. Try it next
+                        time.
+                      </p>
+                    )}
+                  </div>
+                )
+              })}
             </div>
           )}
 

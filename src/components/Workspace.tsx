@@ -207,6 +207,7 @@ export function Workspace({ realm, data, game, onBack }: WorkspaceProps) {
         <Receipt
           element={receiptElement}
           data={data}
+          routes={game.routes}
           onClose={() => setReceiptElement(null)}
         />
       )}

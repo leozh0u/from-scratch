@@ -4,12 +4,23 @@ import type { RealmId, RecipeData, RecipeDef } from '../data/types'
 const STORAGE_KEY = 'from-scratch:discovered'
 
 type StoredState = Record<RealmId, string[]>
+/** Which route produced an element, for the (usually few) ids with more than one real recipe. */
+type RouteMap = Record<string, string | undefined>
 
-function readStorage(): StoredState | null {
+type PersistedState = {
+  discovered: StoredState
+  routes: RouteMap
+}
+
+function readStorage(): PersistedState | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return null
-    return JSON.parse(raw) as StoredState
+    const parsed = JSON.parse(raw)
+    // Pre-route-tracking saves lack `.discovered` — treat as absent rather
+    // than crash on a shape from before this field existed.
+    if (!parsed?.discovered) return null
+    return parsed as PersistedState
   } catch {
     // Corrupt or blocked storage (private mode, quota) — start fresh rather
     // than crash the app over save data.
@@ -17,7 +28,7 @@ function readStorage(): StoredState | null {
   }
 }
 
-function writeStorage(state: StoredState) {
+function writeStorage(state: PersistedState) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
   } catch {
@@ -47,16 +58,20 @@ export function useGameState(data: RecipeData) {
   const [recipeIndex] = useState(() => buildRecipeIndex(data))
 
   const [discovered, setDiscovered] = useState<StoredState>(() => {
-    const stored = readStorage()
+    const stored = readStorage()?.discovered
     return {
       survival: stored?.survival ?? [...data.starters.survival],
       everyday: stored?.everyday ?? [...data.starters.everyday],
     }
   })
 
+  // Only ever gets an entry for ids with more than one real recipe (see
+  // `combine` below) — most elements never appear here at all.
+  const [routes, setRoutes] = useState<RouteMap>(() => readStorage()?.routes ?? {})
+
   useEffect(() => {
-    writeStorage(discovered)
-  }, [discovered])
+    writeStorage({ discovered, routes })
+  }, [discovered, routes])
 
   const isDiscovered = useCallback(
     (elementId: string) =>
@@ -102,6 +117,14 @@ export function useGameState(data: RecipeData) {
         [outputRealm]: [...prev[outputRealm], recipe.output],
       }))
 
+      // Record which route the player actually took — needed the moment an
+      // output has more than one real recipe (e.g. virgin vs recycled
+      // cotton), since the receipt has to reflect what happened, not a
+      // solver-computed "cheapest" guess that may not match at all.
+      if (recipe.route !== undefined) {
+        setRoutes((prev) => ({ ...prev, [recipe.output]: recipe.route }))
+      }
+
       return { status: 'discovered', recipe, alreadyKnown: false }
     },
     [recipeIndex, isDiscovered, data.elements],
@@ -113,7 +136,8 @@ export function useGameState(data: RecipeData) {
       everyday: [...data.starters.everyday],
     }
     setDiscovered(fresh)
+    setRoutes({})
   }, [data.starters])
 
-  return { discovered, allDiscovered, isDiscovered, combine, reset }
+  return { discovered, allDiscovered, isDiscovered, combine, reset, routes }
 }
