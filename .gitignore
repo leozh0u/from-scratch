@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 .vercel
 .env*
+
+# Generated design exports (scripts/exportBackground.ts) — regenerable, not source
+design-exports

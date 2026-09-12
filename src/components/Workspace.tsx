@@ -47,6 +47,16 @@ export function Workspace({ realm, data, game, onBack }: WorkspaceProps) {
   const progress = targets.length === 0 ? 0 : (foundCount / targets.length) * 100
 
   /*
+   * The only onboarding this game gets: one line, shown whenever a
+   * first-time player is looking at empty slots with nothing discovered yet.
+   * It steps aside the moment a slot is filled or a result is showing, and
+   * disappears for good after the first real discovery. No tutorial screen,
+   * no modal — the empty slots plus this sentence are the whole explanation.
+   */
+  const isFirstRun = inventory.length === data.starters[realm].length
+  const showHint = isFirstRun && !feedback && slots[0] === null && slots[1] === null
+
+  /*
    * Picking from the inventory always fills the next empty slot — it never
    * toggles off an already-placed id. Some real recipes combine an element
    * with itself (cotton fiber + cotton fiber -> wick; crude oil + crude oil
@@ -146,7 +156,8 @@ export function Workspace({ realm, data, game, onBack }: WorkspaceProps) {
         </Button>
 
         {/* role="status" so a screen reader announces the result without a page jump */}
-        <p className="min-h-5 text-sm font-semibold text-ink" role="status">
+        <p className="min-h-5 text-sm font-semibold text-muted" role="status">
+          {showHint && 'Tap two elements below, then hit Combine.'}
           {feedback?.kind === 'already-known' && `You already have ${feedback.name}.`}
           {feedback?.kind === 'no-match' && 'Nothing happens.'}
         </p>
