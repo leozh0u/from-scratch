@@ -2,7 +2,7 @@
 
 **Generated from `src/data/gameData.ts` by `npm run walkthrough`. Do not edit by hand.**
 
-872 elements, 875 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
+902 elements, 905 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
 
 ## Survival
 
@@ -904,6 +904,36 @@ The main game. Everything a person can point at, and what it actually cost to ma
 | 855 | Watch | + Lever | Stopwatch | escapement | — |
 | 856 | Screen | + Stopwatch | Scoreboard | displaying | — |
 | 857 | Scoreboard | + Steel Frame | Stadium | tiering | — |
+| 858 | Plaster | + Cardboard | Wallboard | sandwiching | — |
+| 859 | Wallboard | + Timber Frame | Stud Wall | noggins | — |
+| 860 | Plank | + Paint | Skirting Board | scribing | — |
+| 861 | Sawmill | + Varnish | Floorboard | tonguing | — |
+| 862 | Pipe | + Render | Underfloor Heating | screeding | — |
+| 863 | Pitch | + Brick Wall | Damp Course | bedding | — |
+| 864 | Brick Wall | + Insulation | Cavity Wall | tying | — |
+| 865 | Stamped Part | + Screw | Bracket | pressing | — |
+| 866 | PVC | + Bracket | Guttering | falling | — |
+| 867 | Guttering | + Drain | Downpipe | jointing | — |
+| 868 | Downpipe | + Barrel | Water Butt | diverting | — |
+| 869 | PVC | + Tap | Hose | reinforcing | — |
+| 870 | Hose | + Gear | Lawn Sprinkler | oscillating | — |
+| 871 | Engine | + Scissors | Lawnmower | cylinder cutting | — |
+| 872 | Stainless Steel | + Steel Spring | Secateurs | bypass grinding | — |
+| 873 | Galvanised Steel | + Sieve | Watering Can | rosing | — |
+| 874 | Terracotta | + Kiln Shelf | Plant Pot | throwing | — |
+| 875 | Compost Heap | + Sieve | Potting Soil | blending | — |
+| 876 | Secateurs | + Potting Soil | Cutting | striking | — |
+| 877 | Cutting | + Lawnmower | Garden | planting | — |
+| 878 | Cutting | + Secateurs | Hedge | laying | — |
+| 879 | Plank | + Concrete | Fence | post setting | — |
+| 880 | Fence | + Hinge | Gate | bracing | — |
+| 881 | Fence | + Roof Tile | Shed | felting | — |
+| 882 | Timber Frame | + Clamp | Workbench | dogging | — |
+| 883 | Cast Iron | + Threaded Rod | Vice | casting | — |
+| 884 | Glass Bottle | + Ruler | Spirit Level | vialling | — |
+| 885 | Lead | + Cordage | Plumb Bob | pointing | — |
+| 886 | Steel Wire | + Bimetal Strip | Tape Measure | curving | — |
+| 887 | Stamped Part | + Hinge | Toolbox | folding | — |
 
 All 3 targets reachable. ✅
 
@@ -928,4 +958,4 @@ Elements with more than one real way to make them. The receipt tells you which r
 
 ## How much of the board is a dead end
 
-872 elements make 379,756 possible pairs, and 875 of them are recipes. **99.8% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
+902 elements make 406,351 possible pairs, and 905 of them are recipes. **99.8% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
