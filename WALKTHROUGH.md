@@ -2,7 +2,7 @@
 
 **Generated from `src/data/gameData.ts` by `npm run walkthrough`. Do not edit by hand.**
 
-632 elements, 635 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
+662 elements, 665 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
 
 ## Survival
 
@@ -664,6 +664,36 @@ The main game. Everything a person can point at, and what it actually cost to ma
 | 615 | Brick | + Render | Chimney | corbelling | — |
 | 616 | Chimney | + Cast Iron | Fireplace | fitting | — |
 | 617 | Bellows | + Trumpet | Organ | voicing | — |
+| 618 | Quarry | + Sieve | Quartz | sorting | — |
+| 619 | Crucible | + Alumina | Kiln Shelf | refractory casting | — |
+| 620 | Clay | + Kiln Shelf | Terracotta | biscuit firing | — |
+| 621 | Terracotta | + Quartz | Stoneware | vitrifying | — |
+| 622 | Quartz | + Transistor | Quartz Clock | oscillating | — |
+| 623 | Quartz Clock | + Laser | Atomic Clock | trapping | — |
+| 624 | Atomic Clock | + Radio | Time Signal | broadcasting | — |
+| 625 | Telescope | + Balance | Theodolite | levelling | — |
+| 626 | Theodolite | + Map | Survey | triangulating | — |
+| 627 | Survey | + Printing Plate | Contour Map | hachuring | — |
+| 628 | Camera | + Glider | Aerial Photo | overflying | — |
+| 629 | Satellite | + Camera | Satellite Image | imaging | — |
+| 630 | Satellite Image | + Forecast | Weather Satellite | orbiting | — |
+| 631 | Antenna | + Fresnel Lens | Radio Telescope | steering | — |
+| 632 | Quarry | + Mortar | Stone Arch | voussoir cutting | — |
+| 633 | Stone Arch | + Brick | Dome | centring | — |
+| 634 | Telescope | + Dome | Observatory | tracking | — |
+| 635 | Stone Arch | + Render | Vault | ribbing | — |
+| 636 | Blown Glass | + Lead | Stained Glass | leading | — |
+| 637 | Vault | + Stained Glass | Cathedral | buttressing | — |
+| 638 | Bell | + Timber Frame | Belfry | hanging | — |
+| 639 | Stone | + Survey | Sundial | gnomon setting | — |
+| 640 | Pot | + Valve | Water Clock | dripping | — |
+| 641 | Blown Glass | + Sugar | Hourglass | calibrating | — |
+| 642 | Sundial | + Printed Book | Calendar | intercalating | — |
+| 643 | Calendar | + Forecast | Almanac | compiling | — |
+| 644 | Almanac | + Calculator | Log Table | tabulating | — |
+| 645 | Log Table | + Plywood | Slide Rule | engraving | — |
+| 646 | Celluloid | + Printing Plate | Protractor | graduating | — |
+| 647 | Brass | + Needle | Dividers | pivoting | — |
 
 All 3 targets reachable. ✅
 
@@ -688,4 +718,4 @@ Elements with more than one real way to make them. The receipt tells you which r
 
 ## How much of the board is a dead end
 
-632 elements make 199,396 possible pairs, and 635 of them are recipes. **99.7% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
+662 elements make 218,791 possible pairs, and 665 of them are recipes. **99.7% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
