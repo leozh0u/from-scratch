@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { adjudicate } from '../adjudicator/client'
+import { explainFailure } from '../adjudicator/explain'
 import { resolveIcon } from '../data/iconRegistry'
 import type { ElementDef, RealmId, RecipeData, RecipeDef } from '../data/types'
 import type { useGameState } from '../hooks/useGameState'
@@ -32,7 +33,17 @@ type Slots = [string | null, string | null]
  */
 type Feedback =
   | { kind: 'already-known'; name: string }
-  | { kind: 'no-match'; explanation?: string }
+  | {
+      kind: 'no-match'
+      /** The instant, local answer. Always present — never a spinner. */
+      reason: string
+      /** The pair, kept so "why not" can ask about it after the fact. */
+      pair: [string, string]
+      names: [string, string]
+      /** Filled in only once the player actually asks. */
+      deeper?: string
+      asking?: boolean
+    }
 
 type Discovery = { element: ElementDef; recipe: RecipeDef }
 
@@ -151,16 +162,48 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
     } else if (result.status === 'already-known') {
       setFeedback({ kind: 'already-known', name: elementById(result.recipe.output).name })
     } else {
+      /*
+       * INSTANT FIRST, MODEL ONLY IF ASKED.
+       *
+       * This used to call Gemini on every failure and show "Hmm…" for the
+       * five to ten seconds it took to answer. Over 98% of attempts fail, so
+       * that was the game's most common interaction and it had a multi-second
+       * stall in it.
+       *
+       * The local rule table answers now, in well under a millisecond, and the
+       * model sits behind a "why not?" the player can press. That fixes the
+       * stall, scales the Gemini bill with curiosity rather than with
+       * flailing, and puts the model exactly where it is worth waiting for —
+       * the moment somebody actually wants to know.
+       */
       playNoMatch()
-      const attempt = ++attemptRef.current
-      setFeedback({ kind: 'no-match' })
-      adjudicate(a, b, elementById(a).name, elementById(b).name).then((explanation) => {
-        // A newer attempt has already started — this response is stale.
-        if (attemptRef.current === attempt) {
-          setFeedback({ kind: 'no-match', explanation })
-        }
+      ++attemptRef.current
+      const { message } = explainFailure(a, b)
+      setFeedback({
+        kind: 'no-match',
+        reason: message,
+        pair: [a, b],
+        names: [elementById(a).name, elementById(b).name],
       })
     }
+  }
+
+  function askWhyNot() {
+    if (!feedback || feedback.kind !== 'no-match' || feedback.deeper) return
+    playPress()
+    const attempt = ++attemptRef.current
+    setFeedback({ ...feedback, asking: true })
+    const [a, b] = feedback.pair
+    const [nameA, nameB] = feedback.names
+    void adjudicate(a, b, nameA, nameB).then((deeper) => {
+      // A newer attempt has already started — this response is stale.
+      if (attemptRef.current !== attempt) return
+      setFeedback((current) =>
+        current && current.kind === 'no-match'
+          ? { ...current, deeper, asking: false }
+          : current,
+      )
+    })
   }
 
   return (
@@ -254,11 +297,34 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
         </PixelButton>
 
         {/* role="status" so a screen reader announces the result without a page jump */}
-        <p className="min-h-5 font-display text-[11px] leading-relaxed lowercase text-star-mid" role="status">
+        <p
+          className="min-h-5 max-w-[34ch] text-center font-display text-[10px] leading-[2] lowercase text-star-mid"
+          role="status"
+        >
           {showHint && 'pick two things. see what happens.'}
-          {feedback?.kind === 'already-known' && `You already have ${feedback.name}.`}
-          {feedback?.kind === 'no-match' && (feedback.explanation ?? 'Hmm…')}
+          {feedback?.kind === 'already-known' && `already have ${feedback.name}.`}
+          {feedback?.kind === 'no-match' && (feedback.deeper ?? feedback.reason)}
         </p>
+
+        {/*
+         * "WHY NOT" — the model, on request.
+         *
+         * Shown only after a failure, and only until it has been answered.
+         * Putting Gemini behind a press rather than in front of every failure
+         * is what removes the five-to-ten-second stall from the game's most
+         * common interaction, and it means the wait only ever happens to
+         * someone who has actively asked for it.
+         */}
+        {feedback?.kind === 'no-match' && !feedback.deeper && (
+          <PixelButton
+            tone="default"
+            unit={3}
+            disabled={feedback.asking}
+            onClick={askWhyNot}
+          >
+            {feedback.asking ? 'asking...' : 'why not?'}
+          </PixelButton>
+        )}
       </Card>
 
       <div className="grid grid-cols-4 gap-3 sm:grid-cols-6">
