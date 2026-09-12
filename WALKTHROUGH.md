@@ -2,7 +2,7 @@
 
 **Generated from `src/data/gameData.ts` by `npm run walkthrough`. Do not edit by hand.**
 
-422 elements, 425 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
+452 elements, 455 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
 
 ## Survival
 
@@ -454,6 +454,36 @@ The main game. Everything a person can point at, and what it actually cost to ma
 | 405 | Power Line | + Power Station | Power Grid | interconnecting | — |
 | 406 | Bakelite | + Brass | Plug | moulding | — |
 | 407 | Tin | + Glass Bottle | Fuse | calibrating | — |
+| 408 | Celluloid | + Lodestone | Magnetic Tape | coating | — |
+| 409 | Magnetic Tape | + Speaker | Tape Recorder | biasing | — |
+| 410 | Magnetic Tape | + Bearing | Hard Drive | spinning | — |
+| 411 | Transistor | + Microchip | Memory Chip | etching | — |
+| 412 | Telephone | + Memory Chip | Modem | modulating | — |
+| 413 | Modem | + Optic Fibre | Router | routing | — |
+| 414 | Router | + Power Grid | Internet | peering | — |
+| 415 | Computer | + Air Conditioner | Server | racking | — |
+| 416 | Server | + Power Station | Data Centre | cooling | — |
+| 417 | Satellite | + Memory Chip | GPS | triangulating | — |
+| 418 | Screen | + Copper Wire | Touchscreen | layering | — |
+| 419 | Phone | + GPS | Smartphone | integrating | — |
+| 420 | Brine | + Sieve | Lithium | evaporating | — |
+| 421 | Lithium | + Polyprop | Lithium Battery | layering | — |
+| 422 | Lithium Battery | + Car Body | Electric Car | assembling | — |
+| 423 | Electric Car | + Power Line | Charging Point | installing | — |
+| 424 | Fridge | + Valve | Heat Pump | reversing | — |
+| 425 | Glass Pane | + Air Conditioner | Insulation | spinning | — |
+| 426 | Glass Pane | + Argon | Double Glazing | sealing | — |
+| 427 | Cast Iron | + Valve | Radiator | casting | — |
+| 428 | Radiator | + Steam Boiler | Central Heating | plumbing | — |
+| 429 | Thermometer | + Transistor | Thermostat | switching | — |
+| 430 | Transistor | + Laser | Smoke Alarm | detecting | — |
+| 431 | Compressed Air | + Soda Ash | Fire Bottle | charging | — |
+| 432 | Valve | + Glass Bottle | Sprinkler | plumbing | — |
+| 433 | Copper Wire | + Skyscraper | Lightning Rod | earthing | — |
+| 434 | Brass | + Compass | Weather Vane | balancing | — |
+| 435 | Glass Bottle | + Balance | Rain Gauge | graduating | — |
+| 436 | Rain Gauge | + Weather Vane | Weather Station | logging | — |
+| 437 | Weather Station | + Computer | Forecast | modelling | — |
 
 All 3 targets reachable. ✅
 
@@ -478,4 +508,4 @@ Elements with more than one real way to make them. The receipt tells you which r
 
 ## How much of the board is a dead end
 
-422 elements make 88,831 possible pairs, and 425 of them are recipes. **99.5% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
+452 elements make 101,926 possible pairs, and 455 of them are recipes. **99.6% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
