@@ -16,10 +16,10 @@
  * `seed.ts` exists precisely as a hand-computed fixture for that trap, with
  * the right answers written in its header, and nothing was reading them.
  */
-import { resolveIcon } from '../src/data/iconRegistry'
+import { COMPOSED, resolveIcon } from '../src/data/iconRegistry'
 import { FLAME } from '../src/art/sprites'
 import { checkForms, composeSprite } from '../src/art/forms'
-import { COMPOSED } from '../src/data/iconRegistry'
+
 import { GAME_DATA } from '../src/data/gameData'
 import { wouldCycle, structuralProblems } from './import'
 import { SEED_DATA } from '../src/data/seed'
@@ -396,14 +396,62 @@ console.log('\n=== every element has its own art ===')
   for (const element of GAME_DATA.elements) {
     const sprite = resolveIcon(element.icon)
     if (new Set(sprite.rows.map((r) => r.length)).size !== 1) ragged.push(element.id)
-    const art = JSON.stringify(sprite.rows)
-    if (art === flame && element.id !== 'fire') fallenBack.push(element.id)
+    /*
+     * The WHOLE sprite, rows and palette, not the rows alone.
+     *
+     * Rows alone was right while every icon was hand-drawn and wrong the
+     * moment the shared form vocabulary landed: two elements composed from
+     * the same form have identical rows by design, and that is the entire
+     * point of having forms — twenty shapes is what lets three hundred
+     * elements have art at all. Comparing rows only would have capped the
+     * game at twenty composed icons.
+     *
+     * What still has to hold is that they are TELLABLE APART, and colour is
+     * what does that. So duplicates are full-sprite duplicates, and the
+     * separate check below puts a floor on how close two same-form colours
+     * may be.
+     */
+    const art = JSON.stringify(sprite)
+    if (JSON.stringify(sprite.rows) === flame && element.id !== 'fire') fallenBack.push(element.id)
     byArt.set(art, [...(byArt.get(art) ?? []), element.id])
   }
 
   const shared = [...byArt.values()].filter((ids) => ids.length > 1)
   ok('no element falls back to the flame', fallenBack.length === 0, fallenBack.join(', '))
   ok('no two elements share a sprite', shared.length === 0, shared.map((s) => s.join(' = ')).join(' | '))
+
+  /*
+   * Two elements drawn from the same form are the same silhouette, so the
+   * colour is doing all the work of telling them apart — and these are read
+   * at scale 2 in the target list, where a pixel is a pixel and nothing else
+   * survives. A pair of near-identical greys is not two icons, it is one icon
+   * and a bug nobody notices.
+   *
+   * Distance is plain RGB rather than a perceptual space. It is coarse, and
+   * at this size the question is only "are these obviously different", which
+   * coarse answers fine.
+   */
+  const byForm = new Map<string, { id: string; colour: string }[]>()
+  for (const [id, recipe] of Object.entries(COMPOSED)) {
+    byForm.set(recipe.form, [...(byForm.get(recipe.form) ?? []), { id, colour: recipe.colour }])
+  }
+  const tooClose: string[] = []
+  let closest = Infinity
+  for (const [, entries] of byForm) {
+    for (let i = 0; i < entries.length; i++) {
+      for (let j = i + 1; j < entries.length; j++) {
+        const rgb = (hex: string) =>
+          [1, 3, 5].map((k) => parseInt(hex.slice(k, k + 2), 16))
+        const a = rgb(entries[i].colour), b = rgb(entries[j].colour)
+        const d = Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2])
+        closest = Math.min(closest, d)
+        if (d < 60) tooClose.push(`${entries[i].id} / ${entries[j].id} (${Math.round(d)})`)
+      }
+    }
+  }
+  ok('two elements sharing a form are obviously different colours',
+     tooClose.length === 0,
+     tooClose.length ? tooClose.join(', ') : `closest same-form pair is ${Math.round(closest)} apart`)
   // Ragged rows misalign silently in the renderer rather than erroring.
   ok('every sprite is rectangular', ragged.length === 0, ragged.join(', '))
 }

@@ -2,7 +2,7 @@
 
 **Generated from `src/data/gameData.ts` by `npm run walkthrough`. Do not edit by hand.**
 
-72 elements, 74 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
+85 elements, 87 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
 
 ## Survival
 
@@ -103,6 +103,19 @@ The main game. Everything a person can point at, and what it actually cost to ma
 | 55 | Beeswax | + Cordage | Candle _(beeswax)_ | dipping | — |
 | 56 | Natural Gas | + Fire | Butane | fractionating | — |
 | 57 | Butane | + High-Carbon Steel | Lighter | assembling | — |
+| 58 | Bark | + Fire | Wood Ash | ashing | — |
+| 59 | Wood Ash | + Water | Potash | leaching | — |
+| 60 | Sodium Hydroxide | + Beeswax | Soap | saponifying | — |
+| 61 | Pig Iron | + Limestone | Slag | fluxing | — |
+| 62 | Slag | + Cement | Slag Cement | grinding | — |
+| 63 | High-Carbon Steel | + Water | Hardened Steel | quenching | — |
+| 64 | Hardened Steel | + Fire | Tempered Steel | tempering | — |
+| 65 | Wood | + Wrought Iron | Plank | sawing | — |
+| 66 | Plank | + Wrought Iron | Cart Wheel | wheelwrighting | — |
+| 67 | Paper | + Sewing Thread | Book | bookbinding | — |
+| 68 | Paper | + Paper | Cardboard | corrugating | — |
+| 69 | Concrete | + High-Carbon Steel | Reinforced Concrete | reinforcing | — |
+| 70 | Slaked Lime | + Water | Whitewash | thinning | — |
 
 All 3 targets reachable. ✅
 
@@ -126,4 +139,4 @@ Elements with more than one real way to make them. The receipt tells you which r
 
 ## How much of the board is a dead end
 
-72 elements make 2,556 possible pairs, and 74 of them are recipes. **97.1% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
+85 elements make 3,570 possible pairs, and 87 of them are recipes. **97.6% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.

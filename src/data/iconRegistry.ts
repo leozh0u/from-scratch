@@ -202,6 +202,22 @@ const PLACEHOLDER = FLAME
  * replaces them.
  */
 export const COMPOSED: Record<string, { form: FormId; colour: string }> = {
+  // The first import-gate batch. One line each, from the shared form
+  // vocabulary in art/forms.ts — which is what made a batch this size a
+  // half-hour job rather than a half-day of drawing.
+  wood_ash: { form: 'heap', colour: '#8d8880' },
+  potash: { form: 'powder', colour: '#e3dcc4' },
+  soap: { form: 'bar', colour: '#b9d4ad' },
+  slag: { form: 'lump', colour: '#5d6157' },
+  slag_cement: { form: 'powder', colour: '#5d6b7a' },
+  hardened_steel: { form: 'ingot', colour: '#8794a8' },
+  tempered_steel: { form: 'ingot', colour: '#7a5a3c' },
+  plank: { form: 'board', colour: '#d8a86a' },
+  cart_wheel: { form: 'wheel', colour: '#7a4f2c' },
+  book: { form: 'book', colour: '#8e3242' },
+  cardboard: { form: 'sheet', colour: '#a8703a' },
+  reinforced_concrete: { form: 'brick', colour: '#8d8d91' },
+  whitewash: { form: 'liquid', colour: '#e8e6df' },
   /*
    * The first two elements drawn from the vocabulary, and they are here
    * because the contact sheet caught them being wrong.

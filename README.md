@@ -35,7 +35,7 @@ ancestors back through the ember and the hand drill to a stone and a stick.
 That is why Survival comes first: not as gating, but because the graph
 genuinely requires it.
 
-**72 elements, 74 recipes, and thirteen of them have more than one real route.**
+**85 elements, 87 recipes, and thirteen of them have more than one real route.**
 The receipt records which road you took.
 
 ---

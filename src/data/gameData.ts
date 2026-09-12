@@ -130,6 +130,35 @@ export const GAME_DATA: RecipeData = {
     { id: 'candle', name: 'Candle', icon: 'candle', realm: 'everyday', blurb: "Wax and a braided wick. The wick is not what burns: it draws liquid wax up by capillary action and the wax burns at the top, which is why the thing lasts hours instead of seconds.", sources: [{ label: 'Candle', url: 'https://en.wikipedia.org/wiki/Candle' }] },
     { id: 'butane', name: 'Butane', icon: 'butane', realm: 'everyday', blurb: "Pulled out of natural gas by chilling it. It goes liquid under gentle pressure, and that is the only reason a lighter fits in a pocket.", sources: [{ label: 'Butane', url: 'https://en.wikipedia.org/wiki/Butane' }] },
     { id: 'lighter', name: 'Lighter', icon: 'lighter', realm: 'everyday', blurb: "Fuel, a valve, a flint and a pressed steel case. The end of a road that started with a stick spun between two palms.", sources: [{ label: 'Lighter', url: 'https://en.wikipedia.org/wiki/Lighter' }] },
+
+    /*
+     * THE FIRST BATCH THROUGH THE IMPORT GATE.
+     *
+     * Every citation below is `referenced` rather than `sourced`: the URL was
+     * fetched, answered, and its page title checked against the label by
+     * `npm run links`. Nobody has sat and read all thirteen articles, and the
+     * game says so on the card rather than implying otherwise. Which is also
+     * why every one of these recipes costs ZERO_COST — a machine-checked link
+     * is no evidence at all for a number, and `npm test` fails the build if
+     * one ever tries to carry one.
+     *
+     * The gate rejected one of the thirteen on the way in: a citation labelled
+     * "Limewash" pointing at an article that redirects to "Whitewash". That is
+     * exactly the class of mistake it exists to catch, and it was mine.
+     */
+    { id: 'wood_ash', name: 'Wood Ash', icon: 'wood_ash', realm: 'everyday', blurb: "What is left when a plant burns and the carbon has gone. Mostly calcium and potassium, which is to say most of what the tree pulled out of the ground in the first place.", sources: [{ label: 'Wood ash', url: 'https://en.wikipedia.org/wiki/Wood_ash', tier: 'referenced' }] },
+    { id: 'potash', name: 'Potash', icon: 'potash', realm: 'everyday', blurb: "Ash soaked in water, strained, and the liquid boiled dry in a pot. The name is not a metaphor. It was the first industrial alkali and it came out of a fireplace.", sources: [{ label: 'Potash', url: 'https://en.wikipedia.org/wiki/Potash', tier: 'referenced' }] },
+    { id: 'soap', name: 'Soap', icon: 'soap', realm: 'everyday', blurb: "One end of the molecule wants water and the other wants grease, so it stands between them and refuses to choose. That is the entire trick, and it has not been improved on.", sources: [{ label: 'Saponification', url: 'https://en.wikipedia.org/wiki/Saponification', tier: 'referenced' }] },
+    { id: 'slag', name: 'Slag', icon: 'slag', realm: 'everyday', blurb: "The furnace's leftovers, floated off the top. For centuries it went on a heap; now it goes into cement, which is one of the better things that happened to concrete.", sources: [{ label: 'Slag', url: 'https://en.wikipedia.org/wiki/Slag', tier: 'referenced' }] },
+    { id: 'slag_cement', name: 'Slag Cement', icon: 'slag_cement', realm: 'everyday', blurb: "Ground slag standing in for part of the clinker. Since the clinker is where nearly all the CO2 in cement comes from, replacing some of it with something already made is the whole point.", sources: [{ label: 'Ground granulated blast-furnace slag', url: 'https://en.wikipedia.org/wiki/Ground_granulated_blast-furnace_slag', tier: 'referenced' }] },
+    { id: 'hardened_steel', name: 'Hardened Steel', icon: 'hardened_steel', realm: 'everyday', blurb: "Heated, then cooled faster than the carbon inside it can move. Everything is caught where it stood, and the result is hard enough to cut other steel and brittle enough to snap.", sources: [{ label: 'Quenching', url: 'https://en.wikipedia.org/wiki/Quenching', tier: 'referenced' }] },
+    { id: 'tempered_steel', name: 'Tempered Steel', icon: 'tempered_steel', realm: 'everyday', blurb: "Warmed again, gently, to give back a little of the hardness in exchange for not shattering. Every blade and every spring is somewhere on that trade.", sources: [{ label: 'Tempering (metallurgy)', url: 'https://en.wikipedia.org/wiki/Tempering_(metallurgy)', tier: 'referenced' }] },
+    { id: 'plank', name: 'Plank', icon: 'plank', realm: 'everyday', blurb: "A log opened along its length. Cutting with the grain rather than across it is why a plank carries weight and a slice of trunk does not.", sources: [{ label: 'Lumber', url: 'https://en.wikipedia.org/wiki/Lumber', tier: 'referenced' }] },
+    { id: 'cart_wheel', name: 'Cart Wheel', icon: 'cart_wheel', realm: 'everyday', blurb: "Spokes, a rim in segments, and an iron tyre shrunk on red hot. As it cools it pulls the whole wheel into compression, so the thing holding it together is the cooling.", sources: [{ label: 'Wheelwright', url: 'https://en.wikipedia.org/wiki/Wheelwright', tier: 'referenced' }] },
+    { id: 'book', name: 'Book', icon: 'book', realm: 'everyday', blurb: "Sheets folded into gatherings and sewn through the fold. Glue alone gives you a book that loses its pages; thread gives you one that opens flat and survives.", sources: [{ label: 'Bookbinding', url: 'https://en.wikipedia.org/wiki/Bookbinding', tier: 'referenced' }] },
+    { id: 'cardboard', name: 'Cardboard', icon: 'cardboard', realm: 'everyday', blurb: "A fluted sheet glued between two flat ones. The strength is in the shape rather than the material, which is why a box holds you and the paper it is made of does not.", sources: [{ label: 'Corrugated fiberboard', url: 'https://en.wikipedia.org/wiki/Corrugated_fiberboard', tier: 'referenced' }] },
+    { id: 'reinforced_concrete', name: 'Reinforced Concrete', icon: 'reinforced_concrete', realm: 'everyday', blurb: "Concrete is strong pushed and weak pulled; steel is the other way round. They also expand at almost exactly the same rate with heat, which is the coincidence the modern world is built on.", sources: [{ label: 'Reinforced concrete', url: 'https://en.wikipedia.org/wiki/Reinforced_concrete', tier: 'referenced' }] },
+    { id: 'whitewash', name: 'Whitewash', icon: 'whitewash', realm: 'everyday', blurb: "Slaked lime thinned with water and painted on. It dries, then slowly takes CO2 back out of the air and turns into limestone again, which is where it started.", sources: [{ label: 'Whitewash', url: 'https://en.wikipedia.org/wiki/Whitewash', tier: 'referenced' }] },
   ],
   recipes: [
     {
@@ -709,6 +738,24 @@ export const GAME_DATA: RecipeData = {
       cost: ZERO_COST,
       sources: [{ label: 'Lighter', url: 'https://en.wikipedia.org/wiki/Lighter' }],
     },
+
+    /*
+     * The first batch through `npm run import`. Referenced citations, zero
+     * cost — see the note above the elements they produce.
+     */
+    { inputs: ['bark', 'fire'], output: 'wood_ash', process: 'ashing', cost: ZERO_COST, sources: [{ label: 'Wood ash', url: 'https://en.wikipedia.org/wiki/Wood_ash', tier: 'referenced' }] },
+    { inputs: ['wood_ash', 'water'], output: 'potash', process: 'leaching', cost: ZERO_COST, sources: [{ label: 'Potash', url: 'https://en.wikipedia.org/wiki/Potash', tier: 'referenced' }] },
+    { inputs: ['sodium_hydroxide', 'beeswax'], output: 'soap', process: 'saponifying', cost: ZERO_COST, sources: [{ label: 'Saponification', url: 'https://en.wikipedia.org/wiki/Saponification', tier: 'referenced' }] },
+    { inputs: ['pig_iron', 'limestone'], output: 'slag', process: 'fluxing', cost: ZERO_COST, sources: [{ label: 'Slag', url: 'https://en.wikipedia.org/wiki/Slag', tier: 'referenced' }] },
+    { inputs: ['slag', 'cement'], output: 'slag_cement', process: 'grinding', cost: ZERO_COST, sources: [{ label: 'Ground granulated blast-furnace slag', url: 'https://en.wikipedia.org/wiki/Ground_granulated_blast-furnace_slag', tier: 'referenced' }] },
+    { inputs: ['high_carbon_steel', 'water'], output: 'hardened_steel', process: 'quenching', cost: ZERO_COST, sources: [{ label: 'Quenching', url: 'https://en.wikipedia.org/wiki/Quenching', tier: 'referenced' }] },
+    { inputs: ['hardened_steel', 'fire'], output: 'tempered_steel', process: 'tempering', cost: ZERO_COST, sources: [{ label: 'Tempering (metallurgy)', url: 'https://en.wikipedia.org/wiki/Tempering_(metallurgy)', tier: 'referenced' }] },
+    { inputs: ['wood', 'wrought_iron'], output: 'plank', process: 'sawing', cost: ZERO_COST, sources: [{ label: 'Lumber', url: 'https://en.wikipedia.org/wiki/Lumber', tier: 'referenced' }] },
+    { inputs: ['plank', 'wrought_iron'], output: 'cart_wheel', process: 'wheelwrighting', cost: ZERO_COST, sources: [{ label: 'Wheelwright', url: 'https://en.wikipedia.org/wiki/Wheelwright', tier: 'referenced' }] },
+    { inputs: ['paper', 'sewing_thread'], output: 'book', process: 'bookbinding', cost: ZERO_COST, sources: [{ label: 'Bookbinding', url: 'https://en.wikipedia.org/wiki/Bookbinding', tier: 'referenced' }] },
+    { inputs: ['paper', 'paper'], output: 'cardboard', process: 'corrugating', cost: ZERO_COST, sources: [{ label: 'Corrugated fiberboard', url: 'https://en.wikipedia.org/wiki/Corrugated_fiberboard', tier: 'referenced' }] },
+    { inputs: ['concrete', 'high_carbon_steel'], output: 'reinforced_concrete', process: 'reinforcing', cost: ZERO_COST, sources: [{ label: 'Reinforced concrete', url: 'https://en.wikipedia.org/wiki/Reinforced_concrete', tier: 'referenced' }] },
+    { inputs: ['slaked_lime', 'water'], output: 'whitewash', process: 'thinning', cost: ZERO_COST, sources: [{ label: 'Whitewash', url: 'https://en.wikipedia.org/wiki/Whitewash', tier: 'referenced' }] },
   ],
   starters: {
     // Three. Everything else in the game is earned from them.

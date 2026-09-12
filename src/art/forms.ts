@@ -32,6 +32,7 @@ export type FormId =
   | 'powder' | 'liquid' | 'ingot' | 'sheet' | 'lump' | 'fibre' | 'cloth'
   | 'gas' | 'crystal' | 'bottle' | 'tool' | 'machine' | 'plant' | 'log'
   | 'coil' | 'brick' | 'pellet' | 'flame' | 'board' | 'wheel'
+  | 'book' | 'bar' | 'heap'
 
 /** Rows only: the palette is filled in per element by `composeSprite`. */
 export const FORMS: Record<FormId, string[]> = {
@@ -107,13 +108,52 @@ export const FORMS: Record<FormId, string[]> = {
     '.....a.....','....aba....','...abbba...','..abbbbba..','..kbbbbbk..',
     '.kcbbbbbck.','.kccbbbcck.','..kcccck...','...kkkk....','...........','...........',
   ],
+  /*
+   * A BOOK. Cover, a stack of leaves down one side, and a spine.
+   *
+   * Added rather than reusing `board`, which is what the first pass did: a
+   * red plank is not a book, it is a red plank. A form earns its place in the
+   * vocabulary when it is the difference between an icon and a colour swatch.
+   */
+  book: [
+    '...........','.kkkkkkkkk.','.kabbbbbbck','.kabbbbbbck','.kabbbbbbck',
+    '.kabbbbbbck','.kabbbbbbck','.kabbbbbbck','.kcccccccck','.kkkkkkkkk.','...........',
+  ],
+  /*
+   * A BAR: a rounded block with a stamped hollow across it, which is what a
+   * pressed cake of anything looks like. Distinct from `brick` by being a
+   * single object rather than stacked courses.
+   */
+  bar: [
+    '...........','...........','..kkkkkkk..','.kaaaaaaak.','kabbbbbbbak',
+    'kabkkkkkbak','kabbbbbbbak','kcccccccccK','.kkkkkkkkk.','...........','...........',
+  ],
+  /*
+   * A HEAP, for anything poured out rather than measured: a loose pile with a
+   * ragged top edge, where `powder` is a neat cone. Two forms because the game
+   * now has half a dozen powders and they cannot all be the same triangle.
+   */
+  heap: [
+    '...........','...........','...........','.....k.....','....kak....',
+    '..kkaaakk..','.kaaabaaak.','kabbbbbbbak','kcccccccccK','kkkkkkkkkkk','...........',
+  ],
   board: [
     '...........','...........','...........','kkkkkkkkkkk','kaaaaaaaaak',
     'kbbbbbbbbbk','kcccccccccK','kkkkkkkkkkk','...........','...........','...........',
   ],
+  /*
+   * ROUND, WITH SPOKES.
+   *
+   * The first one was a squared-off ring and on the contact sheet it read as a
+   * crate — worse, as the same crate the Wood icon already is. A wheel is
+   * recognised by two things at this size and neither of them is the tyre: it
+   * is round, and light shows through between the spokes. So the rim steps
+   * like a circle and the interior is transparent except for four spokes and a
+   * hub.
+   */
   wheel: [
-    '...........','...kkkkk...','..kaaaaak..','.kakkkkkak.','.kakabakak.',
-    '.kakabakak.','.kakkkkkak.','..kcccccK..','...kkkkk...','...........','...........',
+    '...kkkkk...','.kkaaaaakk.','.kakk.kkak.','kak.kbk.kak','kakkkbkkkak',
+    'ka.bbbbbb.k','kakkkckkkak','kck.kck.kck','.kckk.kkck.','.kkcccccKk.','...kkkkk...',
   ],
 }
 
