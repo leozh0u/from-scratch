@@ -2,7 +2,7 @@
 
 **Generated from `src/data/gameData.ts` by `npm run walkthrough`. Do not edit by hand.**
 
-662 elements, 665 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
+692 elements, 695 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
 
 ## Survival
 
@@ -694,6 +694,36 @@ The main game. Everything a person can point at, and what it actually cost to ma
 | 645 | Log Table | + Plywood | Slide Rule | engraving | — |
 | 646 | Celluloid | + Printing Plate | Protractor | graduating | — |
 | 647 | Brass | + Needle | Dividers | pivoting | — |
+| 648 | Butter | + Furnace | Tallow | rendering | — |
+| 649 | Beeswax | + Plank | Wax Tablet | recessing | — |
+| 650 | Beeswax | + Ring | Seal | impressing | — |
+| 651 | Tallow | + Cordage | Tallow Candle | dipping | — |
+| 652 | Tallow | + Filtered Water | Lamp Oil | clarifying | — |
+| 653 | Refinery | + Sulfuric Acid | Kerosene | treating | — |
+| 654 | Kerosene | + Blown Glass | Oil Lamp | wicking | — |
+| 655 | Crucible | + Pipe | Retort | sealing | — |
+| 656 | Coke | + Retort | Gasworks | carbonising | — |
+| 657 | Coal Tar | + Pipeline | Gas Lamp | mantling | — |
+| 658 | Retort | + Water Filter | Still | condensing | — |
+| 659 | Still | + Seaweed | Perfume | enfleurage | — |
+| 660 | Still | + Plant Fibre | Essential Oil | steam distilling | — |
+| 661 | Seed | + Greenhouse | Lavender | cultivating | — |
+| 662 | Plank | + Straw | Beehive | skepping | — |
+| 663 | Beehive | + Lavender | Pollination | foraging | — |
+| 664 | Pollination | + Irrigation | Orchard | grafting | — |
+| 665 | Orchard | + Barrel | Cider | pressing | — |
+| 666 | Orchard | + Sugar | Jam | setting | — |
+| 667 | Blown Glass | + Bottle Cap | Jar | sealing | — |
+| 668 | Jar | + Vinegar | Pickle | pickling | — |
+| 669 | Seaweed | + Quarry | Salt Pan | evaporating | — |
+| 670 | Windmill | + Pump | Windpump | gearing | — |
+| 671 | Windpump | + Dam | Polder | draining | — |
+| 672 | Polder | + Clay | Dyke | embanking | — |
+| 673 | Dyke | + Hydraulic Press | Flood Gate | sluicing | — |
+| 674 | Dam | + Aqueduct | Reservoir | impounding | — |
+| 675 | Reservoir | + Steel Frame | Water Tower | standpiping | — |
+| 676 | Water Tower | + Valve | Hydrant | casting | — |
+| 677 | Hydrant | + Lorry | Fire Engine | pumping | — |
 
 All 3 targets reachable. ✅
 
@@ -718,4 +748,4 @@ Elements with more than one real way to make them. The receipt tells you which r
 
 ## How much of the board is a dead end
 
-662 elements make 218,791 possible pairs, and 665 of them are recipes. **99.7% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
+692 elements make 239,086 possible pairs, and 695 of them are recipes. **99.7% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
