@@ -4,7 +4,8 @@ import { PixelEarth } from './PixelEarth'
 import { Starfield } from './Starfield'
 import { PixelButton } from './ui/PixelButton'
 import { ConfirmDialog } from './ui/ConfirmDialog'
-import { ArcTitle, fitArcUnit } from './ArcTitle'
+import { ArcTitle } from './ArcTitle'
+import { startScreenLayout } from './startLayout'
 import { useViewport } from '../hooks/useViewport'
 
 /**
@@ -43,45 +44,22 @@ export function StartScreen({
   everydayUnlocked,
   onReset,
 }: StartScreenProps) {
-  const { width } = useViewport()
+  const { width, height } = useViewport()
   const [confirming, setConfirming] = useState(false)
 
   /*
-   * Integer scale, chosen from the viewport rather than set in CSS.
+   * Every size on this screen comes from one place, and it reads BOTH axes.
    *
-   * A pixel sprite drawn at 7.5x has soft edges and the whole illusion
-   * collapses, so this steps between whole numbers instead of stretching.
-   * The globe is meant to be cropped by the bottom of the frame — it should
-   * read as enormous and too big for the screen, not as a ball sitting on it.
-   */
-  const scale = width < 560 ? 7 : width < 900 ? 10 : 13
-  /*
-   * The buttons get a much larger unit than the layout does.
+   * It used to read width alone, which is correct until a phone is turned
+   * sideways: at 844x390 the width says there is plenty of room, so the
+   * wordmark and the buttons were drawn near desktop size and all three menu
+   * buttons fell below a 390px fold. This screen clips its overflow so the
+   * planet can be cropped, so they were not awkward, they were unreachable.
    *
-   * Every dimension inside PixelButton is a multiple of this — outline, bevel,
-   * the depth of the extruded base, the corner treads. At a unit of 4 those
-   * are all thin lines and the control reads as a styled div. At 7 they are
-   * slabs, which is what makes it read as a sprite. "Not pixellated enough"
-   * is mostly a question of how coarse the blocks are.
+   * See `startLayout.ts`; `scripts/layouttest.ts` asserts it fits on every
+   * orientation of a dozen real devices.
    */
-  const unit = width < 560 ? 4 : width < 900 ? 6 : 7
-
-  /*
-   * The wordmark gets its own, much larger unit. It is the thing the screen is
-   * built around — the planet is what it stands on, not the subject — so it is
-   * sized against the viewport rather than kept in step with the buttons.
-   * Stepped, not fluid, because a pixel font only renders cleanly at whole
-   * multiples of its design size.
-   */
-  /*
-   * Measured, not guessed. `fitArcUnit` returns the largest whole unit at
-   * which "From Scratch" still fits the room it has, so the wordmark is as big
-   * as the window allows and never runs off the edge or under the reset
-   * button in the corner. 0.84 of the viewport leaves the margins; the ceiling
-   * of 12 is what it looks like on a laptop, where there is more width than
-   * the title should take.
-   */
-  const titleUnit = fitArcUnit('From Scratch', width * 0.84, 12)
+  const { scale, unit, titleUnit, gap, topInset, padBlock } = startScreenLayout(width, height)
 
   return (
     <>
@@ -107,7 +85,7 @@ export function StartScreen({
          * behind it. Reserving the button's own height at the top is the fix
          * that does not depend on the title's width at all.
          */
-        paddingTop: 78,
+        paddingTop: topInset,
       }}
     >
       <Starfield />
@@ -144,8 +122,8 @@ export function StartScreen({
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: unit * 6,
-          paddingBlock: unit * 8,
+          gap,
+          paddingBlock: padBlock,
           width: '100%',
           paddingInline: unit * 4,
         }}
@@ -157,7 +135,7 @@ export function StartScreen({
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: unit * 4,
+            gap,
             width: '100%',
             /*
              * The width cap lives HERE, not on the column.

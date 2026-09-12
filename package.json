@@ -9,7 +9,7 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "solve": "tsx scripts/solve.ts",
-    "test": "tsc -b && tsx scripts/shapetest.ts && tsx scripts/datatest.ts && tsx scripts/explaintest.ts && tsx scripts/swaytest.ts && tsx scripts/labeltest.ts && tsx scripts/startest.ts && tsx scripts/plancheck.ts && vite build",
+    "test": "tsc -b && tsx scripts/shapetest.ts && tsx scripts/datatest.ts && tsx scripts/explaintest.ts && tsx scripts/swaytest.ts && tsx scripts/labeltest.ts && tsx scripts/startest.ts && tsx scripts/plancheck.ts && tsx scripts/layouttest.ts && vite build",
     "test:data": "tsx scripts/datatest.ts",
     "test:sway": "tsx scripts/swaytest.ts",
     "test:explain": "tsx scripts/explaintest.ts",
@@ -18,7 +18,8 @@
     "walkthrough": "tsx scripts/walkthrough.ts",
     "test:star": "tsx scripts/startest.ts",
     "test:plan": "tsx scripts/plancheck.ts",
-    "plan": "tsx scripts/planrender.ts"
+    "plan": "tsx scripts/planrender.ts",
+    "test:layout": "tsx scripts/layouttest.ts"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
