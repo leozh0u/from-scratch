@@ -2,7 +2,7 @@
 
 **Generated from `src/data/gameData.ts` by `npm run walkthrough`. Do not edit by hand.**
 
-392 elements, 395 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
+422 elements, 425 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
 
 ## Survival
 
@@ -424,6 +424,36 @@ The main game. Everything a person can point at, and what it actually cost to ma
 | 375 | Synthetic Rubber | + Glue | Rubber Pad | moulding | — |
 | 376 | Rubber Pad | + Steel Wire | Brake | cabling | — |
 | 377 | Polyprop | + Felt | Helmet | moulding | — |
+| 378 | Salt | + Filtered Water | Brine | dissolving | — |
+| 379 | Brine | + Battery | Hydrogen | electrolysing | — |
+| 380 | Hydrogen | + Solar Cell | Fuel Cell | stacking | — |
+| 381 | Hydrogen | + Synthetic Rubber | Balloon | inflating | — |
+| 382 | Balloon | + Alloy Frame | Airship | framing | — |
+| 383 | Alloy Frame | + Canvas | Glider | rigging | — |
+| 384 | Propeller | + Tunnel | Wind Tunnel | testing | — |
+| 385 | Wind Tunnel | + Welding Torch | Jet Engine | balancing | — |
+| 386 | Jet Engine | + Aeroplane | Airliner | certifying | — |
+| 387 | Road | + Traffic Light | Runway | grading | — |
+| 388 | Antenna | + Vacuum Pump | Radar | sweeping | — |
+| 389 | Radar | + Water | Sonar | pinging | — |
+| 390 | Sonar | + Steel Frame | Submarine | pressurising | — |
+| 391 | Synthetic Rubber | + Pressure Gauge | Diving Suit | sealing | — |
+| 392 | Pump | + Nitrogen | Compressed Air | compressing | — |
+| 393 | Compressed Air | + Hardened Steel | Pneumatic Drill | hammering | — |
+| 394 | Nitrogen | + Clay | Dynamite | absorbing | — |
+| 395 | Dynamite | + Crane | Quarry | blasting | — |
+| 396 | Pneumatic Drill | + Rail | Mine | shafting | — |
+| 397 | Electric Motor | + Steel Wire | Lift | counterweighting | — |
+| 398 | Lift | + Steel Frame | Skyscraper | cladding | — |
+| 399 | Bicycle Chain | + Electric Motor | Escalator | stepping | — |
+| 400 | Escalator | + Tunnel | Underground | signalling | — |
+| 401 | Steam Engine | + Generator | Power Station | synchronising | — |
+| 402 | Magnet Coil | + Steel Ingot | Transformer | laminating | — |
+| 403 | Aluminium Sheet | + Steel Wire | Aluminium Cable | stranding | — |
+| 404 | Transformer | + Aluminium Cable | Power Line | stringing | — |
+| 405 | Power Line | + Power Station | Power Grid | interconnecting | — |
+| 406 | Bakelite | + Brass | Plug | moulding | — |
+| 407 | Tin | + Glass Bottle | Fuse | calibrating | — |
 
 All 3 targets reachable. ✅
 
@@ -448,4 +478,4 @@ Elements with more than one real way to make them. The receipt tells you which r
 
 ## How much of the board is a dead end
 
-392 elements make 76,636 possible pairs, and 395 of them are recipes. **99.5% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
+422 elements make 88,831 possible pairs, and 425 of them are recipes. **99.5% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
