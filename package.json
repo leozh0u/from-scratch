@@ -32,7 +32,7 @@
     "import": "tsx scripts/import.ts",
     "test:edge": "tsx scripts/edgetest.ts",
     "apply": "tsx scripts/apply.ts",
-    "spread": "node scripts/spread.mjs"
+    "recolour": "node scripts/recolour.mjs"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",

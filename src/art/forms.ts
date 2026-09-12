@@ -33,6 +33,8 @@ export type FormId =
   | 'gas' | 'crystal' | 'bottle' | 'tool' | 'machine' | 'plant' | 'log'
   | 'coil' | 'brick' | 'pellet' | 'flame' | 'board' | 'wheel'
   | 'book' | 'bar' | 'heap'
+  | 'engine' | 'box' | 'tower' | 'panel' | 'drum' | 'rod' | 'ring'
+  | 'blade' | 'cone' | 'dish' | 'card' | 'vial' | 'spool' | 'grid'
 
 /** Rows only: the palette is filled in per element by `composeSprite`. */
 export const FORMS: Record<FormId, string[]> = {
@@ -136,6 +138,48 @@ export const FORMS: Record<FormId, string[]> = {
   heap: [
     '...........','...........','...........','.....k.....','....kak....',
     '..kkaaakk..','.kaaabaaak.','kabbbbbbbak','kcccccccccK','kkkkkkkkkkk','...........',
+  ],
+  engine: [
+    '...........','..kkkkkkk..','.kaaaaaaak.','.kabbbbbak.','kkabkbkbakk','kaabbbbbaak','.kabbbbbak.','.kccccccck.','..kkkkkkk..','...k...k...','...........',
+  ],
+  box: [
+    '...........','.kkkkkkkkk.','.kaaaaaaak.','.kabbbbbak.','.kabbbbbak.','.kabbbbbak.','.kabbbbbak.','.kabbbbbak.','.kccccccck.','.kkkkkkkkk.','...........',
+  ],
+  tower: [
+    '....kkk....','...kaaak...','...kabak...','...kabak...','..kkabakk..','..kaabaak..','..kabbbak..','.kabbbbbak.','.kcccccck..','.kkkkkkkk..','...........',
+  ],
+  panel: [
+    '...........','kkkkkkkkkkk','kababababab','kbababababk','kababababab','kbababababk','kababababab','kcccccccccK','kkkkkkkkkkk','...........','...........',
+  ],
+  drum: [
+    '...........','..kkkkkkk..','.kaaaaaaak.','.kbbbbbbbk.','.kbbbbbbbk.','.kbbbbbbbk.','.kbbbbbbbk.','.kccccccck.','..kkkkkkk..','...........','...........',
+  ],
+  rod: [
+    '...........','...........','...........','.....k.....','.....a.....','kkkkkakkkkk','kaaaaaaaaak','kccccccccck','kkkkkkkkkkk','...........','...........',
+  ],
+  ring: [
+    '...kkkkk...','..kaaaaak..','.kaakkkaak.','.kak...kak.','.kak...kak.','.kak...kak.','.kaakkkaak.','..kcccccK..','...kkkkk...','...........','...........',
+  ],
+  blade: [
+    '.........k.','........ka.','.......kaa.','......kaak.','.....kaak..','....kaak...','...kaak....','..kbak.....','.kbbk......','.kkk.......','...........',
+  ],
+  cone: [
+    '.....k.....','....kak....','....kak....','...kaaak...','...kabak...','..kaabaak..','..kabbbak..','.kabbbbbak.','.kccccccck.','.kkkkkkkkk.','...........',
+  ],
+  dish: [
+    '...........','...........','kkkkkkkkkkk','kaaaaaaaaak','.kbbbbbbbk.','.kbbbbbbbk.','..kcccccK..','..kkkkkkk..','....k.k....','...kkkkk...','...........',
+  ],
+  card: [
+    '...........','.kkkkkkkkk.','.kaaaaaaak.','.kabbbbbak.','.kabkkkbak.','.kabbbbbak.','.kabkkkbak.','.kabbbbbak.','.kccccccck.','.kkkkkkkkk.','...........',
+  ],
+  vial: [
+    '....kkk....','....kak....','....kak....','...kaaak...','..kabbbak..','.kabbbbbak.','.kabbbbbak.','.kccccccck.','..kkkkkkk..','...........','...........',
+  ],
+  spool: [
+    '..kkkkkkk..','..kaaaaak..','..kkkkkkk..','...kbbbk...','...kbbbk...','...kbbbk...','..kkkkkkk..','..kccccck..','..kkkkkkk..','...........','...........',
+  ],
+  grid: [
+    '...........','kkkkkkkkkkk','kakakakakak','kkkkkkkkkkk','kakakakakak','kkkkkkkkkkk','kakakakakak','kccccccccck','kkkkkkkkkkk','...........','...........',
   ],
   board: [
     '...........','...........','...........','kkkkkkkkkkk','kaaaaaaaaak',
