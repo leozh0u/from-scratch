@@ -72,11 +72,22 @@ export function CityScene({ className }: CitySceneProps) {
            */
           objectPosition: 'center 42%',
           /*
-           * Without this the browser resamples with bilinear filtering and a
-           * 3x upscale turns every hard pixel edge into a soft gradient — the
-           * one thing this entire visual direction cannot survive.
+           * NO `image-rendering: pixelated` HERE, AND THAT IS THE WHOLE POINT.
+           *
+           * The reflex with pixel art is to force nearest-neighbour so hard
+           * edges survive scaling. For a *bitmap* that is right. For this it
+           * was catastrophic: the file is an SVG whose <svg> tag declares
+           * width="512" height="512", so `pixelated` makes Chrome rasterise
+           * the vector at 512 and then blow that bitmap up nearest-neighbour.
+           * Every car, window and shop sign in the art turned into a 3x3 block
+           * of mush — the detail was being thrown away before the scaling even
+           * happened.
+           *
+           * Left alone, the paths rasterise at the window's real resolution.
+           * The art traces pixel blocks, so the edges are still hard squares —
+           * they are just drawn accurately instead of being reconstructed from
+           * a quarter-size thumbnail.
            */
-          imageRendering: 'pixelated',
         }}
       />
       {/*

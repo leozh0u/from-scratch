@@ -604,3 +604,22 @@ monospaced pixel font — 208px that cannot break — and in the HUD's
 with `shrink-0` and `nowrap` on all three items, flex spacers to keep the title
 optically centred, and a one-step-smaller realm name to buy the room. Verified
 at a 442px viewport, which is narrower than anything real.
+
+## The bug that was destroying the backdrops
+
+Leo: "the pixels are messed up." He was right, and the cause was not scaling —
+it was `image-rendering: pixelated` on an `<img>` whose source is an **SVG**.
+
+Both backdrops are vector files whose `<svg>` tag declares `width="512"
+height="512"`. `pixelated` makes Chrome rasterise the vector at that intrinsic
+512 and then nearest-neighbour the bitmap up to the window. The detail was
+being thrown away *before* the scaling, not protected from it. Every car,
+window and shop sign in the city became a 3x3 block of mush.
+
+The forest carried the same line — with a comment calling it harmless
+belt-and-braces — and survived only because its shapes are large. Both are
+fixed. The canvas overlay keeps `pixelated`, because that one really is a
+bitmap I draw a pixel at a time.
+
+Left alone, the paths rasterise at the window's true resolution and the edges
+stay hard, because the paths themselves trace squares.

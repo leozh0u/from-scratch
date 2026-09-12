@@ -299,10 +299,21 @@ export function ForestScene({ pixelScale = 4, className }: ForestSceneProps) {
            * band of the composition under the UI on any aspect ratio.
            */
           objectPosition: 'center 32%',
-          // Belt and braces: the source is vector so there is nothing to
-          // resample, but this guarantees no smoothing if a browser rasterises
-          // it before scaling.
-          imageRendering: 'pixelated',
+          /*
+           * DELIBERATELY NOT `image-rendering: pixelated`.
+           *
+           * It used to be, on the reasoning that the source is vector so the
+           * property is harmless belt-and-braces. That reasoning was exactly
+           * backwards. The <svg> declares width="512" height="512", so
+           * `pixelated` makes Chrome rasterise the vector at 512 and then
+           * nearest-neighbour it up to the window — throwing the detail away
+           * *before* scaling rather than protecting it. It cost the city scene
+           * every car, window and shop sign; the forest survived only because
+           * its shapes are large.
+           *
+           * Left alone, the paths rasterise at the window's real resolution
+           * and the edges stay hard, because the paths themselves are squares.
+           */
         }}
       />
       <canvas
