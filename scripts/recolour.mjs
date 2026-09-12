@@ -115,6 +115,18 @@ const BY_FORM = {
   engine: '#6a7484', ring: '#a8a8b4', rod: '#a8a49a', blade: '#c0c8d0',
   spool: '#c8a76a', card: '#ded8c8', dish: '#b6a78c', vial: '#a8d4e4',
   drum: '#8a8a94', cone: '#b6a78c', plant: '#6a9a4a', book: '#8a4a4a',
+  // Everything else, so the grey default below is never reached. A form with
+  // no colour of its own was landing a dozen unrelated elements on one grey,
+  // which is one icon repeated.
+  chip: '#5f6f86', slab: '#9aa0a8', cup: '#b0b8c0', star: '#c8a83a',
+  arch: '#a09888', wedge: '#8a8a94', spiral: '#9a9aa8', fan: '#a8b4c0',
+  cross: '#a8a8b0', fork: '#b0b0ba', roll: '#d8cbb0', shell: '#c8b8a0',
+  powder: '#cfc8b8', liquid: '#79b4d6', gas: '#9fd8e8', crystal: '#bfe0ee',
+  ingot: '#8792a3', sheet: '#c0c8d0', lump: '#8a8276', fibre: '#d8c9a8',
+  cloth: '#d8c9a8', coil: '#a89c88', brick: '#a86a4a', pellet: '#b8b4a8',
+  bottle: '#9ac0d0', board: '#a8804a', wheel: '#8a8a94', machine: '#6a7484',
+  tool: '#a8a49a', log: '#8a5a33', flame: '#e8a03a', heap: '#a09888',
+  bar: '#b0a890',
 }
 
 // 1. Reset every colour to its family, unless it is pinned.
@@ -127,7 +139,17 @@ for (const e of entries) {
 
 // 2. Spread within the family: lightness and saturation freely, hue by at
 //    most thirty degrees either way.
-const MIN = 66
+/*
+ * Lowered from 66 as the game grew.
+ *
+ * That number was set when eighty-five elements shared twenty forms. At five
+ * hundred across fifty forms there are simply more icons per silhouette, and
+ * demanding sixty-six units of separation from every one of them forces
+ * colours out of their own material family — which is the failure this whole
+ * file exists to prevent. Fifty is still a clear difference at the size these
+ * are read; two greys fifty apart are plainly two greys.
+ */
+const MIN = 50
 const byForm = new Map()
 for (const e of entries) byForm.set(e.form, [...(byForm.get(e.form) ?? []), e])
 

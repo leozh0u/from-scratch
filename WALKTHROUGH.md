@@ -2,7 +2,7 @@
 
 **Generated from `src/data/gameData.ts` by `npm run walkthrough`. Do not edit by hand.**
 
-512 elements, 515 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
+542 elements, 545 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
 
 ## Survival
 
@@ -544,6 +544,36 @@ The main game. Everything a person can point at, and what it actually cost to ma
 | 495 | Pallet | + Crane | Warehouse | stacking | — |
 | 496 | Engine | + Container | Lorry | coupling | — |
 | 497 | Postbox | + Lorry | Postal Service | sorting | — |
+| 498 | Polythene | + Hydraulic Press | Plastic Film | blowing | — |
+| 499 | Tin | + Synthetic Rubber | Bottle Cap | crimping | — |
+| 500 | Bark | + Knife | Cork | stripping | — |
+| 501 | Sugar | + Yeast | Wine | fermenting | — |
+| 502 | Plank | + Chisel | Barrel | coopering | — |
+| 503 | Beer | + Barrel | Whisky | distilling | — |
+| 504 | Molten Glass | + Pipe | Blown Glass | blowing | — |
+| 505 | Quarry | + Hydrogen | Tungsten | reducing | — |
+| 506 | Tungsten | + Argon | Welding Rod | sharpening | — |
+| 507 | Tungsten | + Graphite | Carbide Tool | sintering | — |
+| 508 | Carbide Tool | + Computer | CNC Machine | programming | — |
+| 509 | CNC Machine | + Polythene | 3D Printer | extruding | — |
+| 510 | CNC Machine | + Electric Motor | Robot Arm | jointing | — |
+| 511 | Robot Arm | + Assembly Line | Factory | commissioning | — |
+| 512 | Rubber Pad | + Bearing | Conveyor | belting | — |
+| 513 | Electric Motor | + Hydraulic Press | Forklift | counterweighting | — |
+| 514 | Barcode | + Laser | Scanner | decoding | — |
+| 515 | Antenna | + Memory Chip | RFID Tag | printing | — |
+| 516 | RFID Tag | + Server | Stock System | tracking | — |
+| 517 | Solar Panel | + Irrigation | Solar Farm | siting | — |
+| 518 | Wind Turbine | + Power Line | Wind Farm | siting | — |
+| 519 | Reinforced Concrete | + Valve | Dam | impounding | — |
+| 520 | Dam | + Generator | Hydro Power | penstocking | — |
+| 521 | Lithium Battery | + Container | Grid Battery | racking | — |
+| 522 | Carbide Tool | + Electric Motor | Shredder | shearing | — |
+| 523 | Shredder | + Conveyor | Recycling | sorting | — |
+| 524 | Compost | + Seed | Compost Heap | turning | — |
+| 525 | Compost Heap | + Pipe | Biogas | digesting | — |
+| 526 | Tractor | + Stamped Part | Bulldozer | tracking | — |
+| 527 | Bulldozer | + Clay | Landfill | capping | — |
 
 All 3 targets reachable. ✅
 
@@ -568,4 +598,4 @@ Elements with more than one real way to make them. The receipt tells you which r
 
 ## How much of the board is a dead end
 
-512 elements make 130,816 possible pairs, and 515 of them are recipes. **99.6% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
+542 elements make 146,611 possible pairs, and 545 of them are recipes. **99.6% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.

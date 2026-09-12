@@ -453,6 +453,11 @@ console.log('\n=== every element has its own art ===')
    * Distance is plain RGB rather than a perceptual space. It is coarse, and
    * at this size the question is only "are these obviously different", which
    * coarse answers fine.
+   *
+   * The floor came down from 60 as the game grew past five hundred: with more
+   * icons per silhouette, holding every pair sixty apart forced colours out of
+   * their own material family, and a rope that is no longer rope-coloured is a
+   * worse icon than two browns that are merely similar.
    */
   const byForm = new Map<string, { id: string; colour: string }[]>()
   for (const [id, recipe] of Object.entries(COMPOSED)) {
@@ -468,7 +473,7 @@ console.log('\n=== every element has its own art ===')
         const a = rgb(entries[i].colour), b = rgb(entries[j].colour)
         const d = Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2])
         closest = Math.min(closest, d)
-        if (d < 60) tooClose.push(`${entries[i].id} / ${entries[j].id} (${Math.round(d)})`)
+        if (d < 45) tooClose.push(`${entries[i].id} / ${entries[j].id} (${Math.round(d)})`)
       }
     }
   }
