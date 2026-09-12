@@ -9,7 +9,7 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "solve": "tsx scripts/solve.ts",
-    "test": "tsc -b && tsx scripts/shapetest.ts && tsx scripts/datatest.ts && tsx scripts/explaintest.ts && tsx scripts/swaytest.ts && tsx scripts/labeltest.ts && tsx scripts/startest.ts && tsx scripts/plancheck.ts && tsx scripts/layouttest.ts && vite build",
+    "test": "tsc -b && tsx scripts/shapetest.ts && tsx scripts/datatest.ts && tsx scripts/explaintest.ts && tsx scripts/swaytest.ts && tsx scripts/labeltest.ts && tsx scripts/startest.ts && tsx scripts/plancheck.ts && tsx scripts/layouttest.ts && tsx scripts/citytest.ts && vite build",
     "test:data": "tsx scripts/datatest.ts",
     "test:sway": "tsx scripts/swaytest.ts",
     "test:explain": "tsx scripts/explaintest.ts",
@@ -20,7 +20,9 @@
     "test:plan": "tsx scripts/plancheck.ts",
     "plan": "tsx scripts/planrender.ts",
     "test:layout": "tsx scripts/layouttest.ts",
-    "probe": "tsx scripts/probe.ts"
+    "probe": "tsx scripts/probe.ts",
+    "test:city": "tsx scripts/citytest.ts",
+    "snap": "node scripts/snapToGrid.mjs"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",

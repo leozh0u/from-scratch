@@ -1,3 +1,7 @@
+import { useEffect, useRef } from 'react'
+import { useViewport } from '../hooks/useViewport'
+import { coverTransform, windowLitAt, birdAt, BIRD_FRAMES } from './cityMotion'
+
 /**
  * The Everyday Objects backdrop: a city avenue in daylight.
  *
@@ -36,9 +40,150 @@
  * seam that makes something look assembled rather than made.
  */
 
+const IMAGE_SIZE = 512
+const OBJECT_POSITION_Y = 0.42
+
+/**
+ * Windows found in the artwork itself, with the wall colour beside each one.
+ *
+ * FOUND, NOT PLACED. A list of coordinates typed by hand would drift the
+ * moment the art changed, and half the lights would end up on brickwork. This
+ * reads the image and keeps the warm bright pixels, which in this picture are
+ * exactly the lit windows and the shop signage.
+ *
+ * The wall colour is sampled a few rows below each window, so switching a
+ * light off means painting the building's own tone over it rather than a
+ * guessed grey.
+ */
+type Window = { x: number; y: number; off: string }
+
+function findWindows(data: Uint8ClampedArray): Window[] {
+  const found: Window[] = []
+  const taken = new Set<string>()
+  const at = (x: number, y: number) => (y * IMAGE_SIZE + x) * 4
+
+  for (let y = 40; y < IMAGE_SIZE - 8; y++) {
+    for (let x = 4; x < IMAGE_SIZE - 4; x++) {
+      const i = at(x, y)
+      const r = data[i]
+      const g = data[i + 1]
+      const b = data[i + 2]
+      // Warm and bright: a lit pane or a sign, never sky or masonry.
+      if (!(r > 185 && g > 140 && b < 140 && r - b > 70)) continue
+      // Thin them out, or a single lit facade becomes fifty flickering dots.
+      const cell = `${x >> 3}:${y >> 3}`
+      if (taken.has(cell)) continue
+      taken.add(cell)
+      const w = at(x, Math.min(IMAGE_SIZE - 1, y + 5))
+      found.push({ x, y, off: `rgb(${data[w]},${data[w + 1]},${data[w + 2]})` })
+    }
+  }
+  return found
+}
+
 type CitySceneProps = { className?: string }
 
 export function CityScene({ className }: CitySceneProps) {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const windowsRef = useRef<Window[] | null>(null)
+  const { width, height } = useViewport()
+
+  /*
+   * Read the artwork once and remember where its lights are. Drawing the image
+   * into an offscreen canvas is the only way to ask it that question, and it
+   * costs one decode at startup.
+   */
+  useEffect(() => {
+    let cancelled = false
+    const img = new Image()
+    img.src = `${import.meta.env.BASE_URL}big-city.png`
+    img.decode().then(() => {
+      if (cancelled) return
+      const off = document.createElement('canvas')
+      off.width = IMAGE_SIZE
+      off.height = IMAGE_SIZE
+      const ctx = off.getContext('2d', { willReadFrequently: true })
+      if (!ctx) return
+      ctx.drawImage(img, 0, 0, IMAGE_SIZE, IMAGE_SIZE)
+      windowsRef.current = findWindows(ctx.getImageData(0, 0, IMAGE_SIZE, IMAGE_SIZE).data)
+    }).catch(() => {
+      // No windows found means no flicker. The backdrop is still the backdrop.
+    })
+    return () => { cancelled = true }
+  }, [])
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const context = canvas.getContext('2d')
+    if (!context) return
+    // Narrowed once: `ctx` inside `draw` is a closure over the checked value.
+    const ctx = context
+
+    const { scale, offsetX, offsetY } = coverTransform(IMAGE_SIZE, width, height, OBJECT_POSITION_Y)
+    // Whole pixels: a light drawn at a fractional offset is a blurred smear.
+    const block = Math.max(1, Math.round(scale))
+    const skyHeight = offsetY + IMAGE_SIZE * scale * 0.34
+
+    function draw(now: number) {
+      ctx.clearRect(0, 0, width, height)
+
+      /*
+       * Lights go OUT, never on. Painting the building's own colour over a
+       * window that is already lit in the art needs no invented light colour
+       * and cannot clash with it, which is the failure mode of drawing
+       * anything by hand on top of someone else's picture.
+       */
+      const windows = windowsRef.current
+      if (windows) {
+        for (let i = 0; i < windows.length; i++) {
+          if (windowLitAt(now, i + 1)) continue
+          const w = windows[i]
+          ctx.fillStyle = w.off
+          ctx.fillRect(
+            Math.round(offsetX + w.x * scale),
+            Math.round(offsetY + w.y * scale),
+            block,
+            block,
+          )
+        }
+      }
+
+      // Birds, in the sky and nowhere else.
+      ctx.fillStyle = '#3b3f5c'
+      for (let seed = 1; seed <= 2; seed++) {
+        const bird = birdAt(now, seed, width, skyHeight)
+        if (!bird) continue
+        const rows = BIRD_FRAMES[bird.flap]
+        for (let ry = 0; ry < rows.length; ry++) {
+          for (let rx = 0; rx < rows[ry].length; rx++) {
+            if (rows[ry][rx] !== '#') continue
+            ctx.fillRect(bird.x + rx * block, bird.y + ry * block, block, block)
+          }
+        }
+      }
+    }
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      draw(0)
+      return
+    }
+
+    let raf = 0
+    let last = 0
+    const tick = (now: number) => {
+      // Nothing here needs 60fps: the wingbeat is the fastest thing and it
+      // changes six times a second.
+      if (now - last > 90) {
+        draw(now)
+        last = now
+      }
+      raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [width, height])
+
   return (
     <div
       aria-hidden="true"
@@ -53,24 +198,8 @@ export function CityScene({ className }: CitySceneProps) {
           inset: 0,
           width: '100%',
           height: '100%',
-          /*
-           * The source is 512x512 and windows are wide, so `cover` scales to
-           * the width and crops the height — roughly a 3x upscale on a laptop,
-           * which for pixel art is a feature as long as nothing smooths it.
-           */
           objectFit: 'cover',
-          /*
-           * Held slightly above centre. The moon and the upper sky are the
-           * least useful part of the frame under a UI, and the wet road at the
-           * very bottom is the second least; the band worth keeping is the one
-           * where the neon signs and the lit shopfronts are.
-           */
-          /*
-           * Held above centre. The source is square and the window is wide, so
-           * `cover` crops the height; the band worth keeping is the avenue and
-           * the storefronts, not the top of the sky.
-           */
-          objectPosition: 'center 42%',
+          objectPosition: `center ${OBJECT_POSITION_Y * 100}%`,
           /*
            * `pixelated` IS RIGHT HERE, AND WAS WRONG A COMMIT AGO.
            *
@@ -81,29 +210,28 @@ export function CityScene({ className }: CitySceneProps) {
            * sampled points matched, which is why the first check passed it.
            *
            * The PNG is the artwork. It is a bitmap, so nearest-neighbour is
-           * exactly what it wants: at roughly 3x on a laptop every source
-           * pixel becomes a clean 3x3 block instead of a bilinear smear.
+           * exactly what it wants: at roughly 3x on a laptop every source pixel
+           * becomes a clean 3x3 block instead of a bilinear smear.
            */
           imageRendering: 'pixelated',
         }}
       />
-      {/*
-       * A very light flat wash, not a gradient.
-       *
-       * Only enough to seat the picture behind the interface — the previous
-       * night scene took 28% and this takes 10%, because the whole point of
-       * this one is that it is bright. A uniform darkening also keeps every
-       * pixel boundary exactly where it was; a gradient would lay a smooth
-       * ramp across the art, which is the same sin as blurring it.
-       */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          background: '#131033',
-          opacity: 0.1,
-        }}
+
+      {/* The lights and the birds, on the art's own grid. */}
+      <canvas
+        ref={canvasRef}
+        width={width}
+        height={height}
+        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
       />
+
+      {/*
+       * A very light flat wash, not a gradient. Only enough to seat the picture
+       * behind the interface. A uniform darkening keeps every pixel boundary
+       * exactly where it was; a gradient would lay a smooth ramp across the
+       * art, which is the same sin as blurring it.
+       */}
+      <div style={{ position: 'absolute', inset: 0, background: '#131033', opacity: 0.1 }} />
     </div>
   )
 }

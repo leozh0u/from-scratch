@@ -277,7 +277,7 @@ export function ForestScene({ pixelScale = 4, className }: ForestSceneProps) {
       style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none' }}
     >
       <img
-        src={`${import.meta.env.BASE_URL}forest-hillside.svg`}
+        src={`${import.meta.env.BASE_URL}forest-hillside.png`}
         alt=""
         style={{
           position: 'absolute',
@@ -300,20 +300,24 @@ export function ForestScene({ pixelScale = 4, className }: ForestSceneProps) {
            */
           objectPosition: 'center 32%',
           /*
-           * DELIBERATELY NOT `image-rendering: pixelated`.
+           * `pixelated`, and now it is finally correct.
            *
-           * It used to be, on the reasoning that the source is vector so the
-           * property is harmless belt-and-braces. That reasoning was exactly
-           * backwards. The <svg> declares width="512" height="512", so
-           * `pixelated` makes Chrome rasterise the vector at 512 and then
-           * nearest-neighbour it up to the window — throwing the detail away
-           * *before* scaling rather than protecting it. It cost the city scene
-           * every car, window and shop sign; the forest survived only because
-           * its shapes are large.
+           * The backdrop used to be the SVG Leo supplied, and this property was
+           * removed from it because forcing nearest-neighbour on a vector makes
+           * Chrome rasterise at the intrinsic size and blow that up. Both true.
            *
-           * Left alone, the paths rasterise at the window's real resolution
-           * and the edges stay hard, because the paths themselves are squares.
+           * The deeper problem was the file. A trace of pixel art keeps the
+           * outlines and loses the grid: every block became a polygon with
+           * fractional edges, so the "pixels" had ragged one-pixel steps and
+           * blended corners. Measuring the trace recovered the original: runs
+           * pile up at 4, 8, 12 and 16, and 75% of colour changes land on a
+           * multiple of 4, so it was drawn at 128 and traced at 512.
+           *
+           * `scripts/snapToGrid.mjs` votes the palette over each cell of that
+           * grid and writes a 128x128 PNG. Square blocks, 3.9KB instead of
+           * 478KB, and nearest-neighbour is exactly what a bitmap wants.
            */
+          imageRendering: 'pixelated',
         }}
       />
       <canvas

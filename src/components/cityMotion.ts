@@ -1,0 +1,109 @@
+/**
+ * The small moving parts of the city, as pure functions.
+ *
+ * Everything here is deterministic in `now`, so the motion can be asserted
+ * rather than watched. The forest's sway went the same way, and the shooting
+ * stars only got fixed because their rate was measurable: they were in the
+ * build for hours at a rate that read as "never".
+ */
+
+/** Deterministic hash in [0,1). Same seed, same answer, no RNG state. */
+function hash(n: number): number {
+  const x = Math.sin(n * 127.1 + 311.7) * 43758.5453
+  return x - Math.floor(x)
+}
+
+/**
+ * Where an `objectFit: cover` image actually lands inside its box.
+ *
+ * The overlay has to agree with the backdrop to the pixel, because a light
+ * drawn half a building away from its window is worse than no light at all.
+ * `cover` scales by whichever axis needs more and centres the overflow; the
+ * vertical bias matches the CSS `object-position`.
+ */
+export function coverTransform(
+  imageSize: number,
+  boxW: number,
+  boxH: number,
+  positionY: number,
+): { scale: number; offsetX: number; offsetY: number } {
+  const scale = Math.max(boxW / imageSize, boxH / imageSize)
+  const drawn = imageSize * scale
+  return {
+    scale,
+    offsetX: (boxW - drawn) / 2,
+    offsetY: (boxH - drawn) * positionY,
+  }
+}
+
+/**
+ * Whether a given window is lit at this moment.
+ *
+ * A city at a distance does not twinkle; someone gets up, once, and a room goes
+ * dark for a while. So each window has its own long period and spends most of
+ * it in one state, and the ones that do change are a small minority. Anything
+ * faster reads as a broken screen.
+ */
+export function windowLitAt(now: number, seed: number): boolean {
+  /*
+   * TUNED DOWN AFTER MEASURING IT. The first pass put one window in five on a
+   * timer with a period of nine to thirty-five seconds, which across a few
+   * hundred detected windows worked out at nearly eight changes a second. That
+   * is a twinkle, and a city at this distance does not twinkle: somebody gets
+   * up, once, and a room goes dark for a minute.
+   *
+   * One in eight, on periods of forty to a hundred and forty seconds.
+   */
+  if (hash(seed * 7.3) > 0.12) return true
+  const period = 40_000 + hash(seed * 13.1) * 100_000
+  const offset = hash(seed * 17.7) * period
+  const t = (now + offset) % period
+  // Dark for a short slice of a long cycle.
+  return t > period * 0.18
+}
+
+export type Bird = { x: number; y: number; flap: number }
+
+/**
+ * A bird crossing the sky, or nothing, which is the usual answer.
+ *
+ * Same shape as the shooting stars and for the same reason: rare enough to be
+ * an event, long enough on screen to be followed. A bird that crosses in half a
+ * second is a dead pixel.
+ */
+export function birdAt(
+  now: number,
+  seed: number,
+  width: number,
+  skyHeight: number,
+): Bird | null {
+  /*
+   * Measured at three birds on sixteen-to-thirty-eight second periods, the sky
+   * had something in it 76% of the time, which is a flock rather than an
+   * occasional bird. Two birds on much longer periods puts it near a third.
+   */
+  const period = 34_000 + hash(seed * 23.9) * 46_000
+  const crossing = 8_000 + hash(seed * 29.3) * 5_000
+  const t = (now + hash(seed * 31.7) * period) % period
+  if (t > crossing) return null
+
+  const progress = t / crossing
+  const leftToRight = hash(seed * 37.1) > 0.5
+  const travel = leftToRight ? progress : 1 - progress
+  // A shallow arc rather than a straight line: birds do not fly on rails.
+  const lane = 0.12 + hash(seed * 41.3) * 0.55
+  const arc = Math.sin(progress * Math.PI) * skyHeight * 0.08
+
+  return {
+    x: Math.round(-20 + travel * (width + 40)),
+    y: Math.round(skyHeight * lane - arc),
+    // Two frames, and the wingbeat is the fastest thing on screen by design.
+    flap: Math.floor(now / 170 + seed) % 2,
+  }
+}
+
+/** A bird at this size is a silhouette, and two frames is the whole cycle. */
+export const BIRD_FRAMES: string[][] = [
+  ['.#...#.', '..###..', '.......'],
+  ['.......', '#.....#', '.#####.'],
+]

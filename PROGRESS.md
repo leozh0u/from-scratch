@@ -504,3 +504,50 @@ real transformations that make something, and they are in, each with a source:
 direct-reduction route puts pig iron at depth 1 without breaking the cross-realm
 dependency, since steel still needs Survival's charcoal and wrought iron still
 needs its fire.
+
+## The pixels that were not pixels
+
+Leo: "why are these pixles like not actaully pixels but weird shapes."
+
+Both backdrops arrived as **vector traces** of pixel art, and a trace does not
+preserve a grid. It preserves outlines: every block becomes a polygon with
+fractional edges, so the "pixels" have ragged one-pixel steps and blended
+corners. It reads as nearly-pixel-art, which is worse than either honest
+option.
+
+The original grid is recoverable, because a trace keeps block boundaries even
+while it fuzzes them. Measuring the forest: horizontal run lengths pile up at
+**4, 8, 12 and 16**, and **75% of all colour changes land on a multiple of 4**
+against 25% for random data. It was drawn at 128 and traced at 512.
+
+`scripts/snapToGrid.mjs` renders the SVG with `rsvg-convert`, takes a majority
+vote of the declared palette over each cell of the real grid, and writes a PNG
+at that size. It carries its own minimal PNG reader and writer so it needs no
+dependencies. The forest is now 128x128, every block exactly square, **3.9KB
+instead of 478KB**, and `image-rendering: pixelated` is finally the right
+property for it. The SVG moved to `art-source/` so it stops being deployed.
+
+## Small motions in the city
+
+Window lights and birds, on the same principle as the forest's sway: occasional,
+slow, and measured rather than watched.
+
+**The lights are found, not placed.** A hand-typed list of coordinates would
+drift the moment the art changed and half of them would land on brickwork.
+`CityScene` reads the artwork into an offscreen canvas at startup and keeps the
+warm bright pixels, which in this picture are exactly the lit windows and the
+shop signage, sampling the wall colour a few rows below each one. Lights only
+ever go **out**, painting the building's own tone over a window, so there is no
+invented light colour to clash with the art.
+
+The overlay uses `coverTransform`, which reproduces what `object-fit: cover`
+does, because a light drawn half a building from its window is worse than no
+light at all.
+
+**Both rates were wrong on the first pass and the test caught both.** Windows
+flickered 7.6 times a second across the detected set, which is a twinkle rather
+than a city; one in eight is now on a timer of forty to a hundred and forty
+seconds. Birds were on screen 76% of the time, which is a flock; two birds on
+longer crossings puts it at 42%, one every 25 seconds.
+
+That is the shooting-star lesson applied before Leo saw it rather than after.
