@@ -286,3 +286,64 @@ Submission is **Sunday 09:00**. Roughly 18 hours.
 | **66 `Co-Authored-By: Claude` trailers in a public repo** | **BLOCKED ON LEO.** Violates his own standing rule. Needs explicit approval for a history rewrite. |
 | **DREAD video** | **Not shot.** |
 | **Can he submit two projects?** | **Unknown.** Needs an organiser. |
+
+
+---
+
+## Title screen, second pass — and the pulse fix
+
+### Done since the last ledger
+
+- **Arc is a true circle.** The wordmark had been rotating each letter linearly
+  while sinking it by a hand-tuned cosine with a `0.9` in it. Those two curves
+  do not describe the same circle, so the ends read as snapped down rather than
+  curved. Both numbers now come off one circle, radius derived from the word's
+  own width. Sweep 46° → 34°.
+- **Stepped corners.** This was what "still not pixellated enough" meant. A
+  single 45° chamfer is one straight diagonal at full display resolution —
+  smooth, antialiased, and not drawable on a pixel grid. The clip-path is now a
+  staircase with a one-unit tread.
+- **Bigger blocks.** Buttons take their own unit (7 on desktop, was 4). Outline,
+  bevel and extrusion are multiples of it, so at 4 they were thin lines and at 7
+  they are slabs. Extrusion depth 2 units → 3.
+- **The chain is abandoned.** Four attempts: tiled rings read as a row of
+  circles; a thin two-link pair read as "oIoIoI"; a heavy horizontal pair still
+  read as decorative trim; a diagonal run escaped the button and drifted across
+  the page. Leo: "chains are a bit hard to do… that padlock was good enough."
+  One steel padlock, hung left so the label keeps the middle.
+- **Tagline removed** — "find out how things are really made" reads as generated.
+- **Codex → Inventory.**
+
+### DREAD: the 51-vs-68 pulse bug is fixed
+
+The region of interest was a fixed rectangle at 35–65% across and 12–30% down.
+On Leo's 640×480 camera that is rows 58–144 — the top third of the frame. He
+had been asked to sit back for Presage, which made his face smaller and higher,
+so the box was on his hairline or the wall.
+
+Hair has no pulse. With no cardiac signal in the patch the strongest remaining
+thing is slow drift — breathing, posture, auto-exposure — and slow drift
+estimates low. 51 against a hand-counted 68 is exactly that shape.
+
+Now samples a grid of **nine overlapping patches** and takes the one with the
+highest confidence, where confidence is peakiness — how far the winning
+frequency stands above the median of the spectrum. A patch of wall scores near
+zero; lit skin produces one spike. Each patch averages to 16×16 rather than
+64×64, so nine of them read *fewer* pixels than the single patch they replace.
+
+`scripts/roitest.ts` (15 checks) puts skin in one patch and wall in the other
+eight and asserts the rate is found wherever it lands — and asserts the old
+behaviour was broken: **the fixed patch alone returns null on the same frame
+where the grid returns 68.** Committed and **pushed** (`2d6d54b`).
+
+### Still open, unchanged
+
+Forest scene, city scene, minimal Survival starters, Little Alchemy scope, the
+sprite vocabulary, the two-speed failure explanation, the Nintendo zoom-out,
+the empty receipt for 2 of 3 targets, no tests, stock README.
+
+**8 commits here remain unpushed** — still waiting on Leo.
+
+DREAD still blocked on Leo: MathWorks, rotating the four exposed keys, the 66
+`Co-Authored-By: Claude` trailers, the video, and whether two submissions are
+allowed at all.
