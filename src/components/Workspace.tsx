@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
+import { adjudicate } from '../adjudicator/client'
 import { resolveIcon } from '../data/iconRegistry'
 import type { ElementDef, RealmId, RecipeData, RecipeDef } from '../data/types'
 import type { useGameState } from '../hooks/useGameState'
@@ -24,8 +25,12 @@ type Slots = [string | null, string | null]
 /*
  * A genuine discovery gets the loud full-screen DiscoveryCard, not this inline
  * line — so this feedback type only ever needs the two quiet outcomes.
+ * `no-match.explanation` starts undefined while the adjudicator is asked
+ * (or the cache/rate-limit/offline fallback resolves), then fills in.
  */
-type Feedback = { kind: 'already-known'; name: string } | { kind: 'no-match' }
+type Feedback =
+  | { kind: 'already-known'; name: string }
+  | { kind: 'no-match'; explanation?: string }
 
 type Discovery = { element: ElementDef; recipe: RecipeDef }
 
@@ -39,6 +44,9 @@ export function Workspace({ realm, data, game, onBack, onOpenCodex }: WorkspaceP
   const [feedback, setFeedback] = useState<Feedback | null>(null)
   const [discovery, setDiscovery] = useState<Discovery | null>(null)
   const [receiptElement, setReceiptElement] = useState<ElementDef | null>(null)
+  // Bumped on every combine attempt so a slow adjudicator response can't
+  // clobber the feedback from a newer attempt the player has already moved past.
+  const attemptRef = useRef(0)
 
   // Membership across every realm's target list, not just the current one —
   // a discovery's own recipe can land it in a different realm than the one
@@ -78,6 +86,7 @@ export function Workspace({ realm, data, game, onBack, onOpenCodex }: WorkspaceP
    * slot B. Clearing a slot is a separate action (clicking the slot itself).
    */
   function pickTile(id: string) {
+    attemptRef.current++
     setFeedback(null)
     setSlots(([a, b]) => {
       if (a === null) return [id, b]
@@ -88,6 +97,7 @@ export function Workspace({ realm, data, game, onBack, onOpenCodex }: WorkspaceP
   }
 
   function clearSlot(index: 0 | 1) {
+    attemptRef.current++
     setFeedback(null)
     setSlots((prev) => {
       const next: Slots = [...prev]
@@ -116,7 +126,14 @@ export function Workspace({ realm, data, game, onBack, onOpenCodex }: WorkspaceP
     } else if (result.status === 'already-known') {
       setFeedback({ kind: 'already-known', name: elementById(result.recipe.output).name })
     } else {
+      const attempt = ++attemptRef.current
       setFeedback({ kind: 'no-match' })
+      adjudicate(a, b, elementById(a).name, elementById(b).name).then((explanation) => {
+        // A newer attempt has already started — this response is stale.
+        if (attemptRef.current === attempt) {
+          setFeedback({ kind: 'no-match', explanation })
+        }
+      })
     }
   }
 
@@ -185,7 +202,7 @@ export function Workspace({ realm, data, game, onBack, onOpenCodex }: WorkspaceP
         <p className="min-h-5 text-sm font-semibold text-muted" role="status">
           {showHint && 'Tap two elements below, then hit Combine.'}
           {feedback?.kind === 'already-known' && `You already have ${feedback.name}.`}
-          {feedback?.kind === 'no-match' && 'Nothing happens.'}
+          {feedback?.kind === 'no-match' && (feedback.explanation ?? 'Hmm…')}
         </p>
       </Card>
 
