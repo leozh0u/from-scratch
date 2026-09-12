@@ -67,18 +67,40 @@ function validateReferences(data: RecipeData): SolverIssue[] {
     }
   }
 
+  /*
+   * A TARGET must belong to the realm claiming it. A STARTER may be handed
+   * down from an earlier one.
+   *
+   * The rule used to be the same for both, and it was right until the realms
+   * stopped being independent. Everything genuinely depends on Survival's
+   * output — its sewing thread is waxed with Survival's paraffin, its glass
+   * starts from Survival's stone — and in ordinary play those carry over. But
+   * a player can now enter Everything without finishing Survival, and in that
+   * state ten of its elements were unmakeable and its targets unreachable:
+   * not hard, impossible.
+   *
+   * So Survival's three starters are listed under Everything as well, which
+   * is the honest version of the carryover that was already happening. The
+   * relaxation is deliberately narrow — only a starter, and only from
+   * Survival, which is the tutorial everything else is built on. A target
+   * from another realm is still an error, because a realm whose finish line
+   * lives somewhere else is not a realm.
+   */
   function validateRealmList(kind: 'Starter' | 'Target', list: Record<RealmId, string[]>) {
     for (const [realm, ids] of Object.entries(list) as [RealmId, string[]][]) {
       for (const id of ids) {
         const el = data.elements.find((e) => e.id === id)
         if (!el) {
           issues.push({ level: 'error', message: `${kind} "${id}" in realm "${realm}" does not exist` })
-        } else if (el.realm !== realm) {
-          issues.push({
-            level: 'error',
-            message: `${kind} "${id}" is listed under realm "${realm}" but belongs to "${el.realm}"`,
-          })
+          continue
         }
+        if (el.realm === realm) continue
+        const handedDown = kind === 'Starter' && el.realm === 'survival'
+        if (handedDown) continue
+        issues.push({
+          level: 'error',
+          message: `${kind} "${id}" is listed under realm "${realm}" but belongs to "${el.realm}"`,
+        })
       }
     }
   }

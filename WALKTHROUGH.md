@@ -41,7 +41,7 @@ The main game. Everything a person can point at, and what it actually cost to ma
 
 **Targets:** Cotton T-Shirt, Aluminium Can, Glass Bottle
 
-**You start with 9:** Water, Soil, Limestone, Bauxite, Iron Ore, Crude Oil, Natural Gas, Beeswax, Textile Waste
+**You start with 12:** Stone, Wood, Plant Fibre, Water, Soil, Limestone, Bauxite, Iron Ore, Crude Oil, Natural Gas, Beeswax, Textile Waste
 
 **Carried over from Survival:** Stone, Wood, Plant Fibre, Sharp Stone, Cordage, Bark, Spindle, Fire, Charcoal — these are real dependencies, which is why Survival comes first.
 

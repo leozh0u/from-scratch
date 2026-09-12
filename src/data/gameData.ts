@@ -1055,10 +1055,38 @@ export const GAME_DATA: RecipeData = {
   starters: {
     // Three. Everything else in the game is earned from them.
     survival: ['stone', 'wood', 'plant_fibre'],
-    // Industry legitimately begins from what you dig up and pump, but nothing
-    // manufactured is handed over: the gin is built, the soda ash is made, the
-    // salt is evaporated, the farmland is fertilised.
+    /*
+     * Industry legitimately begins from what you dig up and pump, but nothing
+     * manufactured is handed over: the gin is built, the soda ash is made, the
+     * salt is evaporated, the farmland is fertilised.
+     *
+     * STONE AND WOOD ARE HERE BECAUSE THIS REALM HAS TO STAND ALONE.
+     *
+     * They are Survival's starters and in ordinary play they carry over, so
+     * for a long time this list did not need them. Then `UNLOCK_EVERYTHING`
+     * let somebody open Everything without playing Survival — which is how a
+     * judge with three minutes will arrive — and in that state the realm is
+     * unwinnable: the t-shirt needs wood for the gin and the glass needs
+     * stone for the sand, and neither has a recipe. Not hard, unwinnable.
+     *
+     * Found by `scripts/edgetest.ts` replaying the give-up route from each
+     * realm's starters and checking every step is followable. It came back
+     * with zero steps to the t-shirt, which is the graph saying "you cannot
+     * get there from here".
+     *
+     * A realm should be completable from its own starters whatever gate is in
+     * front of it, and that is now asserted rather than assumed.
+     *
+     * Plant fibre is here for the same reason one step further out: with only
+     * stone and wood, ten everyday elements stayed unreachable because they
+     * need cordage, and cordage is two plant fibres. All three of Survival's
+     * starters carry over in real play, so handing over all three is the
+     * honest version of what already happens.
+     */
     everyday: [
+      'stone',
+      'wood',
+      'plant_fibre',
       'water',
       'soil',
       'limestone',

@@ -245,6 +245,16 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
     setGivingUp(false)
     if (!giveUpTarget) return
     const steps = pathToTarget(data, new Set(inventory), giveUpTarget)
+    /*
+     * An empty route means the target cannot be reached from here at all,
+     * which should be impossible — `scripts/edgetest.ts` asserts every realm
+     * is completable from its own starters — but showing an empty list would
+     * read as the feature being broken rather than as an impossible position.
+     */
+    if (steps.length === 0) {
+      setRevealed(['no route from here.'])
+      return
+    }
     setRevealed(
       steps.map(
         (step) =>

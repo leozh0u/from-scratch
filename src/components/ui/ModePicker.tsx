@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { PixelButton } from './PixelButton'
 import { MODES, modeById, writeMode, type ModeId } from '../../game/modes'
+import { minWidthForSide } from './legend'
 import { playPress } from '../../audio/sfx'
 
 /**
@@ -53,6 +54,20 @@ export function ModePicker({
     )
   }
 
+  /*
+   * ONE WIDTH FOR ALL THREE.
+   *
+   * Each key is otherwise sized by its own longest part — "unlimited hints"
+   * is nearly twice "no hints" — so the three came out as a ragged staircase.
+   * A stack of choices should read as one control with three positions, and
+   * three different widths read as three unrelated buttons that happen to be
+   * near each other.
+   *
+   * Taken from the widest legend rather than picked, so adding a mode with a
+   * longer description widens all three instead of breaking the alignment.
+   */
+  const shared = Math.max(...MODES.map((m) => minWidthForSide(unit, m.blurb)))
+
   return (
     <div className="flex flex-col items-end gap-2">
       {MODES.map((m) => (
@@ -67,6 +82,7 @@ export function ModePicker({
           tone={m.id === mode ? 'survival' : 'default'}
           unit={unit}
           side={m.blurb}
+          style={{ minWidth: shared }}
           aria-pressed={m.id === mode}
           onClick={() => {
             playPress()

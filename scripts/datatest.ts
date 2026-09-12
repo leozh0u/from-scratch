@@ -70,14 +70,36 @@ console.log('\n=== every id a recipe mentions actually exists ===')
   ok('no dangling targets', targetMissing.length === 0, targetMissing.join(', '))
 }
 
-console.log('\n=== a starter belongs to the realm claiming it ===')
+console.log('\n=== a starter belongs to its realm, or is handed down from survival ===')
 {
-  const realmOf = new Map(GAME_DATA.elements.map((e) => [e.id, e.realm]))
+  /*
+   * Survival's three starters are deliberately listed under Everything too.
+   * See the note in solver.ts: the realms share one graph, Everything always
+   * depended on Survival's output, and a player can now enter Everything
+   * without finishing Survival — in which state ten of its elements were
+   * unmakeable. Handing the three down is the honest version of the carryover
+   * that was already happening.
+   */
+  const HANDED_DOWN = new Set(GAME_DATA.starters.survival)
   const wrong: string[] = []
-  for (const [realm, list] of Object.entries(GAME_DATA.starters)) {
-    for (const id of list) if (realmOf.get(id) !== realm) wrong.push(`${id} is ${realmOf.get(id)}, listed under ${realm}`)
+  for (const [realm, ids] of Object.entries(GAME_DATA.starters) as ['survival' | 'everyday', string[]][]) {
+    for (const id of ids) {
+      const el = GAME_DATA.elements.find((e) => e.id === id)
+      if (!el || el.realm === realm) continue
+      if (realm === 'everyday' && HANDED_DOWN.has(id)) continue
+      wrong.push(`${id} is ${el?.realm}, listed under ${realm}`)
+    }
   }
-  ok('every starter is in its own realm', wrong.length === 0, wrong.join('; '))
+  ok('every starter is its own realm or one of survival\'s three', wrong.length === 0, wrong.join('; '))
+
+  const wrongTarget: string[] = []
+  for (const [realm, ids] of Object.entries(GAME_DATA.targets) as ['survival' | 'everyday', string[]][]) {
+    for (const id of ids) {
+      const el = GAME_DATA.elements.find((e) => e.id === id)
+      if (el && el.realm !== realm) wrongTarget.push(`${id} is ${el.realm}, listed under ${realm}`)
+    }
+  }
+  ok('and no target lives in another realm', wrongTarget.length === 0, wrongTarget.join('; '))
 }
 
 console.log('\n=== no two recipes claim the same pair ===')
