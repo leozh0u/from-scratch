@@ -800,8 +800,23 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
          * out 64px columns to a 96px tile, so on a narrow screen the last
          * column hung off the side of the screen.
          */
-        className="grid justify-center gap-3"
-        style={{ gridTemplateColumns: `repeat(auto-fill, ${TILE_WIDTH}px)` }}
+        className="grid justify-items-center gap-3"
+        /*
+         * TRACKS THAT FILL THE ROW, NOT TRACKS CENTRED IN IT.
+         *
+         * `repeat(auto-fill, 96px)` with `justify-center` lays three fixed
+         * tracks in a 402px row and dumps the 90px of leftover in two lumps at
+         * the ends — so the tiles started 45px inside the status bars above
+         * them and stopped 45px short of the other side, which is the uneven
+         * margin Leo spotted. Measured: bars 20 to 422, first tile at 65.
+         *
+         * `minmax(96px, 1fr)` shares that leftover across the tracks instead,
+         * so the grid's own edges are the row's edges and the tiles sit on the
+         * same margins as everything above them. The tile itself stays a fixed
+         * size and centres in its track, because every tile being identical is
+         * an invariant worth more than the last few pixels of alignment.
+         */
+        style={{ gridTemplateColumns: `repeat(auto-fill, minmax(${TILE_WIDTH}px, 1fr))` }}
       >
         {inventory.map((id) => (
           <ElementTile

@@ -167,8 +167,20 @@ export function useGameState(data: RecipeData) {
    * is built on ("one graph viewed through four windows"), so anything less
    * than a full union silently breaks it.
    */
+  /*
+   * DEDUPED, BECAUSE AN ELEMENT CAN NOW BE SEEDED INTO BOTH REALMS.
+   *
+   * "Discovered" is one global fact per element id — the two lists are only
+   * bookkeeping for which realm a new find belongs to. That distinction was
+   * invisible until Survival's three starters were also listed as Everything's,
+   * so they were seeded into both arrays and the Survival shelf showed stone,
+   * wood and plant fibre twice.
+   *
+   * A Set rather than a filter on the concatenation, so this stays linear as
+   * the graph grows past two hundred.
+   */
   const allDiscovered = useCallback(
-    () => [...discovered.survival, ...discovered.everyday],
+    () => [...new Set([...discovered.survival, ...discovered.everyday])],
     [discovered],
   )
 

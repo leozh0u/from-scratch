@@ -174,5 +174,31 @@ console.log('\n=== the hint budget cannot go negative or explode ===')
      Math.max(0, hintsEarned(0, 0) - 99) === 0)
 }
 
+/*
+ * AN ELEMENT SEEDED INTO TWO REALMS IS STILL ONE ELEMENT.
+ *
+ * Survival's three starters are also Everything's, so a fresh save holds each
+ * of them in both realm arrays. The shelf is built from both lists, and it
+ * showed stone, wood and plant fibre twice until the flatten started deduping.
+ * The lists are bookkeeping for where a find belongs; "discovered" is one fact
+ * per id.
+ */
+console.log('\n=== an element in two realms is still one element ===')
+{
+  const shared = GAME_DATA.starters.survival.filter((id) =>
+    GAME_DATA.starters.everyday.includes(id),
+  )
+  ok('survival starters are handed to everything too', shared.length === 3, shared.join(', '))
+
+  const flattened = [...GAME_DATA.starters.survival, ...GAME_DATA.starters.everyday]
+  const deduped = [...new Set(flattened)]
+  ok('a naive flatten really would duplicate them',
+     flattened.length - deduped.length === shared.length,
+     `${flattened.length - deduped.length} duplicates`)
+  ok('and deduping leaves every distinct starter',
+     deduped.length === new Set([...GAME_DATA.starters.survival, ...GAME_DATA.starters.everyday]).size,
+     `${deduped.length} distinct`)
+}
+
 console.log(`\n${pass} passed, ${fail} failed\n`)
 if (fail > 0) process.exit(1)

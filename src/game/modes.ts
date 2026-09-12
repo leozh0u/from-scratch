@@ -82,7 +82,7 @@ export const MODES: Mode[] = [
      * have to pay it again. Calling the door "cheater" lets them through
      * without pretending the door was not there.
      */
-    blurb: 'skip the tutorial',
+    blurb: 'skip tutorial',
     hints: true,
     infiniteHints: true,
     giveUp: true,

@@ -140,8 +140,8 @@ export function Inventory({ data, game, onBack, onReset }: InventoryProps) {
                 {REALM_LABEL[realm]} · {found} of {entries.length}
               </p>
               <div
-                className="grid justify-center gap-3"
-                style={{ gridTemplateColumns: `repeat(auto-fill, ${TILE_WIDTH}px)` }}
+                className="grid justify-items-center gap-3"
+                style={{ gridTemplateColumns: `repeat(auto-fill, minmax(${TILE_WIDTH}px, 1fr))` }}
               >
                 {entries.map((element) => {
                   const found = isFound(element.id)
