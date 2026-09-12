@@ -21,7 +21,6 @@ import {
   GLASS_BOTTLE,
   GLOWING_TINDER,
   HIGH_CARBON_STEEL,
-  KINDLING,
   LIGHTER,
   LIMESTONE,
   MANGANESE,
@@ -69,10 +68,8 @@ import {
   AMMONIA,
   QUICKLIME,
   DISTILLATE,
-  SPARK,
   TINDER,
   WATER,
-  WICK,
 } from '../art/sprites'
 import type { Sprite } from '../components/PixelArt'
 
