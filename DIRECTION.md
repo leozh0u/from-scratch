@@ -136,10 +136,20 @@ things a player already associates with rubber.
 Where a step is real but unguessable, the fix is usually to name the
 intermediate more plainly rather than to drop the step.
 
-**3. Not too niche.** The output should be a thing most people have heard of,
-or an obvious step toward one. Plaster, ink, rope, a window, a tyre: yes.
-Sodium metasilicate pentahydrate: no, however real. A good test is whether the
-name would appear in a children's book about how things are made.
+**3. Niche is good — that is the teaching.** Leo, reversing an earlier note of
+mine: *"i like niche things, its what helps people learn."* He is right, and
+the obscure steps are the ones worth knowing. Almost nobody can name the
+process that turns bauxite into aluminium and it is the most interesting thing
+in that chain.
+
+So the constraint is not obscurity, it is having a HANDLE. An element earns its
+place when its name tells you something and two sentences can explain what it
+is for. Wrought iron, slag, potash, quicklime, mordant, retting: obscure, and
+every one of them is a door. What to avoid is jargon with nothing to hold on
+to — a name that is a formula, a number, or a trade code, where the player
+learns a string rather than a thing.
+
+If you cannot write the blurb, the element is the wrong one.
 
 **4. It has to draw.** Every element needs an icon that is distinguishable at
 scale 2 in the target list. Two greys of the same shape are one icon and a
