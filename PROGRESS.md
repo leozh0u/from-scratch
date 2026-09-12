@@ -403,3 +403,64 @@ submission.
 | DREAD: 66 `Co-Authored-By: Claude` trailers | Public repo, breaks his own standing rule |
 | DREAD: video | Not shot |
 | Two submissions allowed? | Needs an organiser — decides whether DREAD matters at all |
+
+---
+
+## LEDGER — 2026-09-12, ~15:20 Saturday
+
+### Done this stretch
+
+| Asked | State |
+|---|---|
+| "unreadable, not to the pixel theme… go through everything, every scenario" | **done** — discovery card, receipt, inventory, styleguide all converted |
+| "this reads ai: Nothing happens — at least not in a way…" | **done** — now "They just sit there." |
+| "high carbon steel is so long it looks different… think of a workaround" | **done** — every tile is 92x124, verified in browser |
+| "make them more pixelated… like the inspiration buttons" | **done** — four-sided bevels, deeper block, coarser corner treads |
+| "the swaying is nice but id like a litle more" | **done** — 2px amplitude, eight positions, fronds on the sides too |
+| "the bottom ones sometimes start floating" | **done** — roots overshoot the frame edge by 3px; bottom fifth never moves |
+| "Starting over clears every discovery… is not pixelated" | **done** |
+| "no exceptions unless i tell you" | **done** — reversed the body-font exception I had taken on the blurb |
+| Two-speed failure explanation | **done** — was planned in ARCHITECTURE.md hours ago and never built |
+
+### The adjudicator stall is fixed
+
+Found when I first played the game and flagged repeatedly without being fixed.
+Every failed combination called Gemini and showed "Hmm…" for a measured 5–10
+seconds — in a game where **over 98% of attempts fail**.
+
+Elements are now tagged (`src/data/properties.ts`) and a rule table
+(`src/adjudicator/explain.ts`) answers instantly: **946 pairs in 0.5ms, 0.6µs
+each.** The model sits behind a "why not?" the player presses.
+
+The constraint that matters is asserted by test: **no local line may claim a
+pair is impossible**, because the model can answer "that's actually real, just
+not in this game" and the two would contradict each other.
+
+### Test count now 57
+
+36 data/solver · 13 explanations · 8 sway.
+
+### OPEN — mine
+
+| Item | State |
+|---|---|
+| Everyday city scene | **open** — waiting on Leo's SVG; wiring is one line once it exists |
+| Everyday has no backdrop at all | **open** — only Survival has one |
+| T-shirt CO2, aluminium can water | **open** — pinned by test; aluminium sources span 495–1,490 L/kg so zero is honest |
+| Little Alchemy scope, hundreds of elements | **open** |
+| Sprite vocabulary | **open** |
+| Nintendo zoom-out | **open** — Leo has not placed it |
+| README still the Vite template | **open** — first thing a judge browsing the repo sees |
+
+### BLOCKED ON LEO
+
+| Item | Why |
+|---|---|
+| **Tell Nathalie and Eliza to re-shoot** | The UI is unrecognisable from an hour ago. Anything filmed before ~15:00 is unusable. |
+| City SVG | Same source as the forest, so the palettes match |
+| **Pixie URL + licence for `forest-hillside.svg`** | It ships in the repo now. If attribution is required it must be in the README and Devpost. |
+| DREAD: MathWorks | ~30 seconds, unclaimed at comparable events |
+| DREAD: rotate 4 exposed API keys | Never confirmed |
+| DREAD: 66 Claude co-author trailers | Public repo, breaks his own standing rule |
+| DREAD: video | Not shot |
+| Two submissions allowed? | Needs an organiser |
