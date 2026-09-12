@@ -106,5 +106,38 @@ console.log('\n=== every rule in the table is reachable ===')
     `${produced.size} distinct of ${RULE_IDS.length} rules + fallback`)
 }
 
+console.log('\n=== the fallback is the exception, not the rule ===')
+{
+  /*
+   * The number that made this matter: nine rules covered a quarter of the
+   * 1,713 pairs that are not recipes, so 73% of everything a player tried got
+   * "Nothing obvious happens." In a game where 98% of attempts fail, that was
+   * the sentence the game said most often, and it teaches nothing.
+   *
+   * Pinned so it cannot drift back. Adding elements without adding grammar
+   * will fail this.
+   */
+  const ids = GAME_DATA.elements.map((e) => e.id)
+  const pairKey = (a: string, b: string) => [a, b].sort().join('+')
+  const recipes = new Set(GAME_DATA.recipes.map((r) => pairKey(r.inputs[0], r.inputs[1])))
+
+  let total = 0
+  let fellThrough = 0
+  const answers = new Set<string>()
+  for (let i = 0; i < ids.length; i++) {
+    for (let j = i; j < ids.length; j++) {
+      if (recipes.has(pairKey(ids[i], ids[j]))) continue
+      total++
+      const { message } = explainFailure(ids[i], ids[j])
+      answers.add(message)
+      if (message === 'Nothing obvious happens.') fellThrough++
+    }
+  }
+  const share = fellThrough / total
+  ok('under a fifth of failures fall through', share < 0.2,
+     `${(share * 100).toFixed(1)}% of ${total} pairs`)
+  ok('and the table has plenty to say', answers.size >= 30, `${answers.size} distinct answers`)
+}
+
 console.log(`\n${fail === 0 ? 'Instant explanations hold.' : `${fail} FAILED`}  (${pass} checks)`)
 process.exit(fail === 0 ? 0 : 1)

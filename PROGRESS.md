@@ -570,3 +570,28 @@ wide it is 36 to 90 pixels, four to ten windows dark at a time out of about
 250, changing every few seconds.
 
 Both scenes now: 128x128 source, `image-rendering: pixelated`, square blocks.
+
+## The failure copy, which was the thing the game said most often
+
+Leo asked for this on day one: "we want things that cant go together also
+explained why." It has been on the ledger as open ever since, and measuring it
+showed why that mattered.
+
+Across all **1,713 pairs that are not recipes**, nine rules covered a quarter
+and **73% got "Nothing obvious happens."** In a game where 98% of what you try
+fails, that sentence was the single most common thing the game said, and it
+teaches nothing.
+
+Twenty-seven more rules take it to **13.3%**, with 37 distinct answers. They
+are still grammar rather than trivia, which is the whole argument: a player who
+learns that a tool needs a material, a reagent needs something to react with,
+and cold metal keeps its shape starts predicting instead of guessing. That
+scales to Little Alchemy size; 1,700 separate facts do not.
+
+One rule had to be rewritten before it shipped: "You cannot cut or press a
+chemical" contains the word the existing test forbids, because the model may
+still answer "that's actually real" for the same pair and the two would
+contradict each other.
+
+`explaintest.ts` now pins the fallback share under a fifth, so adding elements
+without adding grammar fails the build.
