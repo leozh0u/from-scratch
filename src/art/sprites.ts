@@ -1084,3 +1084,78 @@ export const GROUND: Sprite = {
     s: '#7e7e7e',
   },
 }
+
+/*
+ * CHAIN AND PADLOCK — laid across a locked control.
+ *
+ * A greyed-out button says "you cannot press this". A chained one says "there
+ * is something in here worth getting to", which is what locking the Everyday
+ * realm behind Survival is for: it has to read as a prize, not as a disabled
+ * form field.
+ *
+ * The chain is ONE LINK, repeated, rather than a single long drawn chain.
+ * A button is whatever width its label makes it, and stretching pixel art to
+ * fit is the one thing that always looks wrong — a repeated link tiles to any
+ * width with every pixel still square.
+ *
+ * Light from above-left, matching PINE and the rest of the set.
+ */
+export const CHAIN_LINK: Sprite = {
+  /*
+   * TWO links, not one — a flat oval followed by one seen edge-on.
+   *
+   * A real chain alternates: each link sits at ninety degrees to its
+   * neighbour, so you see one as a ring and the next as a narrow bar. Tiling a
+   * single ring instead produces a row of identical little circles that reads
+   * as a decorative border, which is exactly what the first attempt looked
+   * like. Repeating a PAIR is what makes it read as chain.
+   */
+  rows: [
+    '............',
+    '..llll..lll.',
+    '.lhhhhl.lhl.',
+    'lhl..lhllhhl',
+    'lh....hllhhl',
+    'lh....hllhhl',
+    'lhl..lhllhhl',
+    '.lddddl.ldl.',
+    '..llll..lll.',
+    '............',
+  ],
+  palette: {
+    // Cold grey iron, deliberately not the same greys as the locked button
+    // face, or the chain disappears into it.
+    l: '#2a2840',
+    h: '#c6c3de',
+    d: '#75729a',
+  },
+}
+
+/** Hangs at the centre of the chain run. Slightly wider than a link so it
+ * reads as the thing holding the chain together rather than part of it. */
+export const PADLOCK: Sprite = {
+  rows: [
+    '...SSSS...',
+    '..Sh..hS..',
+    '..S....S..',
+    '..S....S..',
+    '.bBBBBBBb.',
+    'bBhhhhhhBb',
+    'bBhhKKhhBb',
+    'bBhhKKhhBb',
+    'bBhhhKhhBb',
+    'bBhhhhhhBb',
+    '.bBBBBBBb.',
+    '..bbbbbb..',
+  ],
+  palette: {
+    // Shackle — the same iron as the chain.
+    S: '#8e8bad',
+    // Body — brass, so the lock reads as the focal point of the run.
+    B: '#c8922f',
+    b: '#7d5713',
+    h: '#efc463',
+    // Keyhole.
+    K: '#3a2a08',
+  },
+}

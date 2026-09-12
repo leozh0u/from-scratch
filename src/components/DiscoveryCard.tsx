@@ -11,7 +11,7 @@ type DiscoveryCardProps = {
   recipe: RecipeDef
   onClose: () => void
   /**
-   * Overrides the "New discovery" eyebrow. The Codex reuses this exact card
+   * Overrides the "New discovery" eyebrow. The Inventory reuses this exact card
    * to reopen something found long ago — telling the player it's "new" at
    * that point would just be wrong.
    */

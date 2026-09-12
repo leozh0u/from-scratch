@@ -7,7 +7,7 @@ import { Card } from './ui/Card'
 import { ElementTile } from './ui/ElementTile'
 import { Button } from './ui/Button'
 
-type CodexProps = {
+type InventoryProps = {
   data: RecipeData
   game: ReturnType<typeof useGameState>
   onBack: () => void
@@ -28,7 +28,7 @@ const REALM_LABEL: Record<RealmId, string> = {
  * same DiscoveryCard shown at the moment of discovery, rather than
  * duplicating its layout inline for every entry.
  */
-export function Codex({ data, game, onBack }: CodexProps) {
+export function Inventory({ data, game, onBack }: InventoryProps) {
   const [selected, setSelected] = useState<ElementDef | null>(null)
 
   const starterIds = new Set([...data.starters.survival, ...data.starters.everyday])
@@ -67,7 +67,7 @@ export function Codex({ data, game, onBack }: CodexProps) {
         >
           ← Back
         </button>
-        <h1 className="text-lg font-extrabold text-ink">Codex</h1>
+        <h1 className="text-lg font-extrabold text-ink">Inventory</h1>
         <span className="w-12" aria-hidden="true" />
       </div>
 
@@ -121,7 +121,7 @@ export function Codex({ data, game, onBack }: CodexProps) {
             <DiscoveryCard
               element={selected}
               recipe={recipe}
-              heading="From your Codex"
+              heading="From your Inventory"
               onClose={() => setSelected(null)}
             />
           ) : null

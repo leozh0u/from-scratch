@@ -17,7 +17,7 @@ type WorkspaceProps = {
   data: RecipeData
   game: ReturnType<typeof useGameState>
   onBack: () => void
-  onOpenCodex: () => void
+  onOpenInventory: () => void
 }
 
 type Slots = [string | null, string | null]
@@ -39,7 +39,7 @@ const REALM_LABEL: Record<RealmId, string> = {
   everyday: 'Everyday Objects',
 }
 
-export function Workspace({ realm, data, game, onBack, onOpenCodex }: WorkspaceProps) {
+export function Workspace({ realm, data, game, onBack, onOpenInventory }: WorkspaceProps) {
   const [slots, setSlots] = useState<Slots>([null, null])
   const [feedback, setFeedback] = useState<Feedback | null>(null)
   const [discovery, setDiscovery] = useState<Discovery | null>(null)
@@ -150,10 +150,10 @@ export function Workspace({ realm, data, game, onBack, onOpenCodex }: WorkspaceP
         <h1 className="text-lg font-extrabold text-ink">{REALM_LABEL[realm]}</h1>
         <button
           type="button"
-          onClick={onOpenCodex}
+          onClick={onOpenInventory}
           className="cursor-pointer text-sm font-extrabold text-muted hover:text-ink"
         >
-          Codex
+          Inventory
         </button>
       </div>
 

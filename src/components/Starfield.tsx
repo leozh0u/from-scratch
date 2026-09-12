@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { useViewport } from '../hooks/useViewport'
 
 /**
  * The night sky behind everything.
@@ -33,7 +34,7 @@ const BRIGHTNESS = ['#6f6c9a', '#a8a6c8', '#ffffff']
  * make it read as an 8-bit sky rather than as noise — see the Figma mock,
  * where the big stars are five-pixel crosses.
  */
-const CROSS_SHARE = 0.22
+const CROSS_SHARE = 0.12
 
 type Star = {
   x: number
@@ -95,22 +96,42 @@ function buildStars(width: number, height: number, count: number): Star[] {
 }
 
 type StarfieldProps = {
-  /** Sprite-pixel dimensions of the canvas. CSS scales it to fill. */
-  width?: number
-  height?: number
-  count?: number
+  /**
+   * CSS pixels per star pixel. The canvas is sized from the viewport divided
+   * by this, so a star is always this many real pixels across.
+   */
+  pixelScale?: number
+  /** Stars per 10,000 star-pixels of sky. Density, not a fixed count. */
+  density?: number
   className?: string
   style?: React.CSSProperties
 }
 
 export function Starfield({
-  width = 240,
-  height = 150,
-  count = 260,
+  pixelScale = 3,
+  density = 5,
   className,
   style,
 }: StarfieldProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const { width: vw, height: vh } = useViewport()
+
+  /*
+   * THE CANVAS RESOLUTION FOLLOWS THE VIEWPORT, AND HAS TO.
+   *
+   * This was a fixed 240x150 canvas stretched across the window with CSS. On a
+   * laptop screen that means each one-pixel star is drawn eight real pixels
+   * wide, so the sky fills up with enormous plus signs — which is exactly what
+   * "the stars are a little too much" looked like at full screen, and it got
+   * worse the bigger the window.
+   *
+   * Sizing the canvas from the viewport instead keeps a star the same physical
+   * size at every window size, and makes the count a DENSITY rather than a
+   * fixed number, so a wide window gets more sky rather than bigger stars.
+   */
+  const width = Math.max(80, Math.ceil(vw / pixelScale))
+  const height = Math.max(80, Math.ceil(vh / pixelScale))
+  const count = Math.round(((width * height) / 10_000) * density)
 
   useEffect(() => {
     const canvas = canvasRef.current

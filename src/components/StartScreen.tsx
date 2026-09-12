@@ -28,14 +28,14 @@ const EARTH_PIXELS = 72
 
 type StartScreenProps = {
   onSelectRealm: (realm: RealmId) => void
-  onOpenCodex: () => void
+  onOpenInventory: () => void
   /** Survival's targets are all discovered — Everyday is playable. */
   everydayUnlocked: boolean
 }
 
 export function StartScreen({
   onSelectRealm,
-  onOpenCodex,
+  onOpenInventory,
   everydayUnlocked,
 }: StartScreenProps) {
   const { width } = useViewport()
@@ -51,6 +51,15 @@ export function StartScreen({
   const scale = width < 560 ? 7 : width < 900 ? 10 : 13
   const unit = width < 560 ? 3 : 4
 
+  /*
+   * The wordmark gets its own, much larger unit. It is the thing the screen is
+   * built around — the planet is what it stands on, not the subject — so it is
+   * sized against the viewport rather than kept in step with the buttons.
+   * Stepped, not fluid, because a pixel font only renders cleanly at whole
+   * multiples of its design size.
+   */
+  const titleUnit = width < 480 ? 3 : width < 760 ? 5 : width < 1100 ? 7 : 9
+
   return (
     <main
       style={{
@@ -61,36 +70,13 @@ export function StartScreen({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        // The wordmark and the buttons are the screen. Centring them means
+        // they land in the same place at every window size instead of
+        // drifting with the top of the viewport.
+        justifyContent: 'center',
       }}
     >
       <Starfield />
-
-      {/*
-       * The globe is positioned from the bottom and centred, so the viewport
-       * crops its lower half no matter the window size. Everything else
-       * stacks above it in normal flow and simply overlaps.
-       */}
-      <div
-        aria-hidden="true"
-        style={{
-          position: 'absolute',
-          left: '50%',
-          /*
-           * How deep the planet sits is the one number that decides this
-           * screen, and it was tuned by looking at it. Sinking it by half its
-           * diameter matches the mock most literally but puts bright green
-           * land directly behind the small type, which no drop shadow rescues.
-           * Three quarters keeps the horizon below the buttons, so every word
-           * on the screen sits on flat navy, and the planet still reads as
-           * something far too large for the window.
-           */
-          bottom: `-${Math.round(EARTH_PIXELS * scale * 0.74)}px`,
-          transform: 'translateX(-50%)',
-          pointerEvents: 'none',
-        }}
-      >
-        <PixelEarth size={EARTH_PIXELS} scale={scale} secondsPerTurn={180} />
-      </div>
 
       <div
         style={{
@@ -99,15 +85,13 @@ export function StartScreen({
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: unit * 5,
-          paddingTop: unit * 7,
-          paddingBottom: unit * 8,
+          gap: unit * 6,
+          paddingBlock: unit * 8,
           width: '100%',
-          maxWidth: 560,
           paddingInline: unit * 4,
         }}
       >
-        <ArcTitle text="From Scratch" unit={unit} />
+        <ArcTitle text="From Scratch" unit={titleUnit} />
 
         <p
           style={{
@@ -133,6 +117,17 @@ export function StartScreen({
             flexDirection: 'column',
             gap: unit * 4,
             width: '100%',
+            /*
+             * The width cap lives HERE, not on the column.
+             *
+             * It was on the column, and the column ignored it: the arced
+             * wordmark is wider than any sensible button, and a flex item does
+             * not shrink below its content, so the title forced the column
+             * open and the full-width buttons followed it out. Capping the
+             * stack lets the title be as wide as it needs while the buttons
+             * stay the size they should be.
+             */
+            maxWidth: 420,
             alignItems: 'stretch',
           }}
         >
@@ -152,45 +147,49 @@ export function StartScreen({
             locked={!everydayUnlocked}
             onClick={() => everydayUnlocked && onSelectRealm('everyday')}
           >
-            {everydayUnlocked ? 'items' : 'items — locked'}
+            items
           </PixelButton>
 
-          {!everydayUnlocked && (
-            <p
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: unit * 2,
-                lineHeight: 1.9,
-                color: 'var(--color-star-mid)',
-                textAlign: 'center',
-                margin: 0,
-                textTransform: 'lowercase',
-                textShadow: '2px 2px 0 var(--color-space-deep)',
-              }}
-            >
-              finish survival first
-            </p>
-          )}
         </div>
 
-        <button
-          type="button"
-          onClick={onOpenCodex}
-          style={{
-            background: 'none',
-            border: 'none',
-            padding: unit * 2,
-            cursor: 'pointer',
-            fontFamily: 'var(--font-display)',
-            fontSize: unit * 2.25,
-            color: 'var(--color-star-mid)',
-            textTransform: 'lowercase',
-            letterSpacing: '0.04em',
-            textShadow: '2px 2px 0 var(--color-space-deep)',
-          }}
+        <PixelButton
+          tone="default"
+          unit={unit - 1}
+          onClick={onOpenInventory}
+          style={{ marginTop: unit * 2 }}
         >
-          view your codex
-        </button>
+          inventory
+        </PixelButton>
+      </div>
+
+      {/*
+       * THE PLANET IS A BACKDROP, AND ITS HORIZON IS PINNED BY PERCENTAGE.
+       *
+       * Two earlier versions of this were wrong in opposite directions. Pinned
+       * to the bottom of the viewport by a fixed pixel offset, it pulled away
+       * from the buttons as the window grew, leaving a widening field of empty
+       * navy. Put in flow underneath the content, it shoved the composition
+       * around instead.
+       *
+       * Anchoring its top edge to a PERCENTAGE of the viewport height fixes
+       * both: the horizon sits in the same place in the frame on a laptop and
+       * on a large display, and the content stays centred independently of it.
+       *
+       * It sits behind everything — the wordmark and the buttons are the
+       * screen, and this is the thing they are standing on.
+       */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          left: '50%',
+          top: '64%',
+          transform: 'translateX(-50%)',
+          zIndex: 0,
+          pointerEvents: 'none',
+        }}
+      >
+        <PixelEarth size={EARTH_PIXELS} scale={scale} secondsPerTurn={180} />
       </div>
     </main>
   )

@@ -11,7 +11,7 @@ export type ElementDef = {
   /** Sprite key into src/art/sprites.ts — kept as a string so data stays JSON-able. */
   icon: string
   realm: RealmId
-  /** Shown on the codex entry once discovered. */
+  /** Shown on the inventory entry once discovered. */
   blurb: string
   sources: Source[]
 }

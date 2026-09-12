@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { GAME_DATA } from './data/gameData'
 import type { RealmId } from './data/types'
-import { Codex } from './components/Codex'
+import { Inventory } from './components/Inventory'
 import { StartScreen } from './components/StartScreen'
 import { StyleguidePage } from './components/StyleguidePage'
 import { Workspace } from './components/Workspace'
@@ -18,7 +18,7 @@ function Game() {
   const [realm, setRealm] = useState<RealmId | null>(null)
   // An overlay, not a third state alongside `realm` — closing it returns to
   // whichever screen was already showing, start or workspace, for free.
-  const [showCodex, setShowCodex] = useState(false)
+  const [showInventory, setShowInventory] = useState(false)
   const game = useGameState(GAME_DATA)
 
   /*
@@ -35,15 +35,15 @@ function Game() {
     game.isDiscovered(id),
   )
 
-  if (showCodex) {
-    return <Codex data={GAME_DATA} game={game} onBack={() => setShowCodex(false)} />
+  if (showInventory) {
+    return <Inventory data={GAME_DATA} game={game} onBack={() => setShowInventory(false)} />
   }
 
   if (realm === null) {
     return (
       <StartScreen
         onSelectRealm={setRealm}
-        onOpenCodex={() => setShowCodex(true)}
+        onOpenInventory={() => setShowInventory(true)}
         everydayUnlocked={everydayUnlocked}
       />
     )
@@ -55,7 +55,7 @@ function Game() {
       data={GAME_DATA}
       game={game}
       onBack={() => setRealm(null)}
-      onOpenCodex={() => setShowCodex(true)}
+      onOpenInventory={() => setShowInventory(true)}
     />
   )
 }

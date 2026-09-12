@@ -75,8 +75,11 @@
   body {
     margin: 0;
     min-height: 100dvh;
-    background-color: var(--color-sky-6);
-    color: var(--color-ink);
+    /* Space, not the old pale sky. Left behind by the light theme, this
+     * showed as a band of pale blue wherever a screen did not fill the
+     * viewport. */
+    background-color: var(--color-space);
+    color: var(--color-star);
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

@@ -44,7 +44,7 @@ export function ArcTitle({
   className,
 }: ArcTitleProps) {
   const letters = [...text]
-  const size = unit * 7
+  const size = unit * 10
 
   /*
    * The arc is described by an angle per letter and a vertical drop that
