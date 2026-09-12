@@ -40,16 +40,44 @@ const REALMS = ['survival', 'everyday'] as const
 type Realm = (typeof REALMS)[number]
 
 const SCOPE: Record<Realm, string> = {
-  survival: `\n\nContext: the player is in the game's short opening chapter, which is only about making fire by hand from stone, wood and plant fibre. It is deliberately small. So if the pairing IS real, say so in a few words and then say plainly that it belongs to the larger part of the game rather than to this opening — do not imply the game is missing something.`,
+  survival: `\n\nContext: the player is in the game's short opening chapter, which is only about making fire by hand from stone, wood and plant fibre. Be especially strict here — almost nothing in this chapter makes a genuinely new material, and saying otherwise implies the game is missing something when it is not.`,
   everyday: '',
 }
 
+/*
+ * THE QUESTION HAD TO CHANGE, AND THIS IS THE WHOLE FIX.
+ *
+ * The first version asked whether combining the two was "actually a real
+ * thing". Swept across all 152 Survival pairings that have no recipe, 88 of
+ * them came back "that's actually real" — torch and ember, because the flame
+ * transfers; fire and fire, because merging flames makes a larger fire; bark
+ * and lit torch, because dry bark burns. Every one of those answers is true
+ * and not one of them is a missing recipe. The model was answering "would
+ * something happen", which for any two physical objects is almost always yes.
+ *
+ * The game's question is narrower and it is the one that matters: does
+ * combining these PRODUCE A DISTINCT NEW THING — something with its own name
+ * that you did not have before. Burning something is not making something.
+ * Wetting it is not making something. One thing touching another is not
+ * making something.
+ *
+ * Asked that way the "actually real" answer becomes rare and means what the
+ * player thinks it means: this really is a gap, and it should be filled.
+ */
 const PROMPT = (a: string, b: string, realm: Realm) => `A player in an educational crafting game just tried combining "${a}" and "${b}", and nothing happened — that pairing isn't a recipe in the game.
 
-First decide privately: is combining these two things, via some real physical, chemical, or industrial process, actually a real thing? Then respond with exactly ONE short sentence, under 30 words:
+First decide privately, and be strict about it: is there a real physical, chemical or industrial process by which these two together PRODUCE A DISTINCT NEW MATERIAL OR OBJECT — something that has its own name and is not just one of them in a different state?
 
-- If it IS real (just not modeled in this particular game): start with "That's actually real" and briefly say what it does.
-- If it is NOT physically meaningful: explain in simple terms why these two things don't interact or combine.
+These do NOT count as producing a new thing:
+- one of them burning, igniting, melting, drying or heating the other
+- one of them simply holding, containing, carrying, cutting, cleaning or protecting the other
+- the two sitting together, touching, mixing without reacting, or piling up
+- more of something you already have
+
+Then respond with exactly ONE short sentence, under 30 words:
+
+- If a real process DOES make a distinct new thing from these two: start with "That's actually real" and name what kind of process it is, without naming the product.
+- Otherwise: say in simple terms what actually happens between them, or why nothing does. Do not start with "That's actually real".
 
 Rules: output only that one sentence, nothing else. Never mention any other material, object, or recipe by name — you don't know what else exists in this game, so don't guess or suggest what the player should try instead.${SCOPE[realm]}`
 

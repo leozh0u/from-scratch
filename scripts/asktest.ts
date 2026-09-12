@@ -162,7 +162,22 @@ console.log('\n=== the adjudicator knows which chapter, and only that ===')
   ok('survival gets a scope line, the main game does not',
      /survival: `/.test(adjudicator) && /everyday: ''/.test(adjudicator))
   ok('and it tells the model not to imply the game is unfinished',
-     /do not imply the game is missing something/.test(adjudicator))
+     /implies the game is missing something when it is not/.test(adjudicator))
+
+  /*
+   * The question the prompt asks is the thing that broke, so it is the thing
+   * pinned. Asked "is this real", 88 of Survival's 152 recipe-less pairings
+   * came back "actually real" — the flame transfers, the bark burns, two fires
+   * make a bigger fire. All true, none a missing recipe.
+   */
+  ok('it asks for a distinct new thing, not for an interaction',
+     /PRODUCE A DISTINCT NEW MATERIAL OR OBJECT/.test(adjudicator))
+  ok('and names the cases that do not count',
+     /burning, igniting, melting, drying or heating/.test(adjudicator)
+       && /holding, containing, carrying/.test(adjudicator)
+       && /more of something you already have/.test(adjudicator))
+  ok('the confident phrase is reserved for a genuine gap',
+     /Otherwise: say in simple terms[\s\S]*Do not start with "That's actually real"/.test(adjudicator))
   ok('the handler still never sees the recipe list',
      !/gameData|RecipeDef/.test(adjudicatorCode))
 
