@@ -23,7 +23,17 @@ export const SEED_DATA: RecipeData = {
     { id: 'kindling', name: 'Kindling', icon: 'kindling', realm: 'survival', blurb: '', sources: [] },
     { id: 'flint', name: 'Flint', icon: 'flint', realm: 'survival', blurb: '', sources: [] },
     { id: 'steel', name: 'Steel', icon: 'steel', realm: 'survival', blurb: '', sources: [] },
-    { id: 'spark', name: 'Spark', icon: 'spark', realm: 'survival', blurb: '', sources: [] },
+    {
+      id: 'spark',
+      name: 'Spark',
+      icon: 'spark',
+      realm: 'survival',
+      // One genuinely real blurb/citation on an otherwise-placeholder graph —
+      // proves the discovery card's citation link works against real content,
+      // ahead of step 11 giving every node its own.
+      blurb: 'Striking hardened steel against flint shears off tiny fragments hot enough to ignite in air — a technique that predates matches by thousands of years.',
+      sources: [{ label: 'Fire striker — Wikipedia', url: 'https://en.wikipedia.org/wiki/Fire_striker' }],
+    },
     { id: 'tinder_bundle', name: 'Tinder Bundle', icon: 'tinder_bundle', realm: 'survival', blurb: '', sources: [] },
     { id: 'fire', name: 'Fire', icon: 'fire', realm: 'survival', blurb: '', sources: [] },
     { id: 'signal_fire', name: 'Signal Fire', icon: 'signal_fire', realm: 'survival', blurb: '', sources: [] },

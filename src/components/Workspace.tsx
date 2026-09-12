@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { resolveIcon } from '../data/iconRegistry'
-import type { RealmId, RecipeData } from '../data/types'
+import type { ElementDef, RealmId, RecipeData, RecipeDef } from '../data/types'
 import type { useGameState } from '../hooks/useGameState'
+import { DiscoveryCard } from './DiscoveryCard'
 import { PixelArt } from './PixelArt'
 import { Button } from './ui/Button'
 import { Card } from './ui/Card'
@@ -16,10 +17,13 @@ type WorkspaceProps = {
 
 type Slots = [string | null, string | null]
 
-type Feedback =
-  | { kind: 'discovered'; name: string; process: string }
-  | { kind: 'already-known'; name: string }
-  | { kind: 'no-match' }
+/*
+ * A genuine discovery gets the loud full-screen DiscoveryCard, not this inline
+ * line — so this feedback type only ever needs the two quiet outcomes.
+ */
+type Feedback = { kind: 'already-known'; name: string } | { kind: 'no-match' }
+
+type Discovery = { element: ElementDef; recipe: RecipeDef }
 
 const REALM_LABEL: Record<RealmId, string> = {
   survival: 'Survival',
@@ -29,6 +33,7 @@ const REALM_LABEL: Record<RealmId, string> = {
 export function Workspace({ realm, data, game, onBack }: WorkspaceProps) {
   const [slots, setSlots] = useState<Slots>([null, null])
   const [feedback, setFeedback] = useState<Feedback | null>(null)
+  const [discovery, setDiscovery] = useState<Discovery | null>(null)
 
   const inventory = game.inventoryFor(realm)
   const elementById = (id: string) => data.elements.find((el) => el.id === id)!
@@ -53,11 +58,7 @@ export function Workspace({ realm, data, game, onBack }: WorkspaceProps) {
     setSlots([null, null])
 
     if (result.status === 'discovered') {
-      setFeedback({
-        kind: 'discovered',
-        name: elementById(result.recipe.output).name,
-        process: result.recipe.process,
-      })
+      setDiscovery({ element: elementById(result.recipe.output), recipe: result.recipe })
     } else if (result.status === 'already-known') {
       setFeedback({ kind: 'already-known', name: elementById(result.recipe.output).name })
     } else {
@@ -111,8 +112,6 @@ export function Workspace({ realm, data, game, onBack }: WorkspaceProps) {
 
         {/* role="status" so a screen reader announces the result without a page jump */}
         <p className="min-h-5 text-sm font-semibold text-ink" role="status">
-          {feedback?.kind === 'discovered' &&
-            `New discovery: ${feedback.name} (${feedback.process})`}
           {feedback?.kind === 'already-known' && `You already have ${feedback.name}.`}
           {feedback?.kind === 'no-match' && 'Nothing happens.'}
         </p>
@@ -129,6 +128,14 @@ export function Workspace({ realm, data, game, onBack }: WorkspaceProps) {
           />
         ))}
       </div>
+
+      {discovery && (
+        <DiscoveryCard
+          element={discovery.element}
+          recipe={discovery.recipe}
+          onClose={() => setDiscovery(null)}
+        />
+      )}
     </main>
   )
 }
