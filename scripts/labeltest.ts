@@ -11,7 +11,7 @@
  * walks the real data, so adding an unfittable name fails the build.
  */
 import { fitFontSize, unbreakableRuns, lineCount } from '../src/components/ui/labelFit'
-import { arcTitleWidth, fitArcUnit } from '../src/components/ArcTitle'
+import { arcTitleWidth, fitArcUnit, arcTitlePlacement } from '../src/components/ArcTitle'
 import { GAME_DATA } from '../src/data/gameData'
 
 let pass = 0, fail = 0
@@ -115,6 +115,46 @@ console.log('\n=== the wordmark fits every window ===')
   )
   // The ceiling is deliberate: past this the title stops being a title.
   ok('and stops at the ceiling', fitArcUnit(TEXT, 99_999, 12) === 12)
+}
+
+console.log('\n=== the word break sits at the top of the arc ===')
+{
+  /*
+   * "i want the middle line to be the middle." The two words have different
+   * letter counts, so spacing every letter equally put the apex inside
+   * "Scratch". At balance 1 each word gets an identical share and the gap
+   * between them is the midpoint of the arc - which only comes out exact if
+   * the spans are measured from the glyph EDGES, since a four-letter word and
+   * a seven-letter word inset their outermost glyphs by different amounts.
+   * The first attempt missed by ten pixels for precisely that reason.
+   */
+  const TEXT = 'From Scratch'
+  const balanced = arcTitlePlacement(TEXT, 1)
+  const first = balanced.filter((p) => p.word === 0)
+  const second = balanced.filter((p) => p.word === 1)
+  const breakAt = (first[first.length - 1].t + second[0].t) / 2
+
+  ok('the break is at the midpoint', Math.abs(breakAt - 0.5) < 0.001, `${breakAt.toFixed(4)}`)
+  ok(
+    'and the two words take the same room',
+    Math.abs(
+      (first[first.length - 1].t - first[0].t) - (second[second.length - 1].t - second[0].t),
+    ) < 0.001,
+  )
+
+  // Backing the dial off must actually change something, or it is not a dial.
+  const natural = arcTitlePlacement(TEXT, 0)
+  const naturalBreak =
+    (natural.filter((p) => p.word === 0).slice(-1)[0].t + natural.filter((p) => p.word === 1)[0].t) / 2
+  ok('balance 0 leaves the break where the letters put it', Math.abs(naturalBreak - 0.5) > 0.05,
+     `${naturalBreak.toFixed(3)}`)
+  ok(
+    'and spaces every letter evenly instead',
+    (() => {
+      const gaps = natural.slice(1).map((p, i) => p.t - natural[i].t).filter((_, i) => i !== 3)
+      return Math.max(...gaps) - Math.min(...gaps) < 0.001
+    })(),
+  )
 }
 
 console.log(`\n${pass} passed, ${fail} failed\n`)

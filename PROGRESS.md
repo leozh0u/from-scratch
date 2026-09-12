@@ -762,3 +762,28 @@ at exactly 320, where even the old floor overflowed.
 The space between the words went from `unit * 3` to `size * 0.55`, since on an
 arc the gap has to beat a letter's own advance by more than usual - the glyphs
 either side of it are leaning toward each other.
+
+## The word break at the apex
+
+Leo: "i want the middle line to be the middle. but from and scratch are
+different lengths."
+
+"From" is four letters and "Scratch" is seven, so spacing every letter equally
+put the top of the arc inside "Scratch" and the wordmark read as hung
+off-centre even though it was centred. Each word now gets an identical share of
+the arc, which puts the break on the apex. The cost is that the two words are
+letterspaced differently, "From" wider and "Scratch" tighter, and that is the
+trade taken on purpose: uneven tracking between two words of a logotype is
+ordinary, a logotype whose optical centre is two letters off is not.
+
+There is a `balance` prop between the two, 0 for even letter spacing and 1 for
+equal halves. It ships at 1.
+
+**Two passes to get it exact.** Spreading each word's glyphs by centre inside
+its half missed the midpoint by ten pixels, because a four-letter word and a
+seven-letter word inset their outermost glyph centres by different amounts.
+Measuring from the glyph edges instead makes it exact by construction. Then the
+element box was `chord + advance` wide while the glyph centres only spanned
+`chord`, which slid the whole arc half a glyph left of its own container.
+Measured at 0 off centre now, and `scripts/labeltest.ts` asserts it, since both
+misses looked right at a glance.
