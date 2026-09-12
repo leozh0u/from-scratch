@@ -4,6 +4,8 @@ import { PixelEarth } from './PixelEarth'
 import { Starfield } from './Starfield'
 import { PixelButton } from './ui/PixelButton'
 import { MuteButton } from './ui/MuteButton'
+import { ModePicker } from './ui/ModePicker'
+import type { ModeId } from '../game/modes'
 import { ConfirmDialog } from './ui/ConfirmDialog'
 import { ArcTitle } from './ArcTitle'
 import { startScreenLayout } from './startLayout'
@@ -31,6 +33,9 @@ import { useViewport } from '../hooks/useViewport'
 const EARTH_PIXELS = 72
 
 type StartScreenProps = {
+  /** How much help the game gives. See game/modes.ts. */
+  mode: ModeId
+  onChangeMode: (id: ModeId) => void
   onSelectRealm: (realm: RealmId) => void
   onOpenInventory: () => void
   /** Survival's targets are all discovered — Everyday is playable. */
@@ -40,6 +45,8 @@ type StartScreenProps = {
 }
 
 export function StartScreen({
+  mode,
+  onChangeMode,
   onSelectRealm,
   onOpenInventory,
   everydayUnlocked,
@@ -115,6 +122,7 @@ export function StartScreen({
           * the corner one object, and stacking would push the lower one into
           * the wordmark on a short window. */}
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+          <ModePicker mode={mode} onChange={onChangeMode} unit={3} />
           <MuteButton unit={3} />
           <PixelButton tone="danger" unit={3} onClick={() => setConfirming(true)}>
             reset

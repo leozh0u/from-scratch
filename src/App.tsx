@@ -5,6 +5,7 @@ import { Inventory } from './components/Inventory'
 import { StartScreen } from './components/StartScreen'
 import { StyleguidePage } from './components/StyleguidePage'
 import { Workspace } from './components/Workspace'
+import { readMode, type ModeId } from './game/modes'
 import { useGameState } from './hooks/useGameState'
 
 /*
@@ -35,6 +36,12 @@ function Game() {
   // whichever screen was already showing, start or workspace, for free.
   const [showInventory, setShowInventory] = useState(false)
   const game = useGameState(GAME_DATA)
+  /*
+   * How much help the game gives. Lives here rather than in useGameState
+   * because it is a preference rather than progress: a reset wipes what you
+   * made, not how you like to play.
+   */
+  const [mode, setMode] = useState<ModeId>(() => readMode())
 
   /*
    * Survival is the tutorial; Everyday is the real game. Locking Everyday
@@ -79,6 +86,8 @@ function Game() {
         onOpenInventory={() => setShowInventory(true)}
         everydayUnlocked={everydayUnlocked}
         onReset={resetEverything}
+        mode={mode}
+        onChangeMode={setMode}
       />
     )
   }
@@ -90,6 +99,7 @@ function Game() {
       game={game}
       onBack={() => setRealm(null)}
       onOpenInventory={() => setShowInventory(true)}
+      mode={mode}
     />
   )
 }

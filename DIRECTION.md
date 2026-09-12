@@ -115,6 +115,51 @@ Everything is 67 and is where all new work goes.
   grey cones, two tan boards, two ingots apart only in hue. The tests cannot
   see this and the contact sheet can.
 
+### The ground rules for every element added
+
+Leo's brief, and the test each candidate has to pass before it is written
+down: *"needs to be real, logical, and smart, so able to be figured out and is
+realistic. good pixel emojis too. and not toooo niche."*
+
+**1. Real.** The transformation happens in the world, and the citation is
+checked by `npm run links`. No exceptions, no "close enough", no chemistry that
+only works on paper.
+
+**2. Guessable.** This is the rule that gets broken most, and it is the one
+that decides whether the game is fun. A recipe has to be something a thinking
+person could ARRIVE at, not merely verify afterwards. Ask: if I held both of
+these and wanted this, would I try it? Slaked lime plus sand makes mortar —
+guessable. Ethanol over a clay catalyst makes butadiene — real, cited, and
+nobody is guessing it, so it only belongs in the game if the two inputs are
+things a player already associates with rubber.
+
+Where a step is real but unguessable, the fix is usually to name the
+intermediate more plainly rather than to drop the step.
+
+**3. Not too niche.** The output should be a thing most people have heard of,
+or an obvious step toward one. Plaster, ink, rope, a window, a tyre: yes.
+Sodium metasilicate pentahydrate: no, however real. A good test is whether the
+name would appear in a children's book about how things are made.
+
+**4. It has to draw.** Every element needs an icon that is distinguishable at
+scale 2 in the target list. Two greys of the same shape are one icon and a
+bug. `npm run sheet` is the check, and looking at it is not optional — the
+tests cannot see this and the contact sheet can. If a candidate has no
+distinguishable form, either add a form to the vocabulary or drop the element.
+
+**5. It has to lead somewhere.** Prefer things that are inputs to something
+else over dead ends. A branch of the graph that terminates immediately is a
+cul-de-sac the player walks into and backs out of. Some leaves are fine — a
+book, a mirror — and a realm made of them is not.
+
+**6. The name has to fit a tile.** Eleven characters at the middle size, and
+the label test fails the build otherwise. Use the name people actually say:
+Polythene rather than Polyethylene, with the formal name in the blurb.
+
+**7. Zero cost unless a human read the source.** Every bulk-added element is
+`referenced` and costs nothing. A footprint figure needs someone to have
+opened the page and checked the units, and `npm test` enforces it.
+
 **Targets worth building toward**, each a chain of real steps rather than a
 single element: a bicycle, a window, a book, a brick wall, a battery, a circuit
 board, a plastic bottle, a rope bridge, a knife, a lamp.

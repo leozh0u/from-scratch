@@ -16,6 +16,7 @@ import { HintButton } from './ui/HintButton'
 import { GiveUpButton } from './ui/GiveUpButton'
 import { ConfirmDialog } from './ui/ConfirmDialog'
 import { pickHint, hintsEarned, pathToTarget, nextUnfoundTarget } from '../solver/hint'
+import { modeById, type ModeId } from '../game/modes'
 import { Card } from './ui/Card'
 import { ElementTile, TILE_WIDTH } from './ui/ElementTile'
 import { ProgressBar } from './ui/ProgressBar'
@@ -26,6 +27,8 @@ import { playPress, playDiscovery, playNoMatch } from '../audio/sfx'
 import { useViewport } from '../hooks/useViewport'
 
 type WorkspaceProps = {
+  /** How much help the game gives. See game/modes.ts. */
+  mode: ModeId
   realm: RealmId
   data: RecipeData
   game: ReturnType<typeof useGameState>
@@ -70,7 +73,7 @@ const REALM_LABEL: Record<RealmId, string> = {
   everyday: 'Everything',
 }
 
-export function Workspace({ realm, data, game, onBack, onOpenInventory }: WorkspaceProps) {
+export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: WorkspaceProps) {
   const [slots, setSlots] = useState<Slots>([null, null])
   const { width: viewportWidth } = useViewport()
   /*
@@ -226,11 +229,20 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
       ),
     )
   }
-  const hintsLeft =
+  /*
+   * The mode changes only how much help is available, never the graph. Open
+   * gives an unlimited budget rather than a large one, because a big number
+   * that still counts down is a worse version of unlimited; purist removes
+   * the key entirely rather than showing a dead one, since a control that
+   * exists only to be refused is a nag.
+   */
+  const rules = modeById(mode)
+  const earned =
     hintsEarned(realmFound, (game.misses[realm] ?? []).length) - (game.hintsSpent[realm] ?? 0)
+  const hintsLeft = rules.infiniteHints ? Infinity : earned
 
   function useHint() {
-    if (hintsLeft <= 0) return
+    if (!rules.hints || hintsLeft <= 0) return
     playPress()
     const found = pickHint(data, new Set(inventory), realm, game.hintsSpent[realm] ?? 0)
     if (!found) {
@@ -238,7 +250,7 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
       setHint('nothing new is within reach from here. make something first.')
       return
     }
-    game.spendHint(realm)
+    if (!rules.infiniteHints) game.spendHint(realm)
     const names = found.recipe.inputs.map((id) => elementById(id).name.toLowerCase())
     if (hintDepth === 0) {
       setHintDepth(1)
@@ -566,7 +578,10 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
                 { label: 'made', value: `${realmFound} of ${realmTotal}`, bright: true },
                 { label: 'tries', value: String(game.attempts[realm] ?? 0) },
                 { label: 'dead ends', value: String((game.misses[realm] ?? []).length) },
-                { label: 'hints left', value: String(Math.max(0, hintsLeft)) },
+                {
+                  label: 'hints left',
+                  value: !rules.hints ? 'none' : rules.infiniteHints ? '∞' : String(Math.max(0, earned)),
+                },
               ]}
             />
           </div>
@@ -581,8 +596,20 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
           </PixelButton>
 
           <div className="flex min-w-0 flex-[1_1_140px] flex-col items-center gap-2 sm:items-start">
-            <HintButton left={hintsLeft} onClick={useHint} disabled={hintsLeft <= 0} />
-            <GiveUpButton onClick={() => setGivingUp(true)} disabled={!giveUpTarget} />
+            {rules.hints && (
+              <HintButton left={hintsLeft} onClick={useHint} disabled={hintsLeft <= 0} />
+            )}
+            {rules.giveUp && (
+              <GiveUpButton onClick={() => setGivingUp(true)} disabled={!giveUpTarget} />
+            )}
+            {!rules.hints && (
+              <span
+                className="font-display text-[9px] leading-[1.8] lowercase text-muted"
+                style={{ maxWidth: 130 }}
+              >
+                purist. no hints, no routes.
+              </span>
+            )}
           </div>
         </div>
 

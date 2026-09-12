@@ -44,10 +44,10 @@ export function HintButton({
       tone="default"
       unit={3}
       locked={disabled}
-      side={left > 0 ? `${left} left` : 'find more'}
+      side={left === Infinity ? 'unlimited' : left > 0 ? `${left} left` : 'find more'}
       onClick={onClick}
       icon={<PixelArt sprite={BULB} scale={2} />}
-      aria-label={left > 0 ? `Hint, ${left} left` : 'No hints left'}
+      aria-label={left === Infinity ? 'Hint' : left > 0 ? `Hint, ${left} left` : 'No hints left'}
     >
       hint
     </PixelButton>
