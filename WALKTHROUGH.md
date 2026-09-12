@@ -6,7 +6,7 @@
 
 ## Survival
 
-Teaches the verb — how making anything works at all. Every recipe here costs nothing: water and CO₂ are Everyday’s lesson, and inventing effort figures would be worse than zero.
+The tutorial: short, and it teaches the verb. Every recipe here costs nothing, because water and CO2 are the main game's lesson and inventing effort figures would be worse than zero.
 
 **Targets:** Fire, Charcoal, Lit Torch
 
@@ -34,9 +34,9 @@ Teaches the verb — how making anything works at all. Every recipe here costs n
 
 All 3 targets reachable. ✅
 
-## Everyday Objects
+## Everything
 
-Teaches what ordinary manufactured things actually cost. Carries the real footprint numbers.
+The main game. Everything a person can point at, and what it actually cost to make. Carries the real footprint numbers.
 
 **Targets:** Cotton T-Shirt, Aluminium Can, Glass Bottle
 
