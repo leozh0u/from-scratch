@@ -80,7 +80,7 @@ console.log('\n=== birds cross slowly, and the sky is usually empty ===')
   const SPAN = 10 * 60_000
   let visibleSamples = 0
   let starts = 0
-  const SEEDS = [1, 2]
+  const SEEDS = [1, 2, 3]
   const wasNull = new Map<number, boolean>(SEEDS.map((s) => [s, true]))
   let minY = Infinity
   let maxY = -Infinity
@@ -101,9 +101,15 @@ console.log('\n=== birds cross slowly, and the sky is usually empty ===')
   }
 
   const gap = SPAN / 1000 / starts
-  ok('one every 8 to 40 seconds', gap >= 8 && gap <= 40, `one every ${gap.toFixed(1)}s`)
-  ok('the sky is empty most of the time', visibleSamples / (SPAN / 250) < 0.7,
-     `${((visibleSamples / (SPAN / 250)) * 100).toFixed(0)}% of the time`)
+  ok('one every 5 to 30 seconds', gap >= 5 && gap <= 30, `one every ${gap.toFixed(1)}s`)
+  /*
+   * Between a third and three quarters. Below a third the sky reads as empty
+   * and somebody asks where the birds went, which is what happened; above
+   * three quarters it is a flock, which is what happened before that.
+   */
+  const share = visibleSamples / (SPAN / 250)
+  ok('the sky has something in it about half the time',
+     share > 0.33 && share < 0.75, `${(share * 100).toFixed(0)}% of the time`)
   ok('and they stay in the sky, never over the street', maxY < SKY, `lowest ${maxY}px of ${SKY}px`)
   ok('none fly above the frame', minY >= 0, `highest ${minY}px`)
 }

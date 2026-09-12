@@ -64,15 +64,26 @@ export function swayAt(now: number, phase: number): { dx: number; dy: number } {
    * the extra intermediate steps mean it still arrives there gradually instead
    * of snapping between two poses.
    */
+  /*
+   * Ten positions reaching three pixels, and the dy is now a property of the
+   * WHOLE TUFT rather than of a row — see `tuft`, where applying it per row
+   * was tearing the foliage in half.
+   *
+   * Three pixels rather than two because Leo's note was that the sway should
+   * be more. At two the tips travel four pixels across a full cycle, which on
+   * a 26-pixel-wide bush is a twitch; at three it is a lean.
+   */
   const STEPS = [
     { dx: 0, dy: 0 },
     { dx: 1, dy: 0 },
+    { dx: 2, dy: 0 },
+    { dx: 3, dy: -1 },
     { dx: 2, dy: -1 },
-    { dx: 1, dy: -1 },
     { dx: 0, dy: 0 },
     { dx: -1, dy: 0 },
+    { dx: -2, dy: 0 },
+    { dx: -3, dy: -1 },
     { dx: -2, dy: -1 },
-    { dx: -1, dy: -1 },
   ]
   const i = Math.floor(now / FRAME_MS + phase) % STEPS.length
   return STEPS[(i + STEPS.length) % STEPS.length]
@@ -156,21 +167,43 @@ export function ForestScene({ pixelScale = 4, className }: ForestSceneProps) {
        * thing stays rooted no matter which pose it is in.
        */
       const ROOT_OVERSHOOT = 3
+
+      /*
+       * THE VERTICAL OFFSET BELONGS TO THE WHOLE TUFT, NOT TO A ROW.
+       *
+       * This is the bug Leo saw as "the pixels of the trees start floating",
+       * and it was arithmetic rather than taste. Rows sit one pixel apart. If
+       * row k shifts up by one and row k-1 does not, the scanline between them
+       * is drawn by nobody — a one-pixel transparent seam straight across the
+       * foliage, with the top half apparently hovering above the bottom. A
+       * per-row vertical offset cannot avoid that: any row where the rounded
+       * offset changes is a tear, and scaling it by height guarantees such a
+       * row exists.
+       *
+       * Horizontal is different and stays per row. Each row is a solid bar, so
+       * shifting it sideways moves an edge rather than opening a hole, and
+       * that stepped edge is exactly what bending looks like.
+       *
+       * So dy moves the tuft as one object. The root overshoot below is what
+       * lets it: three pixels of the base are drawn past the frame edge, so a
+       * tuft that rises a pixel is still rooted outside the picture.
+       */
+      const tuftDy = sway.dy
+
       for (let i = -ROOT_OVERSHOOT; i < h; i++) {
         const t = Math.max(0, i) / h
         const jag = Math.round((hash(seed + i * 17) - 0.5) * 3)
         const halfW = Math.max(1, Math.round(w * (1 - t * 0.75)) + jag)
         /*
-         * The bottom fifth does not move at all. Scaling the offset by height
-         * alone still shifts the second and third rows once the amplitude
-         * reaches two pixels, and a stem that slides at its base reads as
-         * sliding rather than bending.
+         * The bottom fifth does not bend at all. Scaling by height alone still
+         * shifts the second and third rows once the amplitude reaches two
+         * pixels, and a stem that slides at its base reads as sliding rather
+         * than bending.
          */
         const anchored = t < 0.2 ? 0 : (t - 0.2) / 0.8
         const dx = Math.round(sway.dx * anchored)
-        const dy = Math.round(sway.dy * anchored)
         const y = upward ? baseY - i : baseY + i
-        ctx.fillRect(x - halfW + dx, y + dy, halfW * 2, 1)
+        ctx.fillRect(x - halfW + dx, y + tuftDy, halfW * 2, 1)
       }
     }
 

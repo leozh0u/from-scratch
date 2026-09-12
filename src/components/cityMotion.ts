@@ -80,9 +80,14 @@ export function birdAt(
   /*
    * Measured at three birds on sixteen-to-thirty-eight second periods, the sky
    * had something in it 76% of the time, which is a flock rather than an
-   * occasional bird. Two birds on much longer periods puts it near a third.
+   * occasional bird. Longer periods put it near a third.
+   *
+   * Then pulled back in, because 34-to-80 seconds across two birds left the
+   * sky empty long enough that Leo asked where the near bird had gone. The
+   * measured target is a sky with something in it roughly half the time: often
+   * enough to notice, rare enough that it is still a bird rather than a flock.
    */
-  const period = 34_000 + hash(seed * 23.9) * 46_000
+  const period = 30_000 + hash(seed * 23.9) * 30_000
   const crossing = 8_000 + hash(seed * 29.3) * 5_000
   const t = (now + hash(seed * 31.7) * period) % period
   if (t > crossing) return null

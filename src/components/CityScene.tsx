@@ -381,7 +381,7 @@ export function CityScene({ className }: CitySceneProps) {
 
       // Distant birds: one pixel, high up, slower than the near ones.
       ctx.fillStyle = '#4a5170'
-      for (let seed = 1; seed <= 3; seed++) {
+      for (let seed = 1; seed <= 5; seed++) {
         const far = farBirdAt(now, seed, width, skyHeight)
         if (!far) continue
         ctx.fillRect(far.x, far.y, block, block)
@@ -389,7 +389,7 @@ export function CityScene({ className }: CitySceneProps) {
 
       // Birds, in the sky and nowhere else.
       ctx.fillStyle = '#3b3f5c'
-      for (let seed = 1; seed <= 2; seed++) {
+      for (let seed = 1; seed <= 3; seed++) {
         const bird = birdAt(now, seed, width, skyHeight)
         if (!bird) continue
         const rows = BIRD_FRAMES[bird.flap]
