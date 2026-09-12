@@ -2,7 +2,7 @@ import { useRef, useState, type ButtonHTMLAttributes, type ReactNode, type Ref }
 import { PixelArt } from '../PixelArt'
 import { PADLOCK } from '../../art/sprites'
 import { steppedNotch, OUTLINE } from './pixelShape'
-import { fontSizeCss, SQUASH, SKEW_DEG } from './legend'
+import { fontSizeCss, SQUASH, SKEW_DEG, minWidthForSide } from './legend'
 import { playPress, playRelease, playHover, playLocked } from '../../audio/sfx'
 
 /**
@@ -323,6 +323,13 @@ export function PixelButton({
         margin: 0,
         display: block ? 'block' : 'inline-block',
         width: block ? '100%' : undefined,
+        /*
+         * Wide enough for whatever is printed on its side. See
+         * minWidthForSide: a legend is sized from the button's width, so a
+         * long legend on a short label would otherwise be clipped rather than
+         * shrunk.
+         */
+        minWidth: side && !block ? minWidthForSide(unit, side) : undefined,
         // Room underneath for the extruded base.
         paddingBottom: depth,
         cursor: inert ? 'not-allowed' : 'pointer',

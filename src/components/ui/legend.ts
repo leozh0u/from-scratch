@@ -71,3 +71,19 @@ export function contrast(a: string, b: string): number {
   const [hi, lo] = [lum(a), lum(b)].sort((x, y) => y - x)
   return (hi + 0.05) / (lo + 0.05)
 }
+
+/**
+ * The narrowest the button may be if its side legend is to fit.
+ *
+ * The legend is sized from the button's own width, which is the right way
+ * round for a long word on a wide key and the wrong way round for a long
+ * legend on a short one: "standard" under a button reading "mode" had nowhere
+ * to go and came out as "standarc". A minimum width closes that — the button
+ * grows to fit what is written on its side rather than clipping it.
+ *
+ * Computed at the FLOOR size, because that is the smallest the legend can
+ * legally be drawn, so this is the smallest width that can ever hold it.
+ */
+export function minWidthForSide(unit: number, text: string): number {
+  return Math.ceil(advanceEm(text) * FLOOR_PX) + unit * 4
+}

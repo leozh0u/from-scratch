@@ -25,17 +25,30 @@ export function ModePicker({
 
   if (!open) {
     return (
+      /*
+       * THE MODE NAME GOES ON THE FACE, "MODE" ON THE SIDE.
+       *
+       * The other way round is what shipped and it did not fit: the face read
+       * "mode" and the side carried the name, so the button was four
+       * characters wide and "standard" was clipped to "standarc". A side
+       * legend is sized from the button's own width, so a long legend on a
+       * short word has nowhere to go.
+       *
+       * Swapping them fixes it by making the button as wide as the longest
+       * thing it has to say, and it reads better anyway — the useful word is
+       * which mode you are in, not the word "mode".
+       */
       <PixelButton
         tone="default"
         unit={unit}
-        side={modeById(mode).label}
+        side="mode"
         onClick={() => {
           playPress()
           setOpen(true)
         }}
         aria-label={`Mode: ${modeById(mode).label}. Change it.`}
       >
-        mode
+        {modeById(mode).label}
       </PixelButton>
     )
   }
@@ -43,34 +56,27 @@ export function ModePicker({
   return (
     <div className="flex flex-col items-end gap-2">
       {MODES.map((m) => (
-        <div key={m.id} className="flex flex-col items-end gap-1">
-          <PixelButton
-            tone={m.id === mode ? 'survival' : 'default'}
-            unit={unit}
-            aria-pressed={m.id === mode}
-            onClick={() => {
-              playPress()
-              writeMode(m.id)
-              onChange(m.id)
-              setOpen(false)
-            }}
-          >
-            {m.label}
-          </PixelButton>
-          <span
-            style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 8,
-              lineHeight: 1.6,
-              color: 'var(--color-muted)',
-              textTransform: 'lowercase',
-              textAlign: 'right',
-              maxWidth: 150,
-            }}
-          >
-            {m.blurb}
-          </span>
-        </div>
+        /*
+         * The description rides on the key's own side face, the way the two
+         * realm buttons carry theirs — so the list is three objects rather
+         * than three objects and three captions, and nothing floats over the
+         * artwork behind it.
+         */
+        <PixelButton
+          key={m.id}
+          tone={m.id === mode ? 'survival' : 'default'}
+          unit={unit}
+          side={m.blurb}
+          aria-pressed={m.id === mode}
+          onClick={() => {
+            playPress()
+            writeMode(m.id)
+            onChange(m.id)
+            setOpen(false)
+          }}
+        >
+          {m.label}
+        </PixelButton>
       ))}
     </div>
   )

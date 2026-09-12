@@ -121,7 +121,19 @@ export function StartScreen({
         {/* Mute sits beside reset rather than under it: a row of two keeps
           * the corner one object, and stacking would push the lower one into
           * the wordmark on a short window. */}
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+        {/* Wraps, and wraps to the RIGHT, so on a 280px foldable the mode key
+          * drops onto its own line under the other two rather than off the
+          * side of the screen. */}
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'flex-end',
+            alignItems: 'flex-start',
+            gap: 8,
+            maxWidth: '70vw',
+          }}
+        >
           <ModePicker mode={mode} onChange={onChangeMode} unit={3} />
           <MuteButton unit={3} />
           <PixelButton tone="danger" unit={3} onClick={() => setConfirming(true)}>

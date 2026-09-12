@@ -565,63 +565,22 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
        * the standing hint line and the blank row held open for it. Those are
        * gone, which is the part that needed to go.
        */}
-      <Card className="flex flex-col items-center gap-5 p-6">
-        <div className="flex items-center gap-4">
-          {slots.map((id, i) =>
-            id ? (
-              <button
-                key={i}
-                type="button"
-                onClick={() => {
-                  playPress()
-                  clearSlot(i as 0 | 1)
-                }}
-                className="flex cursor-pointer items-center justify-center"
-                aria-label={`Remove ${elementById(id).name} from slot`}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  padding: 0,
-                  width: slotSize,
-                  height: slotSize,
-                }}
-              >
-                <PixelArt sprite={resolveIcon(elementById(id).icon)} scale={slotScale} />
-              </button>
-            ) : (
-              <EmptySlot key={i} unit={4} size={slotSize} />
-            ),
-          )}
-        </div>
-
+      <Card className="flex flex-col items-center gap-4 p-6">
         {/*
-          * THE COMBINE ROW: a counter, the key, and a hint.
-          *
-          * The panel is as wide as the two bars above it and the key used the
-          * middle fifth of it. What earns the rest is not decoration: on the
-          * left, how much of the realm is made, because the goal is to make
-          * everything and a goal you cannot see is not a goal; on the right,
-          * the hint, which is the only thing a stuck player wants and which
-          * had nowhere to live.
-          *
-          * They are the same size and the same distance out, so the key stays
-          * the centre of the panel rather than being shoved off it.
-          */}
+         * ONE ROW OF THREE COLUMNS, NOT TWO ROWS.
+         *
+         * Leo: "im mainly referring to the top left and top right empty
+         * space. no need to go further down than it was with just the
+         * combine." Exactly right — the previous version put the slots on
+         * their own row and the three columns underneath, so the corners
+         * beside the slots stayed empty and the panel grew taller to hold
+         * stats it could have held beside what was already there.
+         *
+         * The sides now run the full height of the middle column and centre
+         * against it, so the panel is no taller than slots-plus-key ever were
+         * and the corners are doing work.
+         */}
         <div className="flex w-full flex-wrap items-center justify-center gap-3">
-          {/* basis-0 so the two sides share what is left AFTER the key, and
-            * wrap rather than overflow when there is not enough. At 442px the
-            * first version pushed the hint key off the panel. */}
-          {/*
-            * Stats rather than nothing. Leo: "i dont like when its too
-            * empty", and "maybe add some stats, like how many tries".
-            *
-            * Tries and made are the two that mean something here: the game is
-            * mostly failure by design — over 97% of pairs do nothing — so a
-            * try count is not a shaming number, it is the shape of the
-            * activity. Hints left sits with them rather than only on the key,
-            * because it is a resource and resources belong with the other
-            * numbers.
-            */}
           <div className="flex min-w-0 flex-[1_1_140px] justify-center sm:justify-end">
             <StatPanel
               stats={[
@@ -639,20 +598,50 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
                 { label: 'to go', value: String(Math.max(0, realmTotal - realmFound)) },
                 {
                   label: 'hints left',
-                  value: !rules.hints ? 'none' : rules.infiniteHints ? '∞' : String(Math.max(0, earned)),
+                  value: !rules.hints ? 'none' : rules.infiniteHints ? '\u221e' : String(Math.max(0, earned)),
                 },
               ]}
             />
           </div>
 
-          <PixelButton
-            tone="survival"
-            unit={combineUnit}
-            onClick={handleCombine}
-            disabled={!slots[0] || !slots[1]}
-          >
-            combine
-          </PixelButton>
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex items-center gap-4">
+              {slots.map((id, i) =>
+                id ? (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => {
+                      playPress()
+                      clearSlot(i as 0 | 1)
+                    }}
+                    className="flex cursor-pointer items-center justify-center"
+                    aria-label={`Remove ${elementById(id).name} from slot`}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      padding: 0,
+                      width: slotSize,
+                      height: slotSize,
+                    }}
+                  >
+                    <PixelArt sprite={resolveIcon(elementById(id).icon)} scale={slotScale} />
+                  </button>
+                ) : (
+                  <EmptySlot key={i} unit={4} size={slotSize} />
+                ),
+              )}
+            </div>
+
+            <PixelButton
+              tone="survival"
+              unit={combineUnit}
+              onClick={handleCombine}
+              disabled={!slots[0] || !slots[1]}
+            >
+              combine
+            </PixelButton>
+          </div>
 
           <div className="flex min-w-0 flex-[1_1_140px] flex-col items-center gap-2 sm:items-start">
             {rules.hints && (

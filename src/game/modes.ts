@@ -18,7 +18,13 @@ export type ModeId = 'standard' | 'purist' | 'open'
 export type Mode = {
   id: ModeId
   label: string
-  /** One line, shown under the name in the picker. */
+  /**
+   * What the mode does, printed on the extruded SIDE of its key rather than
+   * as a caption under it — the same place the two realm buttons carry their
+   * legends. Leo: "just say no hints in the bottom... by bottom i mean the
+   * side, like shadow." Kept to two words so it fits without forcing the
+   * corner buttons absurdly wide.
+   */
   blurb: string
   /** Hints available at all. */
   hints: boolean
@@ -32,7 +38,7 @@ export const MODES: Mode[] = [
   {
     id: 'standard',
     label: 'standard',
-    blurb: 'hints are earned by playing',
+    blurb: 'earned hints',
     hints: true,
     infiniteHints: false,
     giveUp: true,
@@ -40,7 +46,7 @@ export const MODES: Mode[] = [
   {
     id: 'purist',
     label: 'purist',
-    blurb: 'no hints, no answers, work it out',
+    blurb: 'no hints',
     hints: false,
     infiniteHints: false,
     giveUp: false,
@@ -48,7 +54,7 @@ export const MODES: Mode[] = [
   {
     id: 'open',
     label: 'open',
-    blurb: 'unlimited hints and routes',
+    blurb: 'unlimited hints',
     hints: true,
     infiniteHints: true,
     giveUp: true,
