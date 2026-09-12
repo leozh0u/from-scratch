@@ -632,3 +632,22 @@ heat-treated stone knaps into a sharp stone, and a sharp stone is upstream of
 the fire, so the graph closed a loop: sharp stone to spindle to fire board to
 ember to fire and back. Same failure as recycling the t-shirt, same reason, and
 the same answer.
+
+## Two layout bugs the production sweep found
+
+**The item grid never agreed with the item.** The shelf was `grid-cols-4`,
+a hard-coded column COUNT, while `ElementTile` is a fixed 96px box. At a 335px
+viewport the grid handed out 64px columns to a 96px tile and the right-hand
+column hung fifteen pixels off the side of the screen, on both the workspace
+shelf and the inventory. The tile now exports its own width and both grids use
+`repeat(auto-fill, TILE_WIDTH)`, so the column count follows the tile and
+cannot disagree with it.
+
+**An invisible span was pushing a scrollbar onto phones.** The inventory HUD
+had a 92px `shrink-0` spacer whose only job was to balance the back button, and
+on a narrow screen it was the single widest thing on the page. Gone; the flex
+spacers centre the heading in what is left, which is half a button off true and
+costs nothing.
+
+Swept every screen at 335px afterwards: zero overflowing elements, scroll width
+equal to the viewport on all five.

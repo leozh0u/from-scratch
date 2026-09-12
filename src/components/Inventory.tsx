@@ -4,7 +4,7 @@ import type { ElementDef, RealmId, RecipeData } from '../data/types'
 import type { useGameState } from '../hooks/useGameState'
 import { DiscoveryCard } from './DiscoveryCard'
 import { Card } from './ui/Card'
-import { ElementTile } from './ui/ElementTile'
+import { ElementTile, TILE_WIDTH } from './ui/ElementTile'
 import { PixelButton } from './ui/PixelButton'
 import { ConfirmDialog } from './ui/ConfirmDialog'
 import { HudBar } from './ui/HudBar'
@@ -83,8 +83,15 @@ export function Inventory({ data, game, onBack, onReset }: InventoryProps) {
           inventory
         </h1>
         <span className="flex-1" aria-hidden="true" />
-        {/* Balances the back button so the heading sits optically centred. */}
-        <span className="shrink-0" style={{ width: 92 }} aria-hidden="true" />
+        {/*
+         * No fixed-width spacer here to balance the back button.
+         *
+         * There was one, 92px and `shrink-0`, and on a narrow screen it was the
+         * only thing on the page overflowing the viewport - an invisible span
+         * pushing a horizontal scrollbar onto a phone. The two flex spacers
+         * centre the heading in what is left, which is half a button off true
+         * and costs nothing.
+         */}
       </HudBar>
 
       {crafted.length === 0 ? (
@@ -104,7 +111,10 @@ export function Inventory({ data, game, onBack, onReset }: InventoryProps) {
                 <p className="font-display text-[9px] tracking-widest text-muted uppercase">
                   {REALM_LABEL[realm]} · {entries.length} found
                 </p>
-                <div className="grid grid-cols-4 gap-3 sm:grid-cols-6">
+                <div
+                  className="grid justify-center gap-3"
+                  style={{ gridTemplateColumns: `repeat(auto-fill, ${TILE_WIDTH}px)` }}
+                >
                   {entries.map(({ element }) => (
                     <ElementTile
                       key={element.id}

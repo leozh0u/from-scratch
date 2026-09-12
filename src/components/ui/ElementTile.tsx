@@ -19,6 +19,17 @@ import { playSelect, playHover } from '../../audio/sfx'
  * same object, and it clicks like one.
  */
 
+/**
+ * The tile's outside width at the default unit, in pixels.
+ *
+ * Exported because the grids that lay these out used to hard-code a column
+ * COUNT — `grid-cols-4` — while the tile itself is a fixed box. The two never
+ * agreed: at a 335px viewport the grid handed out 64px columns to a 96px tile
+ * and the right-hand column hung 15px off the side of the screen. A grid sized
+ * from this constant cannot make that mistake.
+ */
+export const TILE_WIDTH = 4 * 24
+
 type ElementTileProps = {
   icon: Sprite
   label: string

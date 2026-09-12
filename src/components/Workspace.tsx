@@ -10,7 +10,7 @@ import { Receipt } from './Receipt'
 import { TargetList } from './TargetList'
 import { PixelButton } from './ui/PixelButton'
 import { Card } from './ui/Card'
-import { ElementTile } from './ui/ElementTile'
+import { ElementTile, TILE_WIDTH } from './ui/ElementTile'
 import { ProgressBar } from './ui/ProgressBar'
 import { HudBar, EmptySlot } from './ui/HudBar'
 import { ForestScene } from './ForestScene'
@@ -381,7 +381,15 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
         )}
       </Card>
 
-      <div className="grid grid-cols-4 gap-3 sm:grid-cols-6">
+      <div
+        /*
+         * Columns follow the tile, not a number I picked. `grid-cols-4` gave
+         * out 64px columns to a 96px tile, so on a narrow screen the last
+         * column hung off the side of the screen.
+         */
+        className="grid justify-center gap-3"
+        style={{ gridTemplateColumns: `repeat(auto-fill, ${TILE_WIDTH}px)` }}
+      >
         {inventory.map((id) => (
           <ElementTile
             key={id}
