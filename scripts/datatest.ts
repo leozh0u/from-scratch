@@ -275,26 +275,47 @@ console.log('\n=== the receipt breakdown is coherent ===')
 console.log('\n=== the realm whose lesson is cost actually teaches it ===')
 {
   /*
-   * KNOWN GAP, ASSERTED SO IT CANNOT BE FORGOTTEN.
+   * Everyday's entire premise is the hidden cost of ordinary objects, so a
+   * target that finishes with a blank receipt teaches nothing.
    *
-   * Everyday's entire premise is the hidden cost of ordinary objects. Of its
-   * three targets the t-shirt carries water but no CO2, the can carries CO2
-   * but no water, and the glass bottle carries nothing at all — so the payoff
-   * screen is blank for a third of the realm.
+   * This check previously PINNED the gap — it asserted that exactly one target
+   * (the glass bottle) had no footprint at all, and was written to fail the
+   * moment somebody filled it so the expectation would be tightened rather
+   * than the gap forgotten. That worked: adding the melt's CO2 broke it, and
+   * this is the tightened version.
    *
-   * This asserts the state of that gap rather than the state we want, and it
-   * is written to FAIL the moment someone fixes it, at which point the
-   * expectation should be tightened rather than the check deleted. A gap
-   * nothing points at is a gap that ships.
+   * The remaining gap is narrower and is recorded below rather than dropped.
    */
-  const withCost = GAME_DATA.targets.everyday.filter((id) => {
+  const blank = GAME_DATA.targets.everyday.filter((id) => {
     const fp = computeFootprint(GAME_DATA, id)
-    return fp.waterL > 0 || fp.co2kg > 0
+    return fp.waterL === 0 && fp.co2kg === 0
   })
-  const blank = GAME_DATA.targets.everyday.filter((id) => !withCost.includes(id))
-  ok('the known gap is still exactly what it was — tighten this when filled',
-    blank.length === 1 && blank[0] === 'glass_bottle',
-    blank.length ? `no footprint at all: ${blank.join(', ')}` : 'none — go tighten this check')
+  ok('every everyday target costs something', blank.length === 0, blank.join(', '))
+
+  /*
+   * STILL OPEN, AND PINNED THE SAME WAY.
+   *
+   * The t-shirt carries water but no CO2, and the can carries CO2 but no
+   * water. Both are real quantities that exist and neither has been given a
+   * source good enough to ship: published per-can water figures for primary
+   * aluminium span 495 to 1,490 litres per kilogram, a threefold spread, and
+   * a number that uncertain dressed up as fact is exactly what this project
+   * is against. Zero remains the correct value for an unknown.
+   *
+   * Tighten this when either is sourced.
+   */
+  const missingWater = GAME_DATA.targets.everyday.filter(
+    (id) => computeFootprint(GAME_DATA, id).waterL === 0,
+  )
+  const missingCo2 = GAME_DATA.targets.everyday.filter(
+    (id) => computeFootprint(GAME_DATA, id).co2kg === 0,
+  )
+  ok('the known water gap is still just the two it was',
+    missingWater.length === 2 && missingWater.includes('aluminum_can') && missingWater.includes('glass_bottle'),
+    `no water: ${missingWater.join(', ') || 'none — go tighten this'}`)
+  ok('the known CO2 gap is still just the t-shirt',
+    missingCo2.length === 1 && missingCo2[0] === 'cotton_t_shirt',
+    `no CO2: ${missingCo2.join(', ') || 'none — go tighten this'}`)
 }
 
 console.log('\n=== the solver survives a graph that is wrong ===')
