@@ -23,6 +23,17 @@ import { playHover, playPress } from '../../audio/sfx'
 type SourceLinkProps = {
   label: string
   url: string
+  /**
+   * How much checking this citation has had. See `SourceTier` in data/types.
+   *
+   * Shown, rather than assumed, and shown only when it is the WEAKER claim.
+   * A badge on every link would be noise; a badge on the ones a human has not
+   * personally read is the honest thing, and it is the answer to "how do you
+   * know the model did not invent this" — that one has been fetched and
+   * title-checked by machine and carries no number, and the unbadged ones
+   * were read.
+   */
+  tier?: 'sourced' | 'referenced'
   /** Sprite-pixel unit. Everything below is a whole multiple of it. */
   unit?: number
 }
@@ -33,7 +44,7 @@ const EDGE = '#5c5590'
 const TEXT = '#cfc8ff'
 const TEXT_HOVER = '#ffffff'
 
-export function SourceLink({ label, url, unit = 3 }: SourceLinkProps) {
+export function SourceLink({ label, url, tier = 'sourced', unit = 3 }: SourceLinkProps) {
   const [hovered, setHovered] = useState(false)
 
   return (
@@ -94,6 +105,23 @@ export function SourceLink({ label, url, unit = 3 }: SourceLinkProps) {
         >
           {label}
         </span>
+        {tier === 'referenced' && (
+          <span
+            title="Link checked by machine: the page exists and its title matches. No figure is taken from it."
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: unit * 2.7,
+              lineHeight: 1,
+              padding: `${unit}px ${unit * 1.5}px`,
+              background: '#1d1a38',
+              color: '#8d86c4',
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+            }}
+          >
+            link
+          </span>
+        )}
       </span>
     </a>
   )

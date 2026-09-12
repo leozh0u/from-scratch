@@ -27,7 +27,8 @@
     "load": "k6 run load/gameplay.js",
     "load:api": "k6 run load/adjudicate.js",
     "test:ask": "tsx scripts/asktest.ts",
-    "test:earth": "tsx scripts/earthtest.ts"
+    "test:earth": "tsx scripts/earthtest.ts",
+    "links": "tsx scripts/links.ts"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",

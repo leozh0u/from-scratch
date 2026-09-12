@@ -98,7 +98,7 @@ element. Only a real lookup in the recipe index does that.
 ```bash
 npm install
 npm run dev          # http://localhost:5173
-npm test             # type-check, 152 assertions, production build
+npm test             # type-check, 199 assertions, production build
 npm run solve        # reachability and cost report over the recipe graph
 npm run walkthrough  # regenerate WALKTHROUGH.md from the data
 npm run probe        # ask the live adjudicator which missing pairs are real
@@ -107,6 +107,8 @@ npm run sheet        # every sprite on one page at the size it is used
 npm run preview      # serve the production build on :4173
 npm run load         # k6 load test against that preview
 npm run load:api     # k6 against the one serverless function
+npm run links        # fetch every citation and check it still exists
+npm run links -- --new   # only the ones not already passing
 ```
 
 There is a dev-only styleguide at `/styleguide`.
@@ -119,7 +121,7 @@ the top.
 
 ## The tests
 
-152 assertions, because a project whose claim is rigour should be able to prove
+199 assertions, because a project whose claim is rigour should be able to prove
 it. The ones worth knowing about are the ones that caught something:
 
 - **The footprint accumulator does not double-count.** The graph is a DAG where
@@ -152,6 +154,38 @@ it. The ones worth knowing about are the ones that caught something:
 - **The pixel staircase is symmetric.** Mirror the corner polygon about its
   centreline and the points must be unchanged. Written after a real bug where
   a panel's left corners stepped and its right corners came out square.
+
+---
+
+## How you know nothing here is invented
+
+At seventy-two elements, by a human reading every source. That does not scale,
+and the failure it guards against is the one that would destroy this project: a
+model asked for a citation produces a real-looking URL to an article that has
+never existed, and by eye it is indistinguishable from a good one.
+
+So a citation now says how much checking it has had, rather than implying the
+strongest kind everywhere.
+
+**Sourced** means a person opened the page, confirmed it says what the game
+claims, and confirmed the units. All 151 citations in the game are currently
+this.
+
+**Referenced** means `npm run links` fetched the URL, got an answer, and
+confirmed the page title still matches the label printed next to it. That
+proves the article exists and nothing more, which is why the game marks it on
+the card instead of hiding it.
+
+**A footprint figure may only ever rest on a Sourced citation.** "This page
+exists" is no evidence at all for "this costs 2,340 litres", and `npm test`
+fails the build if a recipe with a non-zero cost has nothing hand-read behind
+it. That is the one rule that does not bend as the element count grows.
+
+First real run over all 79 distinct URLs: 79 answer and match their label. It
+also caught a live mismatch on the way in — a citation labelled "Mercerised
+cotton" pointing at a page titled "Mercerisation" — which is a redirect rather
+than a broken link, and is why the matcher compares word prefixes. English does
+that to every process in this game.
 
 ---
 

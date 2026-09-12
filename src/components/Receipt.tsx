@@ -210,7 +210,7 @@ export function Receipt({ element, data, routes, onClose }: ReceiptProps) {
               </p>
               <div className="flex flex-wrap gap-2">
                 {sources.map((source) => (
-                  <SourceLink key={source.url} label={source.label} url={source.url} />
+                  <SourceLink key={source.url} label={source.label} url={source.url} tier={source.tier} />
                 ))}
                 {hasWater && (
                   <SourceLink

@@ -407,5 +407,57 @@ console.log('\n=== every element has its own art ===')
   ok('every sprite is rectangular', ragged.length === 0, ragged.join(', '))
 }
 
+/*
+ * THE TIER RULE, AND WHY IT IS A TEST RATHER THAN A CONVENTION.
+ *
+ * Two kinds of citation now exist. `sourced` means a human opened the page and
+ * checked both the claim and the units. `referenced` means a script fetched
+ * the URL, got an answer, and confirmed the page title still matches the label
+ * — which proves the article exists and nothing else.
+ *
+ * That second tier is what makes hundreds of elements possible without anyone
+ * inventing a citation. It is also exactly the tier that must never be allowed
+ * to carry a NUMBER, because "this page exists" is no evidence at all for
+ * "this costs 2,340 litres". The standing rule is that a number is never
+ * invented, and a machine-checked link propping up a figure would be that rule
+ * broken quietly rather than loudly.
+ *
+ * So: any recipe with a non-zero footprint must cite at least one source a
+ * human read. Adding a bulk-imported element with a cost attached fails the
+ * build, which is the only place a rule like this can be enforced rather than
+ * remembered.
+ */
+console.log('\n=== a number never rests on a machine-checked link ===')
+{
+  const withCost = GAME_DATA.recipes.filter((r) => r.cost.waterL > 0 || r.cost.co2kg > 0)
+  const unbacked = withCost.filter(
+    (r) => !r.sources.some((s) => (s.tier ?? 'sourced') === 'sourced'),
+  )
+  ok(
+    'every footprint figure has a hand-read source behind it',
+    unbacked.length === 0,
+    unbacked.length ? unbacked.map((r) => r.output).join(', ') : `${withCost.length} recipes carry a figure`,
+  )
+
+  const tiers = new Map<string, number>()
+  const count = (t: string) => tiers.set(t, (tiers.get(t) ?? 0) + 1)
+  for (const element of GAME_DATA.elements) for (const s of element.sources) count(s.tier ?? 'sourced')
+  for (const recipe of GAME_DATA.recipes) for (const s of recipe.sources) count(s.tier ?? 'sourced')
+  ok(
+    'and every citation carries one of the two tiers that exist',
+    [...tiers.keys()].every((t) => t === 'sourced' || t === 'referenced'),
+    [...tiers].map(([t, n]) => `${n} ${t}`).join(', '),
+  )
+
+  // Survival carries zero cost on purpose. If one ever gains a figure it is a
+  // mistake, and the kind that would be invisible.
+  const survivalWithCost = GAME_DATA.recipes.filter((r) => {
+    const out = GAME_DATA.elements.find((e) => e.id === r.output)
+    return out?.realm === 'survival' && (r.cost.waterL > 0 || r.cost.co2kg > 0)
+  })
+  ok('survival still costs nothing, deliberately', survivalWithCost.length === 0,
+     "water and CO2 are the other realm's lesson")
+}
+
 console.log(`\n${fail === 0 ? 'Game data and solver hold.' : `${fail} FAILED`}  (${pass} checks)`)
 process.exit(fail === 0 ? 0 : 1)

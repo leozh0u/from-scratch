@@ -19,6 +19,7 @@
 import { readFileSync } from 'node:fs'
 import { QUESTION_KEYS, QUESTION_LABELS } from '../src/adjudicator/questions'
 import { toWholeSentences } from '../api/ask'
+import { pageTitle, titleMatches } from './links'
 
 let pass = 0, fail = 0
 const ok = (l: string, c: boolean, d = '') => {
@@ -132,6 +133,40 @@ console.log('\n=== the credit cannot be burned by holding the button ===')
   ok('a fallback is never cached',
      /if \(message !== FALLBACK_MESSAGE\)/.test(client),
      'or one outage would be permanent for that element')
+}
+
+/*
+ * The link checker's two pure parts. The network pass cannot go in `npm test`
+ * — a suite that needs the internet is a suite that fails on a hotel wifi at
+ * two in the morning — but the matcher can, and the matcher is where the
+ * judgement lives.
+ */
+console.log('\n=== the link checker knows a real page from a dead one ===')
+{
+  ok('a title is pulled out of real markup',
+     pageTitle('<head><title>Mercerisation - Wikipedia</title></head>') === 'Mercerisation - Wikipedia')
+  ok('and entities come back as characters',
+     pageTitle('<title>Hall &amp; Heroult</title>') === 'Hall & Heroult')
+  ok('no title is not a crash', pageTitle('<html><body>hi</body></html>') === null)
+
+  ok('an exact match passes',
+     titleMatches('Bayer process', 'Bayer process - Wikipedia'))
+  ok('accents and dashes do not break it',
+     titleMatches('Hall-Heroult process', 'Hall–Héroult process - Wikipedia'),
+     'a checker that cries wolf is a checker nobody runs')
+  /*
+   * The real first run failed exactly here: "Mercerised cotton" pointing at a
+   * page titled "Mercerisation". English does this to every process in the
+   * game, so the matcher compares prefixes rather than whole words.
+   */
+  ok('and neither does an English suffix',
+     titleMatches('Mercerised cotton', 'Mercerisation - Wikipedia'),
+     'found on the first real run over all 79 URLs')
+  ok('a 404 page is caught by its own title',
+     !titleMatches('Bayer process', 'Page not found - Wikipedia'))
+  ok('so is a bot wall', !titleMatches('Bayer process', 'Just a moment...'))
+  ok('and a link that goes somewhere else entirely',
+     !titleMatches('Bayer process', 'Cotton gin - Wikipedia'))
 }
 
 console.log(`\n${pass} passed, ${fail} failed\n`)

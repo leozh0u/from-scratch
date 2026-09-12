@@ -132,7 +132,7 @@ export function DiscoveryCard({ element, recipe, onClose, heading = 'New discove
         {sources.length > 0 && (
           <div className="flex flex-wrap justify-center gap-2 pt-1">
             {sources.map((source) => (
-              <SourceLink key={source.url} label={source.label} url={source.url} />
+              <SourceLink key={source.url} label={source.label} url={source.url} tier={source.tier} />
             ))}
           </div>
         )}
