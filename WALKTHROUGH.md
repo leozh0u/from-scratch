@@ -2,7 +2,7 @@
 
 **Generated from `src/data/gameData.ts` by `npm run walkthrough`. Do not edit by hand.**
 
-59 elements, 57 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
+69 elements, 67 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
 
 ## Survival
 
@@ -82,10 +82,20 @@ Teaches what ordinary manufactured things actually cost. Carries the real footpr
 | 34 | Wrought Iron | + Charcoal | High-Carbon Steel _(cementation)_ | blister steelmaking | — |
 | 35 | Sodium Hydroxide | + Cotton Jersey | Mercerised Cotton | mercerising | — |
 | 36 | Mercerised Cotton | + Dye | Dyed Cotton Fabric _(mercerised)_ | dyeing | 380 L water |
-| 37 | Paraffin Wax | + Cordage | Candle _(paraffin)_ | dipping | — |
-| 38 | Beeswax | + Cordage | Candle _(beeswax)_ | dipping | — |
-| 39 | Natural Gas | + Fire | Butane | fractionating | — |
-| 40 | Butane | + High-Carbon Steel | Lighter | assembling | — |
+| 37 | Soil | + Water | Clay | washing | — |
+| 38 | Clay | + Fire | Brick | firing | 0.21 kg CO₂ |
+| 39 | Quicklime | + Water | Slaked Lime | slaking | — |
+| 40 | Slaked Lime | + Silica Sand | Lime Mortar | mixing | — |
+| 41 | Limestone | + Clay | Raw Meal | grinding | — |
+| 42 | Raw Meal | + Fire | Cement | calcining | 0.9 kg CO₂ |
+| 43 | Cement | + Silica Sand | Concrete | mixing | — |
+| 44 | Wood | + Water | Wood Pulp | pulping | — |
+| 45 | Wood Pulp | + High-Carbon Steel | Paper | pressing | — |
+| 46 | Charcoal | + Water | Filtered Water | filtering | — |
+| 47 | Paraffin Wax | + Cordage | Candle _(paraffin)_ | dipping | — |
+| 48 | Beeswax | + Cordage | Candle _(beeswax)_ | dipping | — |
+| 49 | Natural Gas | + Fire | Butane | fractionating | — |
+| 50 | Butane | + High-Carbon Steel | Lighter | assembling | — |
 
 All 3 targets reachable. ✅
 
@@ -106,4 +116,4 @@ Elements with more than one real way to make them. The receipt tells you which r
 
 ## How much of the board is a dead end
 
-59 elements make 1,711 possible pairs, and 57 of them are recipes. **96.7% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
+69 elements make 2,346 possible pairs, and 67 of them are recipes. **97.1% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.

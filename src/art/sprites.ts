@@ -1528,3 +1528,173 @@ export const MERCERISED_COTTON: Sprite = {
   ],
   palette: { o: '#7d86a8', w: '#ffffff', W: '#d7ddf2' },
 }
+
+export const CLAY: Sprite = {
+  rows: [
+    '...........',
+    '...........',
+    '..kkkkkkk..',
+    '.kccccccck.',
+    '.kcCcccCck.',
+    '.kccCccccdk',
+    '.kdccccCcdk',
+    '..kddddddk.',
+    '...kkkkkk..',
+    '...........',
+    '...........',
+  ],
+  palette: { k: '#2a1d18', c: '#b07a5a', C: '#8a5a3c', d: '#6b4530' },
+}
+
+export const BRICK: Sprite = {
+  rows: [
+    '...........',
+    '...........',
+    'kkkkkkkkkkk',
+    'krrrkrrrrkk',
+    'krrrkrrrrkk',
+    'kkkkkkkkkkk',
+    'krrrrkrrrkk',
+    'krrrrkrrrkk',
+    'kkkkkkkkkkk',
+    '...........',
+    '...........',
+  ],
+  palette: { k: '#3b241c', r: '#b4543a' },
+}
+
+export const SLAKED_LIME: Sprite = {
+  rows: [
+    '...........',
+    '....ss.....',
+    '...s..s....',
+    '..kkkkkkk..',
+    '.kwwwwwwwk.',
+    '.kwWwwwWwk.',
+    '.kwwwWwwwk.',
+    '..kwwwwwk..',
+    '...kkkkk...',
+    '...........',
+    '...........',
+  ],
+  palette: { k: '#2b2d34', w: '#f4f3ee', W: '#cfd0c8', s: '#b9c6cf' },
+}
+
+export const LIME_MORTAR: Sprite = {
+  rows: [
+    '...........',
+    '...........',
+    '..kkkkkkk..',
+    '.kmmsmmmsk.',
+    '.kmsmmmsmk.',
+    '.kmmmsmmmk.',
+    '.ksmmmmsmk.',
+    '..kkkkkkk..',
+    '...........',
+    '...........',
+    '...........',
+  ],
+  palette: { k: '#33322c', m: '#ddd8c6', s: '#b3ad99' },
+}
+
+export const RAW_MEAL: Sprite = {
+  rows: [
+    '...........',
+    '...........',
+    '...........',
+    '..kkkkkkk..',
+    '.kgggggggk.',
+    '.kgGgggGgk.',
+    '.kggGgggGk.',
+    'kggggggggk.',
+    'kkkkkkkkkk.',
+    '...........',
+    '...........',
+  ],
+  palette: { k: '#2f2a24', g: '#c2b49a', G: '#9a8b72' },
+}
+
+export const CEMENT: Sprite = {
+  rows: [
+    '...........',
+    '....kkk....',
+    '...kbbbk...',
+    '...kbbbk...',
+    '..kkbbbkk..',
+    '.kggggggk..',
+    '.kgGggGgk..',
+    '.kggggggk..',
+    '..kkkkkk...',
+    '...........',
+    '...........',
+  ],
+  palette: { k: '#2b2b31', b: '#7d7f8c', g: '#b9bac2', G: '#8f9099' },
+}
+
+export const CONCRETE: Sprite = {
+  rows: [
+    '...........',
+    '...........',
+    'kkkkkkkkkkk',
+    'kgggGggggGk',
+    'kgGgggGgggk',
+    'kggggGgggGk',
+    'kgGggggGggk',
+    'kgggGgggggk',
+    'kkkkkkkkkkk',
+    '...........',
+    '...........',
+  ],
+  palette: { k: '#33343a', g: '#a7a9b0', G: '#7d7f88' },
+}
+
+export const WOOD_PULP: Sprite = {
+  rows: [
+    '...........',
+    '...........',
+    '..kkkkkkk..',
+    '.kfffffffk.',
+    '.kfFfffFfk.',
+    '.kffFfffFk.',
+    '.kfffFffFk.',
+    '..kkkkkkk..',
+    '...........',
+    '...........',
+    '...........',
+  ],
+  palette: { k: '#3a3128', f: '#d9c9a8', F: '#b0a081' },
+}
+
+export const PAPER: Sprite = {
+  rows: [
+    '.kkkkkkkk..',
+    '.kwwwwwwk..',
+    '.kwLLLLwk..',
+    '.kwwwwwwk..',
+    '.kwLLLLwk..',
+    '.kwwwwwwk..',
+    '.kwLLwwwk..',
+    '.kwwwwwwk..',
+    '.kkkkkkkk..',
+    '...........',
+    '...........',
+  ],
+  palette: { k: '#3a3a44', w: '#f6f5ef', L: '#b9bcc9' },
+}
+
+export const FILTERED_WATER: Sprite = {
+  rows: [
+    '...........',
+    '....b......',
+    '...bwb.....',
+    '..bwwwb....',
+    '..bwwwwb...',
+    '.bwwwwwwb..',
+    '.bwwwwwwb..',
+    '..bwwwwb...',
+    '...bbbb....',
+    '...........',
+    '...........',
+  ],
+  palette: { b: '#2d6c8f', w: '#8fd4ef' },
+}

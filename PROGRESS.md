@@ -603,3 +603,32 @@ plant fibre as well as cloth, so knapping bark against a stone was answered with
 "cloth and stone do not take to each other" — true of cloth and nonsense about
 bark. Narrowed to the textile KIND; raw organic fibre now falls through to a
 line that is actually about it.
+
+## Ten more elements, twelve more recipes
+
+"add more and more combinations... you have full creative control, just make
+sure it makes sense." So: one coherent chain rather than scattered pairs, and
+the chain picked itself, because it carries the biggest number in the subject.
+
+**Cement.** Soil washed in water gives clay; clay fired gives brick; limestone
+ground with clay gives **raw meal**, which is the industry's own name for it;
+raw meal burnt at 1,450 degrees gives cement; cement and sand give concrete.
+The cement step carries **0.9 kg CO2 per kg**, about two thirds of which comes
+out of the limestone itself and cannot be avoided by burning cleaner fuel. It
+is the best teaching story in the game: concrete is the most used material on
+earth after water, and cement alone is roughly eight percent of human CO2.
+
+Beside it, two things lime does that are not cement: **slaked lime**, which
+boils itself when you add the water, and **lime mortar**, softer than the stone
+it joins, which is why Roman walls are still up. Plus **paper** from wood pulp,
+and **filtered water** from charcoal.
+
+69 elements, 67 recipes. The failure table scaled with them without being
+touched: 2,348 non-recipe pairs and the fallback share held at 12.9%.
+
+**One had to be dropped, and the solver caught it.** Fire on stone genuinely
+heat-treats it for better knapping, and the adjudicator flagged it as real. But
+heat-treated stone knaps into a sharp stone, and a sharp stone is upstream of
+the fire, so the graph closed a loop: sharp stone to spindle to fire board to
+ember to fire and back. Same failure as recycling the t-shirt, same reason, and
+the same answer.

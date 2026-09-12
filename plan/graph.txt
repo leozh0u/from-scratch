@@ -55,3 +55,13 @@ E|quicklime+pig_iron|wrought_iron
 E|wrought_iron+charcoal|high_carbon_steel
 E|sodium_hydroxide+cotton_jersey|mercerised_cotton
 E|mercerised_cotton+dye|dyed_cotton_fabric
+E|soil+water|clay
+E|clay+fire|brick
+E|quicklime+water|slaked_lime
+E|slaked_lime+silica_sand|lime_mortar
+E|limestone+clay|raw_meal
+E|raw_meal+fire|cement
+E|cement+silica_sand|concrete
+E|wood+water|wood_pulp
+E|wood_pulp+high_carbon_steel|paper
+E|charcoal+water|filtered_water

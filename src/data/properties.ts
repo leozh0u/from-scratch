@@ -113,6 +113,20 @@ export const PROPERTIES: Record<string, Properties> = {
   aluminum_sheet: P('solid', 'metal', 'processed'),
   aluminum_can: P('solid', 'product', 'finished'),
 
+  // Everyday - the cement chain, and the two lime products beside it
+  clay: P('granular', 'mineral', 'processed'),
+  brick: P('solid', 'product', 'finished'),
+  slaked_lime: P('granular', 'chemical', 'processed'),
+  lime_mortar: P('granular', 'product', 'finished'),
+  raw_meal: P('granular', 'mineral', 'processed'),
+  cement: P('granular', 'mineral', 'processed'),
+  concrete: P('solid', 'product', 'finished'),
+
+  // Everyday - paper, and water worth drinking
+  wood_pulp: P('fibre', 'organic', 'processed'),
+  paper: P('fibre', 'product', 'finished'),
+  filtered_water: P('liquid', 'chemical', 'processed'),
+
   // Everyday - glass
   sodium_silicate: P('solid', 'chemical', 'processed'),
   molten_glass: P('liquid', 'mineral', 'processed'),

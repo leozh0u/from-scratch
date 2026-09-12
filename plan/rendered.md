@@ -68,5 +68,15 @@
 | 38 | Wrought Iron | + Charcoal | = **High-Carbon Steel** |
 | 39 | Sodium Hydroxide | + Cotton Jersey | = **Mercerised Cotton** |
 | 40 | Mercerised Cotton | + Dye | = **Dyed Cotton Fabric** |
+| 41 | Soil | + Water | = **Clay** |
+| 42 | Clay | + Fire | = **Brick** |
+| 43 | Quicklime | + Water | = **Slaked Lime** |
+| 44 | Slaked Lime | + Silica Sand | = **Lime Mortar** |
+| 45 | Limestone | + Clay | = **Raw Meal** |
+| 46 | Raw Meal | + Fire | = **Cement** |
+| 47 | Cement | + Silica Sand | = **Concrete** |
+| 48 | Wood | + Water | = **Wood Pulp** |
+| 49 | Wood Pulp | + High-Carbon Steel | = **Paper** |
+| 50 | Charcoal | + Water | = **Filtered Water** |
 
-59 elements, 57 recipes.
+69 elements, 67 recipes.
