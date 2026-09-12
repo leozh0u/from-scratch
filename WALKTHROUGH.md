@@ -2,7 +2,7 @@
 
 **Generated from `src/data/gameData.ts` by `npm run walkthrough`. Do not edit by hand.**
 
-842 elements, 845 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
+872 elements, 875 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
 
 ## Survival
 
@@ -874,6 +874,36 @@ The main game. Everything a person can point at, and what it actually cost to ma
 | 825 | Hob | + Sink | Kitchen | fitting out | — |
 | 826 | Printed Book | + Kitchen | Recipe Book | testing | — |
 | 827 | Kitchen | + Market | Restaurant | serving | — |
+| 828 | Polyprop | + Compressed Air | Foam | blowing | — |
+| 829 | Polyprop | + Foam | Sponge | reticulating | — |
+| 830 | Foam | + Nylon | Life Jacket | panelling | — |
+| 831 | Synthetic Rubber | + Foam | Wetsuit | laminating | — |
+| 832 | Foam | + Varnish | Surfboard | glassing | — |
+| 833 | Plywood | + Sandpaper | Paddle | shaping | — |
+| 834 | Plywood | + Pitch | Canoe | steam bending | — |
+| 835 | Paddle | + Bearing | Oar | rowlocking | — |
+| 836 | Oar | + Boat | Rowing Boat | fitting out | — |
+| 837 | Plank | + Hinge | Rudder | hanging | — |
+| 838 | Timber Frame | + Lead | Keel | ballasting | — |
+| 839 | Keel | + Rudder | Yacht | rigging | — |
+| 840 | Foam | + Chain | Buoy | mooring | — |
+| 841 | Map | + Sonar | Chart | sounding | — |
+| 842 | Chart | + Almanac | Tide Table | predicting | — |
+| 843 | Linen | + Synthetic Dye | Flag | hoisting | — |
+| 844 | Flag | + Telescope | Semaphore | signalling | — |
+| 845 | Brass | + Cork | Whistle | tuning | — |
+| 846 | Whistle | + Electric Motor | Siren | chopping | — |
+| 847 | Trumpet | + Amplifier | Megaphone | horn loading | — |
+| 848 | Light Bulb | + Battery | Flashlight | reflecting | — |
+| 849 | Synthetic Rubber | + Cotton Yarn | Elastic | covering | — |
+| 850 | Flashlight | + Elastic | Head Torch | strapping | — |
+| 851 | Elastic | + Nylon | Swimsuit | knitting | — |
+| 852 | Goggles | + Elastic | Swim Goggles | sealing | — |
+| 853 | Reinforced Concrete | + Chlorine | Swimming Pool | tiling | — |
+| 854 | Alloy Frame | + Plywood | Diving Board | fulcrum setting | — |
+| 855 | Watch | + Lever | Stopwatch | escapement | — |
+| 856 | Screen | + Stopwatch | Scoreboard | displaying | — |
+| 857 | Scoreboard | + Steel Frame | Stadium | tiering | — |
 
 All 3 targets reachable. ✅
 
@@ -898,4 +928,4 @@ Elements with more than one real way to make them. The receipt tells you which r
 
 ## How much of the board is a dead end
 
-842 elements make 354,061 possible pairs, and 845 of them are recipes. **99.8% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
+872 elements make 379,756 possible pairs, and 875 of them are recipes. **99.8% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
