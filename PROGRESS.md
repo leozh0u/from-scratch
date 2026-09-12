@@ -232,3 +232,57 @@ This is what the forest and the city scenes should be built on. Not yet built.
 - Survival still shows all 26 starters including Everyday's. Needs trimming to
   a minimal set, per Leo's direction.
 - No sound yet.
+
+---
+
+## LEDGER — 2026-09-12, ~15:00 Saturday
+
+Submission is **Sunday 09:00**. Roughly 18 hours.
+
+### From Scratch — done
+
+| Asked, in his words | State |
+|---|---|
+| "clone it here, do all the setup… add it to the projects folder" | **done** — builds, solver passes, dev server on 5174 |
+| "add a context/prorgess file for all of this" | **done** — `DESIGN.md`, `ARCHITECTURE.md`, this file |
+| "look into my friends [repo]… what do you think" | **done** — played it in production, reviewed the code |
+| "also i need to consider the sponsor routes… look into it" | **done** — `DESIGN.md` §5. **No Games track exists**; ML/AI is the fit |
+| "even look at my project vestigo" | **done** — the weight/momentum principle is quoted in `PixelButton` |
+| "give me the localhost" | **done** — `http://localhost:5174` |
+| "the stars are a little too much" | **done** — canvas resolution now follows the viewport |
+| "why does the earth seperate from the buttons when the screen becomes bigger" | **done** — horizon pinned by percentage, not fixed pixels |
+| "everythin should be looking like this" (button sheet) | **done** — extruded, notched, bevelled |
+| "the locked items… like chains around it like a chest" | **done** — two-link chain + brass padlock |
+| "from scratch should be bigger" | **done** — own viewport-stepped scale |
+| "the button has no need to be this wide" | **done** — capped at 420 |
+| "the items is getting smothereed" | **done** — chain breaks around the label |
+| "buttons should be in the centre, always" | **done** — vertically centred |
+| "rename the codex… maybe like item inventory" | **done** — Inventory throughout |
+
+### From Scratch — OPEN
+
+| Item | State |
+|---|---|
+| **Push to the remote** | **BLOCKED ON LEO.** 4 commits sit local. Asked twice, never answered. It is Nathalie's repo and they were filming. |
+| Survival = forest, wavy animated trees, nature | **open** — technique researched (whole-pixel per-layer offsets, 1px up-right/down/left, 0.2s/frame), not built |
+| Everyday = bustling metropolis, street, pixel people walking | **open** — not started |
+| "the survival should start with mininmal objects" | **open** — Survival still shows all 26 starters including Everyday's |
+| Little Alchemy scope, hundreds of elements | **open** — planned in `ARCHITECTURE.md`, not built |
+| "accurate looking pixelated emoji things for every object" | **open** — sprite-vocabulary plan written, not built |
+| Two-speed failure explanation + "why not" LLM | **open** — planned, not built |
+| The Nintendo zoom-out shot | **open** — Leo has not said where it goes |
+| Receipt is empty for 2 of 3 targets | **open** — the biggest content hole |
+| No tests at all | **open** — highest-value thing Leo could bring |
+| README still the Vite template | **open** |
+
+### DREAD — OPEN, and older than everything above
+
+| Item | State |
+|---|---|
+| **Pulse reads 51 when Leo is 68** | **OPEN.** The P dump he captured came back with `samples: []` — pressed before the camera was sampling. **Needs one retry with the camera live.** The ROI is at y=58–144 of a 480px frame, which is very likely his hairline, not his face. |
+| **Presage** | **Dead, diagnosed.** No physiology model ships in the package; it is fetched remotely and never arrives. Not fixable from our side. Leo was told to show the Presage table the exact log line. **Not known whether he did.** |
+| **MathWorks** | **BLOCKED ON LEO.** ~30 seconds. Unclaimed at comparable events. |
+| **Rotate the 4 exposed API keys** | **BLOCKED ON LEO.** Never confirmed. |
+| **66 `Co-Authored-By: Claude` trailers in a public repo** | **BLOCKED ON LEO.** Violates his own standing rule. Needs explicit approval for a history rewrite. |
+| **DREAD video** | **Not shot.** |
+| **Can he submit two projects?** | **Unknown.** Needs an organiser. |
