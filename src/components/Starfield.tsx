@@ -111,11 +111,22 @@ export function shootingStarAt(
   width: number,
   height: number,
 ): { x: number; y: number; length: number } | null {
-  // One window per streak, so several can be staggered without ever
-  // synchronising.
-  const windowMs = 24_000 + hash(seed * 61) * 40_000
-  // The streak itself lasts under a second of that window.
-  const streakMs = 700
+  /*
+   * One window per streak, so several can be staggered without ever
+   * synchronising.
+   *
+   * RETUNED AFTER LEO COULD NOT FIND THEM. The first pass ran 24-64s windows
+   * with a 700ms streak seven pixels long, which is about one every fourteen
+   * seconds — arithmetically "occasional" and in practice invisible, because
+   * a 21-pixel scratch lasting two thirds of a second on a 2000-pixel screen
+   * is not an event, it is a rendering artifact you half-notice and dismiss.
+   *
+   * Rarity was never the problem. Legibility was. So the gap comes down only
+   * a little and the streak itself gets much more readable: longer tail,
+   * further travel, and long enough on screen to actually follow.
+   */
+  const windowMs = 14_000 + hash(seed * 61) * 20_000
+  const streakMs = 1_100
   const t = (now + hash(seed * 71) * windowMs) % windowMs
   if (t > streakMs) return null
 
@@ -125,14 +136,14 @@ export function shootingStarAt(
   const dir = hash(seed * 83) > 0.5 ? 1 : -1
   const startX = hash(seed * 97) * width
   const startY = hash(seed * 103) * height * 0.45
-  const span = width * 0.34
+  const span = width * 0.46
 
   return {
     x: Math.floor(startX + dir * progress * span),
     y: Math.floor(startY + progress * span * 0.55),
     // The tail grows as it enters and shrinks as it burns out, which is what
     // stops it reading as a line sliding across the screen.
-    length: Math.max(1, Math.round(Math.sin(progress * Math.PI) * 7)),
+    length: Math.max(1, Math.round(Math.sin(progress * Math.PI) * 14)),
   }
 }
 
@@ -218,9 +229,15 @@ export function Starfield({
         const shot = shootingStarAt(now, i + 1, width, height)
         if (!shot) continue
         for (let t = 0; t < shot.length; t++) {
-          ctx.fillStyle = t < 2 ? BRIGHTNESS[2] : t < 4 ? BRIGHTNESS[1] : BRIGHTNESS[0]
+          ctx.fillStyle = t < 4 ? BRIGHTNESS[2] : t < 8 ? BRIGHTNESS[1] : BRIGHTNESS[0]
           ctx.fillRect(shot.x - t, shot.y - t, 1, 1)
         }
+        // The head is a 2x2 block rather than a single pixel. Still whole
+        // pixels on the same grid, but it gives the streak something to lead
+        // with — without it the tail reads as a scratch rather than a thing
+        // travelling.
+        ctx.fillStyle = BRIGHTNESS[2]
+        ctx.fillRect(shot.x, shot.y, 2, 2)
       }
     }
 
@@ -236,7 +253,7 @@ export function Starfield({
     // animation and leaves the frame budget to the globe.
     let last = 0
     const tick = (now: number) => {
-      if (now - last > 80) {
+      if (now - last > 60) {
         draw(now)
         last = now
       }

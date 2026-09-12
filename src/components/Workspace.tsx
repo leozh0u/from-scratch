@@ -51,10 +51,7 @@ type Discovery = { element: ElementDef; recipe: RecipeDef }
 
 const REALM_LABEL: Record<RealmId, string> = {
   survival: 'Survival',
-  // Short enough not to wrap in the HUD strip. The realm's full name lives on
-  // the title screen and in the inventory headings; a two-line title in a
-  // one-line bar reads as a layout fault.
-  everyday: 'Everyday',
+  everyday: 'Everyday Objects',
 }
 
 export function Workspace({ realm, data, game, onBack, onOpenInventory }: WorkspaceProps) {

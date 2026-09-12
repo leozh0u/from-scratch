@@ -37,6 +37,7 @@ import {
   SODA_ASH,
   SODIUM_HYDROXIDE,
   SODIUM_SILICATE,
+  TEXTILE_WASTE,
   SPARK,
   TINDER,
   WATER,
@@ -104,6 +105,7 @@ const REGISTRY: Record<string, Sprite> = {
   soda_ash: SODA_ASH,
   limestone: LIMESTONE,
   sodium_silicate: SODIUM_SILICATE,
+  textile_waste: TEXTILE_WASTE,
   molten_glass: MOLTEN_GLASS,
   glass_bottle: GLASS_BOTTLE,
 }

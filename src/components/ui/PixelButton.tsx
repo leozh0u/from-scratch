@@ -1,4 +1,4 @@
-import { useRef, useState, type ButtonHTMLAttributes, type ReactNode } from 'react'
+import { useRef, useState, type ButtonHTMLAttributes, type ReactNode, type Ref } from 'react'
 import { PixelArt } from '../PixelArt'
 import { PADLOCK } from '../../art/sprites'
 import { steppedNotch, OUTLINE } from './pixelShape'
@@ -58,7 +58,14 @@ type PixelButtonProps = {
   /** Renders locked: solid, legible, and chained shut. */
   locked?: boolean
   children: ReactNode
-} & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'>
+  /*
+   * React 19 passes `ref` through as an ordinary prop, so it rides along in
+   * `...rest` onto the real <button> with no forwardRef wrapper. Declared
+   * explicitly because `ButtonHTMLAttributes` does not include it, and the
+   * confirm dialog needs to focus its cancel button on open.
+   */
+  ref?: Ref<HTMLButtonElement>
+} & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children' | 'ref'>
 
 type Tone = {
   /** The main face colour. */

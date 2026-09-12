@@ -1187,3 +1187,38 @@ export const CHAIN_LINK: Sprite = {
     D: '#6e6b93',
   },
 }
+
+/**
+ * Textile waste — a heap of offcuts.
+ *
+ * Every other fabric in the set is a neat rectangular swatch, because that is
+ * what cloth on a bolt looks like. This one has to read as the opposite at a
+ * glance, so it is a pile: no straight edges anywhere, three different fabrics
+ * rather than one, and a loose thread coming off the bottom.
+ *
+ * Three materials at two shades each rather than one material at three. Mixed
+ * colour is the whole signal — a single-colour heap reads as a folded blanket.
+ */
+export const TEXTILE_WASTE: Sprite = {
+  rows: [
+    '...........',
+    '...rrr.....',
+    '..rrrrrr...',
+    '..RRrrrR...',
+    '.gggggggg..',
+    '.ggGgggGg..',
+    '.GGgGGGgG..',
+    '..bbbbbbbb.',
+    '..bBbbbBbb.',
+    '...BBBBBB..',
+    '.....b.....',
+  ],
+  palette: {
+    r: '#b8574f',
+    R: '#8a3c37',
+    g: '#cfa14e',
+    G: '#9c7433',
+    b: '#4a6fa5',
+    B: '#34507a',
+  },
+}

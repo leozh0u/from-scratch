@@ -16,6 +16,8 @@
  * `seed.ts` exists precisely as a hand-computed fixture for that trap, with
  * the right answers written in its header, and nothing was reading them.
  */
+import { resolveIcon } from '../src/data/iconRegistry'
+import { FLAME } from '../src/art/sprites'
 import { GAME_DATA } from '../src/data/gameData'
 import { SEED_DATA } from '../src/data/seed'
 import { runSolver, computeFootprint, computeFootprintDetail } from '../src/solver/solver'
@@ -345,6 +347,35 @@ console.log('\n=== the solver survives a graph that is wrong ===')
   ok('a dangling reference does not throw', !threw)
   ok('and is reported as an error', Boolean(report && report.issues.some((i) => i.level === 'error')))
   ok('and the report says it is not ok', report ? report.ok === false : false)
+}
+
+console.log('\n=== every element has its own art ===')
+{
+  /*
+   * The ask was an accurate pixel icon for every object, and for a long time
+   * 41 of 43 rendered the same orange flame. `textile_waste` was still doing
+   * it today, silently, because `resolveIcon` falls back rather than throwing
+   * — which is right at runtime and invisible in review. This makes the gap
+   * loud.
+   */
+  const flame = JSON.stringify(FLAME.rows)
+  const byArt = new Map<string, string[]>()
+  const ragged: string[] = []
+  const fallenBack: string[] = []
+
+  for (const element of GAME_DATA.elements) {
+    const sprite = resolveIcon(element.icon)
+    if (new Set(sprite.rows.map((r) => r.length)).size !== 1) ragged.push(element.id)
+    const art = JSON.stringify(sprite.rows)
+    if (art === flame && element.id !== 'fire') fallenBack.push(element.id)
+    byArt.set(art, [...(byArt.get(art) ?? []), element.id])
+  }
+
+  const shared = [...byArt.values()].filter((ids) => ids.length > 1)
+  ok('no element falls back to the flame', fallenBack.length === 0, fallenBack.join(', '))
+  ok('no two elements share a sprite', shared.length === 0, shared.map((s) => s.join(' = ')).join(' | '))
+  // Ragged rows misalign silently in the renderer rather than erroring.
+  ok('every sprite is rectangular', ragged.length === 0, ragged.join(', '))
 }
 
 console.log(`\n${fail === 0 ? 'Game data and solver hold.' : `${fail} FAILED`}  (${pass} checks)`)

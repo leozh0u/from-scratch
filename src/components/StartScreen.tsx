@@ -139,7 +139,7 @@ export function StartScreen({
             locked={!everydayUnlocked}
             onClick={() => everydayUnlocked && onSelectRealm('everyday')}
           >
-            items
+            everyday objects
           </PixelButton>
 
         </div>

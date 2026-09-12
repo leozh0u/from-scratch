@@ -51,7 +51,24 @@ function Game() {
     GAME_DATA.targets.survival.every((id) => game.isDiscovered(id))
 
   if (showInventory) {
-    return <Inventory data={GAME_DATA} game={game} onBack={() => setShowInventory(false)} />
+    return (
+      <Inventory
+        data={GAME_DATA}
+        game={game}
+        onBack={() => setShowInventory(false)}
+        /*
+         * Starting over means starting over: the save is wiped and the player
+         * is put back on the title screen. Leaving them in the inventory of a
+         * realm they now have no progress in is technically a reset and
+         * practically a dead end.
+         */
+        onReset={() => {
+          game.reset()
+          setShowInventory(false)
+          setRealm(null)
+        }}
+      />
+    )
   }
 
   if (realm === null) {

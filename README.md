@@ -130,7 +130,7 @@ Every element links to its own reference in-game.
 
 ## Credits
 
-- Backdrop art: `public/forest-hillside.svg` and `public/neon-city.png` —
-  **source and licence to be confirmed before release.**
+- Backdrop art: `public/forest-hillside.svg` and `public/neon-city.png`,
+  both collected from [Pixie](https://pixiepng.com/).
 - Type: Press Start 2P.
 - Sound is synthesised at runtime, not sampled.

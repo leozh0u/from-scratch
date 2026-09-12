@@ -6,6 +6,7 @@ import { DiscoveryCard } from './DiscoveryCard'
 import { Card } from './ui/Card'
 import { ElementTile } from './ui/ElementTile'
 import { PixelButton } from './ui/PixelButton'
+import { ConfirmDialog } from './ui/ConfirmDialog'
 import { HudBar } from './ui/HudBar'
 import { playPress, playHover } from '../audio/sfx'
 
@@ -13,6 +14,8 @@ type InventoryProps = {
   data: RecipeData
   game: ReturnType<typeof useGameState>
   onBack: () => void
+  /** Wipes the save AND returns to the title screen — see `confirmReset`. */
+  onReset: () => void
 }
 
 const REALM_LABEL: Record<RealmId, string> = {
@@ -30,8 +33,9 @@ const REALM_LABEL: Record<RealmId, string> = {
  * same DiscoveryCard shown at the moment of discovery, rather than
  * duplicating its layout inline for every entry.
  */
-export function Inventory({ data, game, onBack }: InventoryProps) {
+export function Inventory({ data, game, onBack, onReset }: InventoryProps) {
   const [selected, setSelected] = useState<ElementDef | null>(null)
+  const [confirming, setConfirming] = useState(false)
 
   const starterIds = new Set([...data.starters.survival, ...data.starters.everyday])
   const elementById = new Map(data.elements.map((el) => [el.id, el]))
@@ -52,13 +56,18 @@ export function Inventory({ data, game, onBack }: InventoryProps) {
     return options.find((r) => r.route === takenRoute) ?? options[0]
   }
 
-  function handleReset() {
-    const confirmed = window.confirm(
-      // A native confirm cannot be styled, so the copy carries it: short,
-      // concrete, and it says what is lost rather than hedging about it.
-      'Wipe every discovery in both realms? This cannot be undone.',
-    )
-    if (confirmed) game.reset()
+  /*
+   * Reset is two things, and it was only doing one.
+   *
+   * Wiping the save is the easy half. The other half is that the player is
+   * standing in the inventory looking at a grid that has just emptied, in a
+   * realm they have no progress in — which is a confusing place to be put.
+   * "Start from scratch" means going back to the beginning, so `onReset`
+   * clears the save AND returns to the title screen.
+   */
+  function confirmReset() {
+    setConfirming(false)
+    onReset()
   }
 
   return (
@@ -118,10 +127,21 @@ export function Inventory({ data, game, onBack }: InventoryProps) {
         <p className="font-display text-[9px] leading-loose lowercase text-muted">
           this wipes both realms.
         </p>
-        <PixelButton tone="danger" unit={4} onClick={handleReset}>
-          reset
+        <PixelButton tone="danger" unit={4} onClick={() => setConfirming(true)}>
+          start over
         </PixelButton>
       </div>
+
+      {confirming && (
+        <ConfirmDialog
+          title="start over?"
+          body="every discovery in both realms is wiped, and you go back to the beginning. this cannot be undone."
+          confirmLabel="wipe it"
+          cancelLabel="keep it"
+          onConfirm={confirmReset}
+          onCancel={() => setConfirming(false)}
+        />
+      )}
 
       {selected &&
         (() => {
