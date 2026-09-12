@@ -2,7 +2,7 @@
 
 **Generated from `src/data/gameData.ts` by `npm run walkthrough`. Do not edit by hand.**
 
-242 elements, 245 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
+272 elements, 275 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
 
 ## Survival
 
@@ -274,6 +274,36 @@ The main game. Everything a person can point at, and what it actually cost to ma
 | 225 | Cast Iron | + Pipe | Stove | fitting | — |
 | 226 | Cast Iron | + Water | Kettle | spinning | — |
 | 227 | Bronze | + Mould | Bell | founding | — |
+| 228 | Dough | + Compost | Yeast | culturing | — |
+| 229 | Yeast | + Flour | Sourdough | fermenting | — |
+| 230 | Water | + Vinegar | Cheese | curdling | — |
+| 231 | Cheese | + Pot | Butter | churning | — |
+| 232 | Farmland | + Quicklime | Sugar | refining | — |
+| 233 | Sugar | + Fire | Caramel | caramelising | — |
+| 234 | Charcoal | + Pipe | Water Filter | packing | — |
+| 235 | Pipe | + Bearing | Well | boring | — |
+| 236 | Brick Wall | + Render | Aqueduct | surveying | — |
+| 237 | Pipe | + Concrete | Sewer | laying | — |
+| 238 | Salt | + Battery | Chlorine | electrolysing | — |
+| 239 | Chlorine | + Soda Ash | Bleach | reacting | — |
+| 240 | Slag | + Water | Sulfuric Acid | roasting | — |
+| 241 | Ammonia | + Sulfuric Acid | Fertiliser | neutralising | — |
+| 242 | Slag | + Fire | Lead | cupellation | — |
+| 243 | Lead | + Sulfuric Acid | Car Battery | plating | — |
+| 244 | Lead | + Copper | Solder | alloying | — |
+| 245 | Silicon Wafer | + Solder | Transistor | doping | — |
+| 246 | Transistor | + Circuit Board | Computer | programming | — |
+| 247 | Glass Pane | + Transistor | Screen | layering | — |
+| 248 | Polyprop | + Steel Spring | Keyboard | moulding | — |
+| 249 | Computer | + Screen | Laptop | assembling | — |
+| 250 | Copper Wire | + Alloy Frame | Antenna | tuning | — |
+| 251 | Microphone | + Antenna | Telephone | switching | — |
+| 252 | Screen | + Radio | Television | broadcasting | — |
+| 253 | Prism | + Transistor | Laser | pumping | — |
+| 254 | Lens | + Laser | Optic Fibre | drawing | — |
+| 255 | Laser | + Ink | Barcode | printing | — |
+| 256 | Solar Cell | + Alloy Frame | Solar Panel | framing | — |
+| 257 | Generator | + Propeller | Wind Turbine | erecting | — |
 
 All 3 targets reachable. ✅
 
@@ -298,4 +328,4 @@ Elements with more than one real way to make them. The receipt tells you which r
 
 ## How much of the board is a dead end
 
-242 elements make 29,161 possible pairs, and 245 of them are recipes. **99.2% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
+272 elements make 36,856 possible pairs, and 275 of them are recipes. **99.3% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
