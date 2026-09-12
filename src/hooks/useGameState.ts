@@ -10,6 +10,15 @@ type RouteMap = Record<string, string | undefined>
 type PersistedState = {
   discovered: StoredState
   routes: RouteMap
+  /**
+   * How many hints have been SPENT, per realm. Not how many are left.
+   *
+   * Storing the spend rather than the balance is what makes the budget grow
+   * correctly: earned hints go up as the player discovers more, and a stored
+   * balance would have to be topped up on every discovery and would drift the
+   * moment the earning rule changed. Spend is a fact; balance is derived.
+   */
+  hintsSpent?: Record<RealmId, number>
 }
 
 function readStorage(): PersistedState | null {
@@ -83,9 +92,21 @@ export function useGameState(data: RecipeData) {
   // `combine` below) — most elements never appear here at all.
   const [routes, setRoutes] = useState<RouteMap>(() => readStorage()?.routes ?? {})
 
+  /*
+   * Hints spent, per realm. See the note on PersistedState: the balance is
+   * derived from this and the discovery count, never stored.
+   */
+  const [hintsSpent, setHintsSpent] = useState<Record<RealmId, number>>(
+    () => readStorage()?.hintsSpent ?? { survival: 0, everyday: 0 },
+  )
+
+  const spendHint = useCallback((realm: RealmId) => {
+    setHintsSpent((prev) => ({ ...prev, [realm]: (prev[realm] ?? 0) + 1 }))
+  }, [])
+
   useEffect(() => {
-    writeStorage({ discovered, routes })
-  }, [discovered, routes])
+    writeStorage({ discovered, routes, hintsSpent })
+  }, [discovered, routes, hintsSpent])
 
   const isDiscovered = useCallback(
     (elementId: string) =>
@@ -151,7 +172,8 @@ export function useGameState(data: RecipeData) {
     }
     setDiscovered(fresh)
     setRoutes({})
+    setHintsSpent({ survival: 0, everyday: 0 })
   }, [data.starters])
 
-  return { discovered, allDiscovered, isDiscovered, combine, reset, routes }
+  return { discovered, allDiscovered, isDiscovered, combine, reset, routes, hintsSpent, spendHint }
 }

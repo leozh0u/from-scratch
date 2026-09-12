@@ -11,6 +11,9 @@ import { TargetList } from './TargetList'
 import { PixelButton } from './ui/PixelButton'
 import { BackArrow } from './ui/BackArrow'
 import { LearnMore } from './LearnMore'
+import { MadeCount } from './ui/MadeCount'
+import { HintButton } from './ui/HintButton'
+import { pickHint, hintsEarned } from '../solver/hint'
 import { Card } from './ui/Card'
 import { ElementTile, TILE_WIDTH } from './ui/ElementTile'
 import { ProgressBar } from './ui/ProgressBar'
@@ -128,6 +131,67 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
    */
   const inventory = shown.length > 0 ? shown : [...data.starters[realm]]
 
+  /*
+   * HOW MUCH OF THIS REALM IS MADE.
+   *
+   * Counted against everything CRAFTABLE, not everything that exists: the
+   * starters were never made, so counting them would start the player at
+   * nine of sixty-seven and make the first real discovery look like no
+   * progress at all.
+   */
+  const craftableIds = data.recipes
+    .map((r) => r.output)
+    .filter((id) => {
+      const el = elementById(id)
+      return el && (realm === 'everyday' || el.realm === 'survival')
+    })
+  const realmTotal = new Set(craftableIds).size
+  const realmFound = [...new Set(craftableIds)].filter((id) => game.isDiscovered(id)).length
+
+  /*
+   * Hints: earned by playing, spent one at a time, and chosen by the SOLVER
+   * rather than by the model. See solver/hint.ts — the one thing the runtime
+   * model is never allowed to know is the recipe graph, and a hint is a claim
+   * about exactly that.
+   */
+  const [hint, setHint] = useState<string | null>(null)
+  /*
+   * HINTS ESCALATE RATHER THAN BEING ALL OR NOTHING.
+   *
+   * A "give up" button that reveals the answer and wipes your progress was
+   * considered and is the wrong shape for this game: there is no fail state
+   * to give up FROM, and punishing somebody for asking for help by deleting
+   * what they made is a strange thing to do. What a stuck player actually
+   * wants is more help, not a reset.
+   *
+   * So the same key gives more each time it is pressed on the same board.
+   * First press names one of the two and what kind of thing comes out; press
+   * again without having touched anything and it names both, which is the
+   * answer. Two hints for a solve, no reset, and the player chooses how much
+   * they want to be told.
+   */
+  const [hintDepth, setHintDepth] = useState(0)
+  const hintsLeft = hintsEarned(realmFound) - (game.hintsSpent[realm] ?? 0)
+
+  function useHint() {
+    if (hintsLeft <= 0) return
+    playPress()
+    const found = pickHint(data, new Set(inventory), realm, game.hintsSpent[realm] ?? 0)
+    if (!found) {
+      // Not charged for. Being told there is nothing to find is not a hint.
+      setHint('nothing new is within reach from here. make something first.')
+      return
+    }
+    game.spendHint(realm)
+    const names = found.recipe.inputs.map((id) => elementById(id).name.toLowerCase())
+    if (hintDepth === 0) {
+      setHintDepth(1)
+      setHint(`${elementById(found.knownInput).name.toLowerCase()} goes with something you already have, and makes ${found.shape}.`)
+    } else {
+      setHint(`${names[0]} and ${names[1]}.`)
+    }
+  }
+
   const discoveredIds = new Set(inventory)
   const targets = data.targets[realm].map(elementById)
   const foundCount = targets.filter((t) => discoveredIds.has(t.id)).length
@@ -146,6 +210,12 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
   function pickTile(id: string) {
     attemptRef.current++
     setFeedback(null)
+    // A hint is about the board as it was when it was asked for. Picking a
+    // tile is the player acting on it, so it has served its purpose — and the
+    // escalation resets with it, or the next first press would jump straight
+    // to the answer.
+    setHint(null)
+    setHintDepth(0)
     setSlots(([a, b]) => {
       if (a === null) return [id, b]
       if (b === null) return [a, id]
@@ -352,14 +422,53 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
           )}
         </div>
 
-        <PixelButton
-          tone="survival"
-          unit={5}
-          onClick={handleCombine}
-          disabled={!slots[0] || !slots[1]}
-        >
-          combine
-        </PixelButton>
+        {/*
+          * THE COMBINE ROW: a counter, the key, and a hint.
+          *
+          * The panel is as wide as the two bars above it and the key used the
+          * middle fifth of it. What earns the rest is not decoration: on the
+          * left, how much of the realm is made, because the goal is to make
+          * everything and a goal you cannot see is not a goal; on the right,
+          * the hint, which is the only thing a stuck player wants and which
+          * had nowhere to live.
+          *
+          * They are the same size and the same distance out, so the key stays
+          * the centre of the panel rather than being shoved off it.
+          */}
+        <div className="flex w-full flex-wrap items-center justify-center gap-3">
+          {/* basis-0 so the two sides share what is left AFTER the key, and
+            * wrap rather than overflow when there is not enough. At 442px the
+            * first version pushed the hint key off the panel. */}
+          <div className="flex min-w-0 flex-[1_1_72px] justify-end">
+            <MadeCount found={realmFound} total={realmTotal} />
+          </div>
+
+          <PixelButton
+            tone="survival"
+            unit={5}
+            onClick={handleCombine}
+            disabled={!slots[0] || !slots[1]}
+          >
+            combine
+          </PixelButton>
+
+          <div className="flex min-w-0 flex-[1_1_72px] justify-start">
+            <HintButton
+              left={hintsLeft}
+              onClick={useHint}
+              disabled={hintsLeft <= 0}
+            />
+          </div>
+        </div>
+
+        {hint && (
+          <p
+            role="status"
+            className="max-w-[34ch] text-center font-display text-[10px] leading-[2] lowercase text-brand"
+          >
+            {hint}
+          </p>
+        )}
 
         {/*
          * No standing instruction line.

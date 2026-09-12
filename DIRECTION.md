@@ -142,6 +142,36 @@ treated as current fact about the event.
 
 ---
 
+## Leo's decisions, in his words
+
+Written down because context compacts and files do not. His words, not a
+paraphrase — a paraphrase of a decision loses the thing that made it one.
+
+- *"lets stick with two things combined but lets increasen number of things."*
+  Two inputs, settled. Three-input combining is dropped.
+- *"survival is the tutorial, nice and easy, maybe make that clear... and
+  Everyhting is the main layer. with literally everything you can think of,
+  from car, to rocket, to wheels, to water bottle, to phone."*
+- *"do we keep the 15 for the starter and add much much more for the
+  everything."* Yes. Survival is frozen at 18 elements; everything new goes
+  into Everything.
+- *"the point of everyting is not to get the cotton t shrit, but to unlock
+  every possible thing."* Completion is the goal, not three targets.
+- *"only allow 3 hints in survival, and 3 in everything, then 1 hint per 10
+  found ones."*
+- *"that screenshot is the gemini api. thats an issue. i dont want that
+  happening. it needs to be a thing."* If the model says a pairing is real,
+  either it is a recipe or the model was asked the wrong question.
+- *"we need more use out of it to have a high chance of winning."* More of the
+  model, through the same fence — never by loosening it.
+- *"nothing should look AI generated."* 8-bit everywhere, no exceptions unless
+  he says so.
+- *"details matter more than movement."*
+- *"make sure when i give you important stuff its always rememebered/written
+  down."*
+
+---
+
 ## Standing rules, which do not bend
 
 - Never invent a number or a citation. Zero is the correct value for an unknown
