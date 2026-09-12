@@ -16,6 +16,22 @@
  * shimmering between subpixel positions.
  */
 
+/*
+ * THE TWO RATIOS THE LAYOUT IS BUILT ON, AND THEY BELONG TO THE FONT.
+ *
+ * `GLYPH_ADVANCE` is the box each letter is centred in, as a multiple of the
+ * type size. It has to be at least as wide as the font's widest glyph or the
+ * letters overlap: Silkscreen's widest is exactly 1.0 of the type size, and
+ * the 0.82 left over from Pixelify Sans put nine of the eleven letters in
+ * "From Scratch" on top of each other.
+ *
+ * `WORD_GAP` is the space between words, and on an arc it has to beat a
+ * letter's own advance by a clear margin, because the glyphs either side of it
+ * are leaning toward each other across the gap.
+ */
+const GLYPH_ADVANCE = 1
+const WORD_GAP = 0.6
+
 /** One glyph's place along the chord, as a fraction from 0 to 1. */
 export type ArcGlyph = { char: string; t: number; word: number }
 
@@ -46,11 +62,10 @@ export function arcTitlePlacement(text: string, balance = 1): ArcGlyph[] {
   const glyphCount = words.reduce((n, w) => n + w.length, 0)
   if (glyphCount === 0) return []
 
-  // Half a glyph box, and the word break, as fractions of the chord. The gap
-  // is the space glyph's width (0.55 of the type size) over one glyph box
-  // (0.82), so the ratio holds at any unit.
+  // Half a glyph box, and the word break, as fractions of the chord: the gap
+  // is the space's width over one glyph box, so the ratio holds at any unit.
   const halfGlyph = 1 / (2 * glyphCount)
-  const gap = words.length > 1 ? 0.55 / (0.82 * glyphCount) : 0
+  const gap = words.length > 1 ? WORD_GAP / (GLYPH_ADVANCE * glyphCount) : 0
   const usable = 1 - gap
 
   const placed: ArcGlyph[] = []
@@ -91,7 +106,7 @@ export function arcTitlePlacement(text: string, balance = 1): ArcGlyph[] {
  */
 export function arcTitleWidth(text: string, unit: number): number {
   const size = unit * 10
-  const advance = Math.round(size * 0.82)
+  const advance = Math.round(size * GLYPH_ADVANCE)
   const glyphs = [...text].filter((c) => c !== ' ').length
   return glyphs * advance + advance
 }
@@ -135,6 +150,11 @@ type ArcTitleProps = {
    * How hard to equalise the two words, 0 to 1. 0 spaces every letter the same
    * and lets the break fall where it falls; 1 gives each word an equal share
    * so the break lands on the apex. See `arcTitlePlacement`.
+   *
+   * Ships at 0. The equalised version was built and looked at, and Leo went
+   * back to even spacing: putting the break on the apex meant letterspacing
+   * "From" noticeably wider than "Scratch", and that was the more visible
+   * problem of the two. The machinery stays because it is one number to change.
    */
   balance?: number
   className?: string
@@ -144,12 +164,12 @@ export function ArcTitle({
   text,
   unit = 4,
   spread = 34,
-  balance = 1,
+  balance = 0,
   className,
 }: ArcTitleProps) {
   const size = unit * 10
   const sweep = (spread * Math.PI) / 180
-  const advance = Math.round(size * 0.82)
+  const advance = Math.round(size * GLYPH_ADVANCE)
   const glyphCount = [...text].filter((c) => c !== ' ').length
   const chord = advance * glyphCount
 
@@ -209,16 +229,11 @@ export function ArcTitle({
               textAlign: 'center',
               fontFamily: 'var(--font-wordmark)',
               /*
-               * 500, AND NOT 700, BECAUSE OF ONE GLYPH.
-               *
-               * Leo: "the C looks like an O". Rendered to a canvas and diffed
-               * pixel by pixel, Pixelify Sans at weight 700 draws lowercase `c`
-               * and `o` as BYTE-FOR-BYTE IDENTICAL bitmaps: the bold weight
-               * thickens the stroke until the aperture closes completely, so no
-               * size, colour or shadow could have fixed it. At 500 the aperture
-               * is open and the stems are still four pixels wide.
+               * Silkscreen's bold is safe where Pixelify Sans's was not: its
+               * `c` keeps two whole open rows on the right at 700, checked by
+               * rendering `c` and `o` and comparing them rather than by eye.
                */
-              fontWeight: 500,
+              fontWeight: 700,
               fontSize: size,
               lineHeight: 1,
               color: '#ffffff',

@@ -787,3 +787,26 @@ element box was `chord + advance` wide while the glyph centres only spanned
 `chord`, which slid the whole arc half a glyph left of its own container.
 Measured at 0 off centre now, and `scripts/labeltest.ts` asserts it, since both
 misses looked right at a glance.
+
+## The wordmark, take three
+
+Leo: "scratch that, back to originnal and try pixel sans serif."
+
+**Even letter spacing is back.** `balance` ships at 0. The equalised version was
+built, measured exact and looked at, and the cure was worse than the disease:
+putting the break on the apex means letterspacing "From" visibly wider than
+"Scratch". The machinery stays, since it is one number to change.
+
+**Silkscreen** is the wordmark now, the pixel sans-serif. It replaces Pixelify
+Sans, which drew lowercase `c` and `o` as byte-for-byte identical bitmaps at
+bold weight. Silkscreen's `c` keeps two whole open rows on the right at 700.
+
+It is **caps-only**: its lowercase maps to capital forms, so the wordmark reads
+FROM SCRATCH. Jersey 10, 15 and 25 are pixel sans faces with true lowercase and
+a distinct `c`, checked the same way, if mixed case is wanted back.
+
+**And one real bug in the swap.** The glyph box was 0.82 of the type size, a
+number that belonged to Pixelify Sans. Silkscreen's widest glyph is exactly 1.0,
+so the letters overlapped. The two ratios the layout stands on are named
+constants now rather than numbers buried in three places, because they are
+properties of whichever font is in the slot.
