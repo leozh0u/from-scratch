@@ -141,6 +141,36 @@ console.log('\n=== the credit cannot be burned by holding the button ===')
  * two in the morning — but the matcher can, and the matcher is where the
  * judgement lives.
  */
+/*
+ * The adjudicator is told WHICH CHAPTER, and nothing more.
+ *
+ * In Survival it kept answering "that's actually real" about pairings that
+ * are real and are deliberately outside a fifteen-step opening — correct, and
+ * it reads as the game admitting it is unfinished. A realm name is not recipe
+ * data, so telling it costs nothing structurally and fixes the confusion.
+ */
+console.log('\n=== the adjudicator knows which chapter, and only that ===')
+{
+  const adjudicator = readFileSync(new URL('../api/adjudicate.ts', import.meta.url), 'utf8')
+  const adjudicatorCode = adjudicator.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '')
+  const clientCode = readFileSync(new URL('../src/adjudicator/client.ts', import.meta.url), 'utf8')
+
+  ok('the realm is a closed set, like the question keys',
+     /const REALMS = \['survival', 'everyday'\] as const/.test(adjudicator))
+  ok('and anything else falls back rather than reaching the prompt',
+     /REALMS as readonly string\[\]\)\.includes\(realm\)/.test(adjudicatorCode))
+  ok('survival gets a scope line, the main game does not',
+     /survival: `/.test(adjudicator) && /everyday: ''/.test(adjudicator))
+  ok('and it tells the model not to imply the game is unfinished',
+     /do not imply the game is missing something/.test(adjudicator))
+  ok('the handler still never sees the recipe list',
+     !/gameData|RecipeDef/.test(adjudicatorCode))
+
+  ok('the client caches per realm',
+     /\$\{realm\}:\$\{\[a, b\]\.sort\(\)\.join\('\+'\)\}/.test(clientCode),
+     'or the first chapter you asked in would answer for both forever')
+}
+
 console.log('\n=== the link checker knows a real page from a dead one ===')
 {
   ok('a title is pulled out of real markup',

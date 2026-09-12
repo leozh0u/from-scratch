@@ -217,6 +217,25 @@ export const GAME_DATA: RecipeData = {
       cost: ZERO_COST,
       sources: [{ label: 'Bow drill', url: 'https://en.wikipedia.org/wiki/Bow_drill' }],
     },
+    /*
+     * A SECOND ROAD TO CORDAGE, and it is here because the game told us.
+     *
+     * Combining the spindle with plant fibre in Survival got "that's actually
+     * real: a rotating spindle twists loose plant fibres into strong
+     * continuous strands" — which is the adjudicator doing exactly its job,
+     * reporting a real transformation the graph did not have. It costs no new
+     * element and it is how thread has been made for about nine thousand
+     * years, so the honest answer was to add the recipe rather than to explain
+     * the gap away.
+     */
+    {
+      inputs: ['spindle', 'plant_fibre'],
+      output: 'cordage',
+      route: 'spun',
+      process: 'spinning',
+      cost: ZERO_COST,
+      sources: [{ label: 'Spindle (textiles)', url: 'https://en.wikipedia.org/wiki/Spindle_(textiles)', tier: 'referenced' }],
+    },
     {
       inputs: ['wood', 'cordage'],
       output: 'bow',

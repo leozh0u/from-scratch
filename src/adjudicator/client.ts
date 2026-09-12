@@ -35,9 +35,14 @@ const SESSION_CALL_CAP = 20
  */
 export const FALLBACK_MESSAGE = 'They just sit there.'
 
-/** Order-independent, matching how recipes themselves are looked up. */
-function pairKey(a: string, b: string): string {
-  return [a, b].sort().join('+')
+/**
+ * Order-independent, matching how recipes themselves are looked up — and
+ * scoped by realm, because the same pairing gets a different answer in the
+ * tutorial than in the main game. Without the realm in the key, whichever
+ * chapter you asked in first would answer for both forever.
+ */
+function pairKey(a: string, b: string, realm: string): string {
+  return `${realm}:${[a, b].sort().join('+')}`
 }
 
 function readCache(): Record<string, string> {
@@ -78,8 +83,9 @@ export async function adjudicate(
   idB: string,
   nameA: string,
   nameB: string,
+  realm: string,
 ): Promise<string> {
-  const key = pairKey(idA, idB)
+  const key = pairKey(idA, idB, realm)
   const cache = readCache()
   if (cache[key]) return cache[key]
 
@@ -92,7 +98,7 @@ export async function adjudicate(
     const res = await fetch('/api/adjudicate', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ a: nameA, b: nameB }),
+      body: JSON.stringify({ a: nameA, b: nameB, realm }),
     })
 
     if (!res.ok) return FALLBACK_MESSAGE

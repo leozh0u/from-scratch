@@ -25,14 +25,33 @@ type GeminiResponse = {
   candidates?: { content?: { parts?: { text?: string }[] } }[]
 }
 
-const PROMPT = (a: string, b: string) => `A player in an educational crafting game just tried combining "${a}" and "${b}", and nothing happened — that pairing isn't a recipe in the game.
+/*
+ * WHICH CHAPTER THE PLAYER IS IN. Not recipe data.
+ *
+ * The structural guarantee is that this handler never learns what combines
+ * with what, and a realm name does not tell it. What it does fix is a real
+ * confusion: in Survival, the model kept answering "that's actually real"
+ * about pairings that ARE real and are deliberately outside a fifteen-step
+ * opening chapter. Correct, and it reads as the game admitting it is
+ * unfinished. Told which chapter it is in, it can say the true thing instead:
+ * real, and not here.
+ */
+const REALMS = ['survival', 'everyday'] as const
+type Realm = (typeof REALMS)[number]
+
+const SCOPE: Record<Realm, string> = {
+  survival: `\n\nContext: the player is in the game's short opening chapter, which is only about making fire by hand from stone, wood and plant fibre. It is deliberately small. So if the pairing IS real, say so in a few words and then say plainly that it belongs to the larger part of the game rather than to this opening — do not imply the game is missing something.`,
+  everyday: '',
+}
+
+const PROMPT = (a: string, b: string, realm: Realm) => `A player in an educational crafting game just tried combining "${a}" and "${b}", and nothing happened — that pairing isn't a recipe in the game.
 
 First decide privately: is combining these two things, via some real physical, chemical, or industrial process, actually a real thing? Then respond with exactly ONE short sentence, under 30 words:
 
 - If it IS real (just not modeled in this particular game): start with "That's actually real" and briefly say what it does.
 - If it is NOT physically meaningful: explain in simple terms why these two things don't interact or combine.
 
-Rules: output only that one sentence, nothing else. Never mention any other material, object, or recipe by name — you don't know what else exists in this game, so don't guess or suggest what the player should try instead.`
+Rules: output only that one sentence, nothing else. Never mention any other material, object, or recipe by name — you don't know what else exists in this game, so don't guess or suggest what the player should try instead.${SCOPE[realm]}`
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
@@ -40,7 +59,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return
   }
 
-  const { a, b } = req.body ?? {}
+  const { a, b, realm } = req.body ?? {}
   if (
     typeof a !== 'string' ||
     typeof b !== 'string' ||
@@ -52,6 +71,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     res.status(400).json({ message: null })
     return
   }
+  // A closed set, like the question keys in ask.ts, and defaulting to the
+  // larger realm so an older client that sends nothing keeps working.
+  const chapter: Realm = (REALMS as readonly string[]).includes(realm) ? (realm as Realm) : 'everyday'
 
   const apiKey = process.env.GEMINI_API_KEY
   if (!apiKey) {
@@ -66,7 +88,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
-        contents: [{ parts: [{ text: PROMPT(a, b) }] }],
+        contents: [{ parts: [{ text: PROMPT(a, b, chapter) }] }],
         generationConfig: {
           // This model reasons by default and burns its output budget on
           // hidden "thinking" tokens before writing anything visible. Setting

@@ -216,7 +216,7 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
     setFeedback({ ...feedback, asking: true })
     const [a, b] = feedback.pair
     const [nameA, nameB] = feedback.names
-    void adjudicate(a, b, nameA, nameB).then((deeper) => {
+    void adjudicate(a, b, nameA, nameB, realm).then((deeper) => {
       // A newer attempt has already started — this response is stale.
       if (attemptRef.current !== attempt) return
       setFeedback((current) =>
