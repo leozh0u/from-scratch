@@ -1,0 +1,65 @@
+import type { RecipeData } from './types'
+
+/*
+ * Throwaway seed graph — NOT verified Survival content. It exists to give the
+ * solver (steps 4-6) something to chew on before real, source-pinned data
+ * exists. Sources are deliberately empty; `icon` keys don't resolve to real
+ * sprites yet, since no UI consumes this data until step 8.
+ *
+ * Shape is chosen on purpose, not arbitrary:
+ *   - `spark` is a shared ancestor reachable two ways (directly, and via
+ *     `fire`), which is exactly the double-counting trap step 6's footprint
+ *     accumulator has to dedupe against.
+ *   - depths form a clean ladder (0, 0, 1, 1, 2, 3) for checking the
+ *     topological-sort depth pass in step 5.
+ *
+ * Hand-computed answers for the eventual solver checks:
+ *   naive (double-counts spark)  -> co2kg 0.09, waterL 2
+ *   deduped (counts spark once) -> co2kg 0.08, waterL 2
+ */
+export const SEED_DATA: RecipeData = {
+  elements: [
+    { id: 'tinder', name: 'Tinder', icon: 'tinder', realm: 'survival', blurb: '', sources: [] },
+    { id: 'kindling', name: 'Kindling', icon: 'kindling', realm: 'survival', blurb: '', sources: [] },
+    { id: 'flint', name: 'Flint', icon: 'flint', realm: 'survival', blurb: '', sources: [] },
+    { id: 'steel', name: 'Steel', icon: 'steel', realm: 'survival', blurb: '', sources: [] },
+    { id: 'spark', name: 'Spark', icon: 'spark', realm: 'survival', blurb: '', sources: [] },
+    { id: 'tinder_bundle', name: 'Tinder Bundle', icon: 'tinder_bundle', realm: 'survival', blurb: '', sources: [] },
+    { id: 'fire', name: 'Fire', icon: 'fire', realm: 'survival', blurb: '', sources: [] },
+    { id: 'signal_fire', name: 'Signal Fire', icon: 'signal_fire', realm: 'survival', blurb: '', sources: [] },
+  ],
+  recipes: [
+    {
+      inputs: ['flint', 'steel'],
+      output: 'spark',
+      process: 'striking',
+      cost: { waterL: 0, co2kg: 0.01 },
+      sources: [],
+    },
+    {
+      inputs: ['kindling', 'tinder'],
+      output: 'tinder_bundle',
+      process: 'bundling',
+      cost: { waterL: 0, co2kg: 0 },
+      sources: [],
+    },
+    {
+      inputs: ['spark', 'tinder_bundle'],
+      output: 'fire',
+      process: 'igniting',
+      cost: { waterL: 0, co2kg: 0.02 },
+      sources: [],
+    },
+    {
+      inputs: ['fire', 'spark'],
+      output: 'signal_fire',
+      process: 'stacking',
+      cost: { waterL: 2, co2kg: 0.05 },
+      sources: [],
+    },
+  ],
+  starters: {
+    survival: ['tinder', 'kindling', 'flint', 'steel'],
+    everyday: [],
+  },
+}
