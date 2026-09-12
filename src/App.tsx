@@ -50,23 +50,24 @@ function Game() {
     UNLOCK_EVERYTHING ||
     GAME_DATA.targets.survival.every((id) => game.isDiscovered(id))
 
+  /*
+   * Starting over means starting over: the save is wiped and the player lands
+   * back on the title screen. Shared by the inventory's button and the one in
+   * the title screen's corner, so the two can never drift apart.
+   */
+  function resetEverything() {
+    game.reset()
+    setShowInventory(false)
+    setRealm(null)
+  }
+
   if (showInventory) {
     return (
       <Inventory
         data={GAME_DATA}
         game={game}
         onBack={() => setShowInventory(false)}
-        /*
-         * Starting over means starting over: the save is wiped and the player
-         * is put back on the title screen. Leaving them in the inventory of a
-         * realm they now have no progress in is technically a reset and
-         * practically a dead end.
-         */
-        onReset={() => {
-          game.reset()
-          setShowInventory(false)
-          setRealm(null)
-        }}
+        onReset={resetEverything}
       />
     )
   }
@@ -77,6 +78,7 @@ function Game() {
         onSelectRealm={setRealm}
         onOpenInventory={() => setShowInventory(true)}
         everydayUnlocked={everydayUnlocked}
+        onReset={resetEverything}
       />
     )
   }

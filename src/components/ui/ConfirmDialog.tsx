@@ -26,7 +26,8 @@ import { playPress } from '../../audio/sfx'
 
 type ConfirmDialogProps = {
   title: string
-  body: string
+  /** Optional. Most confirmations do not need one: see the note below. */
+  body?: string
   confirmLabel: string
   cancelLabel?: string
   onConfirm: () => void
@@ -71,39 +72,54 @@ export function ConfirmDialog({
       aria-labelledby="confirm-title"
       style={{ background: 'rgba(9, 7, 20, 0.82)' }}
     >
-      <Card unit={5} className="flex w-full max-w-sm flex-col items-center gap-4 text-center">
+      <Card unit={5} className="flex w-full max-w-md flex-col items-center gap-6 py-4 text-center">
+        {/*
+         * THE QUESTION CARRIES IT, NOT A PARAGRAPH.
+         *
+         * This had a line of explanation under the title saying every
+         * discovery would be wiped and it could not be undone. It went,
+         * because it was doing the title's job at a third of the size, and a
+         * pixel font set as body copy is hard work to read for something
+         * nobody wants to read twice. "start over?" against "keep it" and
+         * "wipe it" is the entire decision, and the two labels say the
+         * consequence better than a sentence about it.
+         */}
         <h2
           id="confirm-title"
           style={{
             fontFamily: 'var(--font-display)',
-            fontSize: 13,
-            lineHeight: 1.6,
+            fontSize: 22,
+            lineHeight: 1.5,
+            letterSpacing: '0.04em',
             color: '#ffffff',
             textTransform: 'lowercase',
+            // A hard offset, the same one the buttons carry, so the heading
+            // sits on the panel rather than floating over it.
+            textShadow: '3px 3px 0 #191536',
             margin: 0,
           }}
         >
           {title}
         </h2>
-        <p
-          style={{
-            fontFamily: 'var(--font-display)',
-            // Body copy in a pixel font needs more leading than prose does —
-            // the letterforms are square and set solid they read as a block.
-            fontSize: 9,
-            lineHeight: 2,
-            color: 'var(--color-muted)',
-            textTransform: 'lowercase',
-            margin: 0,
-          }}
-        >
-          {body}
-        </p>
-        <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
+        {body && (
+          <p
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 9,
+              lineHeight: 2,
+              color: 'var(--color-muted)',
+              textTransform: 'lowercase',
+              margin: 0,
+            }}
+          >
+            {body}
+          </p>
+        )}
+        <div className="flex flex-wrap items-center justify-center gap-5">
           <PixelButton
             ref={cancelRef}
             tone="default"
-            unit={3}
+            unit={4}
             onClick={() => {
               playPress()
               onCancel()
@@ -113,7 +129,7 @@ export function ConfirmDialog({
           </PixelButton>
           <PixelButton
             tone="danger"
-            unit={3}
+            unit={4}
             onClick={() => {
               playPress()
               onConfirm()

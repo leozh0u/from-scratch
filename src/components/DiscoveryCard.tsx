@@ -1,10 +1,11 @@
 import { useEffect } from 'react'
 import { resolveIcon } from '../data/iconRegistry'
 import { dedupeSources } from '../data/sources'
+import { SourceLink } from './ui/SourceLink'
 import type { ElementDef, RecipeDef } from '../data/types'
 import { PixelArt } from './PixelArt'
 import { PixelButton } from './ui/PixelButton'
-import { playPress, playHover } from '../audio/sfx'
+import { playPress } from '../audio/sfx'
 import { Card } from './ui/Card'
 
 type DiscoveryCardProps = {
@@ -130,26 +131,7 @@ export function DiscoveryCard({ element, recipe, onClose, heading = 'New discove
         {sources.length > 0 && (
           <div className="flex flex-wrap justify-center gap-2 pt-1">
             {sources.map((source) => (
-              <a
-                key={source.url}
-                href={source.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                onPointerEnter={playHover}
-                style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: 8,
-                  lineHeight: 1.8,
-                  textTransform: 'lowercase',
-                  color: 'var(--color-muted)',
-                  border: '3px solid var(--color-hairline)',
-                  background: 'var(--color-panel-deep)',
-                  padding: '5px 10px',
-                  textDecoration: 'none',
-                }}
-              >
-                ⓘ {source.label}
-              </a>
+              <SourceLink key={source.url} label={source.label} url={source.url} />
             ))}
           </div>
         )}

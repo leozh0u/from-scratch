@@ -88,10 +88,25 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
    * Survival shows only Survival. Everyday shows everything, because there it
    * is true.
    */
-  const inventory =
+  const shown =
     realm === 'survival'
       ? game.allDiscovered().filter((id) => elementById(id)?.realm === 'survival')
       : game.allDiscovered()
+
+  /*
+   * THE SHELF CAN NEVER BE EMPTY.
+   *
+   * A save written by an older build can name elements this build has retired.
+   * `elementById` returns undefined for those, the filter drops them, and the
+   * player is left looking at a realm with nothing in it and no way to do
+   * anything - which is exactly what happened after the rebuild from three
+   * starters, to anyone who had played the previous version.
+   *
+   * `useGameState` prunes unknown ids on load, so this should never fire. It is
+   * here anyway because the failure is total: not a wrong tile, an unplayable
+   * game, and the cost of the guard is one comparison.
+   */
+  const inventory = shown.length > 0 ? shown : [...data.starters[realm]]
 
   const discoveredIds = new Set(inventory)
   const targets = data.targets[realm].map(elementById)
@@ -245,7 +260,25 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
           ← realms
         </PixelButton>
         <span className="flex-1" aria-hidden="true" />
-        <h1 className="shrink-0 font-display text-[11px] whitespace-nowrap lowercase tracking-wide text-white">
+        <h1
+          className="shrink-0 whitespace-nowrap lowercase text-white"
+          style={{
+            fontFamily: 'var(--font-display)',
+            /*
+             * Scales with the window instead of sitting at one size.
+             *
+             * It is the name of where you are and it was set smaller than the
+             * two buttons either side of it, which is backwards. The ceiling
+             * is what it looks like on a laptop; the floor is what keeps
+             * "everyday objects" - sixteen characters of a monospaced pixel
+             * font, and unbreakable - from colliding with the buttons on a
+             * narrow window. 1.9vw is the widest slope that still clears them
+             * at 440px, measured rather than guessed.
+             */
+            fontSize: 'clamp(9px, 1.9vw, 22px)',
+            letterSpacing: '0.04em',
+          }}
+        >
           {REALM_LABEL[realm]}
         </h1>
         <span className="flex-1" aria-hidden="true" />

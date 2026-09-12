@@ -638,7 +638,7 @@ so it is listed first.
 | # | Asked | Status |
 | --- | --- | --- |
 | 1 | *"we want the scope to be huge"* — Little Alchemy scale | **done.** Rebuilt: 57 elements, 51 recipes, three starters. Played through end to end in the browser, both realms. |
-| 2 | `UNLOCK_EVERYTHING` back to `false` | **open — blocks submission.** `src/App.tsx:30`. Must flip before 09:00. |
+| 2 | `UNLOCK_EVERYTHING` back to `false` | **open — blocks submission.** `src/App.tsx:30`. A dev flag that opens Everyday Objects regardless of progress, so nobody has to replay Survival to look at the other realm. With Survival now fifteen combinations long the gate is reasonable again. Must flip before 09:00. |
 | 3 | *"the details are the most important"* — the instant failure copy | **open.** The rule table has nine clauses and a fallback; pairs it has no clause for still get "nothing obvious happens". Thin for a game whose pitch is explaining failure, and the pair count just went from 903 to 1,596. |
 | 4 | Backdrop scale — *"more zoomed out"* | **open, awaiting Leo.** The pixelated-SVG bug is fixed; whether it is still too zoomed is his call, and the fix trades filling the window against showing the whole square. |
 
@@ -703,3 +703,32 @@ exactly a knapped sharp stone and the old Wick is a braided cord.
 Old saves are now pruned on load. A save from the previous build names a dozen
 ids this build does not have, and anyone who opened the link earlier still has
 them.
+
+
+## The empty shelf, and the reset button in the corner
+
+Leo: "why is there nothing now." A save written by the previous build named
+only retired ids, so the shelf filtered every one of them out and left the
+realm unplayable. Reproduced by seeding an old save, and fixed twice over:
+`useGameState` prunes unknown ids on load and folds the starters back in, and
+`Workspace` falls back to the realm's starters if the shelf would render empty
+anyway. The second guard should never fire. It is there because the failure is
+total rather than cosmetic.
+
+Reset now also sits in the top right of the title screen, as it was reachable
+only two screens deep, which is the wrong place for the one control you want
+when somebody else is about to try the game. Both buttons call the same
+handler, so they cannot drift.
+
+The confirm dialog lost its paragraph. It was doing the title's job at a third
+of the size, and "start over?" against "keep it" and "wipe it" is the whole
+decision.
+
+Citations are now built like buttons: staircase corners, a bevel, an underline
+and a glyph set larger than the label. They were 8px muted grey and read as a
+caption, which matters more than it sounds, as "every number has a source you
+can click" is worth nothing if nobody can tell it is clickable.
+
+The realm name in the HUD scales with the window now, from 9px on a phone up to
+22px on a laptop, where it was pinned at 11px and smaller than the buttons
+either side of it.

@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import type { RealmId } from '../data/types'
 import { PixelEarth } from './PixelEarth'
 import { Starfield } from './Starfield'
 import { PixelButton } from './ui/PixelButton'
+import { ConfirmDialog } from './ui/ConfirmDialog'
 import { ArcTitle } from './ArcTitle'
 import { useViewport } from '../hooks/useViewport'
 
@@ -31,14 +33,18 @@ type StartScreenProps = {
   onOpenInventory: () => void
   /** Survival's targets are all discovered — Everyday is playable. */
   everydayUnlocked: boolean
+  /** Wipes both realms. Confirmed first, always. */
+  onReset: () => void
 }
 
 export function StartScreen({
   onSelectRealm,
   onOpenInventory,
   everydayUnlocked,
+  onReset,
 }: StartScreenProps) {
   const { width } = useViewport()
+  const [confirming, setConfirming] = useState(false)
 
   /*
    * Integer scale, chosen from the viewport rather than set in CSS.
@@ -70,6 +76,7 @@ export function StartScreen({
   const titleUnit = width < 480 ? 3 : width < 760 ? 5 : width < 1100 ? 7 : 9
 
   return (
+    <>
     <main
       style={{
         position: 'relative',
@@ -86,6 +93,31 @@ export function StartScreen({
       }}
     >
       <Starfield />
+
+      {/*
+       * Reset, parked in the top right rather than buried in the inventory.
+       *
+       * It was only reachable two screens deep, which is the wrong place for
+       * the one control a player wants when they have lost the thread or when
+       * somebody else is about to try the game. Small and quiet, as it wipes
+       * everything, but findable without hunting: same slab, same staircase
+       * corners, one size down from the menu.
+       */}
+      <div
+        style={{
+          position: 'absolute',
+          // A fixed inset rather than a multiple of `unit`: the unit shrinks
+          // with the viewport and at the small end it put the button flush
+          // against the top edge of the window.
+          top: 16,
+          right: 16,
+          zIndex: 2,
+        }}
+      >
+        <PixelButton tone="danger" unit={3} onClick={() => setConfirming(true)}>
+          reset
+        </PixelButton>
+      </div>
 
       <div
         style={{
@@ -184,5 +216,19 @@ export function StartScreen({
         <PixelEarth size={EARTH_PIXELS} scale={scale} secondsPerTurn={180} />
       </div>
     </main>
+
+    {confirming && (
+      <ConfirmDialog
+        title="start over?"
+        confirmLabel="wipe it"
+        cancelLabel="keep it"
+        onConfirm={() => {
+          setConfirming(false)
+          onReset()
+        }}
+        onCancel={() => setConfirming(false)}
+      />
+    )}
+    </>
   )
 }

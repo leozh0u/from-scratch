@@ -12,6 +12,7 @@ import { computeFootprintDetail } from '../solver/solver'
 import { PixelArt } from './PixelArt'
 import { PixelButton } from './ui/PixelButton'
 import { playPress } from '../audio/sfx'
+import { SourceLink } from './ui/SourceLink'
 import { Card } from './ui/Card'
 
 type ReceiptProps = {
@@ -209,35 +210,19 @@ export function Receipt({ element, data, routes, onClose }: ReceiptProps) {
               </p>
               <div className="flex flex-wrap gap-2">
                 {sources.map((source) => (
-                  <a
-                    key={source.url}
-                    href={source.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className=" border-[3px] border-hairline bg-[var(--color-panel-deep)] px-3 py-1 font-display text-[8px] lowercase text-muted transition-colors duration-150 hover:border-brand hover:text-brand"
-                  >
-                    ⓘ {source.label}
-                  </a>
+                  <SourceLink key={source.url} label={source.label} url={source.url} />
                 ))}
                 {hasWater && (
-                  <a
-                    href={WATER_COMPARISON_SOURCE.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className=" border-[3px] border-hairline bg-[var(--color-panel-deep)] px-3 py-1 font-display text-[8px] lowercase text-muted transition-colors duration-150 hover:border-brand hover:text-brand"
-                  >
-                    ⓘ {WATER_COMPARISON_SOURCE.label}
-                  </a>
+                  <SourceLink
+                    label={WATER_COMPARISON_SOURCE.label}
+                    url={WATER_COMPARISON_SOURCE.url}
+                  />
                 )}
                 {hasCo2 && (
-                  <a
-                    href={CO2_COMPARISON_SOURCE.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className=" border-[3px] border-hairline bg-[var(--color-panel-deep)] px-3 py-1 font-display text-[8px] lowercase text-muted transition-colors duration-150 hover:border-brand hover:text-brand"
-                  >
-                    ⓘ {CO2_COMPARISON_SOURCE.label}
-                  </a>
+                  <SourceLink
+                    label={CO2_COMPARISON_SOURCE.label}
+                    url={CO2_COMPARISON_SOURCE.url}
+                  />
                 )}
               </div>
             </div>

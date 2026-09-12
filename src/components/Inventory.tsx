@@ -135,7 +135,6 @@ export function Inventory({ data, game, onBack, onReset }: InventoryProps) {
       {confirming && (
         <ConfirmDialog
           title="start over?"
-          body="every discovery in both realms is wiped, and you go back to the beginning. this cannot be undone."
           confirmLabel="wipe it"
           cancelLabel="keep it"
           onConfirm={confirmReset}
