@@ -146,10 +146,8 @@ const REGISTRY: Record<string, Sprite> = {
    * carbon. Redrawing them would have been work for no picture.
    */
   stone: STONE,
-  wood: KINDLING,
   plant_fibre: COTTON_FIBER,
   sharp_stone: FLINT,
-  cordage: WICK,
   hand_drill: HAND_DRILL,
   tinder_bundle: TINDER,
   bark: BARK,
@@ -203,7 +201,20 @@ const PLACEHOLDER = FLAME
  * by hand are better than anything a palette swap produces, and nothing here
  * replaces them.
  */
-export const COMPOSED: Record<string, { form: FormId; colour: string }> = {}
+export const COMPOSED: Record<string, { form: FormId; colour: string }> = {
+  /*
+   * The first two elements drawn from the vocabulary, and they are here
+   * because the contact sheet caught them being wrong.
+   *
+   * `wood` was repointed at the old Kindling sprite and `cordage` at the old
+   * Wick, on the reasoning that a stick is a stick and a braided cord is a
+   * braided cord. Seen next to their names at the size they are used, Kindling
+   * is an orange starburst that reads as a spark and Wick is a pale strip that
+   * reads as a wick. Neither is wood or rope.
+   */
+  wood: { form: 'log', colour: '#8a5a33' },
+  cordage: { form: 'coil', colour: '#c8a76a' },
+}
 
 /** Memoised: composing is cheap but it happens on every tile render. */
 const composedCache = new Map<string, Sprite>()

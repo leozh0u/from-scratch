@@ -774,3 +774,42 @@ purpose, because birds are scenery and a plane is an event.
 The realm captions are set brighter than they look like they need with a shadow
 on all four sides, since the lower one lands on the planet and pale lilac on
 bright green is unreadable however well it reads against the sky.
+
+## The sprite vocabulary, and the contact sheet that justified it
+
+Sprites were the hard cap on scope: 78 hand-drawn 11x11 tiles, no two elements
+allowed to share one, about two minutes each. Three hundred elements is seven
+hours of drawing, which made art rather than chemistry the thing standing
+between this and Little Alchemy scale.
+
+`src/art/forms.ts` has **twenty forms** — powder, liquid, ingot, sheet, lump,
+fibre, cloth, gas, crystal, bottle, tool, machine, plant, log, coil, brick,
+pellet, flame, board, wheel — with semantic palette slots (`k` outline, `a` lit
+face, `b` body, `c` shadow), lit from the upper left like every hand-drawn one.
+`composeSprite(form, colour)` derives the three shades from a single hex, so
+adding an element is one line rather than twenty minutes.
+
+Hand-drawn art always wins where it exists; the 78 are better than any palette
+swap and nothing replaces them. `resolveIcon` checks the registry, then the
+composed table, then the placeholder.
+
+**The contact sheet is the part that mattered.** "make sure the pixelated small
+emojis are good and accurate for all" is not something a test can answer: a
+sprite can be rectangular, distinct, and not the fallback flame while still
+being unreadable or plain wrong for the thing it names. `npm run sheet` writes
+every icon to one page at the size it is used, with its name and its ink
+coverage under it.
+
+Looking at all 72 together found two that every test passed happily: **Wood**
+was rendering the old Kindling sprite, an orange starburst that reads as a
+spark, and **Cordage** was rendering the old Wick, a pale strip that reads as a
+wick. Both came from repointing retired sprites at new elements on the
+reasoning that a stick is a stick. Seen next to their names, neither was wood
+or rope.
+
+Both are now drawn from the vocabulary — `log` in brown and `coil` in tan —
+which also proves the composition path end to end. Verified in the running
+game: the wood tile renders 35 SVG rects from a composed sprite.
+
+The legend on the side of each key sits inside an `aria-hidden` element, so it
+is in `innerText` but not in the button's accessible name. Checked.

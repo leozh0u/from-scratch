@@ -22,7 +22,8 @@
     "test:layout": "tsx scripts/layouttest.ts",
     "probe": "tsx scripts/probe.ts",
     "test:city": "tsx scripts/citytest.ts",
-    "snap": "node scripts/snapToGrid.mjs"
+    "snap": "node scripts/snapToGrid.mjs",
+    "sheet": "tsx scripts/contactsheet.ts"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
