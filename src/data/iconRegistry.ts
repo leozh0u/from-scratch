@@ -49,17 +49,14 @@ import type { Sprite } from '../components/PixelArt'
  * has a real entry; FLAME stays as the fallback so a future element added
  * without art is visibly wrong rather than missing.
  *
- * Keys below are exactly the icon keys that exist in gameData.ts and nothing
- * else — the one exception is `shirt`, which predates this file's current
- * shape. No ElementDef uses it; SHIRT is reached directly by StartScreen as
- * the Everyday realm icon, so the art is live but this line resolves for
- * nobody. Dropping it is the repo owner's call, so it stays for now.
- * `cotton_t_shirt` is the key that actually needed it, and it reuses the same
- * sprite rather than duplicating the art.
+ * Keys below are exactly the icon keys that exist in gameData.ts — no more,
+ * no less. (There used to be a `shirt: SHIRT` entry here too, but no
+ * ElementDef has ever used icon key "shirt": StartScreen imports SHIRT
+ * directly for the Everyday realm icon, bypassing this registry entirely, so
+ * that line resolved for nobody. cotton_t_shirt below is the key that
+ * actually needed the art, reusing the same sprite rather than duplicating it.)
  */
 const REGISTRY: Record<string, Sprite> = {
-  shirt: SHIRT,
-
   // Survival
   tinder: TINDER,
   kindling: KINDLING,
