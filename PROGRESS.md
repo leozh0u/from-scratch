@@ -732,3 +732,33 @@ can click" is worth nothing if nobody can tell it is clickable.
 The realm name in the HUD scales with the window now, from 9px on a phone up to
 22px on a laptop, where it was pinned at 11px and smaller than the buttons
 either side of it.
+
+## The wordmark
+
+Pixelify Sans, which Leo asked for by name, and the one sanctioned departure
+from Press Start 2P. It is still a pixel font on a grid, so the rule holds; it
+is just wider and rounder than a 5x7 arcade face, which is what a title wants.
+
+**"the C looks like an O".** He was right, and it is worse than it sounds.
+Rendered to a canvas and diffed pixel by pixel, Pixelify Sans at weight 700
+draws lowercase `c` and `o` as byte-for-byte identical bitmaps: the bold weight
+thickens the stroke until the aperture closes completely. No size, colour or
+shadow could have fixed that. At 400 the aperture is a whole open row and at
+500 it is still open with four-pixel stems, so the wordmark sits at 500.
+
+Checked by diffing the two glyphs rather than by looking, because at a glance
+700 looks fine until you try to read the word. Six alternative pixel faces were
+measured the same way; none was both close to Pixelify Sans and free of the
+collision, so staying with his font and dropping the weight was the right
+trade.
+
+**The size is computed, not stepped.** `fitArcUnit` returns the largest whole
+unit at which the word still fits the room it has. It used to be four
+hand-picked breakpoints, and every change to the font or the spacing found a
+width where the title ran off the screen; moving to a wider font broke it
+immediately. A test walks every width from 320 to 2560 and caught the last one,
+at exactly 320, where even the old floor overflowed.
+
+The space between the words went from `unit * 3` to `size * 0.55`, since on an
+arc the gap has to beat a letter's own advance by more than usual - the glyphs
+either side of it are leaning toward each other.

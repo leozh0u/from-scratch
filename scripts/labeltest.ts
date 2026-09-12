@@ -11,6 +11,7 @@
  * walks the real data, so adding an unfittable name fails the build.
  */
 import { fitFontSize, unbreakableRuns, lineCount } from '../src/components/ui/labelFit'
+import { arcTitleWidth, fitArcUnit } from '../src/components/ArcTitle'
 import { GAME_DATA } from '../src/data/gameData'
 
 let pass = 0, fail = 0
@@ -83,6 +84,37 @@ console.log('\n=== type never drops below the legibility floor ===')
 {
   const sizes = GAME_DATA.elements.map((e) => fitFontSize(e.name, BOX, SIZES, MAX_LINES))
   ok('every label is at least 8px', Math.min(...sizes) >= 8, `min ${Math.min(...sizes)}px`)
+}
+
+console.log('\n=== the wordmark fits every window ===')
+{
+  /*
+   * It used to be four hand-picked breakpoints, and every change to the font
+   * or the spacing found a width where "From Scratch" ran off the screen or
+   * slid under the reset button. Moving to Pixelify Sans, which is wider than
+   * Press Start 2P, broke it again immediately. This walks every width from a
+   * small phone to a large desktop.
+   */
+  const TEXT = 'From Scratch'
+  let overflowed = 0
+  let tiny = 0
+  let worst = ''
+  for (let width = 320; width <= 2560; width += 1) {
+    const available = width * 0.84
+    const unit = fitArcUnit(TEXT, available, 12)
+    const drawn = arcTitleWidth(TEXT, unit)
+    if (drawn > available) { overflowed++; if (!worst) worst = `${width}px -> ${drawn}px in ${Math.round(available)}px` }
+    if (unit < 2) tiny++
+  }
+  ok('never wider than the room it has', overflowed === 0, worst)
+  ok('and never shrinks below the floor of 2', tiny === 0)
+  ok(
+    'it does grow with the window',
+    fitArcUnit(TEXT, 2560 * 0.84, 12) > fitArcUnit(TEXT, 380 * 0.84, 12),
+    `${fitArcUnit(TEXT, 380 * 0.84, 12)} -> ${fitArcUnit(TEXT, 2560 * 0.84, 12)}`,
+  )
+  // The ceiling is deliberate: past this the title stops being a title.
+  ok('and stops at the ceiling', fitArcUnit(TEXT, 99_999, 12) === 12)
 }
 
 console.log(`\n${pass} passed, ${fail} failed\n`)

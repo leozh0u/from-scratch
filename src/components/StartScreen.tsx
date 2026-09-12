@@ -4,7 +4,7 @@ import { PixelEarth } from './PixelEarth'
 import { Starfield } from './Starfield'
 import { PixelButton } from './ui/PixelButton'
 import { ConfirmDialog } from './ui/ConfirmDialog'
-import { ArcTitle } from './ArcTitle'
+import { ArcTitle, fitArcUnit } from './ArcTitle'
 import { useViewport } from '../hooks/useViewport'
 
 /**
@@ -73,7 +73,15 @@ export function StartScreen({
    * Stepped, not fluid, because a pixel font only renders cleanly at whole
    * multiples of its design size.
    */
-  const titleUnit = width < 480 ? 3 : width < 760 ? 5 : width < 1100 ? 7 : 9
+  /*
+   * Measured, not guessed. `fitArcUnit` returns the largest whole unit at
+   * which "From Scratch" still fits the room it has, so the wordmark is as big
+   * as the window allows and never runs off the edge or under the reset
+   * button in the corner. 0.84 of the viewport leaves the margins; the ceiling
+   * of 12 is what it looks like on a laptop, where there is more width than
+   * the title should take.
+   */
+  const titleUnit = fitArcUnit('From Scratch', width * 0.84, 12)
 
   return (
     <>
@@ -90,6 +98,16 @@ export function StartScreen({
         // they land in the same place at every window size instead of
         // drifting with the top of the viewport.
         justifyContent: 'center',
+        /*
+         * Room for the reset button in the corner.
+         *
+         * The wordmark is sized to fit the window's width, which stops it
+         * running off the edge but not from sliding under a control pinned to
+         * the top right - on a narrow window the tail of "Scratch" ended up
+         * behind it. Reserving the button's own height at the top is the fix
+         * that does not depend on the title's width at all.
+         */
+        paddingTop: 78,
       }}
     >
       <Starfield />

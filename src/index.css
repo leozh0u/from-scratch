@@ -21,6 +21,14 @@
  */
 @theme {
   --font-display: 'Press Start 2P', ui-monospace, monospace;
+  /*
+   * The wordmark only, and the one sanctioned departure from Press Start 2P.
+   * Leo asked for it by name. Pixelify Sans is still a pixel font built on a
+   * grid, so it does not break the rule the way a smooth typeface would; it is
+   * just wider, rounder and less cramped, which is what a title wants and a
+   * 5x7 arcade face does not give you.
+   */
+  --font-wordmark: 'Pixelify Sans', 'Press Start 2P', ui-monospace, monospace;
   --font-body: 'Nunito', ui-sans-serif, system-ui, -apple-system, sans-serif;
 
   /* Space — the title screen's ground. One flat field, never a gradient. */
