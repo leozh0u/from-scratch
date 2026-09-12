@@ -1698,3 +1698,54 @@ export const FILTERED_WATER: Sprite = {
   ],
   palette: { b: '#2d6c8f', w: '#8fd4ef' },
 }
+
+export const TANNIN: Sprite = {
+  rows: [
+    '...........',
+    '....kkk....',
+    '...k...k...',
+    '...k...k...',
+    '..kkkkkkk..',
+    '.ktttttttk.',
+    '.ktTtttTtk.',
+    '.kttttttTk.',
+    '..kkkkkkk..',
+    '...........',
+    '...........',
+  ],
+  palette: { k: '#2a1c14', t: '#9a5f2e', T: '#6d3f1c' },
+}
+
+export const COMPOST: Sprite = {
+  rows: [
+    '...........',
+    '...g...g...',
+    '..gGg.gGg..',
+    '..kkkkkkk..',
+    '.kbdbGbdbk.',
+    'kbdbbdbbdbk',
+    'kbbdbbGdbbk',
+    '.kdbbdbbdk.',
+    '..kkkkkkk..',
+    '...........',
+    '...........',
+  ],
+  palette: { k: '#1e1610', b: '#6b4a2c', d: '#42301c', g: '#5f8a45', G: '#3f6630' },
+}
+
+export const SYNGAS: Sprite = {
+  rows: [
+    '...s...s...',
+    '..s.s.s.s..',
+    '...s...s...',
+    '..kkkkkkk..',
+    '.kppppppk..',
+    '.kpPppPpk..',
+    '.kppPpppk..',
+    '..kkkkkk...',
+    '...kkkk....',
+    '...........',
+    '...........',
+  ],
+  palette: { k: '#1d2430', p: '#89a7b8', P: '#5d7b90', s: '#c7d8e2' },
+}

@@ -78,5 +78,12 @@
 | 48 | Wood | + Water | = **Wood Pulp** |
 | 49 | Wood Pulp | + High-Carbon Steel | = **Paper** |
 | 50 | Charcoal | + Water | = **Filtered Water** |
+| 51 | Stone | + Cement | = **Concrete** |
+| 52 | Bark | + Water | = **Tannin** |
+| 53 | Tannin | + Cotton Jersey | = **Dyed Cotton Fabric** |
+| 54 | Wood | + Soil | = **Compost** |
+| 55 | Compost | + Soil | = **Farmland** |
+| 56 | Natural Gas | + Textile Waste | = **Syngas** |
+| 57 | Syngas | + Water | = **Ammonia** |
 
-69 elements, 67 recipes.
+72 elements, 74 recipes.

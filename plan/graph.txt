@@ -65,3 +65,10 @@ E|cement+silica_sand|concrete
 E|wood+water|wood_pulp
 E|wood_pulp+high_carbon_steel|paper
 E|charcoal+water|filtered_water
+E|stone+cement|concrete
+E|bark+water|tannin
+E|tannin+cotton_jersey|dyed_cotton_fabric
+E|wood+soil|compost
+E|compost+soil|farmland
+E|natural_gas+textile_waste|syngas
+E|syngas+water|ammonia

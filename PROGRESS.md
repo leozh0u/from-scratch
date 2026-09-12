@@ -656,3 +656,25 @@ costs nothing.
 
 Swept every screen at 335px afterwards: zero overflowing elements, scroll width
 equal to the viewport on all five.
+
+## A third batch, chosen for the comparisons
+
+72 elements, 74 recipes. The probe turned up another forty real pairs; most are
+interactions rather than recipes, so the ones taken are the ones that give an
+element a **second road**, because the receipt already compares routes and that
+is the game's best trick.
+
+- **Compost.** Wood rotted into soil, then compost back into soil, gives
+  farmland without a gas well. It sits directly against Haber-Bosch, which is
+  the other route to the same field. Two ways to put nitrogen back, one
+  industrial and one that takes a season.
+- **Syngas.** Old clothes gasified with natural gas give carbon monoxide and
+  hydrogen, and the water-gas shift turns that into the hydrogen Haber-Bosch
+  wants. A second road to ammonia that starts from waste.
+- **Tannin.** Bark soaked in water. It binds hard to fibre, which is how cloth
+  was coloured for thousands of years, so dyed fabric now has three roads:
+  plant dye, red ochre, and this.
+- **Concrete** takes sand or broken stone as its aggregate. Both real.
+
+Thirteen elements now have more than one route. The failure table held again
+without being touched: 2,554 non-recipe pairs, fallback 13.3%.

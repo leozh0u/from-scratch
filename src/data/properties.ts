@@ -122,6 +122,11 @@ export const PROPERTIES: Record<string, Properties> = {
   cement: P('granular', 'mineral', 'processed'),
   concrete: P('solid', 'product', 'finished'),
 
+  // Everyday - the second roads: rot instead of a reactor, bark instead of a vat
+  tannin: P('liquid', 'chemical', 'processed'),
+  compost: P('granular', 'organic', 'processed'),
+  syngas: P('gas', 'fuel', 'processed'),
+
   // Everyday - paper, and water worth drinking
   wood_pulp: P('fibre', 'organic', 'processed'),
   paper: P('fibre', 'product', 'finished'),

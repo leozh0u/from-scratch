@@ -124,6 +124,9 @@ export const GAME_DATA: RecipeData = {
     { id: 'wood_pulp', name: 'Wood Pulp', icon: 'wood_pulp', realm: 'everyday', blurb: "Wood beaten in water until it is nothing but loose fibre. Every sheet of paper you have ever written on started as this.", sources: [{ label: 'Pulp (paper)', url: 'https://en.wikipedia.org/wiki/Pulp_(paper)' }] },
     { id: 'paper', name: 'Paper', icon: 'paper', realm: 'everyday', blurb: "Pulp poured onto a screen, pressed and dried. The fibres tangle and hold each other with nothing added, which is why paper tears along a grain.", sources: [{ label: 'Papermaking', url: 'https://en.wikipedia.org/wiki/Papermaking' }] },
     { id: 'filtered_water', name: 'Filtered Water', icon: 'filtered_water', realm: 'everyday', blurb: "Water run through charcoal. The carbon is riddled with pores, so it catches what dissolved in the water and leaves the water behind.", sources: [{ label: 'Carbon filtering', url: 'https://en.wikipedia.org/wiki/Carbon_filtering' }] },
+    { id: 'tannin', name: 'Tannin', icon: 'tannin', realm: 'everyday', blurb: "Bark left to soak. The water pulls out the compounds a tree uses to make itself unpalatable, and they bind hard to fibre, which is why they have coloured cloth and cured hides for thousands of years.", sources: [{ label: 'Tannin', url: 'https://en.wikipedia.org/wiki/Tannin' }] },
+    { id: 'compost', name: 'Compost', icon: 'compost', realm: 'everyday', blurb: "Plant matter left to rot down with the soil. It puts the nitrogen back the slow way, without a gas well or a reactor at the other end of it.", sources: [{ label: 'Compost', url: 'https://en.wikipedia.org/wiki/Compost' }] },
+    { id: 'syngas', name: 'Syngas', icon: 'syngas', realm: 'everyday', blurb: "Carbon monoxide and hydrogen, made by heating almost any carbon-rich rubbish with too little air to burn it properly. Old clothes go in and chemical feedstock comes out.", sources: [{ label: 'Syngas', url: 'https://en.wikipedia.org/wiki/Syngas' }, { label: 'Gasification', url: 'https://en.wikipedia.org/wiki/Gasification' }] },
     { id: 'candle', name: 'Candle', icon: 'candle', realm: 'everyday', blurb: "Wax and a braided wick. The wick is not what burns: it draws liquid wax up by capillary action and the wax burns at the top, which is why the thing lasts hours instead of seconds.", sources: [{ label: 'Candle', url: 'https://en.wikipedia.org/wiki/Candle' }] },
     { id: 'butane', name: 'Butane', icon: 'butane', realm: 'everyday', blurb: "Pulled out of natural gas by chilling it. It goes liquid under gentle pressure, and that is the only reason a lighter fits in a pocket.", sources: [{ label: 'Butane', url: 'https://en.wikipedia.org/wiki/Butane' }] },
     { id: 'lighter', name: 'Lighter', icon: 'lighter', realm: 'everyday', blurb: "Fuel, a valve, a flint and a pressed steel case. The end of a road that started with a stick spun between two palms.", sources: [{ label: 'Lighter', url: 'https://en.wikipedia.org/wiki/Lighter' }] },
@@ -618,6 +621,63 @@ export const GAME_DATA: RecipeData = {
       process: 'filtering',
       cost: ZERO_COST,
       sources: [{ label: 'Carbon filtering', url: 'https://en.wikipedia.org/wiki/Carbon_filtering' }],
+    },
+    {
+      // Concrete is cement plus aggregate, and the aggregate can be sand or it can\n      // be broken stone. Both are real and the receipt records which.
+      inputs: ['stone', 'cement'],
+      output: 'concrete',
+      process: 'mixing',
+      route: 'coarse aggregate',
+      cost: ZERO_COST,
+      sources: [{ label: 'Concrete', url: 'https://en.wikipedia.org/wiki/Concrete' }],
+    },
+    {
+      inputs: ['bark', 'water'],
+      output: 'tannin',
+      process: 'soaking',
+      cost: ZERO_COST,
+      sources: [{ label: 'Tannin', url: 'https://en.wikipedia.org/wiki/Tannin' }],
+    },
+    {
+      // The oldest way to colour cloth, and the same dilution water as the other\n      // dyeing routes, because the rinsing is the same problem whatever the dye.
+      inputs: ['tannin', 'cotton_jersey'],
+      output: 'dyed_cotton_fabric',
+      process: 'dyeing',
+      route: 'tannin',
+      cost: { waterL: 380, co2kg: 0 },
+      sources: [{ label: 'Tannin', url: 'https://en.wikipedia.org/wiki/Tannin' }],
+    },
+    {
+      inputs: ['wood', 'soil'],
+      output: 'compost',
+      process: 'rotting',
+      cost: ZERO_COST,
+      sources: [{ label: 'Compost', url: 'https://en.wikipedia.org/wiki/Compost' }],
+    },
+    {
+      // The point of this one is the comparison. Haber-Bosch and a compost heap\n      // both put nitrogen back into the ground, and the game now lets you take\n      // either road to the same field.
+      inputs: ['compost', 'soil'],
+      output: 'farmland',
+      process: 'feeding',
+      route: 'compost',
+      cost: ZERO_COST,
+      sources: [{ label: 'Compost', url: 'https://en.wikipedia.org/wiki/Compost' }],
+    },
+    {
+      inputs: ['natural_gas', 'textile_waste'],
+      output: 'syngas',
+      process: 'gasifying',
+      cost: ZERO_COST,
+      sources: [{ label: 'Gasification', url: 'https://en.wikipedia.org/wiki/Gasification' }],
+    },
+    {
+      // The water-gas shift: steam over the carbon monoxide gives more hydrogen,\n      // which is the same hydrogen Haber-Bosch wants. A second road to ammonia\n      // that starts from waste rather than from a gas well.
+      inputs: ['syngas', 'water'],
+      output: 'ammonia',
+      process: 'shifting',
+      route: 'gasification',
+      cost: ZERO_COST,
+      sources: [{ label: 'Syngas', url: 'https://en.wikipedia.org/wiki/Syngas' }],
     },
     {
       inputs: ['paraffin_wax', 'cordage'],
