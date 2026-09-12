@@ -20,12 +20,12 @@ const REALMS: { id: RealmId; title: string; note: string }[] = [
   {
     id: 'survival',
     title: 'Survival',
-    note: 'Teaches the verb — how making anything works at all. Every recipe here costs nothing: water and CO₂ are Everyday’s lesson, and inventing effort figures would be worse than zero.',
+    note: "The tutorial: short, and it teaches the verb. Every recipe here costs nothing, because water and CO2 are the main game's lesson and inventing effort figures would be worse than zero.",
   },
   {
     id: 'everyday',
-    title: 'Everyday Objects',
-    note: 'Teaches what ordinary manufactured things actually cost. Carries the real footprint numbers.',
+    title: 'Everything',
+    note: 'The main game. Everything a person can point at, and what it actually cost to make. Carries the real footprint numbers.',
   },
 ]
 

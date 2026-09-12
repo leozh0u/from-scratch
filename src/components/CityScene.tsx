@@ -1,6 +1,15 @@
 import { useEffect, useRef } from 'react'
 import { useViewport } from '../hooks/useViewport'
-import { coverTransform, windowLitAt, birdAt, farBirdAt, swayAt, BIRD_FRAMES } from './cityMotion'
+import {
+  coverTransform,
+  windowLitAt,
+  birdAt,
+  farBirdAt,
+  planeAt,
+  swayAt,
+  BIRD_FRAMES,
+  PLANE_ROWS,
+} from './cityMotion'
 
 /**
  * The Everyday Objects backdrop: a city avenue in daylight.
@@ -345,6 +354,29 @@ export function CityScene({ className }: CitySceneProps) {
           block,
           block,
         )
+      }
+
+      /*
+       * A plane, above everything, about once every three minutes. It is the
+       * rarest thing here on purpose: birds are scenery, a plane is an event,
+       * and an event you are not told to wait for is the only kind worth
+       * having.
+       */
+      const plane = planeAt(now, 1, width, skyHeight)
+      if (plane) {
+        // The contrail first, so the aircraft draws over its own leading edge.
+        ctx.fillStyle = '#7b83a8'
+        for (let i = 1; i <= plane.trail; i++) {
+          const tx = plane.x + (plane.leftToRight ? -i * block * 2 : i * block * 2)
+          ctx.fillRect(tx, plane.y + block, block, block)
+        }
+        ctx.fillStyle = '#39405e'
+        for (let ry = 0; ry < PLANE_ROWS.length; ry++) {
+          for (let rx = 0; rx < PLANE_ROWS[ry].length; rx++) {
+            if (PLANE_ROWS[ry][rx] !== '#') continue
+            ctx.fillRect(plane.x + rx * block, plane.y + ry * block, block, block)
+          }
+        }
       }
 
       // Distant birds: one pixel, high up, slower than the near ones.

@@ -155,3 +155,44 @@ export function farBirdAt(
     y: Math.round(skyHeight * lane + Math.sin(progress * Math.PI * 2) * 2),
   }
 }
+
+/**
+ * A plane, very high and very rare.
+ *
+ * The rarest thing on screen by a wide margin: roughly one every three
+ * minutes, taking half a minute to cross. That is deliberate. Birds are
+ * scenery and a plane is an event, and the way you make something feel like an
+ * event is to make the player wait for it without being told to.
+ *
+ * It flies above the birds, straight and level, because a plane at cruising
+ * height does not manoeuvre. Returns the head position; the caller draws the
+ * contrail behind it from `progress`.
+ */
+export function planeAt(
+  now: number,
+  seed: number,
+  width: number,
+  skyHeight: number,
+): { x: number; y: number; leftToRight: boolean; trail: number } | null {
+  const period = 150_000 + hash(seed * 83.1) * 120_000
+  const crossing = 26_000 + hash(seed * 89.3) * 12_000
+  const t = (now + hash(seed * 97.7) * period) % period
+  if (t > crossing) return null
+
+  const progress = t / crossing
+  const leftToRight = hash(seed * 101.3) > 0.5
+  const travel = leftToRight ? progress : 1 - progress
+  // Well above the birds: they sit in the lower two thirds of the sky.
+  const lane = 0.04 + hash(seed * 103.9) * 0.12
+
+  return {
+    x: Math.round(-8 + travel * (width + 16)),
+    y: Math.round(skyHeight * lane),
+    leftToRight,
+    // The contrail grows behind it and thins out again as it leaves.
+    trail: Math.max(0, Math.round(Math.sin(progress * Math.PI) * 7)),
+  }
+}
+
+/** Five pixels of aeroplane: wings, and a body crossing them. */
+export const PLANE_ROWS: string[] = ['..#..', '#####', '..#..']

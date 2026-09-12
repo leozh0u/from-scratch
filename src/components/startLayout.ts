@@ -63,6 +63,17 @@ export function menuButtonHeight(unit: number): number {
 const TITLE = 'From Scratch'
 
 /**
+ * The one-line caption under each realm button.
+ *
+ * Survival is a tutorial and nothing said so, which left a player choosing
+ * between two equal-looking doors when one is four minutes long and the other
+ * is the game. Two short lines fix that, and they have to be paid for in the
+ * height budget or they push the buttons off a landscape phone — which is the
+ * bug this whole module exists because of.
+ */
+export const CAPTION_HEIGHT = 22
+
+/**
  * The tallest the content can be and still fit, with the buttons reachable.
  * Everything below is fitted into this.
  */
@@ -85,35 +96,45 @@ export function startScreenLayout(width: number, height: number): StartLayout {
    * screen is always as large as it can be and never larger.
    */
   const widest = width < 560 ? 4 : width < 900 ? 6 : 7
-  /*
-   * A flat margin, not a percentage. A fraction of the width takes 120px off a
-   * 1512px monitor for no reason and only 31px off a 390px phone, which is
-   * where the room is actually tight - at 0.92 the phone came out one step
-   * smaller than it needed to be and the wordmark was 20px type.
-   */
   const byWidth = fitArcUnit(TITLE, width - 24, 14)
 
+  /*
+   * THE WORDMARK KEEPS ITS SIZE; THE BUTTONS GIVE WAY.
+   *
+   * The first version returned the first combination that fitted, starting
+   * from the biggest buttons, so the title got whatever height was left over.
+   * That made it the shock absorber for every change in window height: Leo
+   * opened the same page with and without a tab bar and the wordmark jumped
+   * several steps, because two hundred pixels of height had come off the title
+   * and nothing else.
+   *
+   * The title is what the screen is built around and its size should track the
+   * WIDTH, which does not change when a tab bar appears. So every combination
+   * is tried and the one with the largest title wins, buttons stepping down to
+   * pay for it. Ties go to the bigger buttons.
+   */
+  let best: StartLayout | null = null
   for (let unit = widest; unit >= 3; unit--) {
     // Tighter gaps on a short screen: vertical room is what runs out, and
     // spacing is the cheapest thing to give up before type size.
     const gap = height < 560 ? unit * 3 : unit * 6
-    /*
-     * The column's own vertical padding, which the first version of this
-     * forgot entirely. At unit 5 it is eighty pixels of the screen, top and
-     * bottom together, and leaving it out was why the inventory button still
-     * hung forty pixels off the bottom of a landscape phone after everything
-     * else had been fitted.
-     */
     const padBlock = height < 560 ? unit * 2 : unit * 8
-    const buttons = menuButtonHeight(unit) * 2 + menuButtonHeight(unit - 1) + gap * 2
+    const buttons =
+      menuButtonHeight(unit) * 2 +
+      menuButtonHeight(unit - 1) +
+      gap * 2 +
+      CAPTION_HEIGHT * 2
     const roomForTitle = height - topInset - padBlock * 2 - buttons - gap
 
     for (let titleUnit = byWidth; titleUnit >= 2; titleUnit--) {
       if (arcTitleHeight(TITLE, titleUnit) > roomForTitle) continue
+      if (best && titleUnit <= best.titleUnit) break
       const scale = unit <= 4 ? 7 : unit <= 6 ? 10 : 13
-      return { scale, unit, titleUnit, gap, topInset, padBlock }
+      best = { scale, unit, titleUnit, gap, topInset, padBlock }
+      break
     }
   }
+  if (best) return best
 
   /*
    * Nothing fits. Return the smallest everything rather than something
@@ -133,7 +154,8 @@ export function startScreenContentHeight(layout: StartLayout): number {
     layout.gap +
     menuButtonHeight(layout.unit) * 2 +
     menuButtonHeight(layout.unit - 1) +
-    layout.gap * 2
+    layout.gap * 2 +
+    CAPTION_HEIGHT * 2
   )
 }
 

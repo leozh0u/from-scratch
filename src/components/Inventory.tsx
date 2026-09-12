@@ -19,7 +19,7 @@ type InventoryProps = {
 
 const REALM_LABEL: Record<RealmId, string> = {
   survival: 'Survival',
-  everyday: 'Everyday Objects',
+  everyday: 'Everything',
 }
 
 /**

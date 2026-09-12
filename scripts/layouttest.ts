@@ -97,5 +97,28 @@ console.log('\n=== the sizes still grow with the screen ===')
      `${landscape.unit} vs ${laptop.unit}`)
 }
 
+console.log('\n=== losing a tab bar must not resize the wordmark ===')
+{
+  /*
+   * Leo: "why is the tabbed and untabbed size so different." Because the title
+   * was the shock absorber: the search returned the first fit starting from
+   * the biggest buttons, so every pixel of height lost came off the wordmark.
+   * The wordmark should track WIDTH, which a tab bar does not change.
+   */
+  const width = 1512
+  const heights = [1300, 1180, 1100, 1040, 1000, 950]
+  const units = heights.map((h) => startScreenLayout(width, h).titleUnit)
+  ok(
+    'the same width gives the same wordmark at every sensible height',
+    new Set(units).size === 1,
+    `${heights.map((h, i) => h + ':' + units[i]).join(' ')}`,
+  )
+
+  // And it must still be the width that drives it.
+  const narrow = startScreenLayout(900, 1100).titleUnit
+  const wide = startScreenLayout(1900, 1100).titleUnit
+  ok('but a wider window still gets a bigger one', wide > narrow, `${narrow} -> ${wide}`)
+}
+
 console.log(`\n${pass} passed, ${fail} failed\n`)
 if (fail > 0) process.exit(1)

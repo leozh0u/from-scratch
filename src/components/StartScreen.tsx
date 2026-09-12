@@ -38,6 +38,33 @@ type StartScreenProps = {
   onReset: () => void
 }
 
+/** One quiet line under a realm button. Deliberately small: it is a label. */
+function RealmCaption({ children }: { children: React.ReactNode }) {
+  return (
+    <p
+      className="text-center font-display lowercase"
+      style={{
+        fontSize: 9,
+        lineHeight: 1.5,
+        letterSpacing: '0.06em',
+        /*
+         * Brighter than it looks like it needs to be, with a shadow on all
+         * four sides. The lower caption lands on the planet, and pale lilac on
+         * bright green is unreadable however good it looks against the sky.
+         * Four offsets rather than a glow: a blur would be the one thing this
+         * whole look cannot have.
+         */
+        color: '#e6e2ff',
+        textShadow:
+          '2px 2px 0 #191536, -2px 2px 0 #191536, 2px -2px 0 #191536, -2px -2px 0 #191536',
+        margin: 0,
+      }}
+    >
+      {children}
+    </p>
+  )
+}
+
 export function StartScreen({
   onSelectRealm,
   onOpenInventory,
@@ -151,24 +178,38 @@ export function StartScreen({
             alignItems: 'stretch',
           }}
         >
-          <PixelButton
-            tone="survival"
-            unit={unit}
-            block
-            onClick={() => onSelectRealm('survival')}
-          >
-            survival
-          </PixelButton>
+          {/*
+            * A line under each door, because there were two of them and
+            * nothing said one is four minutes long and the other is the game.
+            * A player choosing blind between equal-looking buttons is the
+            * cheapest kind of confusion to remove.
+            */}
+          <div className="flex flex-col items-stretch gap-1">
+            <PixelButton
+              tone="survival"
+              unit={unit}
+              block
+              onClick={() => onSelectRealm('survival')}
+            >
+              survival
+            </PixelButton>
+            <RealmCaption>the tutorial · a few minutes</RealmCaption>
+          </div>
 
-          <PixelButton
-            tone="everyday"
-            unit={unit}
-            block
-            locked={!everydayUnlocked}
-            onClick={() => everydayUnlocked && onSelectRealm('everyday')}
-          >
-            everyday objects
-          </PixelButton>
+          <div className="flex flex-col items-stretch gap-1">
+            <PixelButton
+              tone="everyday"
+              unit={unit}
+              block
+              locked={!everydayUnlocked}
+              onClick={() => everydayUnlocked && onSelectRealm('everyday')}
+            >
+              everything
+            </PixelButton>
+            <RealmCaption>
+              {everydayUnlocked ? 'the main game' : 'finish survival to open'}
+            </RealmCaption>
+          </div>
 
         </div>
 

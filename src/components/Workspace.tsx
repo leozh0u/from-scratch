@@ -50,9 +50,17 @@ type Feedback =
 
 type Discovery = { element: ElementDef; recipe: RecipeDef }
 
+/*
+ * The display names. The ids stay `survival` and `everyday`, so renaming the
+ * realm costs nothing: no save migrates and no recipe moves.
+ *
+ * "Everyday Objects" described the three targets it shipped with and became
+ * wrong the moment the ambition did. The realm is meant to hold everything a
+ * person can point at, so it is called that.
+ */
 const REALM_LABEL: Record<RealmId, string> = {
   survival: 'Survival',
-  everyday: 'Everyday Objects',
+  everyday: 'Everything',
 }
 
 export function Workspace({ realm, data, game, onBack, onOpenInventory }: WorkspaceProps) {

@@ -7,7 +7,7 @@
  * crosses in half a second is a dead pixel, and windows that twinkle are a
  * broken screen rather than a city.
  */
-import { coverTransform, windowLitAt, birdAt, BIRD_FRAMES } from '../src/components/cityMotion'
+import { coverTransform, windowLitAt, birdAt, planeAt, BIRD_FRAMES } from '../src/components/cityMotion'
 
 let pass = 0, fail = 0
 const ok = (l: string, c: boolean, d = '') => {
@@ -139,6 +139,39 @@ console.log('\n=== every offset is a whole pixel ===')
     }
   }
   ok('nothing lands between pixels', fractional === 0, `${fractional} fractional`)
+}
+
+console.log('\n=== the plane is the rarest thing on screen ===')
+{
+  /*
+   * Birds are scenery; a plane is an event. The only way to make something
+   * feel like an event is to make the player wait for it without telling them
+   * to, so this is checked rather than eyeballed: at the wrong rate it is just
+   * another bird.
+   */
+  const W = 1512
+  const SKY = 300
+  const SPAN = 30 * 60_000
+  let starts = 0
+  let visible = 0
+  let wasNull = true
+  let lowest = -Infinity
+  for (let t = 0; t < SPAN; t += 500) {
+    const p = planeAt(t, 1, W, SKY)
+    if (p) {
+      visible++
+      lowest = Math.max(lowest, p.y)
+      if (wasNull) starts++
+    }
+    wasNull = p === null
+  }
+  const minutesBetween = SPAN / 60_000 / starts
+  ok('one every 2 to 6 minutes', minutesBetween >= 2 && minutesBetween <= 6,
+     `one every ${minutesBetween.toFixed(1)} min`)
+  ok('rarer than the birds', visible / (SPAN / 500) < 0.25,
+     `on screen ${((visible / (SPAN / 500)) * 100).toFixed(0)}% of the time`)
+  // Birds fly in the lower two thirds of the sky; the plane stays above them.
+  ok('and it flies above them', lowest < SKY * 0.2, `lowest ${lowest}px of ${SKY}px`)
 }
 
 console.log(`\n${pass} passed, ${fail} failed\n`)

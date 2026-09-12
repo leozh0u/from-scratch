@@ -739,3 +739,32 @@ in it is depth.
 
 Measured on screen: the overlay now moves 429 to 633 pixels and changes on
 every sample, against 36 to 90 before.
+
+## Everything, and why the wordmark kept changing size
+
+**"Everyday Objects" is now "Everything."** The old name described the three
+targets it shipped with and became wrong the moment the ambition did. The realm
+ids stay `survival` and `everyday`, so nothing migrates and no recipe moves.
+
+Each realm button now carries a line under it: *the tutorial · a few minutes*
+and *the main game*, or *finish survival to open* when it is locked. There were
+two doors and nothing said one is four minutes long and the other is the game.
+
+**"why is the tabbed and untabbed size so different."** Because the wordmark
+was the shock absorber. The layout search returned the first combination that
+fitted, starting from the biggest buttons, so the title got whatever height was
+left over — and losing a tab bar takes two hundred pixels off the title and
+nothing else.
+
+The title should track WIDTH, which a tab bar does not change. Every
+combination is now tried and the one with the **largest title** wins, with the
+buttons stepping down to pay for it. Measured at 1512 wide: title unit 12 at
+1300px, 1180, 1100, 1040, 1000 and 950 tall — identical. A test pins it.
+
+Also: **a plane**, one every 2.7 minutes, crossing in half a minute above the
+birds, with a contrail that grows and thins. The rarest thing on screen on
+purpose, because birds are scenery and a plane is an event.
+
+The realm captions are set brighter than they look like they need with a shadow
+on all four sides, since the lower one lands on the planet and pale lilac on
+bright green is unreadable however well it reads against the sky.
