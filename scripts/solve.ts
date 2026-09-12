@@ -1,13 +1,8 @@
-import { SEED_DATA } from '../src/data/seed'
+import { GAME_DATA } from '../src/data/gameData'
 import { runSolver } from '../src/solver/solver'
 import type { RecipeData } from '../src/data/types'
 
-/*
- * Run against the seed graph until real, source-pinned recipe data exists
- * (step 11+) — swap this import for the real dataset then, nothing else
- * about the script changes.
- */
-const data: RecipeData = SEED_DATA
+const data: RecipeData = GAME_DATA
 
 const report = runSolver(data)
 

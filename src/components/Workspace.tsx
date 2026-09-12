@@ -46,15 +46,30 @@ export function Workspace({ realm, data, game, onBack }: WorkspaceProps) {
   // Guard divide-by-zero for a realm with no targets yet (Everyday, pre-step-15).
   const progress = targets.length === 0 ? 0 : (foundCount / targets.length) * 100
 
-  function toggleTile(id: string) {
+  /*
+   * Picking from the inventory always fills the next empty slot — it never
+   * toggles off an already-placed id. Some real recipes combine an element
+   * with itself (cotton fiber + cotton fiber -> wick; crude oil + crude oil
+   * -> paraffin), which a toggle-based "click again to remove" model makes
+   * impossible: the second click would deselect slot A instead of filling
+   * slot B. Clearing a slot is a separate action (clicking the slot itself).
+   */
+  function pickTile(id: string) {
     setFeedback(null)
     setSlots(([a, b]) => {
-      if (a === id) return [b, null]
-      if (b === id) return [a, null]
       if (a === null) return [id, b]
       if (b === null) return [a, id]
       // Both slots full and a third tile picked: start over with the new pick.
       return [id, null]
+    })
+  }
+
+  function clearSlot(index: 0 | 1) {
+    setFeedback(null)
+    setSlots((prev) => {
+      const next: Slots = [...prev]
+      next[index] = null
+      return next
     })
   }
 
@@ -111,7 +126,7 @@ export function Workspace({ realm, data, game, onBack }: WorkspaceProps) {
               {id ? (
                 <button
                   type="button"
-                  onClick={() => toggleTile(id)}
+                  onClick={() => clearSlot(i as 0 | 1)}
                   className="flex cursor-pointer flex-col items-center"
                   aria-label={`Remove ${elementById(id).name} from slot`}
                 >
@@ -144,7 +159,7 @@ export function Workspace({ realm, data, game, onBack }: WorkspaceProps) {
             icon={resolveIcon(elementById(id).icon)}
             label={elementById(id).name}
             selected={slots.includes(id)}
-            onClick={() => toggleTile(id)}
+            onClick={() => pickTile(id)}
           />
         ))}
       </div>

@@ -1,10 +1,13 @@
 import type { RecipeData } from './types'
 
 /*
- * Throwaway seed graph — NOT verified Survival content. It exists to give the
- * solver (steps 4-6) something to chew on before real, source-pinned data
- * exists. Sources are deliberately empty; `icon` keys don't resolve to real
- * sprites yet, since no UI consumes this data until step 8.
+ * Small hand-computable fixture for testing the SOLVER's own arithmetic —
+ * not game content. Real, source-pinned data lives in `gameData.ts` and is
+ * what App.tsx and scripts/solve.ts actually run against as of step 11.
+ *
+ * This file stays because its numbers are hand-traceable on paper (see the
+ * comment block below), which real recipe data never is — useful as a
+ * regression fixture if the solver's math ever needs re-verifying.
  *
  * Shape is chosen on purpose, not arbitrary:
  *   - `spark` is a shared ancestor reachable two ways (directly, and via

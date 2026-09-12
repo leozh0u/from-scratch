@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { SEED_DATA } from './data/seed'
+import { GAME_DATA } from './data/gameData'
 import type { RealmId } from './data/types'
 import { StartScreen } from './components/StartScreen'
 import { StyleguidePage } from './components/StyleguidePage'
@@ -13,14 +13,9 @@ import { useGameState } from './hooks/useGameState'
 const isStyleguide =
   import.meta.env.DEV && window.location.pathname === '/styleguide'
 
-/*
- * SEED_DATA stands in for the real recipe graph until verified Survival and
- * Everyday data exist (steps 11 and 15) — swapping it out is the only change
- * this file will need then.
- */
 function Game() {
   const [realm, setRealm] = useState<RealmId | null>(null)
-  const game = useGameState(SEED_DATA)
+  const game = useGameState(GAME_DATA)
 
   if (realm === null) {
     return <StartScreen onSelectRealm={setRealm} />
@@ -29,7 +24,7 @@ function Game() {
   return (
     <Workspace
       realm={realm}
-      data={SEED_DATA}
+      data={GAME_DATA}
       game={game}
       onBack={() => setRealm(null)}
     />
