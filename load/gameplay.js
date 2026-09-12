@@ -1,4 +1,23 @@
 /*
+ * DEFAULTS TO A LOCAL PREVIEW SERVER, DELIBERATELY.
+ *
+ * The first run of this pointed at the production URL and did 48,000
+ * requests in two minutes. Vercel's automatic DDoS mitigation denied the
+ * whole IP — `x-vercel-mitigated: deny` — and the live link stopped loading
+ * from this network for everyone on it, in the middle of a hackathon, in a
+ * browser as well as from curl. Nothing was wrong with the project; the
+ * platform was doing exactly what it should.
+ *
+ * So the target is `npm run preview` on localhost, which serves the same
+ * built files with no CDN and no firewall in front of them. That measures
+ * the application. Pointing it at production measures Vercel's patience, and
+ * you find the edge of that by losing your demo.
+ *
+ * If you really do want a number from the live edge, use a handful of
+ * requests, not a ramp:
+ *   BASE_URL=https://from-scratch-three.vercel.app k6 run --vus 2 --duration 10s load/gameplay.js
+ */
+/*
  * WHAT THIS ACTUALLY MEASURES, AND WHY IT IS THE WHOLE ANSWER
  *
  * "Can the app handle many people at once" is usually a question about a
@@ -28,7 +47,7 @@ import http from 'k6/http'
 import { check, fail } from 'k6'
 import { Trend, Rate } from 'k6/metrics'
 
-const BASE = __ENV.BASE_URL || 'https://from-scratch-three.vercel.app'
+const BASE = __ENV.BASE_URL || 'http://localhost:4173'
 
 /** How long a whole page load took, cold cache, as a player would feel it. */
 const firstLoad = new Trend('player_first_load_ms', true)

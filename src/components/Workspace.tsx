@@ -1,4 +1,4 @@
-import { Fragment, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { adjudicate } from '../adjudicator/client'
 import { explainFailure } from '../adjudicator/explain'
 import { resolveIcon } from '../data/iconRegistry'
@@ -313,87 +313,51 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
       )}
 
       {/*
-       * THE BENCH IS A ROW, NOT A COLUMN.
+       * The key sits UNDER the two slots, not beside them, and the panel is
+       * the same width as the two bars above it.
        *
-       * It was a stack — two slots, then the combine key underneath, then a
-       * line of instructions — inside a card as wide as the page. That is a
-       * tall box with most of its area empty on either side, and the thing it
-       * is asking you to do is three small objects in the middle of it.
+       * A row was tried and it is wrong here: three panels stacked down the
+       * page read as one object when their edges line up, and the moment one
+       * of them hugs its contents it reads as a different kind of thing that
+       * happens to be nearby. The stack also puts the key directly below what
+       * it acts on, which is the whole sentence the bench is saying.
        *
-       * Laid out across instead, the same controls use the width the card
-       * already had and cost about half the height, which matters because
-       * everything below this is the inventory you are actually reading. It
-       * wraps back to a stack when the row genuinely will not fit.
+       * What the row was actually fixing was the height, and the height was
+       * the standing hint line and the blank row held open for it. Those are
+       * gone, which is the part that needed to go.
        */}
-      {/*
-       * The bench hugs its contents instead of spanning the page.
-       *
-       * Full width, it was a slab with three small objects in the middle and
-       * a hand's width of empty panel either side of them. There is a forest
-       * behind this, and showing it is better than painting over it — the
-       * room the game is played in was the reason for drawing the scene at
-       * all. The bars above stay full width because a status bar is a bar.
-       */}
-      {/*
-       * Sizing goes in `style`, not `className`.
-       *
-       * Card puts the className on its CONTENT and keeps the outer plate for
-       * the outline — so `w-fit` narrowed the face and left the black shell
-       * spanning the page, which looked like the panel had been cropped. The
-       * shell is what has to shrink, and the shell is what `style` reaches.
-       */}
-      <Card
-        className="flex flex-col items-center gap-3"
-        style={{ width: 'fit-content', maxWidth: '100%', alignSelf: 'center' }}
-      >
-        <div className="flex flex-wrap items-center justify-center gap-3">
-          {slots.map((id, i) => (
-            <Fragment key={i}>
-              {i === 1 && (
-                <span
-                  aria-hidden="true"
-                  className="font-display text-star-mid"
-                  style={{ fontSize: 18 }}
-                >
-                  +
-                </span>
-              )}
-              {id ? (
-                <button
-                  type="button"
-                  onClick={() => {
-                    playPress()
-                    clearSlot(i as 0 | 1)
-                  }}
-                  className="flex size-16 cursor-pointer items-center justify-center"
-                  aria-label={`Remove ${elementById(id).name} from slot`}
-                  style={{ background: 'none', border: 'none', padding: 0 }}
-                >
-                  <PixelArt sprite={resolveIcon(elementById(id).icon)} scale={3} />
-                </button>
-              ) : (
-                <EmptySlot unit={4} size={64} />
-              )}
-            </Fragment>
-          ))}
-
-          <PixelButton
-            tone="survival"
-            /*
-             * Unit 4, not 5. In a row the key sits beside a 64px slot, and at
-             * unit 5 it stood 90px tall next to it and set the height of the
-             * whole bench on its own.
-             */
-            unit={4}
-            onClick={handleCombine}
-            disabled={!slots[0] || !slots[1]}
-            style={{ marginLeft: 8 }}
-          >
-            combine
-          </PixelButton>
+      <Card className="flex flex-col items-center gap-5 p-6">
+        <div className="flex items-center gap-4">
+          {slots.map((id, i) =>
+            id ? (
+              <button
+                key={i}
+                type="button"
+                onClick={() => {
+                  playPress()
+                  clearSlot(i as 0 | 1)
+                }}
+                className="flex size-16 cursor-pointer items-center justify-center"
+                aria-label={`Remove ${elementById(id).name} from slot`}
+                style={{ background: 'none', border: 'none', padding: 0 }}
+              >
+                <PixelArt sprite={resolveIcon(elementById(id).icon)} scale={3} />
+              </button>
+            ) : (
+              <EmptySlot key={i} unit={4} size={64} />
+            ),
+          )}
         </div>
 
-        {/* role="status" so a screen reader announces the result without a page jump */}
+        <PixelButton
+          tone="survival"
+          unit={5}
+          onClick={handleCombine}
+          disabled={!slots[0] || !slots[1]}
+        >
+          combine
+        </PixelButton>
+
         {/*
          * No standing instruction line.
          *

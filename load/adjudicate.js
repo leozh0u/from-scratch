@@ -1,4 +1,23 @@
 /*
+ * DEFAULTS TO A LOCAL PREVIEW SERVER, DELIBERATELY.
+ *
+ * The first run of this pointed at the production URL and did 48,000
+ * requests in two minutes. Vercel's automatic DDoS mitigation denied the
+ * whole IP — `x-vercel-mitigated: deny` — and the live link stopped loading
+ * from this network for everyone on it, in the middle of a hackathon, in a
+ * browser as well as from curl. Nothing was wrong with the project; the
+ * platform was doing exactly what it should.
+ *
+ * So the target is `npm run preview` on localhost, which serves the same
+ * built files with no CDN and no firewall in front of them. That measures
+ * the application. Pointing it at production measures Vercel's patience, and
+ * you find the edge of that by losing your demo.
+ *
+ * If you really do want a number from the live edge, use a handful of
+ * requests, not a ramp:
+ *   BASE_URL=https://from-scratch-three.vercel.app k6 run --vus 2 --duration 10s load/gameplay.js
+ */
+/*
  * The one piece of server in the whole project.
  *
  * `api/adjudicate.ts` is a Vercel function that exists for exactly one
@@ -28,6 +47,10 @@
  * realistic worst case for 1000 simultaneous players is bounded by the
  * client, not by the server.
  *
+ * The function only exists when something is serving it, so this one needs
+ * `vercel dev` rather than `npm run preview` — or BASE_URL pointed at the
+ * deployment, at the low volumes described at the top of this file.
+ *
  * Run: npm run load:api          (cold path only, free)
  *      LIVE_CALLS=20 npm run load:api
  */
@@ -36,7 +59,7 @@ import http from 'k6/http'
 import { check } from 'k6'
 import { Trend } from 'k6/metrics'
 
-const BASE = __ENV.BASE_URL || 'https://from-scratch-three.vercel.app'
+const BASE = __ENV.BASE_URL || 'http://localhost:3000'
 const LIVE_CALLS = Number(__ENV.LIVE_CALLS || 0)
 
 const coldMs = new Trend('function_overhead_ms', true)
