@@ -2,7 +2,7 @@
 
 **Generated from `src/data/gameData.ts` by `npm run walkthrough`. Do not edit by hand.**
 
-602 elements, 605 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
+632 elements, 635 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
 
 ## Survival
 
@@ -634,6 +634,36 @@ The main game. Everything a person can point at, and what it actually cost to ma
 | 585 | Bank Card | + Cash Register | Cashpoint | dispensing | — |
 | 586 | Plastic Film | + Glue | Label | die cutting | — |
 | 587 | Label | + Box | Packaging | packing | — |
+| 588 | Steel Wire | + Needle | Spoke | threading | — |
+| 589 | Bearing | + Spoke | Hub | lacing | — |
+| 590 | Synthetic Rubber | + Valve | Inner Tube | vulcanising | — |
+| 591 | Bearing | + Polyprop | Pedal | threading | — |
+| 592 | Bicycle Chain | + Steel Spring | Gears | indexing | — |
+| 593 | Leather | + Steel Spring | Bike Saddle | tensioning | — |
+| 594 | Magnet Coil | + Cart Wheel | Dynamo | commutating | — |
+| 595 | Dynamo | + Light Bulb | Bike Light | mounting | — |
+| 596 | Engine | + Inner Tube | Motorbike | framing | — |
+| 597 | Lorry | + Chair | Bus | bodying | — |
+| 598 | Electric Motor | + Rail | Tram | overhead wiring | — |
+| 599 | Wrought Iron | + Bearing | Lever | pivoting | — |
+| 600 | Lever | + Telegraph | Signal Box | interlocking | — |
+| 601 | Hub | + Rope | Pulley | reeving | — |
+| 602 | Pulley | + Gear | Winch | ratcheting | — |
+| 603 | Threaded Rod | + Lever | Jack | threading | — |
+| 604 | Hardened Steel | + Forge | Wedge | splitting | — |
+| 605 | Wedge | + Plank | Axe | hafting | — |
+| 606 | Saw | + Water Wheel | Sawmill | reciprocating | — |
+| 607 | Sawmill | + Chisel | Timber Frame | jointing | — |
+| 608 | Seed | + Harvester | Straw | baling | — |
+| 609 | Straw | + Rope | Thatch | thatching | — |
+| 610 | Clay | + Straw | Cob Wall | treading | — |
+| 611 | Cob Wall | + Mould | Adobe | sun drying | — |
+| 612 | Ice | + Saw | Igloo | blocking | — |
+| 613 | Felt | + Timber Frame | Yurt | lashing | — |
+| 614 | Timber Frame | + Pitch | Stilt House | piling | — |
+| 615 | Brick | + Render | Chimney | corbelling | — |
+| 616 | Chimney | + Cast Iron | Fireplace | fitting | — |
+| 617 | Bellows | + Trumpet | Organ | voicing | — |
 
 All 3 targets reachable. ✅
 
@@ -658,4 +688,4 @@ Elements with more than one real way to make them. The receipt tells you which r
 
 ## How much of the board is a dead end
 
-602 elements make 180,901 possible pairs, and 605 of them are recipes. **99.7% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
+632 elements make 199,396 possible pairs, and 635 of them are recipes. **99.7% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
