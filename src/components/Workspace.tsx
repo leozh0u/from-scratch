@@ -7,10 +7,11 @@ import { DiscoveryCard } from './DiscoveryCard'
 import { PixelArt } from './PixelArt'
 import { Receipt } from './Receipt'
 import { TargetList } from './TargetList'
-import { Button } from './ui/Button'
+import { PixelButton } from './ui/PixelButton'
 import { Card } from './ui/Card'
 import { ElementTile } from './ui/ElementTile'
 import { ProgressBar } from './ui/ProgressBar'
+import { ForestScene } from './ForestScene'
 
 type WorkspaceProps = {
   realm: RealmId
@@ -53,10 +54,30 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
   // being viewed (cross-realm carryover).
   const allTargetIds = new Set(Object.values(data.targets).flat())
 
-  // Global, not realm-scoped — an element discovered in one realm has to stay
-  // selectable in another (cross-realm carryover; see useGameState).
-  const inventory = game.allDiscovered()
   const elementById = (id: string) => data.elements.find((el) => el.id === id)!
+
+  /*
+   * WHAT THE PLAYER CAN SEE HERE — AND IT IS NOT EVERYTHING THEY OWN.
+   *
+   * This used to be `game.allDiscovered()`, every element from every realm, on
+   * the grounds that the graph is shared and an element found in one realm has
+   * to stay usable in another. That reasoning is right but it only runs one
+   * way. Everyday genuinely needs Survival's output — its sewing thread is
+   * waxed with Survival's paraffin, and its aluminium chain cokes crude oil
+   * over Survival's fire. Survival needs nothing at all from Everyday.
+   *
+   * So the tutorial realm was opening with twenty-six tiles, ten of which were
+   * bauxite, manganese, silica sand and soda ash from a realm the player has
+   * not unlocked and cannot use here. The first thing anyone sees in this game
+   * was a wall of irrelevant minerals.
+   *
+   * Survival shows only Survival. Everyday shows everything, because there it
+   * is true.
+   */
+  const inventory =
+    realm === 'survival'
+      ? game.allDiscovered().filter((id) => elementById(id)?.realm === 'survival')
+      : game.allDiscovered()
 
   const discoveredIds = new Set(inventory)
   const targets = data.targets[realm].map(elementById)
@@ -71,10 +92,12 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
    * disappears for good after the first real discovery. No tutorial screen,
    * no modal — the empty slots plus this sentence are the whole explanation.
    */
-  // "First run" is global too — once a player has combined anything, in
-  // either realm, they've learned the verb and don't need reminding again.
+  // "First run" is global: once a player has combined anything, in either
+  // realm, they have learned the verb and do not need reminding. Measured
+  // against everything they own rather than against the filtered view above,
+  // or entering Survival after finishing it would look like a fresh start.
   const totalStarters = data.starters.survival.length + data.starters.everyday.length
-  const isFirstRun = inventory.length === totalStarters
+  const isFirstRun = game.allDiscovered().length === totalStarters
   const showHint = isFirstRun && !feedback && slots[0] === null && slots[1] === null
 
   /*
@@ -138,20 +161,26 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
   }
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-6 px-5 py-8">
+    <>
+      {/* The room the game is played in. Fixed and behind everything, so the
+       * UI scrolls over it rather than with it. */}
+      {realm === 'survival' && <ForestScene />}
+      <main className="relative z-[1] mx-auto flex min-h-dvh max-w-3xl flex-col gap-6 px-5 py-8">
       <div className="flex items-center justify-between">
         <button
           type="button"
           onClick={onBack}
-          className="cursor-pointer text-sm font-extrabold text-muted hover:text-ink"
+          className="cursor-pointer font-display text-[11px] lowercase tracking-wide text-star-mid hover:text-white"
         >
           ← Realms
         </button>
-        <h1 className="text-lg font-extrabold text-ink">{REALM_LABEL[realm]}</h1>
+        <h1 className="font-display text-[13px] lowercase tracking-wide text-white">
+          {REALM_LABEL[realm]}
+        </h1>
         <button
           type="button"
           onClick={onOpenInventory}
-          className="cursor-pointer text-sm font-extrabold text-muted hover:text-ink"
+          className="cursor-pointer font-display text-[11px] lowercase tracking-wide text-star-mid hover:text-white"
         >
           Inventory
         </button>
@@ -160,8 +189,8 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
       {targets.length > 0 && (
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-3">
-            <ProgressBar value={progress} accent="var(--color-brand)" />
-            <span className="shrink-0 text-sm font-extrabold text-muted">
+            <ProgressBar value={progress} cells={targets.length} />
+            <span className="shrink-0 font-display text-[11px] text-star-mid">
               {foundCount}/{targets.length}
             </span>
           </div>
@@ -174,7 +203,7 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
           {slots.map((id, i) => (
             <div
               key={i}
-              className="flex size-16 items-center justify-center rounded-row border-2 border-dashed border-hairline"
+              className="flex size-16 items-center justify-center border-[3px] border-dashed border-[#5f5a95] bg-[#2a2749]"
             >
               {id ? (
                 <button
@@ -186,7 +215,7 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
                   <PixelArt sprite={resolveIcon(elementById(id).icon)} scale={3} />
                 </button>
               ) : (
-                <span className="text-2xl text-muted" aria-hidden="true">
+                <span className="font-display text-lg text-star-dim" aria-hidden="true">
                   ?
                 </span>
               )}
@@ -194,12 +223,17 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
           ))}
         </div>
 
-        <Button onClick={handleCombine} disabled={!slots[0] || !slots[1]}>
-          Combine
-        </Button>
+        <PixelButton
+          tone="survival"
+          unit={5}
+          onClick={handleCombine}
+          disabled={!slots[0] || !slots[1]}
+        >
+          combine
+        </PixelButton>
 
         {/* role="status" so a screen reader announces the result without a page jump */}
-        <p className="min-h-5 text-sm font-semibold text-muted" role="status">
+        <p className="min-h-5 font-display text-[11px] leading-relaxed lowercase text-star-mid" role="status">
           {showHint && 'Tap two elements below, then hit Combine.'}
           {feedback?.kind === 'already-known' && `You already have ${feedback.name}.`}
           {feedback?.kind === 'no-match' && (feedback.explanation ?? 'Hmm…')}
@@ -234,6 +268,7 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
           onClose={() => setReceiptElement(null)}
         />
       )}
-    </main>
+      </main>
+    </>
   )
 }

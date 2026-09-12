@@ -1,6 +1,7 @@
 import { useRef, useState, type ButtonHTMLAttributes, type ReactNode } from 'react'
 import { PixelArt } from '../PixelArt'
 import { PADLOCK } from '../../art/sprites'
+import { steppedNotch, OUTLINE } from './pixelShape'
 import { playPress, playRelease, playHover, playLocked } from '../../audio/sfx'
 
 /**
@@ -129,60 +130,6 @@ const LOCKED: Tone = {
   base: '#1f1e38',
   text: '#908dbb',
   textShadow: '#1f1e38',
-}
-
-const OUTLINE = '#100d20'
-
-/**
- * A STAIRCASE corner, not a smooth chamfer.
- *
- * This is the difference between a UI that is pixel-themed and one that is
- * actually pixel art, and it was the thing still reading as wrong. A single
- * 45-degree cut is one straight diagonal line rendered at the display's full
- * resolution — perfectly smooth, sub-pixel antialiased, and impossible to draw
- * on a pixel grid. Look closely at the reference sheet and every corner is a
- * visible flight of steps, two or three of them, each a whole pixel deep.
- *
- * So the corner is built as a staircase whose tread is exactly one unit. At
- * y = 0 the edge starts `steps` units in; each unit down, it moves one unit
- * out. Nothing here is ever between pixels.
- *
- * Returns a clip-path polygon; the right and bottom sides use calc() so one
- * shape works at any button size.
- */
-function steppedNotch(unit: number, steps: number): string {
-  const pts: string[] = []
-  const px = (n: number) => `${n}px`
-  const rpx = (n: number) => `calc(100% - ${n}px)`
-
-  // Top-left staircase, descending from the top edge.
-  for (let k = 0; k < steps; k++) {
-    pts.push(`${px((steps - k) * unit)} ${px(k * unit)}`)
-    pts.push(`${px((steps - k) * unit)} ${px((k + 1) * unit)}`)
-  }
-  pts.push(`0 ${px(steps * unit)}`)
-  // Left edge down, then the bottom-left staircase.
-  pts.push(`0 ${rpx(steps * unit)}`)
-  for (let k = steps - 1; k >= 0; k--) {
-    pts.push(`${px((steps - k - 1) * unit)} ${rpx((k + 1) * unit)}`)
-    pts.push(`${px((steps - k) * unit)} ${rpx((k + 1) * unit)}`)
-    pts.push(`${px((steps - k) * unit)} ${rpx(k * unit)}`)
-  }
-  // Bottom edge across, then bottom-right staircase climbing.
-  pts.push(`${rpx(steps * unit)} 100%`)
-  for (let k = 0; k < steps; k++) {
-    pts.push(`${rpx((steps - k - 1) * unit)} ${rpx(k * unit)}`)
-    pts.push(`${rpx((steps - k - 1) * unit)} ${rpx((k + 1) * unit)}`)
-  }
-  pts.push(`100% ${rpx(steps * unit)}`)
-  // Right edge up, then the top-right staircase.
-  pts.push(`100% ${px(steps * unit)}`)
-  for (let k = steps - 1; k >= 0; k--) {
-    pts.push(`${rpx((steps - k - 1) * unit)} ${px((k + 1) * unit)}`)
-    pts.push(`${rpx((steps - k - 1) * unit)} ${px(k * unit)}`)
-  }
-
-  return `polygon(${pts.join(', ')})`
 }
 
 /**
