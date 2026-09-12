@@ -2,7 +2,7 @@
 
 **Generated from `src/data/gameData.ts` by `npm run walkthrough`. Do not edit by hand.**
 
-159 elements, 162 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
+184 elements, 187 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
 
 ## Survival
 
@@ -191,6 +191,31 @@ The main game. Everything a person can point at, and what it actually cost to ma
 | 142 | Pot | + Wood Ash | Glaze | glazing | — |
 | 143 | Candle | + Glass Pane | Lantern | housing | — |
 | 144 | Soda Ash | + Water | Washing Soda | dissolving | — |
+| 145 | Bark | + Plant Fibre | Willow Bark | stripping | — |
+| 146 | Willow Bark | + Vinegar | Aspirin | acetylating | — |
+| 147 | Ethanol | + Filtered Water | Antiseptic | diluting | — |
+| 148 | Linen | + Antiseptic | Bandage | dressing | — |
+| 149 | Iron Ore | + Copper Ore | Lodestone | sorting | — |
+| 150 | Lodestone | + Wrought Iron | Compass | magnetising | — |
+| 151 | Mirror | + Bronze | Sextant | graduating | — |
+| 152 | Clock | + Bearing | Chronometer | regulating | — |
+| 153 | Charcoal | + Paraffin Wax | Pitch | boiling down | — |
+| 154 | Linen | + Rope | Sail | sewing | — |
+| 155 | Plank | + Pitch | Boat | caulking | — |
+| 156 | Boat | + Sail | Ship | rigging | — |
+| 157 | Welded Steel | + Fire | Steam Boiler | riveting | — |
+| 158 | Steam Boiler | + Gear | Steam Engine | coupling | — |
+| 159 | Welded Steel | + Plank | Rail | laying | — |
+| 160 | Steam Engine | + Rail | Locomotive | assembling | — |
+| 161 | Aluminium Sheet | + Welded Steel | Alloy Frame | riveting | — |
+| 162 | Alloy Frame | + Engine | Propeller | balancing | — |
+| 163 | Propeller | + Alloy Frame | Aeroplane | airframing | — |
+| 164 | Natural Gas | + Steel Frame | Liquid Oxygen | liquefying | — |
+| 165 | Liquid Oxygen | + Welded Steel | Rocket Engine | throttling | — |
+| 166 | Rocket Engine | + Alloy Frame | Rocket | stacking | — |
+| 167 | Rocket | + Solar Cell | Satellite | launching | — |
+| 168 | Circuit Board | + Speaker | Radio | tuning | — |
+| 169 | Mirror | + Silicon Wafer | Camera | focusing | — |
 
 All 3 targets reachable. ✅
 
@@ -215,4 +240,4 @@ Elements with more than one real way to make them. The receipt tells you which r
 
 ## How much of the board is a dead end
 
-159 elements make 12,561 possible pairs, and 162 of them are recipes. **98.7% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
+184 elements make 16,836 possible pairs, and 187 of them are recipes. **98.9% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
