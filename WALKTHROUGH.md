@@ -2,7 +2,7 @@
 
 **Generated from `src/data/gameData.ts` by `npm run walkthrough`. Do not edit by hand.**
 
-184 elements, 187 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
+213 elements, 216 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
 
 ## Survival
 
@@ -216,6 +216,35 @@ The main game. Everything a person can point at, and what it actually cost to ma
 | 167 | Rocket | + Solar Cell | Satellite | launching | — |
 | 168 | Circuit Board | + Speaker | Radio | tuning | — |
 | 169 | Mirror | + Silicon Wafer | Camera | focusing | — |
+| 170 | Tannin | + Wool | Leather | tanning | — |
+| 171 | Leather | + Sewing Thread | Shoe | lasting | — |
+| 172 | Leather | + Pot | Drum | stretching | — |
+| 173 | Plank | + Steel Spring | Guitar | luthiery | — |
+| 174 | Woollen Yarn | + Pitch | Bow Hair | rosining | — |
+| 175 | Glass Pane | + Pipe | Telescope | grinding lenses | — |
+| 176 | Telescope | + Mirror | Microscope | illuminating | — |
+| 177 | Glass Bottle | + Ethanol | Thermometer | calibrating | — |
+| 178 | Thermometer | + Bronze | Barometer | sealing | — |
+| 179 | Carbon Black | + Plank | Pencil | encasing | — |
+| 180 | Limestone | + Water | Chalk | levigating | — |
+| 181 | Cement | + Plaster | Render | floating | — |
+| 182 | Clay | + Glaze | Roof Tile | pressing | — |
+| 183 | Brick Wall | + Roof Tile | House | building | — |
+| 184 | Bronze | + Steel Spring | Lock | pinning | — |
+| 185 | Wrought Iron | + Hardened Steel | Nail | heading | — |
+| 186 | Plank | + Nail | Door | hanging | — |
+| 187 | Nail | + Gear | Screw | threading | — |
+| 188 | Plank | + Screw | Chair | joinery | — |
+| 189 | Chair | + Plank | Table | jointing | — |
+| 190 | Steel Spring | + Felt | Mattress | upholstering | — |
+| 191 | Linen | + Cordage | Kite | bridling | — |
+| 192 | Kite | + Rope | Parachute | packing | — |
+| 193 | Leather | + Plank | Bellows | hinging | — |
+| 194 | Pig Iron | + Hardened Steel | Anvil | casting | — |
+| 195 | Anvil | + Wrought Iron | Horseshoe | shoeing | — |
+| 196 | Anvil | + Plank | Plough | shaping | — |
+| 197 | Sail | + Gear | Windmill | milling | — |
+| 198 | Cart Wheel | + Boat | Water Wheel | damming | — |
 
 All 3 targets reachable. ✅
 
@@ -240,4 +269,4 @@ Elements with more than one real way to make them. The receipt tells you which r
 
 ## How much of the board is a dead end
 
-184 elements make 16,836 possible pairs, and 187 of them are recipes. **98.9% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
+213 elements make 22,578 possible pairs, and 216 of them are recipes. **99.0% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.

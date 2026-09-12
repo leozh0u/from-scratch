@@ -13,7 +13,7 @@ check that proved it. Nothing leaves this list silently. The **oldest** open
 item is the one most at risk, so it is first.
 
 Last verified: 2026-09-12, against the current commit and the live deployment.
-85 elements, 87 recipes, 13 of them with more than one real route. 151 sourced citations, 26 referenced.
+213 elements, 216 recipes, 13 of them with more than one real route. 151 sourced citations, 218 URLs all checked.
 
 ## Open
 
