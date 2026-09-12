@@ -2,7 +2,7 @@
 
 **Generated from `src/data/gameData.ts` by `npm run walkthrough`. Do not edit by hand.**
 
-902 elements, 905 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
+932 elements, 935 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
 
 ## Survival
 
@@ -934,6 +934,36 @@ The main game. Everything a person can point at, and what it actually cost to ma
 | 885 | Lead | + Cordage | Plumb Bob | pointing | — |
 | 886 | Steel Wire | + Bimetal Strip | Tape Measure | curving | — |
 | 887 | Stamped Part | + Hinge | Toolbox | folding | — |
+| 888 | Terracotta | + Sieve | Clay Pipe | extruding | — |
+| 889 | Clay Pipe | + Quarry | Cesspit | lining | — |
+| 890 | Porcelain | + Valve | Toilet | siphoning | — |
+| 891 | Brass | + Foam | Ballcock | levering | — |
+| 892 | Toilet | + Ballcock | Cistern | filling | — |
+| 893 | Tissue | + Cardboard | Toilet Paper | perforating | — |
+| 894 | Reinforced Concrete | + Biogas | Septic Tank | baffling | — |
+| 895 | Septic Tank | + Sewer | Sewage Works | aerating | — |
+| 896 | Sewage Works | + Centrifuge | Sludge | dewatering | — |
+| 897 | Sludge | + Biogas | Methane Capture | digesting | — |
+| 898 | Chlorine | + Reservoir | Clean Water | dosing | — |
+| 899 | Propeller | + Bearing | Turbine | balancing | — |
+| 900 | Turbine | + Memory Chip | Water Meter | metering | — |
+| 901 | Turbine | + Steam Boiler | Steam Turbine | staging | — |
+| 902 | Reinforced Concrete | + Propeller | Cooling Tower | draughting | — |
+| 903 | Steam Turbine | + Cooling Tower | Condenser | condensing | — |
+| 904 | Transformer | + Fuse | Substation | switching | — |
+| 905 | Bimetal Strip | + Magnet Coil | Circuit Breaker | tripping | — |
+| 906 | Copper | + Quarry | Earth Rod | driving | — |
+| 907 | Circuit Breaker | + Earth Rod | Fuse Box | busbarring | — |
+| 908 | Bakelite | + Copper Wire | Light Switch | rocking | — |
+| 909 | Insulated Wire | + Plug | Extension Lead | moulding | — |
+| 910 | Silicon Wafer | + Argon | LED | doping | — |
+| 911 | LED | + Aluminium Cable | LED Bulb | heat sinking | — |
+| 912 | Quartz | + Zinc | Phosphor | calcining | — |
+| 913 | Mercury | + Phosphor | Fluorescent Tube | coating | — |
+| 914 | Argon | + Blown Glass | Neon Sign | bending | — |
+| 915 | Fresnel Lens | + LED Bulb | Spotlight | focusing | — |
+| 916 | Spotlight | + Curtain | Stage | rigging | — |
+| 917 | Stage | + Swivel Chair | Theatre | raking | — |
 
 All 3 targets reachable. ✅
 
@@ -958,4 +988,4 @@ Elements with more than one real way to make them. The receipt tells you which r
 
 ## How much of the board is a dead end
 
-902 elements make 406,351 possible pairs, and 905 of them are recipes. **99.8% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
+932 elements make 433,846 possible pairs, and 935 of them are recipes. **99.8% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
