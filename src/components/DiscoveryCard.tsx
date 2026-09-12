@@ -5,6 +5,7 @@ import { SourceLink } from './ui/SourceLink'
 import type { ElementDef, RecipeDef } from '../data/types'
 import { PixelArt } from './PixelArt'
 import { PixelButton } from './ui/PixelButton'
+import { LearnMore } from './LearnMore'
 import { playPress } from '../audio/sfx'
 import { Card } from './ui/Card'
 
@@ -135,6 +136,13 @@ export function DiscoveryCard({ element, recipe, onClose, heading = 'New discove
             ))}
           </div>
         )}
+
+        {/*
+          * Below the sources, deliberately. The link is the thing a human
+          * checked; the model's answer is the extra on top of it, and the
+          * order on the panel should say which is which.
+          */}
+        <LearnMore elementId={element.id} name={element.name} />
 
         <PixelButton
           tone="survival"

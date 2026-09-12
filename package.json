@@ -9,7 +9,7 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "solve": "tsx scripts/solve.ts",
-    "test": "tsc -b && tsx scripts/shapetest.ts && tsx scripts/datatest.ts && tsx scripts/explaintest.ts && tsx scripts/swaytest.ts && tsx scripts/labeltest.ts && tsx scripts/startest.ts && tsx scripts/plancheck.ts && tsx scripts/layouttest.ts && tsx scripts/citytest.ts && vite build",
+    "test": "tsc -b && tsx scripts/shapetest.ts && tsx scripts/datatest.ts && tsx scripts/explaintest.ts && tsx scripts/swaytest.ts && tsx scripts/labeltest.ts && tsx scripts/asktest.ts && tsx scripts/startest.ts && tsx scripts/plancheck.ts && tsx scripts/layouttest.ts && tsx scripts/citytest.ts && vite build",
     "test:data": "tsx scripts/datatest.ts",
     "test:sway": "tsx scripts/swaytest.ts",
     "test:explain": "tsx scripts/explaintest.ts",
@@ -25,7 +25,8 @@
     "snap": "node scripts/snapToGrid.mjs",
     "sheet": "tsx scripts/contactsheet.ts",
     "load": "k6 run load/gameplay.js",
-    "load:api": "k6 run load/adjudicate.js"
+    "load:api": "k6 run load/adjudicate.js",
+    "test:ask": "tsx scripts/asktest.ts"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
