@@ -76,7 +76,7 @@ console.log('\n=== give up always produces a followable route ===')
    * The stronger statement, and the one that caught the real bug: EVERY
    * target of a realm must be reachable from that realm's own starters. In
    * ordinary play Everything inherits Survival's elements, so this held by
-   * accident — until UNLOCK_EVERYTHING let somebody open Everything first,
+   * accident — until the Cheater mode let somebody open Everything first,
    * which is exactly how a judge with three minutes arrives, and in that
    * state the realm was unwinnable rather than hard.
    */

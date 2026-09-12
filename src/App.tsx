@@ -5,7 +5,7 @@ import { Inventory } from './components/Inventory'
 import { StartScreen } from './components/StartScreen'
 import { StyleguidePage } from './components/StyleguidePage'
 import { Workspace } from './components/Workspace'
-import { readMode, type ModeId } from './game/modes'
+import { readMode, modeById, type ModeId } from './game/modes'
 import { useGameState } from './hooks/useGameState'
 
 /*
@@ -15,20 +15,20 @@ import { useGameState } from './hooks/useGameState'
 const isStyleguide =
   import.meta.env.DEV && window.location.pathname === '/styleguide'
 
-/**
- * TEMPORARY: both realms open, regardless of progress.
+/*
+ * EVERYTHING IS LOCKED UNTIL SURVIVAL IS FINISHED, AND THE WAY PAST IT IS A
+ * MODE RATHER THAN A FLAG.
  *
- * The gate itself is intact just below — Everyday is meant to stay locked
- * until Survival's targets are done, and the recipe graph genuinely requires
- * that order (Everyday's aluminium chain cokes crude oil over Survival's
- * fire). This only short-circuits the check.
+ * This was a build constant left on so the realm could be iterated on and
+ * filmed without playing through Survival first, and a constant left on is
+ * exactly the kind of thing that ships. It is gone. The gate is back, and
+ * anyone who wants past it picks the Cheater mode in the corner, which says
+ * what it is.
  *
- * It is on because the realm needs to be iterated on and filmed, and playing
- * through Survival before every look at it is minutes an hour that nobody
- * has. Set it back to false before submitting — the progression is part of
- * the design, not scaffolding.
+ * Computed from discoveries rather than stored as a flag, so it can never
+ * disagree with what the player has actually done and survives any reset for
+ * free.
  */
-const UNLOCK_EVERYTHING = true
 
 function Game() {
   const [realm, setRealm] = useState<RealmId | null>(null)
@@ -54,7 +54,7 @@ function Game() {
    * for free.
    */
   const everydayUnlocked =
-    UNLOCK_EVERYTHING ||
+    modeById(mode).skipTutorial ||
     GAME_DATA.targets.survival.every((id) => game.isDiscovered(id))
 
   /*

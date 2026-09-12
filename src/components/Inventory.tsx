@@ -6,7 +6,7 @@ import { DiscoveryCard } from './DiscoveryCard'
 import { ElementTile, TILE_WIDTH } from './ui/ElementTile'
 import { PixelButton } from './ui/PixelButton'
 import { BackArrow } from './ui/BackArrow'
-import { ConfirmDialog } from './ui/ConfirmDialog'
+import { ResetButton } from './ui/ResetButton'
 import { HudBar } from './ui/HudBar'
 import { playPress } from '../audio/sfx'
 
@@ -35,7 +35,6 @@ const REALM_LABEL: Record<RealmId, string> = {
  */
 export function Inventory({ data, game, onBack, onReset }: InventoryProps) {
   const [selected, setSelected] = useState<ElementDef | null>(null)
-  const [confirming, setConfirming] = useState(false)
 
   const starterIds = new Set([...data.starters.survival, ...data.starters.everyday])
 
@@ -86,7 +85,6 @@ export function Inventory({ data, game, onBack, onReset }: InventoryProps) {
    * clears the save AND returns to the title screen.
    */
   function confirmReset() {
-    setConfirming(false)
     onReset()
   }
 
@@ -170,20 +168,11 @@ export function Inventory({ data, game, onBack, onReset }: InventoryProps) {
         className="mt-4 flex flex-col items-center gap-3 pt-6"
         style={{ borderTop: '4px solid var(--color-hairline)' }}
       >
-        <PixelButton tone="danger" unit={4} onClick={() => setConfirming(true)}>
-          start over
-        </PixelButton>
+        {/* The same in-place confirmation the title screen's corner uses, so
+          * the two ways of wiping a save behave identically. A modal here and
+          * a drop-down there would be two designs for one decision. */}
+        <ResetButton onReset={confirmReset} unit={4} />
       </div>
-
-      {confirming && (
-        <ConfirmDialog
-          title="start over?"
-          confirmLabel="wipe it"
-          cancelLabel="keep it"
-          onConfirm={confirmReset}
-          onCancel={() => setConfirming(false)}
-        />
-      )}
 
       {selected &&
         (() => {

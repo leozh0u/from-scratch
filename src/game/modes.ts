@@ -13,7 +13,7 @@
  * about the world does not have a difficulty setting.
  */
 
-export type ModeId = 'standard' | 'purist' | 'open'
+export type ModeId = 'standard' | 'purist' | 'open' | 'cheater'
 
 export type Mode = {
   id: ModeId
@@ -32,6 +32,16 @@ export type Mode = {
   infiniteHints: boolean
   /** The give-up route may be shown. */
   giveUp: boolean
+  /**
+   * Everything is open from the start, without finishing Survival.
+   *
+   * This is the ONLY thing in the game that changes what is reachable rather
+   * than how much help you get, which is why it lives behind a mode called
+   * Cheater rather than behind a build flag. A flag is invisible and ships by
+   * accident; a mode is a thing the player chose, with a name that tells them
+   * what they chose.
+   */
+  skipTutorial: boolean
 }
 
 export const MODES: Mode[] = [
@@ -42,6 +52,7 @@ export const MODES: Mode[] = [
     hints: true,
     infiniteHints: false,
     giveUp: true,
+    skipTutorial: false,
   },
   {
     id: 'purist',
@@ -50,6 +61,7 @@ export const MODES: Mode[] = [
     hints: false,
     infiniteHints: false,
     giveUp: false,
+    skipTutorial: false,
   },
   {
     id: 'open',
@@ -58,6 +70,23 @@ export const MODES: Mode[] = [
     hints: true,
     infiniteHints: true,
     giveUp: true,
+    skipTutorial: false,
+  },
+  {
+    id: 'cheater',
+    label: 'cheater',
+    /*
+     * Named plainly on purpose. The lock exists because Survival teaches the
+     * verb and fifteen combinations is a short price for it — but a judge with
+     * three minutes, or somebody who has already finished it once, should not
+     * have to pay it again. Calling the door "cheater" lets them through
+     * without pretending the door was not there.
+     */
+    blurb: 'skip the tutorial',
+    hints: true,
+    infiniteHints: true,
+    giveUp: true,
+    skipTutorial: true,
   },
 ]
 

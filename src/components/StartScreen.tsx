@@ -1,12 +1,11 @@
-import { useState } from 'react'
 import type { RealmId } from '../data/types'
 import { PixelEarth } from './PixelEarth'
 import { Starfield } from './Starfield'
 import { PixelButton } from './ui/PixelButton'
 import { MuteButton } from './ui/MuteButton'
+import { ResetButton } from './ui/ResetButton'
 import { ModePicker } from './ui/ModePicker'
 import type { ModeId } from '../game/modes'
-import { ConfirmDialog } from './ui/ConfirmDialog'
 import { ArcTitle } from './ArcTitle'
 import { startScreenLayout } from './startLayout'
 import { useViewport } from '../hooks/useViewport'
@@ -53,7 +52,6 @@ export function StartScreen({
   onReset,
 }: StartScreenProps) {
   const { width, height } = useViewport()
-  const [confirming, setConfirming] = useState(false)
 
   /*
    * Every size on this screen comes from one place, and it reads BOTH axes.
@@ -136,9 +134,7 @@ export function StartScreen({
         >
           <ModePicker mode={mode} onChange={onChangeMode} unit={3} />
           <MuteButton unit={3} />
-          <PixelButton tone="danger" unit={3} onClick={() => setConfirming(true)}>
-            reset
-          </PixelButton>
+          <ResetButton onReset={onReset} unit={3} />
         </div>
       </div>
 
@@ -251,18 +247,6 @@ export function StartScreen({
       </div>
     </main>
 
-    {confirming && (
-      <ConfirmDialog
-        title="start over?"
-        confirmLabel="wipe it"
-        cancelLabel="keep it"
-        onConfirm={() => {
-          setConfirming(false)
-          onReset()
-        }}
-        onCancel={() => setConfirming(false)}
-      />
-    )}
     </>
   )
 }

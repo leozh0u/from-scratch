@@ -1063,7 +1063,7 @@ export const GAME_DATA: RecipeData = {
      * STONE AND WOOD ARE HERE BECAUSE THIS REALM HAS TO STAND ALONE.
      *
      * They are Survival's starters and in ordinary play they carry over, so
-     * for a long time this list did not need them. Then `UNLOCK_EVERYTHING`
+     * for a long time this list did not need them. Then the Cheater mode
      * let somebody open Everything without playing Survival — which is how a
      * judge with three minutes will arrive — and in that state the realm is
      * unwinnable: the t-shirt needs wood for the gin and the glass needs
