@@ -132,29 +132,69 @@ const LOCKED: Tone = {
 
 const OUTLINE = '#100d20'
 
-/** The octagon. `c` is how far each corner is cut, in pixels. */
-function notch(c: number) {
-  return `polygon(${c}px 0, calc(100% - ${c}px) 0, 100% ${c}px, 100% calc(100% - ${c}px), calc(100% - ${c}px) 100%, ${c}px 100%, 0 calc(100% - ${c}px), 0 ${c}px)`
+/**
+ * A STAIRCASE corner, not a smooth chamfer.
+ *
+ * This is the difference between a UI that is pixel-themed and one that is
+ * actually pixel art, and it was the thing still reading as wrong. A single
+ * 45-degree cut is one straight diagonal line rendered at the display's full
+ * resolution — perfectly smooth, sub-pixel antialiased, and impossible to draw
+ * on a pixel grid. Look closely at the reference sheet and every corner is a
+ * visible flight of steps, two or three of them, each a whole pixel deep.
+ *
+ * So the corner is built as a staircase whose tread is exactly one unit. At
+ * y = 0 the edge starts `steps` units in; each unit down, it moves one unit
+ * out. Nothing here is ever between pixels.
+ *
+ * Returns a clip-path polygon; the right and bottom sides use calc() so one
+ * shape works at any button size.
+ */
+function steppedNotch(unit: number, steps: number): string {
+  const pts: string[] = []
+  const px = (n: number) => `${n}px`
+  const rpx = (n: number) => `calc(100% - ${n}px)`
+
+  // Top-left staircase, descending from the top edge.
+  for (let k = 0; k < steps; k++) {
+    pts.push(`${px((steps - k) * unit)} ${px(k * unit)}`)
+    pts.push(`${px((steps - k) * unit)} ${px((k + 1) * unit)}`)
+  }
+  pts.push(`0 ${px(steps * unit)}`)
+  // Left edge down, then the bottom-left staircase.
+  pts.push(`0 ${rpx(steps * unit)}`)
+  for (let k = steps - 1; k >= 0; k--) {
+    pts.push(`${px((steps - k - 1) * unit)} ${rpx((k + 1) * unit)}`)
+    pts.push(`${px((steps - k) * unit)} ${rpx((k + 1) * unit)}`)
+    pts.push(`${px((steps - k) * unit)} ${rpx(k * unit)}`)
+  }
+  // Bottom edge across, then bottom-right staircase climbing.
+  pts.push(`${rpx(steps * unit)} 100%`)
+  for (let k = 0; k < steps; k++) {
+    pts.push(`${rpx((steps - k - 1) * unit)} ${rpx(k * unit)}`)
+    pts.push(`${rpx((steps - k - 1) * unit)} ${rpx((k + 1) * unit)}`)
+  }
+  pts.push(`100% ${rpx(steps * unit)}`)
+  // Right edge up, then the top-right staircase.
+  pts.push(`100% ${px(steps * unit)}`)
+  for (let k = steps - 1; k >= 0; k--) {
+    pts.push(`${rpx((steps - k - 1) * unit)} ${px((k + 1) * unit)}`)
+    pts.push(`${rpx((steps - k - 1) * unit)} ${px(k * unit)}`)
+  }
+
+  return `polygon(${pts.join(', ')})`
 }
 
 /**
  * The padlock hung on a locked control.
  *
- * WHY THERE IS NO CHAIN HERE ANY MORE
+ * A chain was tried four times — tiled rings that read as a row of circles, a
+ * thin pair that read as "oIoIoI", a heavy horizontal pair that still read as
+ * decorative trim, and a diagonal run that escaped the button entirely. The
+ * lock on its own says it, so the chain is gone.
  *
- * Three versions of a chain were tried and all three failed the same way. A
- * tiled ring read as a row of little circles; a thin two-link pair read as
- * "oIoIoI"; a heavy pair still read as a decorative border. A short row of
- * repeated links inside a wide, low button always will.
- *
- * Leo's reference settled it: a chest with heavy padlocks hanging off the
- * front, and no chain anywhere in the picture. The lock is the statement. One
- * big one, hung over the left end so the label keeps the middle of the button
- * to itself.
- *
- * It deliberately overhangs the button's top and bottom edges, which is why it
- * is a sibling of the face rather than a child — the face is clipped to its
- * octagon and anything inside it gets cut off at the bevel.
+ * It deliberately overhangs the button's top and bottom edges, which is why
+ * this is a sibling of the face rather than a child: the face is clipped to
+ * its own silhouette and anything inside gets cut off at the bevel.
  */
 function Lock({ unit }: { unit: number }) {
   return (
@@ -164,14 +204,14 @@ function Lock({ unit }: { unit: number }) {
         position: 'absolute',
         // Measured from the left edge rather than centred: dead centre puts it
         // straight through the label.
-        left: unit * 5,
+        left: unit * 4,
         top: '50%',
         transform: 'translateY(-50%)',
         zIndex: 2,
         pointerEvents: 'none',
       }}
     >
-      <PixelArt sprite={PADLOCK} scale={Math.max(2, Math.round(unit * 0.9))} />
+      <PixelArt sprite={PADLOCK} scale={Math.max(2, Math.round(unit * 0.75))} />
     </span>
   )
 }
@@ -205,10 +245,20 @@ export function PixelButton({
 
   // Every measurement is a whole multiple of the unit, so the whole control
   // lands on the pixel grid at any size.
+  /*
+   * Everything is a whole multiple of the unit so the control always lands on
+   * the pixel grid — and the unit is now large, because "not pixellated
+   * enough" is mostly a matter of how coarse the blocks are. A 2px outline at
+   * a 4px unit is a thin line; at a 7px unit it is a slab, which is what the
+   * reference sheet has.
+   */
   const border = unit
-  const corner = unit * 2
-  const depth = unit * 2
+  const depth = unit * 3
   const bevel = unit
+  // Three treads of one unit each. Two reads as a chamfer, four starts
+  // rounding the corner off entirely.
+  const shape = steppedNotch(unit, 3)
+  const innerShape = steppedNotch(unit, 2)
 
   function press(from: 'pointer' | 'key') {
     if (inert) return
@@ -293,7 +343,7 @@ export function PixelButton({
           top: depth,
           bottom: 0,
           background: OUTLINE,
-          clipPath: notch(corner),
+          clipPath: shape,
           display: down ? 'none' : 'block',
         }}
       >
@@ -302,7 +352,7 @@ export function PixelButton({
             position: 'absolute',
             inset: border,
             background: c.base,
-            clipPath: notch(Math.max(1, corner - border)),
+            clipPath: innerShape,
             display: 'block',
           }}
         />
@@ -314,7 +364,7 @@ export function PixelButton({
           position: 'relative',
           display: 'block',
           background: OUTLINE,
-          clipPath: notch(corner),
+          clipPath: shape,
           // No transition: see the note at the top of the file.
           transform: down ? `translateY(${depth}px)` : 'none',
         }}
@@ -327,9 +377,9 @@ export function PixelButton({
             justifyContent: 'center',
             gap: unit * 2,
             margin: border,
-            padding: `${unit * 3}px ${unit * 4}px`,
+            padding: `${unit * 4}px ${unit * 5}px`,
             background: hovered && !inert ? c.hi : c.face,
-            clipPath: notch(Math.max(1, corner - border)),
+            clipPath: innerShape,
             /*
              * The inner bevel: one bright band inside the top edge, one dark
              * band inside the bottom. Inset box-shadows with ZERO blur, which

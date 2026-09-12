@@ -49,7 +49,16 @@ export function StartScreen({
    * read as enormous and too big for the screen, not as a ball sitting on it.
    */
   const scale = width < 560 ? 7 : width < 900 ? 10 : 13
-  const unit = width < 560 ? 3 : 4
+  /*
+   * The buttons get a much larger unit than the layout does.
+   *
+   * Every dimension inside PixelButton is a multiple of this — outline, bevel,
+   * the depth of the extruded base, the corner treads. At a unit of 4 those
+   * are all thin lines and the control reads as a styled div. At 7 they are
+   * slabs, which is what makes it read as a sprite. "Not pixellated enough"
+   * is mostly a question of how coarse the blocks are.
+   */
+  const unit = width < 560 ? 4 : width < 900 ? 6 : 7
 
   /*
    * The wordmark gets its own, much larger unit. It is the thing the screen is
@@ -110,7 +119,7 @@ export function StartScreen({
              * stack lets the title be as wide as it needs while the buttons
              * stay the size they should be.
              */
-            maxWidth: 420,
+            maxWidth: 560,
             alignItems: 'stretch',
           }}
         >

@@ -1142,3 +1142,48 @@ export const PADLOCK: Sprite = {
     h: '#3a2a08',
   },
 }
+
+/*
+ * CHAIN LINK — for a chain laid diagonally across a locked control.
+ *
+ * WHY THE RUN IS DIAGONAL AND THE SPRITE IS NOT
+ *
+ * A chain straight across the middle of a button reads as a decorative
+ * border; three increasingly heavy horizontal versions all failed that way.
+ * Running it on a slant fixes it, because a slant is not a thing a border
+ * does.
+ *
+ * But the sprite itself stays upright. Rotating pixel art resamples the grid
+ * and turns every hard edge into grey mush, which is the exact failure the
+ * whole visual direction exists to avoid. Instead each link is placed a few
+ * whole pixels further right AND a few further down than the last, so the RUN
+ * descends while every link stays perfectly square. Same trick as the sway
+ * animation: whole-pixel offsets, never a transform.
+ *
+ * The pair repeats — a flat ring, then one seen edge-on — because a real
+ * chain alternates, and tiling a single ring reads as a row of circles.
+ */
+export const CHAIN_LINK: Sprite = {
+  rows: [
+    '................',
+    '....LLLL........',
+    '...LHHHHL...LL..',
+    '..LHHLLHHL.LHHL.',
+    '..LHL..LHLLHHHHL',
+    '..LHL..LHLLHHHHL',
+    '..LHL..LHLLHHHHL',
+    '..LHL..LHLLHHHHL',
+    '..LHL..LHLLHHHHL',
+    '..LHHLLHHL.LDDL.',
+    '...LDDDDL...LL..',
+    '....LLLL........',
+    '................',
+  ],
+  palette: {
+    // Cold iron, deliberately not the greys of the locked button face, or the
+    // chain sinks into it.
+    L: '#181628',
+    H: '#cfcce6',
+    D: '#6e6b93',
+  },
+}
