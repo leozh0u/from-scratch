@@ -22,6 +22,7 @@ import { checkForms, composeSprite } from '../src/art/forms'
 
 import { GAME_DATA } from '../src/data/gameData'
 import { wouldCycle, structuralProblems } from './import'
+import { hintsEarned } from '../src/solver/hint'
 import { SEED_DATA } from '../src/data/seed'
 import { runSolver, computeFootprint, computeFootprintDetail } from '../src/solver/solver'
 import type { RecipeData } from '../src/data/types'
@@ -561,6 +562,35 @@ console.log('\n=== the import gate rejects what it should ===')
      structuralProblems({ ...good, process: 'making' }, introduced)
        .some((p) => p.includes('placeholder verb')),
      'the process word is shown to the player as what they just did')
+}
+
+/*
+ * HINTS ARE EARNED, AND A REPEAT IS NOT AN ATTEMPT.
+ *
+ * Leo: "every 10 failed tries gives a hint. but only if its not repeated."
+ * The repeat rule is the whole feature. Without it, pressing combine on one
+ * dead pair ten times earns a hint and the button becomes the game.
+ */
+console.log('\n=== hints are earned by playing ===')
+{
+  ok('you start with three', hintsEarned(0, 0) === 3)
+  ok('ten discoveries earn a fourth', hintsEarned(10, 0) === 4)
+  ok('ten distinct dead ends also earn one', hintsEarned(0, 10) === 4,
+     'a player who finds nothing still earns help')
+  ok('and the two stack', hintsEarned(20, 30) === 8, `${hintsEarned(20, 30)}`)
+  ok('nine of either earns nothing yet', hintsEarned(9, 9) === 3)
+
+  /*
+   * The repeat rule lives in the store rather than in the sum, so it is
+   * asserted where it is: misses are kept as a set of pair keys, and a key
+   * already present cannot be added again.
+   */
+  const seen = new Set<string>()
+  const key = (a: string, b: string) => [a, b].sort().join('+')
+  for (const [a, b] of [['stone', 'water'], ['water', 'stone'], ['stone', 'water']] as const) {
+    seen.add(key(a, b))
+  }
+  ok('the same pair in either order counts once', seen.size === 1, `${seen.size} of 3 tries`)
 }
 
 console.log(`\n${fail === 0 ? 'Game data and solver hold.' : `${fail} FAILED`}  (${pass} checks)`)

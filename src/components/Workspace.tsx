@@ -226,7 +226,8 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
       ),
     )
   }
-  const hintsLeft = hintsEarned(realmFound) - (game.hintsSpent[realm] ?? 0)
+  const hintsLeft =
+    hintsEarned(realmFound, (game.misses[realm] ?? []).length) - (game.hintsSpent[realm] ?? 0)
 
   function useHint() {
     if (hintsLeft <= 0) return
@@ -327,6 +328,8 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
        */
       playNoMatch()
       ++attemptRef.current
+      // Only distinct dead ends count toward a hint — see hintsEarned.
+      game.countMiss(realm, a, b)
       const { message } = explainFailure(a, b)
       setFeedback({
         kind: 'no-match',
@@ -562,6 +565,7 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
               stats={[
                 { label: 'made', value: `${realmFound} of ${realmTotal}`, bright: true },
                 { label: 'tries', value: String(game.attempts[realm] ?? 0) },
+                { label: 'dead ends', value: String((game.misses[realm] ?? []).length) },
                 { label: 'hints left', value: String(Math.max(0, hintsLeft)) },
               ]}
             />

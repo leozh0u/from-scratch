@@ -21,6 +21,16 @@ type PersistedState = {
   hintsSpent?: Record<RealmId, number>
   /** How many combines have been pressed, per realm. Shown as a stat. */
   attempts?: Record<RealmId, number>
+  /**
+   * Distinct pairs that were tried and produced nothing, per realm.
+   *
+   * Stored as pair keys rather than a count, because the count has to ignore
+   * repeats and there is no way to know whether a pair is a repeat without
+   * remembering which ones have been seen. Leo: "every 10 failed tries gives a
+   * hint. but only if its not repeated" — otherwise pressing combine on the
+   * same dead pair ten times is a hint, which is not a game, it is a button.
+   */
+  misses?: Record<RealmId, string[]>
 }
 
 function readStorage(): PersistedState | null {
@@ -119,9 +129,27 @@ export function useGameState(data: RecipeData) {
     setAttempts((prev) => ({ ...prev, [realm]: (prev[realm] ?? 0) + 1 }))
   }, [])
 
+  /*
+   * The distinct dead pairs, per realm. A Set would be the natural shape and
+   * an array is what survives JSON, so it is stored as one and deduped on the
+   * way in.
+   */
+  const [misses, setMisses] = useState<Record<RealmId, string[]>>(
+    () => readStorage()?.misses ?? { survival: [], everyday: [] },
+  )
+
+  const countMiss = useCallback((realm: RealmId, a: string, b: string) => {
+    const key = pairKey(a, b)
+    setMisses((prev) => {
+      const seen = prev[realm] ?? []
+      if (seen.includes(key)) return prev
+      return { ...prev, [realm]: [...seen, key] }
+    })
+  }, [])
+
   useEffect(() => {
-    writeStorage({ discovered, routes, hintsSpent, attempts })
-  }, [discovered, routes, hintsSpent, attempts])
+    writeStorage({ discovered, routes, hintsSpent, attempts, misses })
+  }, [discovered, routes, hintsSpent, attempts, misses])
 
   const isDiscovered = useCallback(
     (elementId: string) =>
@@ -189,7 +217,8 @@ export function useGameState(data: RecipeData) {
     setRoutes({})
     setHintsSpent({ survival: 0, everyday: 0 })
     setAttempts({ survival: 0, everyday: 0 })
+    setMisses({ survival: [], everyday: [] })
   }, [data.starters])
 
-  return { discovered, allDiscovered, isDiscovered, combine, reset, routes, hintsSpent, spendHint, attempts, countAttempt }
+  return { discovered, allDiscovered, isDiscovered, combine, reset, routes, hintsSpent, spendHint, attempts, countAttempt, misses, countMiss }
 }

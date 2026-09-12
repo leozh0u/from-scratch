@@ -2,7 +2,7 @@
 
 **Generated from `src/data/gameData.ts` by `npm run walkthrough`. Do not edit by hand.**
 
-85 elements, 87 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
+109 elements, 112 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
 
 ## Survival
 
@@ -22,15 +22,16 @@ The tutorial: short, and it teaches the verb. Every recipe here costs nothing, b
 | 6 | Wood | + Plant Fibre | Torch | wrapping | — |
 | 7 | Wood | + Sharp Stone | Spindle | carving | — |
 | 8 | Sharp Stone | + Spindle | Fire Board | carving | — |
-| 9 | Wood | + Cordage | Bow | stringing | — |
-| 10 | Bow | + Spindle | Bow Drill | assembling | — |
-| 11 | Hand Drill | + Fire Board | Ember _(hand drill)_ | spinning | — |
-| 12 | Bow Drill | + Fire Board | Ember _(bow drill)_ | drilling | — |
-| 13 | Bark | + Sharp Stone | Tinder Bundle | shredding | — |
-| 14 | Ember | + Tinder Bundle | Burning Tinder | blowing | — |
-| 15 | Burning Tinder | + Wood | **Fire** | feeding | — |
-| 16 | Fire | + Wood | **Charcoal** | charring | — |
-| 17 | Torch | + Fire | **Lit Torch** | lighting | — |
+| 9 | Spindle | + Plant Fibre | Cordage _(spun)_ | spinning | — |
+| 10 | Wood | + Cordage | Bow | stringing | — |
+| 11 | Bow | + Spindle | Bow Drill | assembling | — |
+| 12 | Hand Drill | + Fire Board | Ember _(hand drill)_ | spinning | — |
+| 13 | Bow Drill | + Fire Board | Ember _(bow drill)_ | drilling | — |
+| 14 | Bark | + Sharp Stone | Tinder Bundle | shredding | — |
+| 15 | Ember | + Tinder Bundle | Burning Tinder | blowing | — |
+| 16 | Burning Tinder | + Wood | **Fire** | feeding | — |
+| 17 | Fire | + Wood | **Charcoal** | charring | — |
+| 18 | Torch | + Fire | **Lit Torch** | lighting | — |
 
 All 3 targets reachable. ✅
 
@@ -116,6 +117,30 @@ The main game. Everything a person can point at, and what it actually cost to ma
 | 68 | Paper | + Paper | Cardboard | corrugating | — |
 | 69 | Concrete | + High-Carbon Steel | Reinforced Concrete | reinforcing | — |
 | 70 | Slaked Lime | + Water | Whitewash | thinning | — |
+| 71 | Distillate | + Water | Ethylene | steam cracking | — |
+| 72 | Ethylene | + Ethylene | Polyethylene | polymerising | — |
+| 73 | Polyethylene | + High-Carbon Steel | Plastic Bottle | blow moulding | — |
+| 74 | Ethylene | + Water | Ethanol | hydrating | — |
+| 75 | Ethanol | + Clay | Butadiene | coupling | — |
+| 76 | Butadiene | + Butadiene | Synthetic Rubber | polymerising | — |
+| 77 | Distillate | + Charcoal | Carbon Black | partial combustion | — |
+| 78 | Synthetic Rubber | + Carbon Black | Tyre | compounding | — |
+| 79 | Ethylene | + Salt | Vinyl Chloride | oxychlorinating | — |
+| 80 | Vinyl Chloride | + Vinyl Chloride | PVC | polymerising | — |
+| 81 | PVC | + High-Carbon Steel | Pipe | extruding | — |
+| 82 | Distillate | + Quicklime | Propylene | dehydrogenating | — |
+| 83 | Propylene | + Propylene | Polypropylene | polymerising | — |
+| 84 | Polypropylene | + Cordage | Rope | laying | — |
+| 85 | Quicklime | + Charcoal | Acetylene | carbide smelting | — |
+| 86 | Acetylene | + High-Carbon Steel | Welded Steel | welding | — |
+| 87 | Welded Steel | + Reinforced Concrete | Steel Frame | erecting | — |
+| 88 | Molten Glass | + Slag | Glass Pane | floating | — |
+| 89 | Glass Pane | + Plank | Window | glazing | — |
+| 90 | Glass Pane | + Sodium Hydroxide | Mirror | silvering | — |
+| 91 | Brick | + Lime Mortar | Brick Wall | laying | — |
+| 92 | Slaked Lime | + Wood Ash | Plaster | gauging | — |
+| 93 | Carbon Black | + Tannin | Ink | grinding | — |
+| 94 | Ink | + Paper | Newspaper | printing | — |
 
 All 3 targets reachable. ✅
 
@@ -123,6 +148,7 @@ All 3 targets reachable. ✅
 
 Elements with more than one real way to make them. The receipt tells you which road you took.
 
+- **Cordage** — Plant Fibre + Plant Fibre; or Spindle + Plant Fibre (spun)
 - **Tinder Bundle** — Stone + Plant Fibre; or Bark + Sharp Stone
 - **Ember** — Hand Drill + Fire Board (hand drill); or Bow Drill + Fire Board (bow drill)
 - **Ammonia** — Natural Gas + Water; or Syngas + Water (gasification)
@@ -139,4 +165,4 @@ Elements with more than one real way to make them. The receipt tells you which r
 
 ## How much of the board is a dead end
 
-85 elements make 3,570 possible pairs, and 87 of them are recipes. **97.6% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
+109 elements make 5,886 possible pairs, and 112 of them are recipes. **98.1% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.

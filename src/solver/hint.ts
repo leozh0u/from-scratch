@@ -108,16 +108,31 @@ function describe(realm: RealmId | undefined): string {
 /**
  * How many hints the player has earned in total.
  *
- * Three to start, then one for every ten discoveries. The shape matters more
- * than the numbers: three is enough to get unstuck twice and still have one
- * left, and earning them back by playing means a stuck player is never
- * permanently stuck — they can always go and find something easy.
+ * Three to start, then one for every ten discoveries AND one for every ten
+ * DISTINCT dead ends. Leo asked for the second: "every 10 failed tries gives a
+ * hint. but only if its not repeated."
+ *
+ * The repeat rule is the whole thing. Without it, pressing combine on the same
+ * dead pair ten times earns a hint, which makes the button the game. With it,
+ * the currency is genuinely trying things — and since over 97% of pairs do
+ * nothing, a player who is exploring properly earns hints faster than one who
+ * is stuck and mashing, which is the right way round.
+ *
+ * Earning from failure matters more than earning from success. A player who is
+ * finding things does not need help; a player who has tried thirty pairs and
+ * found nothing does, and under the discovery rule alone they would earn
+ * nothing at all.
  */
 export const STARTING_HINTS = 3
 export const FOUND_PER_HINT = 10
+export const MISSES_PER_HINT = 10
 
-export function hintsEarned(foundCount: number): number {
-  return STARTING_HINTS + Math.floor(foundCount / FOUND_PER_HINT)
+export function hintsEarned(foundCount: number, distinctMisses = 0): number {
+  return (
+    STARTING_HINTS +
+    Math.floor(foundCount / FOUND_PER_HINT) +
+    Math.floor(distinctMisses / MISSES_PER_HINT)
+  )
 }
 
 /**

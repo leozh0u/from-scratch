@@ -202,22 +202,46 @@ const PLACEHOLDER = FLAME
  * replaces them.
  */
 export const COMPOSED: Record<string, { form: FormId; colour: string }> = {
+  ethylene: { form: 'gas', colour: '#9fd8e8' },
+  polyethylene: { form: 'pellet', colour: '#dfe4ea' },
+  plastic_bottle: { form: 'bottle', colour: '#6fc2d8' },
+  ethanol: { form: 'liquid', colour: '#d8e7c0' },
+  butadiene: { form: 'gas', colour: '#772222' },
+  synthetic_rubber: { form: 'lump', colour: '#3e3b44' },
+  carbon_black: { form: 'powder', colour: '#2b2a30' },
+  tyre: { form: 'wheel', colour: '#2f2d33' },
+  vinyl_chloride: { form: 'gas', colour: '#b9e6a7' },
+  pvc: { form: 'pellet', colour: '#772222' },
+  pipe: { form: 'coil', colour: '#cfd6d9' },
+  propylene: { form: 'gas', colour: '#846315' },
+  polypropylene: { form: 'pellet', colour: '#846315' },
+  rope: { form: 'coil', colour: '#d0a75f' },
+  acetylene: { form: 'flame', colour: '#7ec8ff' },
+  welded_steel: { form: 'ingot', colour: '#6f7c8c' },
+  steel_frame: { form: 'machine', colour: '#8a94a3' },
+  glass_pane: { form: 'sheet', colour: '#a8d4e0' },
+  window: { form: 'board', colour: '#8fb8c9' },
+  mirror: { form: 'sheet', colour: '#772222' },
+  brick_wall: { form: 'brick', colour: '#a85a3f' },
+  plaster: { form: 'powder', colour: '#efe9dc' },
+  ink: { form: 'liquid', colour: '#1f1d2b' },
+  newspaper: { form: 'sheet', colour: '#846315' },
   // The first import-gate batch. One line each, from the shared form
   // vocabulary in art/forms.ts — which is what made a batch this size a
   // half-hour job rather than a half-day of drawing.
   wood_ash: { form: 'heap', colour: '#8d8880' },
-  potash: { form: 'powder', colour: '#e3dcc4' },
+  potash: { form: 'powder', colour: '#772222' },
   soap: { form: 'bar', colour: '#b9d4ad' },
-  slag: { form: 'lump', colour: '#5d6157' },
+  slag: { form: 'lump', colour: '#772222' },
   slag_cement: { form: 'powder', colour: '#5d6b7a' },
-  hardened_steel: { form: 'ingot', colour: '#8794a8' },
-  tempered_steel: { form: 'ingot', colour: '#7a5a3c' },
+  hardened_steel: { form: 'ingot', colour: '#772222' },
+  tempered_steel: { form: 'ingot', colour: '#846315' },
   plank: { form: 'board', colour: '#d8a86a' },
   cart_wheel: { form: 'wheel', colour: '#7a4f2c' },
   book: { form: 'book', colour: '#8e3242' },
-  cardboard: { form: 'sheet', colour: '#a8703a' },
+  cardboard: { form: 'sheet', colour: '#4f5a3f' },
   reinforced_concrete: { form: 'brick', colour: '#8d8d91' },
-  whitewash: { form: 'liquid', colour: '#e8e6df' },
+  whitewash: { form: 'liquid', colour: '#772222' },
   /*
    * The first two elements drawn from the vocabulary, and they are here
    * because the contact sheet caught them being wrong.
@@ -229,7 +253,7 @@ export const COMPOSED: Record<string, { form: FormId; colour: string }> = {
    * reads as a wick. Neither is wood or rope.
    */
   wood: { form: 'log', colour: '#8a5a33' },
-  cordage: { form: 'coil', colour: '#c8a76a' },
+  cordage: { form: 'coil', colour: '#772222' },
 }
 
 /** Memoised: composing is cheap but it happens on every tile render. */
