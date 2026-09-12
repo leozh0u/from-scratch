@@ -67,19 +67,24 @@ function validateReferences(data: RecipeData): SolverIssue[] {
     }
   }
 
-  for (const [realm, ids] of Object.entries(data.starters) as [RealmId, string[]][]) {
-    for (const id of ids) {
-      const el = data.elements.find((e) => e.id === id)
-      if (!el) {
-        issues.push({ level: 'error', message: `Starter "${id}" in realm "${realm}" does not exist` })
-      } else if (el.realm !== realm) {
-        issues.push({
-          level: 'error',
-          message: `Starter "${id}" is listed under realm "${realm}" but belongs to "${el.realm}"`,
-        })
+  function validateRealmList(kind: 'Starter' | 'Target', list: Record<RealmId, string[]>) {
+    for (const [realm, ids] of Object.entries(list) as [RealmId, string[]][]) {
+      for (const id of ids) {
+        const el = data.elements.find((e) => e.id === id)
+        if (!el) {
+          issues.push({ level: 'error', message: `${kind} "${id}" in realm "${realm}" does not exist` })
+        } else if (el.realm !== realm) {
+          issues.push({
+            level: 'error',
+            message: `${kind} "${id}" is listed under realm "${realm}" but belongs to "${el.realm}"`,
+          })
+        }
       }
     }
   }
+
+  validateRealmList('Starter', data.starters)
+  validateRealmList('Target', data.targets)
 
   return issues
 }
@@ -261,6 +266,7 @@ export function runSolver(data: RecipeData): SolverReport {
   }
 
   const consumedIds = new Set(data.recipes.flatMap((r) => r.inputs))
+  const targetIds = new Set(Object.values(data.targets).flat())
 
   const elements: ElementReport[] = data.elements.map((el) => {
     const reachable =
@@ -279,7 +285,8 @@ export function runSolver(data: RecipeData): SolverReport {
       })
     }
 
-    if (reachable && !starterSet.has(el.id) && !consumedIds.has(el.id)) {
+    // A target is *meant* to be terminal — that's not the dead end this warns about.
+    if (reachable && !starterSet.has(el.id) && !consumedIds.has(el.id) && !targetIds.has(el.id)) {
       issues.push({
         level: 'warning',
         message: `"${el.id}" is a dead end — nothing in the game consumes it`,

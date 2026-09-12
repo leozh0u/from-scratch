@@ -41,4 +41,6 @@ export type RecipeData = {
   recipes: RecipeDef[]
   /** Element ids each realm starts with, before any combining. */
   starters: Record<RealmId, string[]>
+  /** The elements a realm's progress bar and target list track completion against. */
+  targets: Record<RealmId, string[]>
 }

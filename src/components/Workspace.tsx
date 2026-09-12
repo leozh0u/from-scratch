@@ -4,9 +4,11 @@ import type { ElementDef, RealmId, RecipeData, RecipeDef } from '../data/types'
 import type { useGameState } from '../hooks/useGameState'
 import { DiscoveryCard } from './DiscoveryCard'
 import { PixelArt } from './PixelArt'
+import { TargetList } from './TargetList'
 import { Button } from './ui/Button'
 import { Card } from './ui/Card'
 import { ElementTile } from './ui/ElementTile'
+import { ProgressBar } from './ui/ProgressBar'
 
 type WorkspaceProps = {
   realm: RealmId
@@ -37,6 +39,12 @@ export function Workspace({ realm, data, game, onBack }: WorkspaceProps) {
 
   const inventory = game.inventoryFor(realm)
   const elementById = (id: string) => data.elements.find((el) => el.id === id)!
+
+  const discoveredIds = new Set(inventory)
+  const targets = data.targets[realm].map(elementById)
+  const foundCount = targets.filter((t) => discoveredIds.has(t.id)).length
+  // Guard divide-by-zero for a realm with no targets yet (Everyday, pre-step-15).
+  const progress = targets.length === 0 ? 0 : (foundCount / targets.length) * 100
 
   function toggleTile(id: string) {
     setFeedback(null)
@@ -80,6 +88,18 @@ export function Workspace({ realm, data, game, onBack }: WorkspaceProps) {
         {/* Empty spacer balances the back link so the title stays centred */}
         <span className="w-16" aria-hidden="true" />
       </div>
+
+      {targets.length > 0 && (
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-3">
+            <ProgressBar value={progress} accent="var(--color-brand)" />
+            <span className="shrink-0 text-sm font-extrabold text-muted">
+              {foundCount}/{targets.length}
+            </span>
+          </div>
+          <TargetList targets={targets} discoveredIds={discoveredIds} />
+        </div>
+      )}
 
       <Card className="flex flex-col items-center gap-5 p-6">
         <div className="flex items-center gap-4">

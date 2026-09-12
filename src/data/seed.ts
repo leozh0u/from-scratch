@@ -72,4 +72,8 @@ export const SEED_DATA: RecipeData = {
     survival: ['tinder', 'kindling', 'flint', 'steel'],
     everyday: [],
   },
+  targets: {
+    survival: ['fire', 'signal_fire'],
+    everyday: [],
+  },
 }
