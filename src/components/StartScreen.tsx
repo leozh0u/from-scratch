@@ -36,6 +36,7 @@ const REALMS: Realm[] = [
 
 type StartScreenProps = {
   onSelectRealm: (realm: RealmId) => void
+  onOpenCodex: () => void
 }
 
 const SKY = `linear-gradient(
@@ -67,7 +68,7 @@ const TREES = [
 const clamp = (value: number, min: number, max: number) =>
   Math.min(Math.max(value, min), max)
 
-export function StartScreen({ onSelectRealm }: StartScreenProps) {
+export function StartScreen({ onSelectRealm, onOpenCodex }: StartScreenProps) {
   const { width, height } = useViewport()
 
   /*
@@ -255,6 +256,17 @@ export function StartScreen({ onSelectRealm }: StartScreenProps) {
               ))}
             </ul>
           </nav>
+
+          {/* Dropped on a landscape phone, same as the blurb line above — no room */}
+          {!tiny && (
+            <button
+              type="button"
+              onClick={onOpenCodex}
+              className="mt-5 w-full cursor-pointer text-center text-sm font-bold text-muted hover:text-ink"
+            >
+              View your Codex
+            </button>
+          )}
         </div>
       </div>
     </main>

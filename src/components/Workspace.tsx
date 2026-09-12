@@ -16,6 +16,7 @@ type WorkspaceProps = {
   data: RecipeData
   game: ReturnType<typeof useGameState>
   onBack: () => void
+  onOpenCodex: () => void
 }
 
 type Slots = [string | null, string | null]
@@ -33,7 +34,7 @@ const REALM_LABEL: Record<RealmId, string> = {
   everyday: 'Everyday Objects',
 }
 
-export function Workspace({ realm, data, game, onBack }: WorkspaceProps) {
+export function Workspace({ realm, data, game, onBack, onOpenCodex }: WorkspaceProps) {
   const [slots, setSlots] = useState<Slots>([null, null])
   const [feedback, setFeedback] = useState<Feedback | null>(null)
   const [discovery, setDiscovery] = useState<Discovery | null>(null)
@@ -130,8 +131,13 @@ export function Workspace({ realm, data, game, onBack }: WorkspaceProps) {
           ← Realms
         </button>
         <h1 className="text-lg font-extrabold text-ink">{REALM_LABEL[realm]}</h1>
-        {/* Empty spacer balances the back link so the title stays centred */}
-        <span className="w-16" aria-hidden="true" />
+        <button
+          type="button"
+          onClick={onOpenCodex}
+          className="cursor-pointer text-sm font-extrabold text-muted hover:text-ink"
+        >
+          Codex
+        </button>
       </div>
 
       {targets.length > 0 && (

@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { resolveIcon } from '../data/iconRegistry'
-import type { ElementDef, RecipeDef, Source } from '../data/types'
+import { dedupeSources } from '../data/sources'
+import type { ElementDef, RecipeDef } from '../data/types'
 import { PixelArt } from './PixelArt'
 import { Button } from './ui/Button'
 import { Card } from './ui/Card'
@@ -9,17 +10,12 @@ type DiscoveryCardProps = {
   element: ElementDef
   recipe: RecipeDef
   onClose: () => void
-}
-
-function dedupeSources(a: Source[], b: Source[]): Source[] {
-  const seen = new Set<string>()
-  const out: Source[] = []
-  for (const source of [...a, ...b]) {
-    if (seen.has(source.url)) continue
-    seen.add(source.url)
-    out.push(source)
-  }
-  return out
+  /**
+   * Overrides the "New discovery" eyebrow. The Codex reuses this exact card
+   * to reopen something found long ago — telling the player it's "new" at
+   * that point would just be wrong.
+   */
+  heading?: string
 }
 
 /**
@@ -29,7 +25,7 @@ function dedupeSources(a: Source[], b: Source[]): Source[] {
  * blurb), deduped by URL since step 15's real data may cite the same source
  * for both.
  */
-export function DiscoveryCard({ element, recipe, onClose }: DiscoveryCardProps) {
+export function DiscoveryCard({ element, recipe, onClose, heading = 'New discovery' }: DiscoveryCardProps) {
   const sources = dedupeSources(recipe.sources, element.sources)
 
   useEffect(() => {
@@ -49,7 +45,7 @@ export function DiscoveryCard({ element, recipe, onClose }: DiscoveryCardProps) 
     >
       <Card className="flex w-full max-w-sm flex-col items-center gap-3 p-8 text-center">
         <p className="text-xs font-extrabold tracking-wide text-brand uppercase">
-          New discovery
+          {heading}
         </p>
 
         <PixelArt sprite={resolveIcon(element.icon)} scale={6} />
