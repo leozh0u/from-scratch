@@ -6,6 +6,7 @@ import { DiscoveryCard } from './DiscoveryCard'
 import { Card } from './ui/Card'
 import { ElementTile } from './ui/ElementTile'
 import { PixelButton } from './ui/PixelButton'
+import { HudBar } from './ui/HudBar'
 import { playPress, playHover } from '../audio/sfx'
 
 type InventoryProps = {
@@ -64,10 +65,7 @@ export function Inventory({ data, game, onBack }: InventoryProps) {
     <main className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-6 px-5 py-8">
       {/* The same opaque HUD strip the workspace uses, so the two screens
         * read as the same machine. */}
-      <div
-        className="flex items-center justify-between"
-        style={{ background: '#100d20', border: '4px solid #332f57', padding: '10px 14px' }}
-      >
+      <HudBar className="flex items-center justify-between">
         <button
           type="button"
           onClick={() => { playPress(); onBack() }}
@@ -78,7 +76,7 @@ export function Inventory({ data, game, onBack }: InventoryProps) {
         </button>
         <h1 className="font-display text-[13px] lowercase tracking-wide text-white">inventory</h1>
         <span className="w-12" aria-hidden="true" />
-      </div>
+      </HudBar>
 
       {crafted.length === 0 ? (
         <Card className="p-8 text-center">

@@ -12,7 +12,9 @@ import { PixelButton } from './ui/PixelButton'
 import { Card } from './ui/Card'
 import { ElementTile } from './ui/ElementTile'
 import { ProgressBar } from './ui/ProgressBar'
+import { HudBar, EmptySlot } from './ui/HudBar'
 import { ForestScene } from './ForestScene'
+import { CityScene } from './CityScene'
 import { playPress, playHover, playDiscovery, playNoMatch } from '../audio/sfx'
 
 type WorkspaceProps = {
@@ -210,7 +212,7 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
     <>
       {/* The room the game is played in. Fixed and behind everything, so the
        * UI scrolls over it rather than with it. */}
-      {realm === 'survival' && <ForestScene />}
+      {realm === 'survival' ? <ForestScene /> : <CityScene />}
       <main className="relative z-[1] mx-auto flex min-h-dvh max-w-3xl flex-col gap-6 px-5 py-8">
       {/*
        * A solid HUD strip, not floating text.
@@ -221,21 +223,14 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
        * the top, separate from the world behind it. It also gives the screen a
        * top edge, which the floating version never had.
        */}
-      <div
-        className="flex items-center justify-between"
-        style={{
-          background: '#100d20',
-          border: '4px solid #332f57',
-          padding: '10px 14px',
-        }}
-      >
+      <HudBar className="flex items-center justify-between">
         <button
           type="button"
           onClick={() => { playPress(); onBack() }}
           onPointerEnter={playHover}
           className="cursor-pointer font-display text-[11px] lowercase tracking-wide text-star-mid hover:text-white"
         >
-          ← Realms
+          ← realms
         </button>
         <h1 className="font-display text-[13px] lowercase tracking-wide text-white">
           {REALM_LABEL[realm]}
@@ -246,12 +241,12 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
           onPointerEnter={playHover}
           className="cursor-pointer font-display text-[11px] lowercase tracking-wide text-star-mid hover:text-white"
         >
-          Inventory
+          inventory
         </button>
-      </div>
+      </HudBar>
 
       {targets.length > 0 && (
-        <div className="flex flex-col gap-3" style={{ background: '#100d20', border: '4px solid #332f57', padding: '10px 14px' }}>
+        <HudBar className="flex flex-col gap-3">
           <div className="flex items-center gap-3">
             <ProgressBar value={progress} cells={targets.length} />
             <span className="shrink-0 font-display text-[11px] text-star-mid">
@@ -259,32 +254,30 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
             </span>
           </div>
           <TargetList targets={targets} discoveredIds={discoveredIds} />
-        </div>
+        </HudBar>
       )}
 
       <Card className="flex flex-col items-center gap-5 p-6">
         <div className="flex items-center gap-4">
-          {slots.map((id, i) => (
-            <div
-              key={i}
-              className="flex size-16 items-center justify-center border-[3px] border-dashed border-[#5f5a95] bg-[#2a2749]"
-            >
-              {id ? (
-                <button
-                  type="button"
-                  onClick={() => { playPress(); clearSlot(i as 0 | 1) }}
-                  className="flex cursor-pointer flex-col items-center"
-                  aria-label={`Remove ${elementById(id).name} from slot`}
-                >
-                  <PixelArt sprite={resolveIcon(elementById(id).icon)} scale={3} />
-                </button>
-              ) : (
-                <span className="font-display text-lg text-star-dim" aria-hidden="true">
-                  ?
-                </span>
-              )}
-            </div>
-          ))}
+          {slots.map((id, i) =>
+            id ? (
+              <button
+                key={i}
+                type="button"
+                onClick={() => {
+                  playPress()
+                  clearSlot(i as 0 | 1)
+                }}
+                className="flex size-16 cursor-pointer items-center justify-center"
+                aria-label={`Remove ${elementById(id).name} from slot`}
+                style={{ background: 'none', border: 'none', padding: 0 }}
+              >
+                <PixelArt sprite={resolveIcon(elementById(id).icon)} scale={3} />
+              </button>
+            ) : (
+              <EmptySlot key={i} unit={4} size={64} />
+            ),
+          )}
         </div>
 
         <PixelButton

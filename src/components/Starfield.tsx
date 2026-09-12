@@ -95,6 +95,47 @@ function buildStars(width: number, height: number, count: number): Star[] {
   return stars
 }
 
+/**
+ * Where a shooting star is, and whether one is happening at all.
+ *
+ * RARE IS THE WHOLE POINT. Each streak gets a long window and occupies only a
+ * sliver of it, so most of the time the answer is "no". A sky with a shooting
+ * star every two seconds is not a sky, it is a screensaver — the thing that
+ * makes one land is having waited without expecting it.
+ *
+ * Pure and exported so the rarity can be measured rather than guessed at.
+ */
+export function shootingStarAt(
+  now: number,
+  seed: number,
+  width: number,
+  height: number,
+): { x: number; y: number; length: number } | null {
+  // One window per streak, so several can be staggered without ever
+  // synchronising.
+  const windowMs = 24_000 + hash(seed * 61) * 40_000
+  // The streak itself lasts under a second of that window.
+  const streakMs = 700
+  const t = (now + hash(seed * 71) * windowMs) % windowMs
+  if (t > streakMs) return null
+
+  const progress = t / streakMs
+  // Always downward and to one side, like a real one — a horizontal streak
+  // reads as a glitch and an upward one as a rocket.
+  const dir = hash(seed * 83) > 0.5 ? 1 : -1
+  const startX = hash(seed * 97) * width
+  const startY = hash(seed * 103) * height * 0.45
+  const span = width * 0.34
+
+  return {
+    x: Math.floor(startX + dir * progress * span),
+    y: Math.floor(startY + progress * span * 0.55),
+    // The tail grows as it enters and shrinks as it burns out, which is what
+    // stops it reading as a line sliding across the screen.
+    length: Math.max(1, Math.round(Math.sin(progress * Math.PI) * 7)),
+  }
+}
+
 type StarfieldProps = {
   /**
    * CSS pixels per star pixel. The canvas is sized from the viewport divided
@@ -162,6 +203,23 @@ export function Starfield({
           ctx.fillRect(star.x - 1, star.y, 3, 1)
         } else {
           ctx.fillRect(star.x, star.y, 1, 1)
+        }
+      }
+
+      /*
+       * Shooting stars, drawn last so they pass in front of the field.
+       *
+       * The tail is a run of single pixels stepping diagonally, not a line
+       * with a gradient — a fading tail is an alpha ramp, and alpha ramps are
+       * the thing this whole look avoids. It gets one pixel dimmer at the far
+       * end and that is the entire falloff.
+       */
+      for (let i = 0; i < 3; i++) {
+        const shot = shootingStarAt(now, i + 1, width, height)
+        if (!shot) continue
+        for (let t = 0; t < shot.length; t++) {
+          ctx.fillStyle = t < 2 ? BRIGHTNESS[2] : t < 4 ? BRIGHTNESS[1] : BRIGHTNESS[0]
+          ctx.fillRect(shot.x - t, shot.y - t, 1, 1)
         }
       }
     }
