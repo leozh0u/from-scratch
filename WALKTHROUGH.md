@@ -2,7 +2,7 @@
 
 **Generated from `src/data/gameData.ts` by `npm run walkthrough`. Do not edit by hand.**
 
-134 elements, 137 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
+159 elements, 162 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
 
 ## Survival
 
@@ -43,7 +43,7 @@ The main game. Everything a person can point at, and what it actually cost to ma
 
 **You start with 9:** Water, Soil, Limestone, Bauxite, Iron Ore, Crude Oil, Natural Gas, Beeswax, Textile Waste
 
-**Carried over from Survival:** Stone, Wood, Plant Fibre, Sharp Stone, Cordage, Bark, Fire, Charcoal — these are real dependencies, which is why Survival comes first.
+**Carried over from Survival:** Stone, Wood, Plant Fibre, Sharp Stone, Cordage, Bark, Spindle, Fire, Charcoal — these are real dependencies, which is why Survival comes first.
 
 | # | Combine | | Gives | How | Cost |
 | --- | --- | --- | --- | --- | --- |
@@ -166,6 +166,31 @@ The main game. Everything a person can point at, and what it actually cost to ma
 | 117 | Gear | + Steel Spring | Clock | escaping | — |
 | 118 | Gear | + Distillate | Engine | firing | — |
 | 119 | Engine | + Bicycle | Car | assembling | — |
+| 120 | Magnet Coil | + Paper | Speaker | coning | — |
+| 121 | Speaker | + Copper Wire | Microphone | reversing | — |
+| 122 | Speaker | + Steel Spring | Headphones | assembling | — |
+| 123 | PVC | + Microphone | Record | cutting | — |
+| 124 | Copper Wire | + Hardened Steel | Wire Mesh | weaving | — |
+| 125 | Wire Mesh | + Cotton Jersey | Fencing Mask | shaping | — |
+| 126 | Tempered Steel | + Hardened Steel | Fencing Blade | forging | — |
+| 127 | Fencing Mask | + Fencing Blade | Fencing Kit | kitting out | — |
+| 128 | Farmland | + Sharp Stone | Wool | shearing | — |
+| 129 | Wool | + Water | Felt | fulling | — |
+| 130 | Wool | + Spindle | Woollen Yarn | spinning | — |
+| 131 | Woollen Yarn | + Sewing Thread | Jumper | knitting | — |
+| 132 | Farmland | + Compost | Flax | sowing | — |
+| 133 | Flax | + Filtered Water | Retted Flax | retting | — |
+| 134 | Retted Flax | + Cotton Gin | Linen | scutching | — |
+| 135 | Farmland | + Cart Wheel | Flour | milling | — |
+| 136 | Flour | + Filtered Water | Dough | kneading | — |
+| 137 | Dough | + Fire | Bread | baking | — |
+| 138 | Dough | + Ethanol | Beer | brewing | — |
+| 139 | Beer | + Water | Vinegar | souring | — |
+| 140 | Hardened Steel | + Plank | Knife | hafting | — |
+| 141 | Clay | + Quicklime | Pot | throwing | — |
+| 142 | Pot | + Wood Ash | Glaze | glazing | — |
+| 143 | Candle | + Glass Pane | Lantern | housing | — |
+| 144 | Soda Ash | + Water | Washing Soda | dissolving | — |
 
 All 3 targets reachable. ✅
 
@@ -190,4 +215,4 @@ Elements with more than one real way to make them. The receipt tells you which r
 
 ## How much of the board is a dead end
 
-134 elements make 8,911 possible pairs, and 137 of them are recipes. **98.5% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
+159 elements make 12,561 possible pairs, and 162 of them are recipes. **98.7% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
