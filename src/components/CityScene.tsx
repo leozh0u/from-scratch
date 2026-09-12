@@ -1,5 +1,5 @@
 /**
- * The Industry realm's backdrop: a neon street at night.
+ * The Everyday Objects backdrop: a city avenue in daylight.
  *
  * WHY THIS REPLACED A PROCEDURAL CITY, AND WHY THAT IS NOT A RETREAT
  *
@@ -12,17 +12,19 @@
  *
  * Two things were wrong beyond taste, and both are informative:
  *
- * 1. **The palette shared nothing with the UI.** Brick orange and daylight
- *    blue behind indigo panels. This art is deep indigo and violet with pink
- *    signage — the same family the interface is already built from, so the
- *    panels sit *in* the picture rather than on top of it.
+ * 1. **Both sides carry the picture.** The panels and the item shelf cover the
+ *    centre third, so the only part of any backdrop a player ever sees is the
+ *    left and right edges. The procedural city spent all its detail on the
+ *    vanishing point — dead centre, permanently hidden. This composition puts
+ *    storefronts, awnings, signage and fire escapes down both flanks, which is
+ *    precisely where the picture survives.
  *
- * 2. **The UI owns the middle of the screen.** The panels and the item shelf
- *    cover the centre third, so the only part of any backdrop a player ever
- *    sees is the left and right edges. The procedural city spent all its
- *    detail on the vanishing point — dead centre, permanently hidden. This
- *    composition runs its neon vertically down both walls, which is precisely
- *    where the picture is still visible.
+ * 2. **It is bright, and that costs something.** A dark scene would have made
+ *    the panels easier; the brief was fun and bright, and readability is the
+ *    HUD strip's job, not the backdrop's. The strip is already opaque for
+ *    exactly this reason — white pixel type does not survive a pale sky, and
+ *    the answer consoles used was to give the status line its own bar rather
+ *    than to dim the world behind it.
  *
  * NOTHING MOVES, ON PURPOSE
  *
@@ -44,7 +46,7 @@ export function CityScene({ className }: CitySceneProps) {
       style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none' }}
     >
       <img
-        src={`${import.meta.env.BASE_URL}neon-city.png`}
+        src={`${import.meta.env.BASE_URL}big-city.svg`}
         alt=""
         style={{
           position: 'absolute',
@@ -53,9 +55,8 @@ export function CityScene({ className }: CitySceneProps) {
           height: '100%',
           /*
            * The source is 512x512 and windows are wide, so `cover` scales to
-           * the width and crops the height. At a typical laptop size that is
-           * roughly a 3x upscale — which for pixel art is a feature, not a
-           * cost, as long as nothing smooths it.
+           * the width and crops the height — roughly a 3x upscale on a laptop,
+           * which for pixel art is a feature as long as nothing smooths it.
            */
           objectFit: 'cover',
           /*
@@ -64,7 +65,12 @@ export function CityScene({ className }: CitySceneProps) {
            * very bottom is the second least; the band worth keeping is the one
            * where the neon signs and the lit shopfronts are.
            */
-          objectPosition: 'center 38%',
+          /*
+           * Held above centre. The source is square and the window is wide, so
+           * `cover` crops the height; the band worth keeping is the avenue and
+           * the storefronts, not the top of the sky.
+           */
+          objectPosition: 'center 42%',
           /*
            * Without this the browser resamples with bilinear filtering and a
            * 3x upscale turns every hard pixel edge into a soft gradient — the
@@ -74,19 +80,20 @@ export function CityScene({ className }: CitySceneProps) {
         }}
       />
       {/*
-       * A flat wash, not a gradient.
+       * A very light flat wash, not a gradient.
        *
-       * The art is bright where the neon is, and white pixel type on a magenta
-       * sign is unreadable. A uniform darkening keeps every pixel boundary
-       * exactly where it was — a gradient would introduce a smooth ramp across
-       * the picture, which is the same sin as the blur above.
+       * Only enough to seat the picture behind the interface — the previous
+       * night scene took 28% and this takes 10%, because the whole point of
+       * this one is that it is bright. A uniform darkening also keeps every
+       * pixel boundary exactly where it was; a gradient would lay a smooth
+       * ramp across the art, which is the same sin as blurring it.
        */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
-          background: '#0b0a18',
-          opacity: 0.28,
+          background: '#131033',
+          opacity: 0.1,
         }}
       />
     </div>

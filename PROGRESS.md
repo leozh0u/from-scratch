@@ -585,3 +585,22 @@ fire in 7.
 
 **Not yet implemented.** This is the plan; `gameData.ts` is untouched, and
 every one of the 52 recipes needs a real source before it ships.
+
+## The city, second pass — the light version
+
+The night-neon art is out and `public/big-city.svg` is in: a daylight avenue,
+which is what Leo asked for once he saw both. Same reasoning as before — the
+left and right thirds carry storefronts, signage and fire escapes, which is the
+only part of a backdrop that survives the UI owning the centre.
+
+Bright costs something, and the cost is paid by the HUD rather than the
+picture: the strip is opaque so white pixel type never has to sit on a pale
+sky. The darkening wash dropped from 28% to 10%, since the whole point of this
+one is that it is bright.
+
+**Bug found while fitting it.** "Everyday Objects" is sixteen characters of a
+monospaced pixel font — 208px that cannot break — and in the HUD's
+`justify-between` row it wrapped to two lines and overlapped "← realms". Fixed
+with `shrink-0` and `nowrap` on all three items, flex spacers to keep the title
+optically centred, and a one-step-smaller realm name to buy the room. Verified
+at a 442px viewport, which is narrower than anything real.

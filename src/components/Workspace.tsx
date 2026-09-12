@@ -223,23 +223,39 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
        * the top, separate from the world behind it. It also gives the screen a
        * top edge, which the floating version never had.
        */}
-      <HudBar className="flex items-center justify-between">
+      {/*
+       * THE TITLE MUST NOT WRAP, AND IT IS NOT ALLOWED TO SHRINK THE SIDES.
+       *
+       * "Everyday Objects" is sixteen characters of a monospaced pixel font,
+       * and at 13px that is 208px of unbreakable width. In a `justify-between`
+       * row with no constraints it wrapped to two lines and overlapped "←
+       * realms" — a status bar is one line by definition, and a two-line one
+       * reads as a layout fault rather than a long title.
+       *
+       * `shrink-0` on the two buttons keeps them whole, `nowrap` forbids the
+       * wrap outright, and the flex-1 spacers either side of the title keep it
+       * optically centred whatever the two labels weigh. The realm name is a
+       * step smaller than it was, which is what actually buys the room.
+       */}
+      <HudBar className="flex items-center gap-3">
         <button
           type="button"
           onClick={() => { playPress(); onBack() }}
           onPointerEnter={playHover}
-          className="cursor-pointer font-display text-[11px] lowercase tracking-wide text-star-mid hover:text-white"
+          className="shrink-0 cursor-pointer font-display text-[11px] whitespace-nowrap lowercase tracking-wide text-star-mid hover:text-white"
         >
           ← realms
         </button>
-        <h1 className="font-display text-[13px] lowercase tracking-wide text-white">
+        <span className="flex-1" aria-hidden="true" />
+        <h1 className="shrink-0 font-display text-[11px] whitespace-nowrap lowercase tracking-wide text-white">
           {REALM_LABEL[realm]}
         </h1>
+        <span className="flex-1" aria-hidden="true" />
         <button
           type="button"
           onClick={() => { playPress(); onOpenInventory() }}
           onPointerEnter={playHover}
-          className="cursor-pointer font-display text-[11px] lowercase tracking-wide text-star-mid hover:text-white"
+          className="shrink-0 cursor-pointer font-display text-[11px] whitespace-nowrap lowercase tracking-wide text-star-mid hover:text-white"
         >
           inventory
         </button>
