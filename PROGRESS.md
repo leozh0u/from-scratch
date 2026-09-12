@@ -114,3 +114,38 @@ like an object.
 - Leo is still describing the game's logic and goals — more direction incoming.
 - Nothing has been changed in the repo yet beyond adding `DESIGN.md` and this
   file. No commits pushed.
+
+### Architecture plan written — `ARCHITECTURE.md`
+
+Leo's direction: Little Alchemy scope, accurate pixel "emoji" for every object,
+sound logic, failures explained, Nintendo theme throughout, education gamified.
+Reference for the conversational part is his portfolio terminal — curated,
+instant, deterministic, feels like an LLM without being one.
+
+The number that decides the design: **over 98% of possible pairs fail.** Little
+Alchemy 2 is ~720 elements and ~5,000 recipes out of 168,490 possible pairs. At
+300 elements there are 45,150 pairs. So the failure case is not an edge case,
+it is the main loop, and in an educational game that is where the teaching has
+to happen.
+
+Three decisions recorded there:
+
+1. **Two-speed response.** An instant local rule table answers every failure
+   categorically (state + material class + raw/processed/finished), and the
+   Gemini call becomes an opt-in "why not?". Fixes the measured 5–10s latency,
+   scales the credit with curiosity instead of flailing, and teaches the
+   *grammar* of making rather than 45,000 disconnected facts.
+2. **Tiered provenance.** "Sourced" (human-verified, cited, carries numbers)
+   vs "Referenced" (transformation real, reference URL automatically fetched
+   and asserted 200 + title match, no numeric claim). Nothing else ships.
+   Makes traceability machine-verifiable at scale, which the current manual
+   rubric cannot be. Footprint numbers stay Sourced-only.
+3. **Sprite vocabulary.** Hand-draw a set of forms — powder, ingot, sheet,
+   vial, gas, lump, coil, tool, product — each authored once in the existing
+   text format and recoloured per material. Hand-drawn shape, data-driven
+   palette. Bespoke art only for targets and demo-path elements.
+
+Open questions for Leo are listed at the end of that file: how big "huge"
+actually is, where the Nintendo zoom-out shot belongs, and how Layer 1 should
+be worded so Layer 2's "that's actually real" stays a reveal rather than a
+contradiction.
