@@ -6,6 +6,10 @@
 > anyone pasting it in. Keep it current and you never have to re-explain the
 > project.
 
+> **Read `DIRECTION.md` first** — it is the standing answer to "what should I
+> work on next", the four places the model is used and why each is safe, and
+> the rules that do not bend.
+>
 > **Also read `DESIGN.md`** (visual direction and sponsor routes),
 > **`ARCHITECTURE.md`** (how the logic scales to Little Alchemy size), and
 > **`PROGRESS.md`** (what has happened and what is open). `DESIGN.md`
