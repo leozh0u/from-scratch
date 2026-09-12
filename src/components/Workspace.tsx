@@ -439,7 +439,7 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
           {/* basis-0 so the two sides share what is left AFTER the key, and
             * wrap rather than overflow when there is not enough. At 442px the
             * first version pushed the hint key off the panel. */}
-          <div className="flex min-w-0 flex-[1_1_72px] justify-end">
+          <div className="flex min-w-0 flex-[1_1_104px] justify-end">
             <MadeCount found={realmFound} total={realmTotal} />
           </div>
 
@@ -452,7 +452,7 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
             combine
           </PixelButton>
 
-          <div className="flex min-w-0 flex-[1_1_72px] justify-start">
+          <div className="flex min-w-0 flex-[1_1_104px] justify-start">
             <HintButton
               left={hintsLeft}
               onClick={useHint}
