@@ -101,10 +101,26 @@ function fromHsl(h, s, l) {
 const re = /^(\s*)([a-z0-9_]+): \{ form: '([a-z]+)', colour: '(#[0-9a-fA-F]{6})' \},$/gm
 const entries = [...src.matchAll(re)].map((m) => ({ indent: m[1], id: m[2], form: m[3], colour: m[4], raw: m[0] }))
 
+/*
+ * When the name says nothing, the SHAPE says something.
+ *
+ * An id like "abacus" or "windmill" matches no material pattern, so everything
+ * unmatched used to land on one grey — and with five hundred elements that
+ * grey was carrying a dozen of them in the same form, which is the same icon
+ * repeated. Falling back on what the thing looks like is a better guess than
+ * falling back on nothing.
+ */
+const BY_FORM = {
+  grid: '#8792a3', panel: '#8792a3', box: '#7a8494', tower: '#9a8a6a',
+  engine: '#6a7484', ring: '#a8a8b4', rod: '#a8a49a', blade: '#c0c8d0',
+  spool: '#c8a76a', card: '#ded8c8', dish: '#b6a78c', vial: '#a8d4e4',
+  drum: '#8a8a94', cone: '#b6a78c', plant: '#6a9a4a', book: '#8a4a4a',
+}
+
 // 1. Reset every colour to its family, unless it is pinned.
 for (const e of entries) {
   const hit = FAMILY.find(([rx]) => rx.test(e.id))
-  e.base = PINNED[e.id] ?? (hit ? hit[1] : '#8a86a8')
+  e.base = PINNED[e.id] ?? (hit ? hit[1] : (BY_FORM[e.form] ?? '#8a86a8'))
   e.colour = e.base
   e.pinned = e.id in PINNED
 }

@@ -35,6 +35,8 @@ export type FormId =
   | 'book' | 'bar' | 'heap'
   | 'engine' | 'box' | 'tower' | 'panel' | 'drum' | 'rod' | 'ring'
   | 'blade' | 'cone' | 'dish' | 'card' | 'vial' | 'spool' | 'grid'
+  | 'arch' | 'wedge' | 'spiral' | 'fan' | 'cross' | 'fork' | 'cup'
+  | 'roll' | 'slab' | 'chip' | 'star' | 'shell'
 
 /** Rows only: the palette is filled in per element by `composeSprite`. */
 export const FORMS: Record<FormId, string[]> = {
@@ -180,6 +182,42 @@ export const FORMS: Record<FormId, string[]> = {
   ],
   grid: [
     '...........','kkkkkkkkkkk','kakakakakak','kkkkkkkkkkk','kakakakakak','kkkkkkkkkkk','kakakakakak','kccccccccck','kkkkkkkkkkk','...........','...........',
+  ],
+  arch: [
+    '...........','...kkkkk...','..kaaaaak..','.kaakkkaak.','.kak...kak.','.kak...kak.','.kak...kak.','.kck...kck.','.kkk...kkk.','...........','...........',
+  ],
+  wedge: [
+    '...........','.........k.','........ka.','.......kaa.','......kaaa.','.....kaaaa.','....kaaaaa.','...kccccca.','...kkkkkkk.','...........','...........',
+  ],
+  spiral: [
+    '...........','..kkkkkkk..','.kaaaaaaak.','.kakkkkkak.','.kak...kak.','.kak.kkkak.','.kak.kaaak.','.kckkkcccK.','..kkkkkkk..','...........','...........',
+  ],
+  fan: [
+    '.....k.....','....kak....','...kaaak...','..kaaaaak..','.kaaaaaaak.','kaaaaaaaaak','kccccccccck','.....k.....','.....k.....','....kkk....','...........',
+  ],
+  cross: [
+    '....kkk....','....kak....','....kak....','kkkkkakkkkk','kaaaaaaaaak','kccccccccck','....kck....','....kck....','....kkk....','...........','...........',
+  ],
+  fork: [
+    '.k.k.k.....','.k.k.k.....','.k.k.k.....','.kakakk....','.kaaaak....','..kaak.....','...kak.....','...kak.....','...kck.....','...kkk.....','...........',
+  ],
+  cup: [
+    '...........','.kkkkkkk.k.','.kaaaaak.k.','.kbbbbbkkk.','.kbbbbbk...','.kbbbbbk...','.kcccccK...','..kkkkk....','...........','...........','...........',
+  ],
+  roll: [
+    '...........','..kkkkkkk..','.kaaaaaaak.','.kabbbbbak.','.kabkkkbak.','.kabbbbbak.','.kccccccck.','..kkkkkkk..','...........','...........','...........',
+  ],
+  slab: [
+    '...........','...........','kkkkkkkkkkk','kaaaaaaaaak','kbbbbbbbbbk','kbbbbbbbbbk','kcccccccccK','kkkkkkkkkkk','...........','...........','...........',
+  ],
+  chip: [
+    '...........','.k.k.k.k.k.','kkkkkkkkkkk','kaaaaaaaaak','kabbbbbbbak','kabbbbbbbak','kcccccccccK','kkkkkkkkkkk','.k.k.k.k.k.','...........','...........',
+  ],
+  star: [
+    '.....k.....','....kak....','....kak....','k.kkaakk.k.','.kaaaaaaak.','..kaaaaak..','..kaaaaak..','.kck...kck.','.kkk...kkk.','...........','...........',
+  ],
+  shell: [
+    '...........','....kkk....','..kkaaakk..','.kaaaaaaak.','kaabababaak','kababababab','kcbcbcbcbck','.kkkkkkkkk.','...........','...........','...........',
   ],
   board: [
     '...........','...........','...........','kkkkkkkkkkk','kaaaaaaaaak',

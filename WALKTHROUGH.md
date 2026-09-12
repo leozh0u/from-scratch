@@ -2,7 +2,7 @@
 
 **Generated from `src/data/gameData.ts` by `npm run walkthrough`. Do not edit by hand.**
 
-482 elements, 485 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
+512 elements, 515 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
 
 ## Survival
 
@@ -514,6 +514,36 @@ The main game. Everything a person can point at, and what it actually cost to ma
 | 465 | Gold | + File | Ring | sizing | — |
 | 466 | Graphite | + Hydraulic Press | Diamond | compressing | — |
 | 467 | Diamond | + Steel Wire | Drill Bit | bonding | — |
+| 468 | Plank | + Button | Abacus | stringing | — |
+| 469 | Bone China | + Ink | Dice | marking | — |
+| 470 | Cardboard | + Poster | Playing Card | cutting | — |
+| 471 | Dice | + Plywood | Chess Set | turning | — |
+| 472 | Leather | + Synthetic Rubber | Football | stitching | — |
+| 473 | Alloy Frame | + Nylon | Racket | stringing | — |
+| 474 | Plywood | + Varnish | Ski | camber | — |
+| 475 | Stainless Steel | + Boot | Skate | riveting | — |
+| 476 | Plank | + Glue | Ladder | rungs | — |
+| 477 | Rope | + Plank | Rope Ladder | knotting | — |
+| 478 | Ladder | + Clamp | Scaffold | tying | — |
+| 479 | Cart Wheel | + Galvanised Steel | Wheelbarrow | riveting | — |
+| 480 | Stainless Steel | + Hammer | Spade | forging | — |
+| 481 | Farmland | + Sieve | Seed | winnowing | — |
+| 482 | Glass Pane | + Steel Frame | Greenhouse | glazing | — |
+| 483 | Pump | + Valve | Irrigation | channelling | — |
+| 484 | Engine | + Tyre | Tractor | hitching | — |
+| 485 | Tractor | + Sieve | Harvester | threshing | — |
+| 486 | Galvanised Steel | + Crane | Silo | corrugating | — |
+| 487 | Quarry | + Chisel | Millstone | dressing | — |
+| 488 | Water Wheel | + Millstone | Mill | grinding | — |
+| 489 | Bread | + Furnace | Bakery | proving | — |
+| 490 | Bakery | + Coin | Market | trading | — |
+| 491 | Balance | + Steel Spring | Weighing Scale | calibrating | — |
+| 492 | Calculator | + Bell | Cash Register | ringing | — |
+| 493 | Cash Register | + Paper | Receipt | printing | — |
+| 494 | Market | + Window | Shop | fitting | — |
+| 495 | Pallet | + Crane | Warehouse | stacking | — |
+| 496 | Engine | + Container | Lorry | coupling | — |
+| 497 | Postbox | + Lorry | Postal Service | sorting | — |
 
 All 3 targets reachable. ✅
 
@@ -538,4 +568,4 @@ Elements with more than one real way to make them. The receipt tells you which r
 
 ## How much of the board is a dead end
 
-482 elements make 115,921 possible pairs, and 485 of them are recipes. **99.6% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
+512 elements make 130,816 possible pairs, and 515 of them are recipes. **99.6% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
