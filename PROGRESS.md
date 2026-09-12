@@ -623,3 +623,55 @@ bitmap I draw a pixel at a time.
 
 Left alone, the paths rasterise at the window's true resolution and the edges
 stay hard, because the paths themselves trace squares.
+
+---
+
+# LEDGER
+
+Everything Leo has asked for, in his words, with a status. Nothing leaves this
+list silently — an item that turns out to be unnecessary is marked `dropped`
+with the reason, not deleted. The **oldest** open item is the one most at risk,
+so it is listed first.
+
+## Open
+
+| # | Asked | Status |
+| --- | --- | --- |
+| 1 | *"we want the scope to be huge... we want things that cant go together also explained why"* — Little Alchemy scale | **open — in progress.** Planned in full (`GAMEPLAN.md`, `plan/graph.txt`, checked by `npm test`). `gameData.ts` is still the old 43/26 graph. This is the oldest open item and the biggest. |
+| 2 | `UNLOCK_EVERYTHING` back to `false` | **open — blocks submission.** `src/App.tsx:30`. Must flip before 09:00. |
+| 3 | *"the details are the most important"* — the instant failure copy | **open.** Flint + beeswax says only "nothing obvious happens"; the rule table has no clause for an inert mineral meeting a wax. Thin for a game whose pitch is explaining failure. |
+| 4 | Backdrop scale — *"more zoomed out"* | **open, awaiting Leo.** The pixelated-SVG bug is fixed; whether it is still too zoomed is his call, and the fix trades filling the window against showing the whole square. |
+
+## Blocked on Leo
+
+| Asked | Status |
+| --- | --- |
+| Teammates filming the old UI | **blocked.** They need the live link — https://from-scratch-three.vercel.app — and probably a re-shoot. |
+
+## Done
+
+| Asked | Where |
+| --- | --- |
+| *"lets get the survival thing fixed first"* — forest scene from his SVG, sway, leaves | `ForestScene.tsx` |
+| *"occasional shooting stars on the main ui"* | `Starfield.tsx` — retuned after they proved invisible; `scripts/startest.ts` measures the rate |
+| *"give reset button that works to start from scratch"* | `ConfirmDialog.tsx` + `App.tsx`; in-theme, focus defaults to cancel, returns to the title screen |
+| *"also call items everyday objects instead"* | `StartScreen.tsx`, `Workspace.tsx`, `Inventory.tsx` |
+| *"ACCURATE LOOKING pixelated emoji things for every object"* | all 43 have distinct art; `datatest.ts` fails the build if any falls back |
+| *"small bugs like this need to be fixed"* — "manganes/e" | `labelFit.ts` + `scripts/labeltest.ts` |
+| *"the background hella ugly. maybe we should rethink the city"* | `public/big-city.svg` |
+| *"the pixels are messed up"* | `image-rendering: pixelated` on a vector SVG; fixed in both scenes |
+| *"make a pretty easy to understand file of every combo to beat the game"* | `WALKTHROUGH.md`, generated |
+| *"can you plan the entire system, for both survival and everyday objects"* | `GAMEPLAN.md` + `plan/graph.txt` |
+| *"can you also put it on github to launch"* | already live on Vercel from `main`; Pages would lose the `/api` route |
+| *"where is the api being used. have u doe a full run through yet"* | one endpoint, `api/adjudicate.ts`; run-through done |
+| *"i prefer the light version... big city svg"* | swapped in |
+| Pixie credit for both backdrops | `README.md` |
+| *"remember the theme. no exceptions"* | swept every screen for non-pixel type, radii and blurs — clean |
+
+## Dropped
+
+| Asked | Why |
+| --- | --- |
+| Procedural city with walkers, cars, pigeons | Leo rejected it; composed art beat generated art for the third time. `src/art/city.ts` deleted. |
+| Chains around locked items | *"acutalltg ignore the chains, that padlock was good enough"* |
+| *"maybe even looking like an intendo"* | Read as the centred-panel framing, which is in. Reopen if he meant a console bezel. |
