@@ -109,7 +109,7 @@ export function Inventory({ data, game, onBack, onReset }: InventoryProps) {
           * bar on a laptop and still clear of the button on a phone.
           */}
         <h1
-          className="min-w-0 overflow-hidden whitespace-nowrap lowercase text-white"
+          className="min-w-0 overflow-hidden whitespace-nowrap uppercase text-white"
           style={{
             fontFamily: 'var(--font-display)',
             fontSize: 'clamp(9px, 1.9vw, 22px)',

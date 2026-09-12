@@ -19,6 +19,8 @@ type PersistedState = {
    * moment the earning rule changed. Spend is a fact; balance is derived.
    */
   hintsSpent?: Record<RealmId, number>
+  /** How many combines have been pressed, per realm. Shown as a stat. */
+  attempts?: Record<RealmId, number>
 }
 
 function readStorage(): PersistedState | null {
@@ -104,9 +106,22 @@ export function useGameState(data: RecipeData) {
     setHintsSpent((prev) => ({ ...prev, [realm]: (prev[realm] ?? 0) + 1 }))
   }, [])
 
+  /*
+   * Tries, per realm. Counted here rather than in the component because a
+   * component's ref is gone the moment you walk back to the title screen, and
+   * a number that resets when you leave the room is not a statistic.
+   */
+  const [attempts, setAttempts] = useState<Record<RealmId, number>>(
+    () => readStorage()?.attempts ?? { survival: 0, everyday: 0 },
+  )
+
+  const countAttempt = useCallback((realm: RealmId) => {
+    setAttempts((prev) => ({ ...prev, [realm]: (prev[realm] ?? 0) + 1 }))
+  }, [])
+
   useEffect(() => {
-    writeStorage({ discovered, routes, hintsSpent })
-  }, [discovered, routes, hintsSpent])
+    writeStorage({ discovered, routes, hintsSpent, attempts })
+  }, [discovered, routes, hintsSpent, attempts])
 
   const isDiscovered = useCallback(
     (elementId: string) =>
@@ -173,7 +188,8 @@ export function useGameState(data: RecipeData) {
     setDiscovered(fresh)
     setRoutes({})
     setHintsSpent({ survival: 0, everyday: 0 })
+    setAttempts({ survival: 0, everyday: 0 })
   }, [data.starters])
 
-  return { discovered, allDiscovered, isDiscovered, combine, reset, routes, hintsSpent, spendHint }
+  return { discovered, allDiscovered, isDiscovered, combine, reset, routes, hintsSpent, spendHint, attempts, countAttempt }
 }

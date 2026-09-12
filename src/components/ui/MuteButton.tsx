@@ -16,36 +16,44 @@ import { isMuted, setMuted } from '../../audio/sfx'
  * beside it is a drawing, and at eleven pixels the difference is whether it
  * reads at all.
  */
+/*
+ * SIX ROWS, NOT ELEVEN, AND THAT IS THE WHOLE FIX FOR THE ALIGNMENT.
+ *
+ * Leo: "they are not level." The button next to this one is the same control
+ * with a word in it, and a word's box is the font's line height —
+ * `unit * 3 * 1.3`, so twelve pixels at unit 3. The first speaker was eleven
+ * rows drawn at scale 2, which is twenty-two, so the mute key stood ten
+ * pixels taller than reset and their faces could not line up.
+ *
+ * Six rows at scale 2 is twelve pixels: the same box the label occupies. The
+ * icon is now the same height as a line of type, which is what makes two
+ * buttons with different contents the same size.
+ */
 const SPEAKER: Sprite = {
   rows: [
-    '..........a',
-    '...aa...a.a',
-    '..aaa..a..a',
-    '.aaaa.a.a.a',
-    'aaaaa.a.a.a',
-    'aaaaa.a.a.a',
-    '.aaaa.a.a.a',
-    '..aaa..a..a',
-    '...aa...a.a',
-    '..........a',
-    '...........',
+    '..aa...a...',
+    '.aaa..a.a..',
+    'aaaa.a.a.a.',
+    'aaaa.a.a.a.',
+    '.aaa..a.a..',
+    '..aa...a...',
   ],
   palette: { a: '#ffffff' },
 }
 
+/*
+ * Muted is a speaker with a cross beside it, not a speaker with a bar drawn
+ * across it. A bar through the cone is a rendering trick that needs more
+ * pixels than there are here; at this size it reads as a smudge.
+ */
 const MUTED: Sprite = {
   rows: [
-    '...........',
-    '...aa......',
-    '..aaa..b.b.',
-    '.aaaa...b..',
-    'aaaaa..b.b.',
-    'aaaaa......',
-    '.aaaa..b.b.',
-    '..aaa...b..',
-    '...aa..b.b.',
-    '...........',
-    '...........',
+    '..aa.......',
+    '.aaa..b.b..',
+    'aaaa...b...',
+    'aaaa..b.b..',
+    '.aaa.......',
+    '..aa.......',
   ],
   palette: { a: '#ffffff', b: '#ff7d7d' },
 }
@@ -67,7 +75,17 @@ export function MuteButton({ unit = 3 }: { unit?: number }) {
         setLocal(next)
       }}
     >
-      <PixelArt sprite={muted ? MUTED : SPEAKER} scale={Math.max(2, Math.round(unit * 0.7))} />
+      {/* A box exactly as tall as a line of the button's own type, so this
+        * key and the worded one beside it are the same height. */}
+      <span
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          height: Math.round(unit * 3 * 1.3),
+        }}
+      >
+        <PixelArt sprite={muted ? MUTED : SPEAKER} scale={2} />
+      </span>
     </PixelButton>
   )
 }

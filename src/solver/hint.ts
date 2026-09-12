@@ -119,3 +119,73 @@ export const FOUND_PER_HINT = 10
 export function hintsEarned(foundCount: number): number {
   return STARTING_HINTS + Math.floor(foundCount / FOUND_PER_HINT)
 }
+
+/**
+ * Every step still missing between here and a target, in an order you could
+ * actually follow.
+ *
+ * This is what "give up" shows. It is generated from the recipe graph rather
+ * than written down anywhere, so it cannot go stale as the graph grows, and it
+ * is ordered the way the walkthrough is: a step only appears once both of its
+ * inputs are either already held or produced by an earlier step in the list.
+ *
+ * It deliberately does not wipe anything. Being shown the answer is already
+ * the cost; deleting what the player made on top of that is a punishment for
+ * asking, and there is no fail state here to be sent back to.
+ */
+export type Step = { inputs: [string, string]; output: string; process: string }
+
+export function pathToTarget(
+  data: RecipeData,
+  discoveredIds: Set<string>,
+  targetId: string,
+): Step[] {
+  const byOutput = new Map<string, RecipeDef[]>()
+  for (const recipe of data.recipes) {
+    byOutput.set(recipe.output, [...(byOutput.get(recipe.output) ?? []), recipe])
+  }
+
+  const held = new Set(discoveredIds)
+  const steps: Step[] = []
+  const building = new Set<string>()
+
+  /*
+   * Depth first, cheapest branch first, with `building` guarding against a
+   * graph that has somehow gained a cycle. The solver already rejects cyclic
+   * data at build time; this is belt and braces, because a stack overflow
+   * inside a help feature is a worse failure than an incomplete answer.
+   */
+  function make(id: string): boolean {
+    if (held.has(id)) return true
+    if (building.has(id)) return false
+    const routes = byOutput.get(id)
+    if (!routes || routes.length === 0) return false
+
+    building.add(id)
+    for (const recipe of routes) {
+      if (recipe.inputs.every((input) => make(input))) {
+        building.delete(id)
+        held.add(id)
+        steps.push({
+          inputs: [recipe.inputs[0], recipe.inputs[1]],
+          output: id,
+          process: recipe.process,
+        })
+        return true
+      }
+    }
+    building.delete(id)
+    return false
+  }
+
+  return make(targetId) ? steps : []
+}
+
+/** The target a "give up" should answer about: the first one not yet found. */
+export function nextUnfoundTarget(
+  data: RecipeData,
+  discoveredIds: Set<string>,
+  realm: RealmId,
+): string | null {
+  return data.targets[realm].find((id) => !discoveredIds.has(id)) ?? null
+}

@@ -11,9 +11,11 @@ import { TargetList } from './TargetList'
 import { PixelButton } from './ui/PixelButton'
 import { BackArrow } from './ui/BackArrow'
 import { LearnMore } from './LearnMore'
-import { MadeCount } from './ui/MadeCount'
+import { StatPanel } from './ui/StatPanel'
 import { HintButton } from './ui/HintButton'
-import { pickHint, hintsEarned } from '../solver/hint'
+import { GiveUpButton } from './ui/GiveUpButton'
+import { ConfirmDialog } from './ui/ConfirmDialog'
+import { pickHint, hintsEarned, pathToTarget, nextUnfoundTarget } from '../solver/hint'
 import { Card } from './ui/Card'
 import { ElementTile, TILE_WIDTH } from './ui/ElementTile'
 import { ProgressBar } from './ui/ProgressBar'
@@ -149,6 +151,30 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
   const realmFound = [...new Set(craftableIds)].filter((id) => game.isDiscovered(id)).length
 
   /*
+   * A handful of what is still missing, for the Everything bar.
+   *
+   * Ordered by how close it is to being makeable — both inputs held first,
+   * then one, then none — so the strip reads as "next" rather than as a
+   * random sample of the far end of the graph. Capped at six: the whole list
+   * is one press away in the inventory, and a bar that tries to be the
+   * inventory is a worse inventory.
+   */
+  const stillMissing = (() => {
+    const held = new Set(inventory)
+    const byOutput = new Map(data.recipes.map((r) => [r.output, r]))
+    return [...new Set(craftableIds)]
+      .filter((id) => !game.isDiscovered(id))
+      .map((id) => {
+        const recipe = byOutput.get(id)
+        const ready = recipe ? recipe.inputs.filter((i) => held.has(i)).length : 0
+        return { element: elementById(id), ready }
+      })
+      .sort((a, b) => b.ready - a.ready || a.element.name.localeCompare(b.element.name))
+      .slice(0, 6)
+      .map((entry) => entry.element)
+  })()
+
+  /*
    * Hints: earned by playing, spent one at a time, and chosen by the SOLVER
    * rather than by the model. See solver/hint.ts — the one thing the runtime
    * model is never allowed to know is the recipe graph, and a hint is a claim
@@ -171,6 +197,35 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
    * they want to be told.
    */
   const [hintDepth, setHintDepth] = useState(0)
+
+  /*
+   * GIVE UP SHOWS THE ROUTE AND WIPES NOTHING.
+   *
+   * I argued against this and Leo asked again, so it is built — as the useful
+   * half of what he described first, "show how to reach fire or something".
+   * Being shown the answer is already the cost of asking for it; deleting
+   * what somebody made on top of that is a punishment, and there is no fail
+   * state in this game to send a player back from.
+   *
+   * The route is generated from the recipe graph rather than stored, so it
+   * cannot go stale as the graph grows, and it lists only the steps still
+   * missing rather than replaying what the player has already done.
+   */
+  const [givingUp, setGivingUp] = useState(false)
+  const [revealed, setRevealed] = useState<string[] | null>(null)
+  const giveUpTarget = nextUnfoundTarget(data, new Set(inventory), realm)
+
+  function confirmGiveUp() {
+    setGivingUp(false)
+    if (!giveUpTarget) return
+    const steps = pathToTarget(data, new Set(inventory), giveUpTarget)
+    setRevealed(
+      steps.map(
+        (step) =>
+          `${elementById(step.inputs[0]).name.toLowerCase()} + ${elementById(step.inputs[1]).name.toLowerCase()} = ${elementById(step.output).name.toLowerCase()}`,
+      ),
+    )
+  }
   const hintsLeft = hintsEarned(realmFound) - (game.hintsSpent[realm] ?? 0)
 
   function useHint() {
@@ -235,6 +290,7 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
   }
 
   function handleCombine() {
+    game.countAttempt(realm)
     const [a, b] = slots
     if (!a || !b) return
 
@@ -347,7 +403,7 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
            * untidy; a clipped control is broken, and on a phone it is the only
            * way into the inventory.
            */
-          className="min-w-0 overflow-hidden whitespace-nowrap lowercase text-white"
+          className="min-w-0 overflow-hidden whitespace-nowrap uppercase text-white"
           style={{
             fontFamily: 'var(--font-display)',
             /*
@@ -373,7 +429,21 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
         </PixelButton>
       </HudBar>
 
-      {targets.length > 0 && (
+      {/*
+       * TWO REALMS, TWO KINDS OF GOAL.
+       *
+       * Survival keeps its three targets, because it is the tutorial and a
+       * tutorial with an explicit finish line is the point of one: fire,
+       * charcoal, lit torch, and you are done.
+       *
+       * Everything does not. Leo: "the point of everyting is not to get the
+       * cotton t shrit, but to unlock every possible thing." Three named
+       * targets out of seventy-three actively misrepresent that — a player
+       * who makes all three is told they have finished a realm they have
+       * barely started. So it shows how much is left and some of what is
+       * left, which is the goal it actually has.
+       */}
+      {realm === 'survival' && targets.length > 0 && (
         <HudBar className="flex flex-col gap-3">
           <div className="flex items-center gap-3">
             <ProgressBar value={progress} cells={targets.length} />
@@ -382,6 +452,43 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
             </span>
           </div>
           <TargetList targets={targets} discoveredIds={discoveredIds} />
+        </HudBar>
+      )}
+
+      {realm === 'everyday' && (
+        <HudBar className="flex flex-col gap-3">
+          <div className="flex items-center gap-3">
+            <ProgressBar value={(realmFound / Math.max(1, realmTotal)) * 100} cells={12} />
+            <span className="shrink-0 font-display text-[11px] whitespace-nowrap text-star-mid">
+              {realmFound}/{realmTotal}
+            </span>
+          </div>
+          {stillMissing.length > 0 && (
+            <div className="flex flex-col gap-2">
+              <p className="font-display text-[9px] tracking-widest text-muted uppercase">
+                still missing
+              </p>
+              {/*
+                * Silhouettes with their names, the same treatment the
+                * inventory gives a locked element — and not a spoiler by this
+                * game's own standard, because the puzzle here is the PAIRING
+                * and not the vocabulary. Knowing that slag cement exists is
+                * something to aim at; it does not tell you it comes from slag
+                * and cement.
+                */}
+              <div className="flex flex-wrap justify-center gap-2">
+                {stillMissing.map((element) => (
+                  <ElementTile
+                    key={element.id}
+                    icon={resolveIcon(element.icon)}
+                    label={element.name}
+                    locked
+                    unit={3}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </HudBar>
       )}
 
@@ -439,8 +546,25 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
           {/* basis-0 so the two sides share what is left AFTER the key, and
             * wrap rather than overflow when there is not enough. At 442px the
             * first version pushed the hint key off the panel. */}
-          <div className="flex min-w-0 flex-[1_1_104px] justify-end">
-            <MadeCount found={realmFound} total={realmTotal} />
+          {/*
+            * Stats rather than nothing. Leo: "i dont like when its too
+            * empty", and "maybe add some stats, like how many tries".
+            *
+            * Tries and made are the two that mean something here: the game is
+            * mostly failure by design — over 97% of pairs do nothing — so a
+            * try count is not a shaming number, it is the shape of the
+            * activity. Hints left sits with them rather than only on the key,
+            * because it is a resource and resources belong with the other
+            * numbers.
+            */}
+          <div className="flex min-w-0 flex-[1_1_140px] justify-center sm:justify-end">
+            <StatPanel
+              stats={[
+                { label: 'made', value: `${realmFound} of ${realmTotal}`, bright: true },
+                { label: 'tries', value: String(game.attempts[realm] ?? 0) },
+                { label: 'hints left', value: String(Math.max(0, hintsLeft)) },
+              ]}
+            />
           </div>
 
           <PixelButton
@@ -452,12 +576,9 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
             combine
           </PixelButton>
 
-          <div className="flex min-w-0 flex-[1_1_104px] justify-start">
-            <HintButton
-              left={hintsLeft}
-              onClick={useHint}
-              disabled={hintsLeft <= 0}
-            />
+          <div className="flex min-w-0 flex-[1_1_140px] flex-col items-center gap-2 sm:items-start">
+            <HintButton left={hintsLeft} onClick={useHint} disabled={hintsLeft <= 0} />
+            <GiveUpButton onClick={() => setGivingUp(true)} disabled={!giveUpTarget} />
           </div>
         </div>
 
@@ -468,6 +589,28 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
           >
             {hint}
           </p>
+        )}
+
+        {revealed && (
+          <div className="flex w-full flex-col items-center gap-2 pt-1">
+            <p className="font-display text-[9px] tracking-widest text-muted uppercase">
+              the rest of the way
+            </p>
+            <ol className="m-0 flex list-none flex-col gap-1 p-0 text-center">
+              {revealed.map((line, i) => (
+                <li
+                  key={line}
+                  className="font-display text-[9px] leading-[1.9] lowercase"
+                  style={{ color: i === revealed.length - 1 ? '#ffffff' : '#b9b3e0' }}
+                >
+                  {line}
+                </li>
+              ))}
+            </ol>
+            <PixelButton tone="default" unit={3} onClick={() => setRevealed(null)}>
+              hide
+            </PixelButton>
+          </div>
         )}
 
         {/*
@@ -562,6 +705,17 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
           />
         ))}
       </div>
+
+      {givingUp && giveUpTarget && (
+        <ConfirmDialog
+          title="show the route?"
+          body={`this prints every step still between you and ${elementById(giveUpTarget).name.toLowerCase()}. nothing is wiped.`}
+          confirmLabel="show me"
+          cancelLabel="keep trying"
+          onConfirm={confirmGiveUp}
+          onCancel={() => setGivingUp(false)}
+        />
+      )}
 
       {discovery && (
         <DiscoveryCard
