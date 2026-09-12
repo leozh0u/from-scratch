@@ -17,9 +17,10 @@
   --font-display: 'Press Start 2P', ui-monospace, monospace;
   --font-body: 'Nunito', ui-sans-serif, system-ui, -apple-system, sans-serif;
 
-  /* Brand red — the wordmark */
+  /* Brand red — the wordmark, and the default accent for neutral UI */
   --color-brand: #e03e3e;
   --color-brand-deep: #a32828;
+  --color-brand-soft: #fbe8e8;
 
   /* Sky bands, dark to light — hard stops, never a smooth gradient */
   --color-sky-1: #3fb8de;
