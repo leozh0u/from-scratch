@@ -1,0 +1,13 @@
+# The only elements handed to the player. Everything else is earned.
+# realm | id
+S|stone
+S|wood
+S|plant_fibre
+E|water
+E|soil
+E|limestone
+E|bauxite
+E|iron_ore
+E|crude_oil
+E|natural_gas
+E|beeswax

@@ -564,3 +564,24 @@ that is permanently covered.
 
 Nothing animates. The note stands that detail beats movement, and hand-drawn
 sprites over composed art would read in a visibly different hand.
+
+## The system, planned
+
+`GAMEPLAN.md` now holds the whole game: 57 elements, 52 recipes, both realms,
+from **three** starting things — Stone, Wood, Plant Fibre. Fire is not a
+starter any more; it is the first thing you make, which is the point of the
+realm.
+
+The plan is authored as a machine-readable edge list at `plan/graph.txt` and
+checked by `scripts/plancheck.ts` in `npm test`. That was not decoration: the
+first draft had four unreachable elements because one recipe was left open and
+three depended on it, and the checker found them immediately. A second run
+failed the starter-reuse assertion with six single-use starters, which was
+fixed by *changing the design* — Haber-Bosch for farmland, beeswax-waxed
+thread, red ochre as a second dye route — rather than by loosening the test.
+
+Starters used only once: was 14 of 19, now 3 of 11. Wood appears in 9 recipes,
+fire in 7.
+
+**Not yet implemented.** This is the plan; `gameData.ts` is untouched, and
+every one of the 52 recipes needs a real source before it ships.

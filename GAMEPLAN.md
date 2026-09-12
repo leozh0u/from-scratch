@@ -1,228 +1,212 @@
-# The game plan — realms, chains, and what finishes when
+# The game plan — the whole system, both realms
 
-> `CLAUDE.md` is what the project is. `ARCHITECTURE.md` is how the logic scales.
-> `DESIGN.md` is how it looks. **This file is the content**: which realms exist,
-> what is in them, where one ends and the next begins, and what ships before
-> 9 AM Sunday.
-
----
-
-## 1. What is wrong with the game as it stands
-
-Not opinion — this is measured, and `WALKTHROUGH.md` shows it.
-
-**Nineteen starting elements, and fourteen of them are used exactly once.**
-A starter is supposed to be an ingredient you keep coming back to. Little
-Alchemy has four, and earth turns up in a hundred recipes — that reuse *is* the
-game. Ours are single-use parts handed out with the recipe already attached.
-
-**Five of the twenty-six recipes are a thing combined with itself.** Cotton
-fibre + cotton fibre, crude oil + crude oil. That is the move you reach for when
-you have not got a second ingredient to name.
-
-**The starters are not primitive.** A cotton gin is a *machine* — more complex
-than almost anything you build with it. High-carbon steel is a manufactured
-alloy handed over as though it were a rock. Crude oil and natural gas are
-starting materials in the **survival** realm, where a person has their hands and
-a forest.
-
-**And there is a real logic bug hiding in that.** Today you strike flint on
-high-carbon steel to make the spark that makes fire. You cannot smelt steel
-without fire. The game hands you a thing that requires the goal in order to
-reach the goal. No judge will catch it in a three-minute demo, and it is exactly
-what this project claims not to do.
-
-So the fix is not "fewer starters". It is **start lower and earn more**.
+> `CLAUDE.md` is what the project is. `ARCHITECTURE.md` is how the logic
+> scales. `DESIGN.md` is how it looks. **This is the content**: every element
+> and every recipe, for both realms, from three starting things.
+>
+> The tables below are **generated** from `plan/graph.txt` by
+> `npm run plan`, and `npm test` checks that graph for reachability, pair
+> collisions and starter reuse. A plan this size cannot be proof-read — the
+> first draft had four elements nothing could reach, and the checker found
+> them in a second.
 
 ---
 
-## 2. The shape: two realms, and they are a timeline
+## 1. What was wrong, measured
 
-| | **Survival** | **Industry** |
-| --- | --- | --- |
-| You are | one person, empty-handed | a civilisation at scale |
-| You have | what the ground gives you | mines, wells, farms, factories |
-| The lesson | *how making anything works at all* | *what making things actually costs* |
-| Footprint | zero, by rule | real, sourced litres and kilograms |
-| Ends when | fire stops being luck and becomes a tool you carry | you hold the three ordinary objects and see the receipt |
+`WALKTHROUGH.md` shows the shipped game. **Nineteen starting elements, and
+fourteen of them are used exactly once.** A starter is meant to be an
+ingredient you keep coming back to; Little Alchemy has four, and earth appears
+in a hundred recipes. That reuse *is* the game. Ours were single-use parts
+handed over with the recipe already attached.
 
-Survival is prehistory. Industry is now. That is why Survival comes first — not
-as gating, but because Industry's chains genuinely consume Survival's fire,
-charcoal and steel.
+The starters were also not primitive. A **cotton gin is a machine** — more
+complex than most things you built with it. **High-carbon steel** is a
+manufactured alloy handed over like a rock. **Crude oil and natural gas were
+survival starters**, in the realm where a person has their hands and a forest.
 
-### On the name
-
-**"Items" is a menu word, not a place.** It names the UI, not the world, and it
-sits badly next to "Survival", which names a *condition*.
-
-- **"Advanced"** is a difficulty label. It implies Survival is "Basic", which
-  makes the first realm sound like a warm-up rather than a story.
-- **"Technology"** does not separate them. A bow drill is technology. A lighter
-  is technology. The word is true of both realms, so it distinguishes neither.
-
-**Recommendation: `Industry`.** One word, same grammatical weight as Survival,
-and it is literally what the realm teaches — industrial chemistry and industrial
-footprints. *Survival → Industry* reads as an arc.
-
-Runner-up if you want something grander: **`Civilisation`**. Bigger feeling,
-leaves room for a third realm later, slightly less honest about the content.
+And a real logic bug was hiding in that: you struck flint on high-carbon steel
+to make the spark that made fire, but **you cannot smelt steel without fire**.
+The game handed you a thing that required the goal in order to reach the goal.
 
 ---
 
-## 3. Survival, rebuilt
+## 2. The new shape
 
-**Four primitives. Everything else is earned.**
+**Three things. Everything else is earned.**
 
-> **Stone · Wood · Plant Fibre · Ore**
+> ## Stone · Wood · Plant Fibre
 
-Three acts. Each one is a real thing people did, in the order they did it.
+That is the whole starting inventory of the game. Everyday Objects adds the
+materials you can only get by digging or pumping — but it opens with Survival's
+fire, charcoal and tools already in hand, so it never starts from nothing.
 
-### Act I — fire from nothing
+**Fire is not a starter. Fire is the first thing you make.** Little Alchemy
+hands you fire because its fire is an ingredient; ours is an achievement, and
+the opening act of the game is earning it the way it was actually earned — by
+spinning wood against wood until it smoulders.
 
-The whole act uses three of the four primitives and no metal at all, because
-metal does not exist yet.
+### How the reuse changed
 
-| Combine | Gives | Why it is real |
+| | Shipped | Planned |
 | --- | --- | --- |
-| Stone + Stone | **Sharp Stone** | percussion knapping — conchoidal fracture |
-| Plant Fibre + Plant Fibre | **Cordage** | reverse-wrap twisting |
-| Wood + Sharp Stone | **Fire Board** | carved hearth with a notch |
-| Wood + Cordage | **Bow** | the bow of a bow drill |
-| Wood + Sharp Stone | **Spindle** | *(alternate output — see note)* |
-| Bow + Spindle | **Bow Drill** | the assembled tool |
-| Bow Drill + Fire Board | **Ember** | friction dust ignites at ~340 °C |
-| Plant Fibre + Sharp Stone | **Tinder Bundle** | shredded dry fibre, a nest |
-| Ember + Tinder Bundle | **Flame** | the ember is blown into flame |
-| Flame + Wood | ⭐ **Fire** | the first target |
+| Starters | 19 | **11** (3 in Survival) |
+| Starters used only once | 14 of 19 | **3 of 11** |
+| Elements | 43 | **57** |
+| Recipes | 26 | **52** |
+| Wood is used in | — | **9 recipes** |
+| Fire is used in | 1 | **7 recipes** |
 
-### Act II — fire makes metal
+Wood 9, fire 7, water 6, stone 5, plant fibre 5, sharp stone 4. Those are
+ingredients now.
 
-Now fire exists, it can be spent. This is the act that fixes the logic bug: steel
-arrives **after** fire, which is the only order it can arrive in.
+---
 
-| Combine | Gives | Why it is real |
-| --- | --- | --- |
-| Fire + Wood | **Charcoal** | pyrolysis — wood heated without oxygen |
-| Ore + Charcoal | **Iron** | bloomery smelting, carbon reduces the oxide |
-| Iron + Charcoal | ⭐ **High-Carbon Steel** | carburising — carbon into the iron |
+## 3. Survival — three acts
 
-### Act III — fire you can carry
+**Act I, fire from nothing.** Every pair of the three starters does something,
+which is the best possible opening: a new player's first random guess works.
+Stone on stone knaps a blade, fibre twisted on fibre makes cordage, wood spun
+on wood is a hand drill, and stone against fibre shreds a tinder bundle.
 
-| Combine | Gives | Why it is real |
-| --- | --- | --- |
-| Stone + Sharp Stone | **Flint** | flint knapped out of chert-bearing rock |
-| Flint + High-Carbon Steel | **Spark** | steel shavings ignite in air |
-| Spark + Tinder Bundle | **Char Cloth / Ember** | the repeatable catch |
-| Flint + Cordage | ⭐ **Flint & Steel** | the kit, wrapped and carried |
+There are **two ways to make an ember**, and that is the lesson of the act. The
+hand drill is three steps from the start and it is how it was done first. The
+bow drill is six steps and it is how it was done once people got tired of
+failing. Both are real, the game records which one you used, and the slow
+reliable road is worth more than the fast unreliable one.
+
+**Act II, fire makes charcoal.** Fire spent on wood gives charcoal, and
+charcoal is the bridge: it is the fuel that makes metal possible, and it is
+what you carry into the second realm.
+
+**Act III, fire you can carry.** A torch is fibre wrapped on a stick, lit.
 
 ### When Survival ends
 
-**When you can make fire on purpose, twice.** Act I is fire by luck and
-sweat — a bow drill takes minutes and often fails. Act III is a kit in your
-pocket that works every time. That is the whole arc of the realm in one
-sentence, and it is the moment Industry becomes possible, because Industry needs
-fire, charcoal and steel and you now have all three.
+**When you can make fire on purpose, twice.** Act I is fire by luck and sweat.
+Act III is fire in your hand that you can walk with. Everyday Objects unlocks
+there — not as arbitrary gating, but because its first smelt needs charcoal and
+its first evaporation needs fire, and you now have both.
 
-**Targets: Fire · High-Carbon Steel · Flint & Steel.**
-
-**Size:** 4 starters, ~19 elements, ~17 recipes. Today it is 8 starters and 9
-recipes. Reuse goes up sharply — Wood appears in six recipes, Plant Fibre in
-four, Sharp Stone in three, Charcoal in two.
-
-**Play time:** three to four minutes. It is the tutorial, and it has to stay
-one.
-
-> **Note on the two-outputs-from-one-pair problem.** `Wood + Sharp Stone`
-> appears twice above, which the engine cannot do — a pair has one output. Fix
-> by splitting: `Wood + Sharp Stone → Spindle`, and `Spindle + Sharp Stone →
-> Fire Board`. Carving the board from an already-shaped stick is just as true
-> and it removes the collision.
+**Targets: Fire · Charcoal · Lit Torch.**
 
 ---
 
-## 4. Industry, rebuilt
+## 4. Everyday Objects — what the modern world costs
 
-Industry may legitimately start from mined and pumped materials — that is what
-industry *is*. But the same two rules apply: **no machine is a starter, and
-nothing is used only once.**
+Its starters are the things you genuinely extract: water, soil, limestone,
+bauxite, iron ore, crude oil, natural gas, beeswax. Nothing manufactured is
+handed over, and **the machines are built, not given**:
 
-### What stops being a starter
+- **Cotton Gin** = High-Carbon Steel + Wood. It is a machine; building it is
+  the point.
+- **Soda Ash** = Salt + Quicklime — the **Solvay process**, one of the most
+  important industrial reactions there is, and we were skipping it entirely.
+- **Salt** = Water + Fire. Evaporation, the oldest chemistry there is.
+- **Farmland** = Ammonia + Soil, where ammonia is Natural Gas + Water — the
+  **Haber–Bosch process**, which is why the planet can feed eight billion
+  people, and it was nowhere in the game.
+- **Dye** has two real routes: boiled plant fibre, or **red ochre**, which is
+  iron oxide and the oldest pigment humans have used.
+- **Textile Waste** = your own finished T-Shirt, cut up. A footprint game that
+  lets you **recycle the shirt you just made** back into the chain is the best
+  single idea in this document.
 
-| Was a starter | Becomes | Why |
-| --- | --- | --- |
-| **Cotton Gin** | Steel + Wood → Cotton Gin | It is a machine. Building it is the point. |
-| **Soda Ash** | Salt + Limestone → Soda Ash | The **Solvay process** — one of the most important industrial reactions there is, and we were skipping it. |
-| **Dye** | Plant Fibre + Water → Dye | Natural dyeing, and it re-uses a Survival primitive. |
-| **Textile Waste** | Cotton T-Shirt + Water → Textile Waste | Closes the loop. A footprint game that lets you **recycle your own finished shirt** back into the chain is the best single idea in this document. |
-
-### Starters that stay
-
-**Water · Air · Farmland · Bauxite · Salt · Limestone · Silica Sand · Crude Oil**
-
-Eight, all genuinely extracted rather than manufactured. Plus **Fire**,
-**Charcoal**, **Steel** and **Cordage** carried in from Survival.
-
-### The chains
-
-| Chain | Target | Teaches |
-| --- | --- | --- |
-| Cotton | ⭐ **Cotton T-Shirt** | 2,720 L of water in one shirt |
-| Aluminium | ⭐ **Aluminium Can** | smelting is where the CO₂ goes |
-| Glass | ⭐ **Glass Bottle** | 0.27 kg CO₂, charged to the melt |
-| **Recycling loop** | Textile Waste → back to yarn | the same shirt for a fraction of the cost |
-
-### The candle and the lighter move here
-
-They are in Survival today and they do not belong there. A candle needs refined
-paraffin; a lighter needs butane and a pressed steel case. Both are industrial
-objects, and crude oil and natural gas — currently *survival starters*, which is
-absurd — come with them.
-
-| Combine | Gives |
-| --- | --- |
-| Crude Oil + Fire | Paraffin Wax |
-| Cordage + Cordage | Wick |
-| Paraffin Wax + Wick | Candle |
-| Crude Oil + Air | Natural Gas → Butane |
-| Butane + Steel | Lighter |
+**Targets: Cotton T-Shirt · Aluminium Can · Glass Bottle**, with Candle and
+Lighter as side routes — both moved here out of Survival, because a candle
+needs refined paraffin and a lighter needs butane and a pressed steel case.
 
 ---
 
-## 5. Stretch chains, if there is time
+## 5. The whole system
 
-Ranked by *teaching value per recipe*, which is the only ranking that matters
-here. Each needs a real source before it ships; none of them ship without one.
+### Survival
 
-1. **Paper** — Wood + Water → Pulp → Paper. Everyone has held it, nobody knows
-   it is 10 L of water a sheet.
-2. **Concrete** — Limestone + Fire → Quicklime → Cement → Concrete. Cement is
-   ~8% of global CO₂ and that number shocks people.
-3. **PET Bottle** — Crude Oil → Ethylene → PET. Pairs directly against the glass
-   bottle, so the receipt becomes a *comparison*.
-4. **Bread** — Farmland + Water → Wheat → Flour → Bread. The gentlest chain in
-   the game, good for a first-time player.
-5. **Smartphone** — the biggest footprint story there is, and far too big to do
-   honestly tonight.
+**You start with 3:** Stone · Wood · Plant Fibre
+
+| # | | | |
+| --- | --- | --- | --- |
+| 1 | Stone | + Stone | = **Sharp Stone** |
+| 2 | Plant Fibre | + Plant Fibre | = **Cordage** |
+| 3 | Wood | + Wood | = **Hand Drill** |
+| 4 | Stone | + Plant Fibre | = **Tinder Bundle** |
+| 5 | Stone | + Wood | = **Bark** |
+| 6 | Wood | + Plant Fibre | = **Torch** |
+| 7 | Wood | + Sharp Stone | = **Spindle** |
+| 8 | Sharp Stone | + Spindle | = **Fire Board** |
+| 9 | Wood | + Cordage | = **Bow** |
+| 10 | Bow | + Spindle | = **Bow Drill** |
+| 11 | Hand Drill | + Fire Board | = **Ember** |
+| 12 | Bow Drill | + Fire Board | = **Ember** |
+| 13 | Bark | + Sharp Stone | = **Tinder Bundle** |
+| 14 | Ember | + Tinder Bundle | = **Flame** |
+| 15 | Flame | + Wood | = **Fire** |
+| 16 | Fire | + Wood | = **Charcoal** |
+| 17 | Torch | + Fire | = **Lit Torch** |
+
+### Everyday Objects
+
+**You start with 8:** Water · Soil · Limestone · Bauxite · Iron Ore · Crude Oil · Natural Gas · Beeswax
+
+| # | | | |
+| --- | --- | --- | --- |
+| 1 | Water | + Fire | = **Salt** |
+| 2 | Natural Gas | + Water | = **Ammonia** |
+| 3 | Ammonia | + Soil | = **Farmland** |
+| 4 | Stone | + Water | = **Silica Sand** |
+| 5 | Limestone | + Fire | = **Quicklime** |
+| 6 | Salt | + Quicklime | = **Soda Ash** |
+| 7 | Salt | + Water | = **Sodium Hydroxide** |
+| 8 | Iron Ore | + Charcoal | = **Pig Iron** |
+| 9 | Pig Iron | + Charcoal | = **High-Carbon Steel** |
+| 10 | High-Carbon Steel | + Wood | = **Cotton Gin** |
+| 11 | Silica Sand | + Soda Ash | = **Sodium Silicate** |
+| 12 | Sodium Silicate | + Limestone | = **Molten Glass** |
+| 13 | Molten Glass | + High-Carbon Steel | = **Glass Bottle** |
+| 14 | Bauxite | + Sodium Hydroxide | = **Alumina** |
+| 15 | Crude Oil | + Fire | = **Distillate** |
+| 16 | Distillate | + Fire | = **Paraffin Wax** |
+| 17 | Alumina | + Charcoal | = **Molten Aluminium** |
+| 18 | Molten Aluminium | + High-Carbon Steel | = **Aluminium Sheet** |
+| 19 | Aluminium Sheet | + High-Carbon Steel | = **Aluminium Can** |
+| 20 | Farmland | + Water | = **Raw Cotton** |
+| 21 | Raw Cotton | + Cotton Gin | = **Ginned Cotton** |
+| 22 | Ginned Cotton | + Ginned Cotton | = **Cotton Yarn** |
+| 23 | Cotton Yarn | + Cotton Yarn | = **Cotton Jersey** |
+| 24 | Plant Fibre | + Water | = **Dye** |
+| 25 | Iron Ore | + Fire | = **Dye** |
+| 26 | Cotton Jersey | + Dye | = **Dyed Cotton Fabric** |
+| 27 | Cotton Yarn | + Paraffin Wax | = **Sewing Thread** |
+| 28 | Dyed Cotton Fabric | + Sewing Thread | = **Cotton T-Shirt** |
+| 29 | Cotton T-Shirt | + Sharp Stone | = **Textile Waste** |
+| 30 | Paraffin Wax | + Cordage | = **Candle** |
+| 31 | Natural Gas | + Fire | = **Butane** |
+| 32 | Butane | + High-Carbon Steel | = **Lighter** |
+| 33 | Beeswax | + Cordage | = **Candle** |
+| 34 | Beeswax | + Cotton Yarn | = **Sewing Thread** |
+| 35 | Textile Waste | + Cotton Gin | = **Ginned Cotton** |
+
+57 elements, 52 recipes.
 
 ---
 
-## 6. What actually ships before 9 AM
+## 6. What this costs to build
 
-Written as a commitment, not a wish.
+Fifty-two recipes, each needing a real source before it ships — **the rule that
+we never invent a citation does not bend for scope**. Fifty-seven elements,
+each needing a sprite; sprite work is the quiet cost and it is the real limit.
 
-| | Work | Status |
-| --- | --- | --- |
-| **Must** | Survival rebuilt to 4 primitives, sourced | in progress |
-| **Must** | Rename Items → Industry everywhere | pending |
-| **Must** | `UNLOCK_EVERYTHING` back to `false` | **open — cannot submit without this** |
-| **Must** | City backdrop swapped for the night-neon art | blocked on the SVG |
-| **Should** | Machines-not-starters: cotton gin, soda ash, dye | pending |
-| **Should** | Textile-waste recycling loop | pending |
-| **Should** | Candle + lighter moved into Industry | pending |
-| **Could** | Paper chain | stretch |
-| **Could** | Concrete chain | stretch |
-| **Won't** | Smartphone, bread, PET | out of scope tonight, and said so on purpose |
+Ordered so that stopping anywhere still leaves a working game:
 
-Every element added needs a sprite, and sprites are the quiet cost — nineteen
-new elements is nineteen new pieces of art. That is the real limit on how far
-section 5 gets.
+1. **Survival first, whole.** Seventeen recipes, fourteen new elements, and it
+   is the realm a judge touches first. Self-contained: if nothing else lands,
+   the game still opens on three stones and ends with fire in your hand.
+2. **The machines-not-starters fixes** in Everyday — gin, soda ash, salt,
+   farmland, dye. Five changes, high teaching value each, and they do not
+   disturb the chains below them.
+3. **The recycling loop** — shirt to waste to yarn.
+4. **The rest of Everyday** as time allows.
+
+**Not in this plan, deliberately:** paper, concrete, PET, bread, smartphone.
+All were considered and all are out of scope tonight. Saying so is cheaper than
+half-building one.
