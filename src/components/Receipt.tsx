@@ -10,7 +10,8 @@ import type { ElementDef, RecipeData } from '../data/types'
 import type { FootprintDetail } from '../solver/solver'
 import { computeFootprintDetail } from '../solver/solver'
 import { PixelArt } from './PixelArt'
-import { Button } from './ui/Button'
+import { PixelButton } from './ui/PixelButton'
+import { playPress } from '../audio/sfx'
 import { Card } from './ui/Card'
 
 type ReceiptProps = {
@@ -55,34 +56,35 @@ export function Receipt({ element, data, routes, onClose }: ReceiptProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 px-5 py-8"
+      className="fixed inset-0 z-50 flex items-center justify-center px-5 py-8"
+      style={{ background: 'rgba(9, 7, 20, 0.82)' }}
       role="dialog"
       aria-modal="true"
       aria-labelledby="receipt-name"
     >
       <Card className="flex max-h-full w-full max-w-lg flex-col overflow-hidden">
         <div className="flex flex-col items-center gap-3 p-8 pb-6 text-center">
-          <p className="text-xs font-extrabold tracking-wide text-brand uppercase">
+          <p className="font-display text-[9px] tracking-widest text-brand uppercase">
             Target reached
           </p>
           <PixelArt sprite={resolveIcon(element.icon)} scale={6} />
-          <h2 id="receipt-name" className="text-2xl font-extrabold text-ink">
+          <h2 id="receipt-name" className="font-display text-[17px] lowercase text-white">
             {element.name}
           </h2>
           {element.blurb && (
-            <p className="text-sm leading-snug text-ink">{element.blurb}</p>
+            <p className="font-display text-[10px] leading-[2.1] lowercase text-[#ded9f5]">{element.blurb}</p>
           )}
         </div>
 
-        <div className="flex flex-col gap-6 overflow-y-auto border-t border-hairline px-8 py-6">
+        <div className="flex flex-col gap-6 overflow-y-auto border-t-4 border-hairline px-8 py-6">
           {hasFootprint ? (
             <div className="flex flex-col items-center gap-1 text-center">
               {hasWater && (
                 <>
-                  <p className="text-3xl font-extrabold text-everyday">
+                  <p className="font-display text-[20px] text-everyday">
                     {total.waterL.toLocaleString()} L
                   </p>
-                  <p className="text-sm font-semibold text-muted">
+                  <p className="font-display text-[9px] leading-loose lowercase text-muted">
                     of water — {waterComparisonText(total.waterL)} of an adult's
                     recommended drinking water
                   </p>
@@ -90,17 +92,17 @@ export function Receipt({ element, data, routes, onClose }: ReceiptProps) {
               )}
               {hasCo2 && (
                 <>
-                  <p className="text-3xl font-extrabold text-everyday">
+                  <p className="font-display text-[20px] text-everyday">
                     {(total.co2kg * 1000).toLocaleString()} g CO₂
                   </p>
-                  <p className="text-sm font-semibold text-muted">
+                  <p className="font-display text-[9px] leading-loose lowercase text-muted">
                     — {co2ComparisonText(total.co2kg)} of average car driving
                   </p>
                 </>
               )}
             </div>
           ) : (
-            <p className="text-center text-sm font-semibold text-muted">
+            <p className="text-center font-display text-[9px] leading-loose lowercase text-muted">
               Every step here is real, but we don't have a solid water or CO₂
               figure for this one yet.
             </p>
@@ -108,7 +110,7 @@ export function Receipt({ element, data, routes, onClose }: ReceiptProps) {
 
           {costSteps.length > 0 && (
             <div className="flex flex-col gap-2">
-              <p className="text-xs font-extrabold tracking-wide text-muted uppercase">
+              <p className="font-display text-[8px] tracking-widest text-muted uppercase">
                 Where the numbers come from
               </p>
               <ul className="flex flex-col gap-1.5">
@@ -117,10 +119,10 @@ export function Receipt({ element, data, routes, onClose }: ReceiptProps) {
                     key={step.id}
                     className="flex items-center justify-between gap-3 text-sm"
                   >
-                    <span className="font-semibold text-ink">
+                    <span className="font-display text-[9px] leading-loose lowercase text-white">
                       {step.name} <span className="text-muted">({step.process})</span>
                     </span>
-                    <span className="shrink-0 font-bold text-everyday">
+                    <span className="shrink-0 font-display text-[9px] text-everyday">
                       {step.cost.waterL > 0 && `${step.cost.waterL.toLocaleString()} L`}
                       {step.cost.co2kg > 0 && `${(step.cost.co2kg * 1000).toLocaleString()} g CO₂`}
                     </span>
@@ -132,7 +134,7 @@ export function Receipt({ element, data, routes, onClose }: ReceiptProps) {
 
           {routeComparisons.length > 0 && (
             <div className="flex flex-col gap-3">
-              <p className="text-xs font-extrabold tracking-wide text-muted uppercase">
+              <p className="font-display text-[8px] tracking-widest text-muted uppercase">
                 Same target, a different way
               </p>
               {routeComparisons.map((rc) => {
@@ -151,29 +153,29 @@ export function Receipt({ element, data, routes, onClose }: ReceiptProps) {
                 return (
                   <div
                     key={rc.id}
-                    className="flex flex-col gap-2 rounded-row border border-hairline p-3"
+                    className="flex flex-col gap-2  border-[3px] border-hairline bg-[var(--color-panel-deep)] p-3"
                   >
-                    <p className="text-sm font-extrabold text-ink">{rc.name}</p>
+                    <p className="font-display text-[10px] lowercase text-white">{rc.name}</p>
                     <div className="flex items-center justify-between text-sm">
-                      <span className="font-semibold text-ink">
+                      <span className="font-display text-[9px] leading-loose lowercase text-white">
                         This time: {rc.chosen.route ?? rc.chosen.process} (
                         {rc.chosen.process})
                       </span>
-                      <span className="font-bold text-everyday">
+                      <span className="font-display text-[9px] text-everyday">
                         {formatFootprint(rc.chosen.cost)}
                       </span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
-                      <span className="font-semibold text-muted">
+                      <span className="font-display text-[9px] lowercase text-muted">
                         Alternative: {rc.alternate.route ?? rc.alternate.process} (
                         {rc.alternate.process})
                       </span>
-                      <span className="font-bold text-muted">
+                      <span className="font-display text-[9px] text-muted">
                         {formatFootprint(rc.alternate.cost)}
                       </span>
                     </div>
                     {saved && (
-                      <p className="text-xs font-bold text-brand">
+                      <p className="font-display text-[8px] leading-loose lowercase text-brand">
                         The other route would have saved {saved}. Try it next
                         time.
                       </p>
@@ -185,14 +187,14 @@ export function Receipt({ element, data, routes, onClose }: ReceiptProps) {
           )}
 
           <div className="flex flex-col gap-2">
-            <p className="text-xs font-extrabold tracking-wide text-muted uppercase">
+            <p className="font-display text-[8px] tracking-widest text-muted uppercase">
               What went into this ({ingredients.length})
             </p>
             <div className="flex flex-wrap gap-1.5">
               {ingredients.map((a) => (
                 <span
                   key={a.id}
-                  className="rounded-full border border-hairline px-2.5 py-1 text-xs font-bold text-ink"
+                  className=" border-[3px] border-hairline bg-[var(--color-panel-deep)] px-2.5 py-1 font-display text-[8px] lowercase text-white"
                 >
                   {a.name}
                 </span>
@@ -202,7 +204,7 @@ export function Receipt({ element, data, routes, onClose }: ReceiptProps) {
 
           {sources.length > 0 && (
             <div className="flex flex-col gap-2">
-              <p className="text-xs font-extrabold tracking-wide text-muted uppercase">
+              <p className="font-display text-[8px] tracking-widest text-muted uppercase">
                 Sources
               </p>
               <div className="flex flex-wrap gap-2">
@@ -212,7 +214,7 @@ export function Receipt({ element, data, routes, onClose }: ReceiptProps) {
                     href={source.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-full border border-hairline px-3 py-1 text-xs font-bold text-muted transition-colors duration-150 hover:border-brand hover:text-brand"
+                    className=" border-[3px] border-hairline bg-[var(--color-panel-deep)] px-3 py-1 font-display text-[8px] lowercase text-muted transition-colors duration-150 hover:border-brand hover:text-brand"
                   >
                     ⓘ {source.label}
                   </a>
@@ -222,7 +224,7 @@ export function Receipt({ element, data, routes, onClose }: ReceiptProps) {
                     href={WATER_COMPARISON_SOURCE.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-full border border-hairline px-3 py-1 text-xs font-bold text-muted transition-colors duration-150 hover:border-brand hover:text-brand"
+                    className=" border-[3px] border-hairline bg-[var(--color-panel-deep)] px-3 py-1 font-display text-[8px] lowercase text-muted transition-colors duration-150 hover:border-brand hover:text-brand"
                   >
                     ⓘ {WATER_COMPARISON_SOURCE.label}
                   </a>
@@ -232,7 +234,7 @@ export function Receipt({ element, data, routes, onClose }: ReceiptProps) {
                     href={CO2_COMPARISON_SOURCE.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-full border border-hairline px-3 py-1 text-xs font-bold text-muted transition-colors duration-150 hover:border-brand hover:text-brand"
+                    className=" border-[3px] border-hairline bg-[var(--color-panel-deep)] px-3 py-1 font-display text-[8px] lowercase text-muted transition-colors duration-150 hover:border-brand hover:text-brand"
                   >
                     ⓘ {CO2_COMPARISON_SOURCE.label}
                   </a>
@@ -242,10 +244,18 @@ export function Receipt({ element, data, routes, onClose }: ReceiptProps) {
           )}
         </div>
 
-        <div className="border-t border-hairline p-6">
-          <Button onClick={onClose} className="w-full">
+        <div className="border-t-4 border-hairline p-6">
+          <PixelButton
+            tone="everyday"
+            unit={5}
+            block
+            onClick={() => {
+              playPress()
+              onClose()
+            }}
+          >
             Continue
-          </Button>
+          </PixelButton>
         </div>
       </Card>
     </div>

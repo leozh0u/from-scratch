@@ -12,7 +12,7 @@ type BadgeProps = {
 export function Badge({ tone, soft, children }: BadgeProps) {
   return (
     <span
-      className="rounded-full px-2 py-0.5 text-[0.65rem] font-extrabold tracking-wide uppercase"
+      className=" px-2 py-0.5 text-[0.65rem] font-extrabold tracking-wide uppercase"
       style={{ background: soft, color: tone }}
     >
       {children}

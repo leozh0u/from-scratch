@@ -3,7 +3,8 @@ import { resolveIcon } from '../data/iconRegistry'
 import { dedupeSources } from '../data/sources'
 import type { ElementDef, RecipeDef } from '../data/types'
 import { PixelArt } from './PixelArt'
-import { Button } from './ui/Button'
+import { PixelButton } from './ui/PixelButton'
+import { playPress, playHover } from '../audio/sfx'
 import { Card } from './ui/Card'
 
 type DiscoveryCardProps = {
@@ -38,26 +39,92 @@ export function DiscoveryCard({ element, recipe, onClose, heading = 'New discove
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 px-5"
+      className="fixed inset-0 z-50 flex items-center justify-center px-5"
       role="dialog"
       aria-modal="true"
       aria-labelledby="discovery-name"
+      style={{
+        /*
+         * A flat wash, not a translucent tint over a blur. The old backdrop
+         * was `bg-ink/50`, and once `ink` became white for the dark theme that
+         * turned into a white veil over the whole screen. A solid dark scrim
+         * at high opacity is also simply what a console does — the world stops
+         * and the box is all there is.
+         */
+        background: 'rgba(9, 7, 20, 0.82)',
+      }}
     >
-      <Card className="flex w-full max-w-sm flex-col items-center gap-3 p-8 text-center">
-        <p className="text-xs font-extrabold tracking-wide text-brand uppercase">
+      <Card
+        unit={5}
+        className="flex w-full max-w-sm flex-col items-center gap-3 text-center"
+      >
+        <p
+          style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: 9,
+            letterSpacing: '0.16em',
+            color: 'var(--color-brand)',
+            textTransform: 'uppercase',
+            margin: 0,
+          }}
+        >
           {heading}
         </p>
 
         <PixelArt sprite={resolveIcon(element.icon)} scale={6} />
 
-        <h2 id="discovery-name" className="text-2xl font-extrabold text-ink">
+        <h2
+          id="discovery-name"
+          style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: 18,
+            lineHeight: 1.4,
+            color: '#ffffff',
+            textShadow: '3px 3px 0 #100d20',
+            textTransform: 'lowercase',
+            margin: 0,
+          }}
+        >
           {element.name}
         </h2>
 
-        <p className="text-sm font-semibold text-muted">via {recipe.process}</p>
+        <p
+          style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: 9,
+            lineHeight: 1.8,
+            color: 'var(--color-muted)',
+            textTransform: 'lowercase',
+            margin: 0,
+          }}
+        >
+          via {recipe.process}
+        </p>
 
         {element.blurb && (
-          <p className="text-sm leading-snug text-ink">{element.blurb}</p>
+          /*
+           * Pixel face here too. No exceptions to the theme.
+           *
+           * Press Start 2P was not designed for running text, so this buys the
+           * legibility back with spacing instead of with a different typeface:
+           * a generous line height and a measure capped well short of the
+           * panel width. Long prose in a pixel font fails when the lines are
+           * long and tight, not because the letters are wrong.
+           */
+          <p
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 10,
+              lineHeight: 2.1,
+              letterSpacing: '0.02em',
+              color: '#ded9f5',
+              textTransform: 'lowercase',
+              maxWidth: '30ch',
+              margin: 0,
+            }}
+          >
+            {element.blurb}
+          </p>
         )}
 
         {sources.length > 0 && (
@@ -68,7 +135,18 @@ export function DiscoveryCard({ element, recipe, onClose, heading = 'New discove
                 href={source.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-full border border-hairline px-3 py-1 text-xs font-bold text-muted transition-colors duration-150 hover:border-brand hover:text-brand"
+                onPointerEnter={playHover}
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 8,
+                  lineHeight: 1.8,
+                  textTransform: 'lowercase',
+                  color: 'var(--color-muted)',
+                  border: '3px solid var(--color-hairline)',
+                  background: 'var(--color-panel-deep)',
+                  padding: '5px 10px',
+                  textDecoration: 'none',
+                }}
               >
                 ⓘ {source.label}
               </a>
@@ -76,9 +154,18 @@ export function DiscoveryCard({ element, recipe, onClose, heading = 'New discove
           </div>
         )}
 
-        <Button onClick={onClose} className="mt-2 w-full">
-          Continue
-        </Button>
+        <PixelButton
+          tone="survival"
+          unit={5}
+          block
+          onClick={() => {
+            playPress()
+            onClose()
+          }}
+          style={{ marginTop: 8 }}
+        >
+          continue
+        </PixelButton>
       </Card>
     </div>
   )

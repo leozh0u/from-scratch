@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { FLAME, SHIRT } from '../art/sprites'
 import { Badge } from './ui/Badge'
-import { Button } from './ui/Button'
+import { PixelButton } from './ui/PixelButton'
 import { Card } from './ui/Card'
 import { ElementTile } from './ui/ElementTile'
 import { ProgressBar } from './ui/ProgressBar'
@@ -55,7 +55,7 @@ export function StyleguidePage() {
           {SWATCHES.map((s) => (
             <div key={s.var} className="flex flex-col gap-2">
               <div
-                className="h-14 rounded-row border border-hairline"
+                className="h-14  border border-hairline"
                 style={{ background: `var(${s.var})` }}
               />
               <span className="text-xs font-semibold text-muted">
@@ -68,14 +68,14 @@ export function StyleguidePage() {
 
       <Section title="Buttons">
         <div className="flex flex-wrap items-center gap-4">
-          <Button variant="primary">Primary</Button>
-          <Button variant="secondary">Secondary</Button>
-          <Button variant="primary" size="lg">
+          <PixelButton tone="survival">Primary</PixelButton>
+          <PixelButton tone="everyday">Secondary</PixelButton>
+          <PixelButton tone="survival" unit={5}>
             Primary large
-          </Button>
-          <Button variant="primary" disabled>
+          </PixelButton>
+          <PixelButton tone="survival" disabled>
             Disabled
-          </Button>
+          </PixelButton>
         </div>
         <p className="text-sm text-muted">
           Press and hold one — the shadow should collapse and the button
@@ -104,18 +104,18 @@ export function StyleguidePage() {
         <div className="flex flex-col gap-3">
           <ProgressBar value={progress} />
           <div className="flex gap-3">
-            <Button
-              variant="secondary"
+            <PixelButton
+              tone="everyday"
               onClick={() => setProgress((p) => Math.max(0, p - 20))}
             >
               −20
-            </Button>
-            <Button
-              variant="secondary"
+            </PixelButton>
+            <PixelButton
+              tone="everyday"
               onClick={() => setProgress((p) => Math.min(100, p + 20))}
             >
               +20
-            </Button>
+            </PixelButton>
           </div>
         </div>
       </Section>

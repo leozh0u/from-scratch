@@ -31,9 +31,11 @@
   --color-star-dim: #6f6c9a;
 
   /* Brand red — the wordmark, and the default accent for neutral UI */
-  --color-brand: #e03e3e;
-  --color-brand-deep: #a32828;
-  --color-brand-soft: #fbe8e8;
+  --color-brand: #e8752c;
+  --color-brand-deep: #8f4413;
+  /* Was a pale pink wash for a white card; now the dark accent fill that
+   * reads as "selected" against navy. */
+  --color-brand-soft: #4a2a14;
 
   /* Sky bands, dark to light — hard stops, never a smooth gradient */
   --color-sky-1: #3fb8de;
@@ -52,19 +54,41 @@
   --color-dirt-light: #a9703a;
   --color-stone: #7e7e7e;
 
-  /* UI text — warm dark slate, not black */
-  --color-ink: #232a33;
-  --color-muted: #6b7785;
-  --color-hairline: #e6e8ec;
+  /*
+   * UI TEXT, INVERTED FOR THE DARK THEME.
+   *
+   * These were light-theme values — near-black text, a pale hairline — from
+   * when the interface was a white card. Everything sits on a dark panel now,
+   * so `text-ink` was rendering dark grey text on dark navy and whole screens
+   * were simply invisible. The discovery card was unreadable for exactly this
+   * reason.
+   *
+   * Renaming them would have been cleaner, but these names are used across
+   * every component and the fastest correct fix is to make the token mean the
+   * right thing: `ink` is still "the main text colour", it is just no longer
+   * dark. Anything still reading `text-ink` gets the right answer for free.
+   */
+  --color-ink: #ffffff;
+  --color-muted: #a29ec4;
+  --color-hairline: #423d6b;
+  --color-panel: #332f57;
+  --color-panel-deep: #262246;
 
   /* Realm accents */
-  --color-survival: #e07a34;
-  --color-survival-soft: #fdf1e7;
-  --color-everyday: #14919b;
-  --color-everyday-soft: #e8f5f6;
+  --color-survival: #e8752c;
+  --color-survival-soft: #4a2a14;
+  --color-everyday: #22a2bd;
+  --color-everyday-soft: #0b4a59;
 
-  --radius-panel: 1.25rem;
-  --radius-row: 0.875rem;
+  /*
+   * Zero. A pixel grid cannot draw a curve, and a border-radius is the
+   * clearest tell that a "pixel" UI is made of CSS boxes. Corners are cut as
+   * staircases instead — see components/ui/pixelShape.ts. Kept as tokens
+   * rather than deleted so any `rounded-panel` left in the tree resolves to
+   * square instead of breaking.
+   */
+  --radius-panel: 0px;
+  --radius-row: 0px;
 }
 
 @layer base {

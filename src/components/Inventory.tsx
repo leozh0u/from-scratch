@@ -53,31 +53,37 @@ export function Inventory({ data, game, onBack }: InventoryProps) {
 
   function handleReset() {
     const confirmed = window.confirm(
-      'Reset all progress? Every discovery in both realms will be cleared — this cannot be undone.',
+      // A native confirm cannot be styled, so the copy carries it: short,
+      // concrete, and it says what is lost rather than hedging about it.
+      'Wipe every discovery in both realms? This cannot be undone.',
     )
     if (confirmed) game.reset()
   }
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-6 px-5 py-8">
-      <div className="flex items-center justify-between">
+      {/* The same opaque HUD strip the workspace uses, so the two screens
+        * read as the same machine. */}
+      <div
+        className="flex items-center justify-between"
+        style={{ background: '#100d20', border: '4px solid #332f57', padding: '10px 14px' }}
+      >
         <button
           type="button"
           onClick={() => { playPress(); onBack() }}
           onPointerEnter={playHover}
-          className="cursor-pointer text-sm font-extrabold text-muted hover:text-ink"
+          className="cursor-pointer font-display text-[11px] lowercase tracking-wide text-muted hover:text-white"
         >
-          ← Back
+          ← back
         </button>
-        <h1 className="text-lg font-extrabold text-ink">Inventory</h1>
+        <h1 className="font-display text-[13px] lowercase tracking-wide text-white">inventory</h1>
         <span className="w-12" aria-hidden="true" />
       </div>
 
       {crafted.length === 0 ? (
         <Card className="p-8 text-center">
-          <p className="text-sm font-semibold text-muted">
-            Nothing here yet — combine two elements in a realm to start
-            filling this in.
+          <p className="font-display text-[10px] leading-loose lowercase text-muted">
+            nothing here yet. combine two things in a realm.
           </p>
         </Card>
       ) : (
@@ -88,8 +94,8 @@ export function Inventory({ data, game, onBack }: InventoryProps) {
 
             return (
               <div key={realm} className="flex flex-col gap-3">
-                <p className="text-xs font-extrabold tracking-wide text-muted uppercase">
-                  {REALM_LABEL[realm]} · {entries.length} discovered
+                <p className="font-display text-[9px] tracking-widest text-muted uppercase">
+                  {REALM_LABEL[realm]} · {entries.length} found
                 </p>
                 <div className="grid grid-cols-4 gap-3 sm:grid-cols-6">
                   {entries.map(({ element }) => (
@@ -107,12 +113,15 @@ export function Inventory({ data, game, onBack }: InventoryProps) {
         </div>
       )}
 
-      <div className="mt-4 flex flex-col items-center gap-2 border-t border-hairline pt-6">
-        <p className="text-xs font-semibold text-muted">
-          Starting over clears every discovery in both realms.
+      <div
+        className="mt-4 flex flex-col items-center gap-3 pt-6"
+        style={{ borderTop: '4px solid var(--color-hairline)' }}
+      >
+        <p className="font-display text-[9px] leading-loose lowercase text-muted">
+          this wipes both realms.
         </p>
         <PixelButton tone="danger" unit={4} onClick={handleReset}>
-          Reset progress
+          reset
         </PixelButton>
       </div>
 
