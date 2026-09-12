@@ -18,6 +18,8 @@
  */
 import { resolveIcon } from '../src/data/iconRegistry'
 import { FLAME } from '../src/art/sprites'
+import { checkForms, composeSprite } from '../src/art/forms'
+import { COMPOSED } from '../src/data/iconRegistry'
 import { GAME_DATA } from '../src/data/gameData'
 import { SEED_DATA } from '../src/data/seed'
 import { runSolver, computeFootprint, computeFootprintDetail } from '../src/solver/solver'
@@ -347,6 +349,33 @@ console.log('\n=== the solver survives a graph that is wrong ===')
   ok('a dangling reference does not throw', !threw)
   ok('and is reported as an error', Boolean(report && report.issues.some((i) => i.level === 'error')))
   ok('and the report says it is not ok', report ? report.ok === false : false)
+}
+
+console.log('\n=== the shared sprite vocabulary holds together ===')
+{
+  /*
+   * Sprites were the hard cap on how many elements this game could have: 78
+   * drawn by hand, and no two elements may share one. Twenty forms coloured
+   * per element removes that cap, but only if the forms are rectangular (the
+   * renderer misaligns ragged rows silently) and only if two elements never
+   * land on the same form AND colour.
+   */
+  ok('every form is 11x11', checkForms().length === 0, checkForms().join(', '))
+
+  const seen = new Map<string, string>()
+  const clashes: string[] = []
+  for (const [id, { form, colour }] of Object.entries(COMPOSED)) {
+    const key = `${form}:${colour}`
+    const first = seen.get(key)
+    if (first) clashes.push(`${first} and ${id} are both ${key}`)
+    else seen.set(key, id)
+  }
+  ok('no two composed elements share a form and colour', clashes.length === 0, clashes.join(', '))
+
+  // A composed sprite must use the form's own slots, or the colours go nowhere.
+  const sample = composeSprite('ingot', '#8b8f9e')
+  const used = new Set(sample.rows.join('').split('')).size
+  ok('a composed sprite paints every slot it uses', used > 1 && Object.keys(sample.palette).length >= 4)
 }
 
 console.log('\n=== every element has its own art ===')

@@ -57,6 +57,16 @@ type PixelButtonProps = {
   icon?: ReactNode
   /** Renders locked: solid, legible, and chained shut. */
   locked?: boolean
+  /**
+   * A short legend printed on the button's extruded SIDE, not its face.
+   *
+   * Skewed and squashed so it reads as lying on the receding face of the key
+   * rather than floating under it. Pixel type does not love a transform, so
+   * this was checked at the real size before it shipped: at 9px a -18deg skew
+   * with a 0.62 vertical squash stays legible, where a rotation or a smaller
+   * size would not.
+   */
+  side?: string
   children: ReactNode
   /*
    * React 19 passes `ref` through as an ordinary prop, so it rides along in
@@ -177,6 +187,7 @@ export function PixelButton({
   block = false,
   icon,
   locked = false,
+  side,
   disabled,
   children,
   onKeyDown,
@@ -324,6 +335,44 @@ export function PixelButton({
             display: 'block',
           }}
         />
+        {side && (
+          /*
+           * The legend on the side of the key.
+           *
+           * It sits inside the extruded base rather than under the button, so
+           * it travels with the press: push the key and the side face is
+           * covered by the face landing on it, exactly as it would be.
+           */
+          <span
+            style={{
+              position: 'absolute',
+              left: border + unit * 3,
+              /*
+               * Pinned to the BOTTOM, not centred.
+               *
+               * The base span runs from `depth` down to the bottom of the
+               * button, so it is as tall as the face and almost all of it
+               * hides behind it. Only the last `depth` pixels are the visible
+               * side of the key, and a legend centred in the span sat behind
+               * the face entirely.
+               */
+              bottom: Math.round(unit * 0.9),
+              transform: 'skewX(-18deg) scaleY(0.62)',
+              transformOrigin: 'left bottom',
+              fontFamily: 'var(--font-display)',
+              fontSize: Math.max(8, Math.round(unit * 1.4)),
+              lineHeight: 1,
+              letterSpacing: '0.08em',
+              textTransform: 'lowercase',
+              whiteSpace: 'nowrap',
+              // Lighter than the base it sits on, the way a moulded legend
+              // catches the light on the side of a real keycap.
+              color: c.hi,
+            }}
+          >
+            {side}
+          </span>
+        )}
       </span>
 
       {/* THE FACE — black plate, coloured face inset inside it. */}

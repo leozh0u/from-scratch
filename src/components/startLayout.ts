@@ -63,15 +63,14 @@ export function menuButtonHeight(unit: number): number {
 const TITLE = 'From Scratch'
 
 /**
- * The one-line caption under each realm button.
+ * The realm legends cost no height any more.
  *
- * Survival is a tutorial and nothing said so, which left a player choosing
- * between two equal-looking doors when one is four minutes long and the other
- * is the game. Two short lines fix that, and they have to be paid for in the
- * height budget or they push the buttons off a landscape phone — which is the
- * bug this whole module exists because of.
+ * They were two lines under the buttons and had to be budgeted for. They are
+ * now printed on the extruded SIDE of each key, inside the button's own box,
+ * so they take no vertical room at all — which is the better answer to the
+ * layout problem as well as the better-looking one.
  */
-export const CAPTION_HEIGHT = 22
+export const CAPTION_HEIGHT = 0
 
 /**
  * The tallest the content can be and still fit, with the buttons reachable.

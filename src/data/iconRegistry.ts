@@ -1,3 +1,4 @@
+import { composeSprite, type FormId } from '../art/forms'
 import {
   ALUMINA,
   ALUMINUM_CAN,
@@ -190,6 +191,35 @@ const REGISTRY: Record<string, Sprite> = {
 
 const PLACEHOLDER = FLAME
 
+/**
+ * Elements drawn from the shared vocabulary rather than by hand.
+ *
+ * A form and one colour, composed at load. This is what makes the element
+ * count free to grow: adding a material is a line here, not twenty minutes of
+ * drawing, and the composed result is still a distinct bitmap so the "no two
+ * elements share a sprite" test keeps its teeth.
+ *
+ * Hand-drawn art always wins where it exists. The seventy-eight sprites drawn
+ * by hand are better than anything a palette swap produces, and nothing here
+ * replaces them.
+ */
+export const COMPOSED: Record<string, { form: FormId; colour: string }> = {}
+
+/** Memoised: composing is cheap but it happens on every tile render. */
+const composedCache = new Map<string, Sprite>()
+
 export function resolveIcon(iconKey: string): Sprite {
-  return REGISTRY[iconKey] ?? PLACEHOLDER
+  const drawn = REGISTRY[iconKey]
+  if (drawn) return drawn
+
+  const recipe = COMPOSED[iconKey]
+  if (recipe) {
+    const cached = composedCache.get(iconKey)
+    if (cached) return cached
+    const made = composeSprite(recipe.form, recipe.colour)
+    composedCache.set(iconKey, made)
+    return made
+  }
+
+  return PLACEHOLDER
 }

@@ -1,0 +1,161 @@
+import type { Sprite } from '../components/PixelArt'
+
+/**
+ * The shapes every material in the game can take.
+ *
+ * WHY THIS EXISTS: SPRITES WERE THE HARD CAP ON SCOPE
+ *
+ * Seventy-eight hand-drawn 11x11 sprites got us to 72 elements, and the data
+ * test refuses to let two elements share one. At roughly two minutes a sprite,
+ * three hundred elements is seven hours of drawing — which made art, not
+ * chemistry, the thing standing between this and Little Alchemy scale.
+ *
+ * But a game about materials does not need three hundred drawings. It needs
+ * about twenty FORMS. Almost everything here is a powder, a liquid, an ingot,
+ * a sheet, a lump, a tuft of fibre, a bolt of cloth, a gas, a crystal, a
+ * bottle, a tool, a machine, a plant, a log, a coil, a brick, a pellet, a
+ * flame, a board or a wheel. Draw each once, then colour it per element.
+ *
+ * Two hundred elements becomes twenty drawings and two hundred colours, and
+ * every one is still a distinct bitmap, so "no two elements share a sprite"
+ * keeps passing.
+ *
+ * PALETTE SLOTS ARE SEMANTIC, NOT LITERAL
+ *
+ * `k` is the outline, `a` the lit face, `b` the body, `c` the shadow side.
+ * Light comes from the upper left in every one of them, which is the rule the
+ * hand-drawn sprites follow and what stops a mixed set looking like it came
+ * from two different games.
+ */
+
+export type FormId =
+  | 'powder' | 'liquid' | 'ingot' | 'sheet' | 'lump' | 'fibre' | 'cloth'
+  | 'gas' | 'crystal' | 'bottle' | 'tool' | 'machine' | 'plant' | 'log'
+  | 'coil' | 'brick' | 'pellet' | 'flame' | 'board' | 'wheel'
+
+/** Rows only: the palette is filled in per element by `composeSprite`. */
+export const FORMS: Record<FormId, string[]> = {
+  powder: [
+    '...........','...........','...........','.....k.....','....kak....',
+    '...kabak...','..kabbbak..','.kabbbcbak.','kkkkkkkkkkk','...........','...........',
+  ],
+  liquid: [
+    '.....k.....','....kak....','...kaabk...','..kaabbbk..','..kabbbck..',
+    '.kabbbbcck.','.kabbbccck.','..kbbbcck..','...kkkkk...','...........','...........',
+  ],
+  ingot: [
+    '...........','...........','...kkkkkk..','..kaaaaakk.','.kaaaaaabbk',
+    'kbbbbbbbbck','kbbbbbbbcck','.kccccccck.','..kkkkkkk..','...........','...........',
+  ],
+  sheet: [
+    '...........','...........','kkkkkkkkkkk','kaaaaaaaaak','kabbbbbbbck',
+    'kabbbbbbbck','kcccccccccK','kkkkkkkkkkk','...........','...........','...........',
+  ],
+  lump: [
+    '...........','....kkkk...','...kaaakk..','..kaaabbbk.','.kaabbbbck.',
+    '.kabbbbcck.','.kbbbbccck.','..kbbccck..','...kkkkkk..','...........','...........',
+  ],
+  fibre: [
+    '...........','..a..a..a..','.kakakakak.','.kabababak.','..kabbbak..',
+    '..kabbbak..','...kabak...','...kabak...','....kkk....','...........','...........',
+  ],
+  cloth: [
+    '...........','...........','.kkkkkkkkk.','.kababababk','.kbabababak','.kababababk',
+    '.kbabababck','.kcccccccck','.kkkkkkkkk.','...........','...........',
+  ],
+  gas: [
+    '..a...a....','...a...a...','..a.a.a.a..','.kkkkkkkk..','.kabbbbak..',
+    '.kabbbbbk..','.kbbbbcck..','..kkkkkk...','...........','...........','...........',
+  ],
+  crystal: [
+    '.....k.....','....kak....','...kaabk...','..kaabbbk..','..kaabbbk..',
+    '..kabbbck..','...kbbck...','....kck....','.....k.....','...........','...........',
+  ],
+  bottle: [
+    '....kkk....','....kak....','....kak....','...kkakk...','..kaabbbk..',
+    '..kabbbck..','..kabbbck..','..kabbbck..','..kkkkkkk..','...........','...........',
+  ],
+  tool: [
+    '.........k.','........kak','.......kaak','kkkkkkkabk.','kcccccabk..',
+    'kkkkkkkbk..','.....kkk...','...........','...........','...........','...........',
+  ],
+  machine: [
+    '...........','..kkkkkkk..','.kaaaaaaak.','.kabbbbbak.','.kabkkkbak.',
+    '.kabkakbak.','.kabbbbbck.','.kccccccck.','.kkkkkkkkk.','..k.....k..','..kk...kk..',
+  ],
+  plant: [
+    '.....k.....','..k..k..k..','.kak.kak.k.','.kabkabkak.','..kabbbak..',
+    '...kabak...','....kbk....','....kck....','....kkk....','...........','...........',
+  ],
+  log: [
+    '...........','...kkkkk...','..kaaaaak..','.kabkkkbak.','.kabkakbak.',
+    '.kabkkkbak.','.kbbbbbbck.','..kccccck..','...kkkkk...','...........','...........',
+  ],
+  coil: [
+    '...........','..kkkkkkk..','.kaaaaaaak.','.kakkkkkak.','.kakaaakak.',
+    '.kakkkkkak.','.kbbbbbbbk.','.kccccccck.','..kkkkkkk..','...........','...........',
+  ],
+  brick: [
+    '...........','...........','kkkkkkkkkkk','kaaakaaaakk','kbbbkbbbbck',
+    'kkkkkkkkkkk','kbbbbkbbbck','kcccckcccck','kkkkkkkkkkk','...........','...........',
+  ],
+  pellet: [
+    '...........','...........','..kk...kk..','.kaak.kaak.','.kabk.kabk.',
+    '..kk.k.kk..','...kaak....','...kabk....','....kk.....','...........','...........',
+  ],
+  flame: [
+    '.....a.....','....aba....','...abbba...','..abbbbba..','..kbbbbbk..',
+    '.kcbbbbbck.','.kccbbbcck.','..kcccck...','...kkkk....','...........','...........',
+  ],
+  board: [
+    '...........','...........','...........','kkkkkkkkkkk','kaaaaaaaaak',
+    'kbbbbbbbbbk','kcccccccccK','kkkkkkkkkkk','...........','...........','...........',
+  ],
+  wheel: [
+    '...........','...kkkkk...','..kaaaaak..','.kakkkkkak.','.kakabakak.',
+    '.kakabakak.','.kakkkkkak.','..kcccccK..','...kkkkk...','...........','...........',
+  ],
+}
+
+/** Every form is a rectangle. Ragged rows misalign silently in the renderer. */
+export function checkForms(): string[] {
+  const bad: string[] = []
+  for (const [id, rows] of Object.entries(FORMS)) {
+    if (rows.length !== 11) bad.push(`${id}: ${rows.length} rows`)
+    for (const [i, row] of rows.entries()) {
+      if (row.length !== 11) bad.push(`${id} row ${i}: ${row.length} wide`)
+    }
+  }
+  return bad
+}
+
+/* --- turning one base colour into a lit face, a body and a shadow --- */
+
+function clamp(n: number) { return Math.max(0, Math.min(255, Math.round(n))) }
+
+function shift(hex: string, factor: number): string {
+  const n = parseInt(hex.slice(1), 16)
+  const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255
+  const to = (v: number) => (factor >= 1 ? v + (255 - v) * (factor - 1) : v * factor)
+  return `#${[to(r), to(g), to(b)].map((v) => clamp(v).toString(16).padStart(2, '0')).join('')}`
+}
+
+/**
+ * A form plus one colour makes a sprite.
+ *
+ * The three shades are derived rather than chosen, so adding an element is one
+ * hex code rather than a palette. `K` is a second, softer shadow used where a
+ * form wants an edge that is dark but not the full outline.
+ */
+export function composeSprite(form: FormId, base: string): Sprite {
+  return {
+    rows: FORMS[form],
+    palette: {
+      k: shift(base, 0.28),
+      K: shift(base, 0.45),
+      a: shift(base, 1.34),
+      b: base,
+      c: shift(base, 0.7),
+    },
+  }
+}
