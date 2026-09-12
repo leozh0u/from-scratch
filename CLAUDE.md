@@ -6,6 +6,11 @@
 > anyone pasting it in. Keep it current and you never have to re-explain the
 > project.
 
+> **Also read `DESIGN.md`** — the visual direction and the sponsor routes —
+> and **`PROGRESS.md`** for what has happened and what is open. `DESIGN.md`
+> reverses the two-layer visual split described in section 3 below; where the
+> two disagree, `DESIGN.md` is current.
+
 ---
 
 ## 1. What the project is
