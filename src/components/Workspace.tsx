@@ -4,6 +4,7 @@ import type { ElementDef, RealmId, RecipeData, RecipeDef } from '../data/types'
 import type { useGameState } from '../hooks/useGameState'
 import { DiscoveryCard } from './DiscoveryCard'
 import { PixelArt } from './PixelArt'
+import { Receipt } from './Receipt'
 import { TargetList } from './TargetList'
 import { Button } from './ui/Button'
 import { Card } from './ui/Card'
@@ -36,6 +37,12 @@ export function Workspace({ realm, data, game, onBack }: WorkspaceProps) {
   const [slots, setSlots] = useState<Slots>([null, null])
   const [feedback, setFeedback] = useState<Feedback | null>(null)
   const [discovery, setDiscovery] = useState<Discovery | null>(null)
+  const [receiptElement, setReceiptElement] = useState<ElementDef | null>(null)
+
+  // Membership across every realm's target list, not just the current one —
+  // a discovery's own recipe can land it in a different realm than the one
+  // being viewed (cross-realm carryover).
+  const allTargetIds = new Set(Object.values(data.targets).flat())
 
   // Global, not realm-scoped — an element discovered in one realm has to stay
   // selectable in another (cross-realm carryover; see useGameState).
@@ -96,7 +103,15 @@ export function Workspace({ realm, data, game, onBack }: WorkspaceProps) {
     setSlots([null, null])
 
     if (result.status === 'discovered') {
-      setDiscovery({ element: elementById(result.recipe.output), recipe: result.recipe })
+      const discoveredElement = elementById(result.recipe.output)
+      // A target gets the full receipt (dependency tree, footprint, sources)
+      // instead of the lighter discovery card — it's the "level complete"
+      // moment, not just a new inventory tile.
+      if (allTargetIds.has(discoveredElement.id)) {
+        setReceiptElement(discoveredElement)
+      } else {
+        setDiscovery({ element: discoveredElement, recipe: result.recipe })
+      }
     } else if (result.status === 'already-known') {
       setFeedback({ kind: 'already-known', name: elementById(result.recipe.output).name })
     } else {
@@ -185,6 +200,14 @@ export function Workspace({ realm, data, game, onBack }: WorkspaceProps) {
           element={discovery.element}
           recipe={discovery.recipe}
           onClose={() => setDiscovery(null)}
+        />
+      )}
+
+      {receiptElement && (
+        <Receipt
+          element={receiptElement}
+          data={data}
+          onClose={() => setReceiptElement(null)}
         />
       )}
     </main>

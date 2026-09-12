@@ -1,4 +1,4 @@
-import type { Footprint, RealmId, RecipeData, RecipeDef } from '../data/types'
+import type { Footprint, RealmId, RecipeData, RecipeDef, Source } from '../data/types'
 
 export type IssueLevel = 'error' | 'warning'
 
@@ -216,36 +216,93 @@ function cheapestRoute(options: RecipeDef[]): RecipeDef {
   )
 }
 
+export type FootprintStep = {
+  id: string
+  name: string
+  cost: Footprint
+  process: string
+}
+
+export type FootprintDetail = {
+  total: Footprint
+  /** Every ancestor in the dependency tree (including starters), deduped, in visit order. */
+  ancestors: { id: string; name: string; isStarter: boolean }[]
+  /** Only the steps that carry a nonzero cost — what the receipt highlights. */
+  costSteps: FootprintStep[]
+  /** Every source cited anywhere in the chain, deduped by URL. */
+  sources: Source[]
+}
+
 /**
- * Total footprint to craft `targetId`, walking its dependency tree exactly
- * once per node. The visited-set guard is the fix for the double-counting
- * bug a naive recursive sum has: if two branches share an ancestor (this
- * seed's `spark`, reachable both directly and via `fire`), only the first
- * visit charges its cost.
+ * Full footprint breakdown for `targetId`, walking its dependency tree
+ * exactly once per node. The visited-set guard is the fix for the
+ * double-counting bug a naive recursive sum has: if two branches share an
+ * ancestor (this seed's `spark`, reachable both directly and via `fire`),
+ * only the first visit charges its cost.
+ *
+ * Returns the full tree, not just the total, so the receipt screen can show
+ * its work — which steps carried real numbers, what the whole chain cites —
+ * rather than presenting a total as if it fell from the sky.
  */
-export function computeFootprint(data: RecipeData, targetId: string): Footprint {
+export function computeFootprintDetail(data: RecipeData, targetId: string): FootprintDetail {
   const recipesByOutput = buildRecipesByOutput(data)
   const starterSet = allStarterIds(data)
+  const elementById = new Map(data.elements.map((el) => [el.id, el]))
   const visited = new Set<string>()
+  const ancestors: FootprintDetail['ancestors'] = []
+  const costSteps: FootprintStep[] = []
+  const sourcesSeen = new Set<string>()
+  const sources: Source[] = []
   let waterL = 0
   let co2kg = 0
+
+  function addSources(list: Source[]) {
+    for (const source of list) {
+      if (sourcesSeen.has(source.url)) continue
+      sourcesSeen.add(source.url)
+      sources.push(source)
+    }
+  }
 
   function visit(id: string) {
     if (visited.has(id)) return
     visited.add(id)
-    if (starterSet.has(id)) return
+
+    const isStarter = starterSet.has(id)
+    ancestors.push({ id, name: elementById.get(id)?.name ?? id, isStarter })
+    if (isStarter) return
 
     const options = recipesByOutput.get(id)
     if (!options || options.length === 0) return
 
     const recipe = cheapestRoute(options)
+    addSources(recipe.sources)
+    if (recipe.cost.waterL > 0 || recipe.cost.co2kg > 0) {
+      costSteps.push({
+        id,
+        name: elementById.get(id)?.name ?? id,
+        cost: recipe.cost,
+        process: recipe.process,
+      })
+    }
     waterL += recipe.cost.waterL
     co2kg += recipe.cost.co2kg
     for (const input of recipe.inputs) visit(input)
   }
 
   visit(targetId)
-  return { waterL, co2kg: Math.round(co2kg * 1e6) / 1e6 }
+
+  return {
+    total: { waterL, co2kg: Math.round(co2kg * 1e6) / 1e6 },
+    ancestors,
+    costSteps,
+    sources,
+  }
+}
+
+/** Total footprint only — see computeFootprintDetail for the full breakdown. */
+export function computeFootprint(data: RecipeData, targetId: string): Footprint {
+  return computeFootprintDetail(data, targetId).total
 }
 
 export function runSolver(data: RecipeData): SolverReport {
