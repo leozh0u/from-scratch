@@ -2,106 +2,50 @@ import { useEffect, useRef } from 'react'
 import { useViewport } from '../hooks/useViewport'
 
 /**
- * The forest behind the Survival realm.
+ * The Survival backdrop: a bright hillside vista.
  *
- * WHY THIS IS DRAWN AND NOT AN IMAGE
+ * WHAT CHANGED AND WHY
  *
- * The obvious move is a pixel-art forest PNG. Two things rule it out. The
- * references to hand are watermarked stock, which cannot ship; and a fixed
- * image is one width, while this sits behind a game that runs at any window
- * size — scaling it either stretches the pixels, which destroys the whole
- * look, or tiles it, which reveals the seam. Drawn from a seed it fills any
- * viewport, is identical on every load so it can be art-directed, and costs a
- * few kilobytes.
+ * The first two versions were a dark forest interior — you were standing among
+ * the trunks, in the gloom. Leo's reference is the opposite picture and a much
+ * better one: you are looking OUT over a valley. Blue sky, white cloud, grey
+ * peaks, a ridge of conifers falling away, and a couple of near-black branches
+ * framing the top corners. Bright and open rather than close and dim.
  *
- * WHAT THE FIRST VERSION GOT WRONG
+ * That composition also solves a problem the dark version had. Framing
+ * branches in the corners are exactly where a UI is not, and the open middle
+ * is where the panels sit — so the busiest part of the picture is at the
+ * edges and the calm part is under the controls. The dark forest had detail
+ * everywhere and fought the interface for attention.
  *
- * It drew each tree as a stack of centred rectangles: a plain bar for the
- * trunk, five slabs for the canopy. Rectangles are what a forest is made of at
- * the lowest level and nothing else, so it read as a bar chart in green. A
- * pixel forest is not made of fewer shapes than a painted one — it is made of
- * the same shapes with hard edges. So this one has bark texture, canopy
- * silhouettes built from overlapping noisy lobes, shafts of light between the
- * trunks, undergrowth along the floor, and leaves coming down.
+ * EIGHT COLOURS, TAKEN FROM THE REFERENCE
  *
- * HOW THE SWAY WORKS, AND WHY IT IS NOT A TRANSFORM
+ * Not approximated — sampled. A limited palette is most of what makes pixel
+ * art read as pixel art, and the discipline only works if it is actually kept:
+ * every pixel drawn here is one of the eight constants below. No blending, no
+ * gradients, no alpha.
  *
- * From SLYNYRD's wind study, the technique real pixel artists use: foliage
- * moves in WHOLE PIXELS on a short loop — up-right one, down one, left one,
- * back — at about five frames a second, with each depth layer a beat behind
- * the one behind it. It is never a rotation or a skew. Rotating a sprite
- * resamples the grid and turns every hard edge into grey mush, which is the
- * exact failure this whole visual direction exists to avoid.
+ * THE SWAY IS WHOLE PIXELS, NEVER A TRANSFORM
  *
- * Trunks do not move at all. A trunk that bends is a rubber tree.
- *
- * LEGIBILITY COMES FIRST
- *
- * This is the room the game is played in, not the subject. It is drawn darker
- * and lower-contrast than a pixel forest normally would be, because white
- * pixel type and saturated controls have to sit on top of it and win.
+ * From SLYNYRD's wind study: foliage moves by whole-pixel steps on a short
+ * loop, each depth a beat behind the one behind it. Rotating or skewing a
+ * sprite resamples the grid and turns every hard edge into grey mush, which is
+ * the failure this whole visual direction exists to avoid. Only the near
+ * branches and the tips of the ridge move; the mountains and the ground do
+ * not, because they do not.
  */
 
-type Layer = {
-  trunk: [string, string, string]
-  canopy: [string, string]
-  /** Nominal horizontal gap between trunks, in scene pixels. */
-  spacing: number
-  /** Trunk width. */
-  width: number
-  /** Fraction of the frame height the tree occupies. */
-  height: number
-  /** How many 200ms beats this layer lags the one behind it. */
-  phase: number
-}
+/* The reference's entire palette. Nothing else may be drawn. */
+const SKY = '#85bde2'
+const SNOW = '#f7fcfd'
+const ROCK = '#cbd0d3'
+const LEAF_LIGHT = '#70a470'
+const CONIFER_MID = '#3b826a'
+const CONIFER_DARK = '#0f5a61'
+const CONIFER_DEEP = '#063b4f'
+const NEAR_BLACK = '#011835'
 
-/** Four depth bands, back to front. Darker and heavier toward the viewer. */
-const LAYERS: Layer[] = [
-  {
-    trunk: ['#24402f', '#2b4b37', '#1b3325'],
-    canopy: ['#2f5a3c', '#274b33'],
-    spacing: 21,
-    width: 3,
-    height: 0.46,
-    phase: 0,
-  },
-  {
-    trunk: ['#1d3626', '#24412d', '#16281c'],
-    canopy: ['#28502f', '#20412a'],
-    spacing: 33,
-    width: 5,
-    height: 0.62,
-    phase: 1,
-  },
-  {
-    trunk: ['#152a1d', '#1b3324', '#0f1f15'],
-    canopy: ['#1e3b28', '#172e1f'],
-    spacing: 52,
-    width: 8,
-    height: 0.82,
-    phase: 2,
-  },
-  {
-    trunk: ['#0c1911', '#111f16', '#07110b'],
-    canopy: ['#122419', '#0d1a12'],
-    spacing: 88,
-    width: 13,
-    height: 1.05,
-    phase: 3,
-  },
-]
-
-/** Hard bands of light, brightest at the horizon — the sun is deep in the
- * wood, not overhead. Never a gradient. */
-const SKY = ['#16261b', '#1b2f1f', '#223a22', '#2b4826', '#35562a']
-
-const SHAFT = '#3d6130'
-const GROUND_LIT = '#1a3220'
-const GROUND = '#0a1610'
-const FERN = ['#1d3a24', '#254a2c']
-const LEAF = ['#3c6b38', '#4e8043', '#2e5530']
-
-/** Deterministic hash, so the same forest is drawn every time. */
+/** Deterministic hash, so the same hillside is drawn on every load. */
 function hash(n: number): number {
   let x = Math.imul(n ^ 0x9e3779b9, 0x85ebca6b)
   x = Math.imul(x ^ (x >>> 13), 0xc2b2ae35)
@@ -111,13 +55,12 @@ function hash(n: number): number {
 /**
  * The sway offset for a layer at a given moment, in whole pixels.
  *
- * Six positions on a loop, exactly as the wind study describes. Exported and
- * pure so the motion can be asserted on rather than squinted at — the one
- * thing that must never happen is a fractional offset, because that is what
- * puts pixels between pixels.
+ * Six positions on a loop. Exported and pure so the motion can be asserted on
+ * rather than squinted at — the one thing that must never happen is a
+ * fractional offset, because that is what puts pixels between pixels.
  */
 export function swayAt(now: number, phase: number): { dx: number; dy: number } {
-  const FRAME_MS = 200
+  const FRAME_MS = 220
   const STEPS = [
     { dx: 0, dy: 0 },
     { dx: 1, dy: -1 },
@@ -131,14 +74,11 @@ export function swayAt(now: number, phase: number): { dx: number; dy: number } {
 }
 
 /**
- * Where a falling leaf is at a given moment, in whole pixels.
+ * Where a drifting mote is at a given moment, in whole pixels.
  *
- * Leaves fall at a steady rate and drift side to side on a slow sine, which is
- * what a real one does — it is not a straight drop and it is not chaotic. Both
- * coordinates are floored, so a leaf occupies a cell of the grid rather than
- * sliding smoothly between two.
- *
- * Pure, and exported, so the drift can be tested without watching it.
+ * Falls at a steady rate and drifts side to side on a slow sine, which is what
+ * a real leaf does — neither a straight drop nor chaos. Both coordinates are
+ * floored so it occupies a cell of the grid rather than sliding between two.
  */
 export function leafAt(
   now: number,
@@ -146,16 +86,15 @@ export function leafAt(
   width: number,
   height: number,
 ): { x: number; y: number; frame: number } {
-  const fallMs = 9000 + hash(seed * 13) * 11000
+  const fallMs = 11000 + hash(seed * 13) * 13000
   const startX = hash(seed * 29) * width
-  const drift = 6 + hash(seed * 41) * 14
+  const drift = 8 + hash(seed * 41) * 16
   const t = ((now + hash(seed * 7) * fallMs) % fallMs) / fallMs
   return {
     x: Math.floor(startX + Math.sin(t * Math.PI * 4 + seed) * drift),
     // Starts above the frame so it enters rather than appearing.
     y: Math.floor(-8 + t * (height + 16)),
-    // Two-frame flutter, stepped: the leaf turns edge-on and back.
-    frame: Math.floor(now / 180 + seed) % 2,
+    frame: Math.floor(now / 200 + seed) % 2,
   }
 }
 
@@ -165,15 +104,15 @@ type ForestSceneProps = {
   className?: string
 }
 
-export function ForestScene({ pixelScale = 3, className }: ForestSceneProps) {
+export function ForestScene({ pixelScale = 4, className }: ForestSceneProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const { width: vw, height: vh } = useViewport()
 
-  // Sized from the viewport, so one scene pixel is the same physical size at
-  // every window size — the same fix the starfield needed after a fixed-size
-  // canvas stretched its stars into giant plus signs.
-  const width = Math.max(120, Math.ceil(vw / pixelScale))
-  const height = Math.max(120, Math.ceil(vh / pixelScale))
+  // Sized from the viewport so one scene pixel is always the same physical
+  // size — the same fix the starfield needed after a fixed canvas stretched
+  // its stars into giant plus signs.
+  const width = Math.max(100, Math.ceil(vw / pixelScale))
+  const height = Math.max(100, Math.ceil(vh / pixelScale))
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -182,175 +121,177 @@ export function ForestScene({ pixelScale = 3, className }: ForestSceneProps) {
     if (!context) return
     const ctx = context
 
-    const horizon = Math.round(height * 0.86)
-
-    function drawSky() {
-      const band = Math.ceil(horizon / SKY.length)
-      for (let i = 0; i < SKY.length; i++) {
-        ctx.fillStyle = SKY[i]
-        ctx.fillRect(0, i * band, width, band)
+    /** A blobby cloud: overlapping rows of flat white with a grey underside. */
+    function drawCloud(cx: number, cy: number, scale: number, seed: number) {
+      const lobes = 4 + Math.floor(hash(seed) * 3)
+      for (let i = 0; i < lobes; i++) {
+        const lx = cx + Math.round((hash(seed + i * 11) - 0.5) * scale * 2.6)
+        const ly = cy + Math.round((hash(seed + i * 17) - 0.5) * scale * 0.5)
+        const r = Math.max(2, Math.round(scale * (0.5 + hash(seed + i * 23) * 0.6)))
+        ctx.fillStyle = SNOW
+        for (let y = -r; y <= r; y++) {
+          const k = Math.sqrt(Math.max(0, 1 - (y * y) / (r * r)))
+          const w = Math.max(1, Math.round(r * k * 1.5))
+          ctx.fillRect(lx - w, ly + y, w * 2, 1)
+        }
+        // One row of grey along the bottom — a flat underside, not a shadow.
+        ctx.fillStyle = ROCK
+        ctx.fillRect(lx - r, ly + r - 1, r * 2, 1)
       }
     }
 
     /**
-     * Shafts of light between the trunks.
+     * A mountain: a jagged peak with snow on the sunlit face.
      *
-     * Hard-edged vertical bands, not a glow — a glow is a blur and a blur is
-     * the one thing forbidden here. They narrow toward the floor because that
-     * is the direction light actually spreads from a gap in a canopy, and it
-     * is also what stops them reading as stripes on wallpaper.
+     * Drawn row by row rather than as a polygon, because a polygon is filled
+     * with antialiased edges and the whole point is that the slope should
+     * visibly step.
      */
-    function drawShafts() {
-      ctx.fillStyle = SHAFT
-      for (let i = 0; i < 7; i++) {
-        const x = Math.round(hash(i * 331) * width)
-        const top = Math.round(height * 0.05)
-        const bottom = Math.round(horizon * (0.55 + hash(i * 97) * 0.3))
-        const wTop = 2 + Math.round(hash(i * 53) * 4)
-        for (let y = top; y < bottom; y += 2) {
-          // Two-pixel steps so the taper is visibly stepped rather than smooth.
-          const t = (y - top) / (bottom - top)
-          const w = Math.max(1, Math.round(wTop * (1 - t * 0.75)))
-          ctx.fillRect(x + Math.round((wTop - w) / 2), y, w, 2)
-        }
-      }
-    }
-
-    function drawTrunk(layer: Layer, x: number, top: number, seed: number) {
-      const h = horizon - top
-      const [mid, light, dark] = layer.trunk
+    function drawMountain(peakX: number, peakY: number, baseY: number, halfW: number, seed: number) {
+      const h = baseY - peakY
       for (let y = 0; y < h; y++) {
-        // The trunk narrows slightly with height and wanders by a pixel, so it
-        // is not a perfect bar. A straight-sided rectangle is the single
-        // biggest tell that a tree was drawn by a loop.
-        const taper = Math.round((y / h) * (layer.width * 0.25))
-        const wobble = Math.round(Math.sin((y + seed) * 0.12) * (layer.width > 5 ? 1 : 0))
-        const w = Math.max(2, layer.width - taper)
-        const tx = x + wobble
-
-        ctx.fillStyle = mid
-        ctx.fillRect(tx, top + y, w, 1)
-        // Light down the left edge, dark down the right: one consistent light
-        // source, which is what makes the set look like one hand drew it.
-        ctx.fillStyle = light
-        ctx.fillRect(tx, top + y, 1, 1)
-        ctx.fillStyle = dark
-        ctx.fillRect(tx + w - 1, top + y, 1, 1)
-
-        // Bark: short vertical streaks at irregular intervals.
-        if (w > 4 && hash(seed * 17 + y) > 0.82) {
-          ctx.fillStyle = dark
-          ctx.fillRect(tx + 1 + Math.floor(hash(seed + y) * (w - 2)), top + y, 1, 2)
+        const t = y / h
+        const jag = Math.round((hash(seed + y * 7) - 0.5) * 3)
+        const w = Math.round(halfW * t) + jag
+        ctx.fillStyle = ROCK
+        ctx.fillRect(peakX - w, peakY + y, w * 2, 1)
+        // Snow on the upper third, and only on the left face — one light
+        // source, consistently applied, is what stops a set of peaks looking
+        // like a row of grey triangles.
+        if (t < 0.34) {
+          ctx.fillStyle = SNOW
+          ctx.fillRect(peakX - w, peakY + y, Math.max(1, Math.round(w * 0.9)), 1)
         }
+        // The right face falls into shade, which in this palette is the sky
+        // colour — exactly what the reference does.
+        ctx.fillStyle = SKY
+        ctx.fillRect(peakX + Math.round(w * 0.55), peakY + y, Math.round(w * 0.45), 1)
       }
     }
 
     /**
-     * The canopy, as overlapping lobes rather than stacked slabs.
+     * One conifer, as a jagged triangle.
      *
-     * Each lobe is an ellipse drawn a row at a time with its width jittered by
-     * a pixel or two, which gives the ragged silhouette foliage actually has.
-     * A smooth ellipse reads as a balloon; a rectangle reads as a bar chart.
-     * The whole mass is offset by the layer's whole-pixel sway, scaled by
-     * height so the crown moves and the base barely does.
+     * The jaggedness is the whole character of a fir at this resolution: each
+     * row is the ideal triangle width plus a small random step, with the
+     * occasional row pulled in hard to read as a gap between boughs. A clean
+     * triangle reads as a traffic cone.
      */
-    function drawCanopy(
-      layer: Layer,
-      cx: number,
-      baseY: number,
+    function drawConifer(
+      x: number,
+      topY: number,
+      h: number,
+      colour: string,
       seed: number,
       sway: { dx: number; dy: number },
     ) {
-      const spread = layer.width * 3.4
-      const lobes = 4 + Math.floor(hash(seed * 11) * 3)
-
-      for (let l = 0; l < lobes; l++) {
-        const lx = cx + Math.round((hash(seed * 31 + l) - 0.5) * spread * 1.5)
-        const ly = baseY - Math.round(hash(seed * 43 + l) * spread * 1.1)
-        const rx = Math.max(3, Math.round(spread * (0.45 + hash(seed * 59 + l) * 0.4)))
-        const ry = Math.max(2, Math.round(rx * (0.55 + hash(seed * 71 + l) * 0.3)))
-
-        // Height up the tree, 0 at the canopy base and 1 at the crown.
-        const up = Math.min(1, Math.max(0, (baseY - ly) / (spread * 1.1 || 1)))
+      const halfBase = Math.max(2, Math.round(h * 0.36))
+      ctx.fillStyle = colour
+      for (let y = 0; y < h; y++) {
+        const t = y / h
+        const ideal = halfBase * t
+        const step = hash(seed + y * 13)
+        // A hard notch every so often: the space between one bough and the next.
+        const notch = step > 0.86 ? -Math.round(halfBase * 0.28) : 0
+        const jag = Math.round((step - 0.5) * 2)
+        const w = Math.max(1, Math.round(ideal + jag + notch))
+        // The crown sways; the base does not. Scaled by height up the tree.
+        const up = 1 - t
         const dx = Math.round(sway.dx * up)
         const dy = Math.round(sway.dy * up)
-
-        ctx.fillStyle = layer.canopy[l % 2]
-        for (let y = -ry; y <= ry; y++) {
-          const k = Math.sqrt(Math.max(0, 1 - (y * y) / (ry * ry)))
-          const jitter = Math.round((hash(seed * 83 + l * 13 + y) - 0.5) * 3)
-          const w = Math.max(1, Math.round(rx * k) + jitter)
-          ctx.fillRect(lx - w + dx, ly + y + dy, w * 2, 1)
-        }
+        ctx.fillRect(x - w + dx, topY + y + dy, w * 2 + 1, 1)
       }
     }
 
-    /** Ferns and grass along the floor, so the ground is not a bare slab. */
-    function drawUndergrowth() {
-      for (let i = 0; i < Math.ceil(width / 7); i++) {
-        const x = Math.round(hash(i * 151) * width)
-        const h = 3 + Math.round(hash(i * 173) * 7)
-        ctx.fillStyle = FERN[i % 2]
-        for (let y = 0; y < h; y++) {
-          // A tuft: widest at the base, leaning as it rises.
-          const lean = Math.round((y / h) * 2 * (hash(i * 191) > 0.5 ? 1 : -1))
-          const w = Math.max(1, Math.round((1 - y / h) * 4))
-          ctx.fillRect(x + lean, horizon - y, w, 1)
-        }
-      }
-    }
-
-    function drawLeaves(now: number) {
-      for (let i = 0; i < 18; i++) {
-        const { x, y, frame } = leafAt(now, i + 1, width, height)
-        if (y < -4 || y > height) continue
-        ctx.fillStyle = LEAF[i % LEAF.length]
-        // Two frames: flat, then edge-on. A leaf turning over as it falls.
-        if (frame === 0) {
-          ctx.fillRect(x, y, 2, 1)
-          ctx.fillRect(x + 1, y + 1, 1, 1)
-        } else {
-          ctx.fillRect(x, y, 1, 2)
+    /**
+     * The near branches framing the top corners.
+     *
+     * These are the darkest thing in the picture and they sit where no UI ever
+     * does, which is what lets the middle stay open. They sway a full pixel
+     * more than anything else because they are nearest.
+     */
+    function drawBranch(
+      rootX: number,
+      rootY: number,
+      dir: 1 | -1,
+      length: number,
+      seed: number,
+      sway: { dx: number; dy: number },
+    ) {
+      ctx.fillStyle = NEAR_BLACK
+      for (let i = 0; i < length; i++) {
+        const t = i / length
+        const bx = rootX + dir * i
+        // The bough droops as it goes out, and the far end moves most.
+        const by = rootY + Math.round(t * t * length * 0.55) + Math.round(sway.dy * t * 2)
+        const sx = Math.round(sway.dx * t * 2)
+        // Needle clusters hanging off the bough at irregular intervals.
+        const needle = Math.round(3 + hash(seed + i * 19) * (10 * (1 - t * 0.6)))
+        ctx.fillRect(bx + sx, by, 2, needle)
+        if (hash(seed + i * 29) > 0.55) {
+          ctx.fillRect(bx + sx - dir * 2, by + 1, 2, Math.round(needle * 0.7))
         }
       }
     }
 
     function draw(now: number) {
-      drawSky()
-      drawShafts()
+      const horizon = Math.round(height * 0.62)
 
-      for (const layer of LAYERS) {
-        const sway = swayAt(now, layer.phase)
-        const top = Math.round(horizon - height * layer.height)
-        let x = -layer.spacing
-        let n = 0
-        while (x < width + layer.spacing) {
-          // Irregular spacing: evenly spaced trunks read as a fence, the same
-          // failure as evenly scattered stars.
-          const jitter = Math.round((hash(layer.spacing * 977 + n * 31) - 0.5) * layer.spacing * 0.8)
-          const tx = Math.round(x + jitter)
-          const seed = layer.spacing * 613 + n * 17
+      ctx.fillStyle = SKY
+      ctx.fillRect(0, 0, width, height)
 
-          drawTrunk(layer, tx, top, seed)
-          drawCanopy(
-            layer,
-            tx + Math.round(layer.width / 2),
-            top + Math.round((horizon - top) * 0.3),
-            seed,
-            sway,
-          )
+      // Clouds, high and wide.
+      drawCloud(Math.round(width * 0.22), Math.round(height * 0.12), Math.round(height * 0.05), 3)
+      drawCloud(Math.round(width * 0.56), Math.round(height * 0.08), Math.round(height * 0.06), 11)
+      drawCloud(Math.round(width * 0.85), Math.round(height * 0.15), Math.round(height * 0.045), 19)
 
-          x += layer.spacing
-          n++
+      // Peaks. Overlapping, tallest in the middle.
+      drawMountain(Math.round(width * 0.34), Math.round(height * 0.22), horizon, Math.round(width * 0.22), 31)
+      drawMountain(Math.round(width * 0.62), Math.round(height * 0.16), horizon, Math.round(width * 0.26), 47)
+      drawMountain(Math.round(width * 0.86), Math.round(height * 0.27), horizon, Math.round(width * 0.2), 59)
+
+      /*
+       * Three ridges of conifers, darkening toward the viewer, each one lower
+       * on the left than the right — the hillside falls away to the left, which
+       * is what makes it a valley rather than a horizon.
+       */
+      const ridges = [
+        { colour: CONIFER_MID, y: 0.6, h: 0.1, spacing: 5, phase: 0 },
+        { colour: CONIFER_DARK, y: 0.72, h: 0.15, spacing: 7, phase: 1 },
+        { colour: CONIFER_DEEP, y: 0.85, h: 0.2, spacing: 10, phase: 2 },
+      ]
+      for (const ridge of ridges) {
+        const sway = swayAt(now, ridge.phase)
+        const treeH = Math.round(height * ridge.h)
+        for (let x = -ridge.spacing; x < width + ridge.spacing; x += ridge.spacing) {
+          const seed = Math.round(x * 7 + ridge.y * 1000)
+          const slope = Math.round((1 - x / width) * height * 0.06)
+          const jitter = Math.round((hash(seed) - 0.5) * ridge.spacing)
+          const top = Math.round(height * ridge.y) + slope + Math.round((hash(seed * 3) - 0.5) * treeH * 0.3)
+          drawConifer(x + jitter, top, treeH, ridge.colour, seed, sway)
         }
       }
 
-      ctx.fillStyle = GROUND_LIT
-      ctx.fillRect(0, horizon, width, Math.max(2, Math.round(height * 0.02)))
-      ctx.fillStyle = GROUND
-      ctx.fillRect(0, horizon + Math.round(height * 0.02), width, height)
-      drawUndergrowth()
-      drawLeaves(now)
+      // The floor the nearest ridge stands on.
+      ctx.fillStyle = CONIFER_DEEP
+      ctx.fillRect(0, Math.round(height * 0.97), width, height)
+
+      // Framing branches, last so they sit over everything.
+      const nearSway = swayAt(now, 3)
+      drawBranch(0, Math.round(height * 0.04), 1, Math.round(width * 0.3), 71, nearSway)
+      drawBranch(width, Math.round(height * 0.02), -1, Math.round(width * 0.26), 83, nearSway)
+
+      // Motes drifting down through the open middle.
+      for (let i = 0; i < 14; i++) {
+        const { x, y, frame } = leafAt(now, i + 1, width, height)
+        if (y < -4 || y > height) continue
+        ctx.fillStyle = i % 3 === 0 ? LEAF_LIGHT : CONIFER_MID
+        if (frame === 0) {
+          ctx.fillRect(x, y, 2, 1)
+        } else {
+          ctx.fillRect(x, y, 1, 2)
+        }
+      }
     }
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -362,11 +303,10 @@ export function ForestScene({ pixelScale = 3, className }: ForestSceneProps) {
     let raf = 0
     let last = -1
     const tick = (now: number) => {
-      // The sway steps every 200ms and the leaves flutter every 180ms, so
-      // redrawing faster than that draws the same picture twice. Throttling to
-      // the animation's own rate keeps a full forest redraw off the critical
-      // path the rest of the time.
-      const frame = Math.floor(now / 90)
+      // The sway steps every 220ms and the motes every 200ms, so redrawing
+      // faster draws the same picture twice. Throttling to the animation's own
+      // rate keeps a full redraw off the critical path the rest of the time.
+      const frame = Math.floor(now / 100)
       if (frame !== last) {
         draw(now)
         last = frame

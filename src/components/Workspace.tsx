@@ -169,7 +169,23 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
        * UI scrolls over it rather than with it. */}
       {realm === 'survival' && <ForestScene />}
       <main className="relative z-[1] mx-auto flex min-h-dvh max-w-3xl flex-col gap-6 px-5 py-8">
-      <div className="flex items-center justify-between">
+      {/*
+       * A solid HUD strip, not floating text.
+       *
+       * The backdrop is now a bright sky, and white pixel type on pale blue is
+       * unreadable no matter how hard the drop shadow works. Consoles solved
+       * this the same way: the status line lives on its own opaque bar across
+       * the top, separate from the world behind it. It also gives the screen a
+       * top edge, which the floating version never had.
+       */}
+      <div
+        className="flex items-center justify-between"
+        style={{
+          background: '#100d20',
+          border: '4px solid #332f57',
+          padding: '10px 14px',
+        }}
+      >
         <button
           type="button"
           onClick={() => { playPress(); onBack() }}
@@ -192,7 +208,7 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
       </div>
 
       {targets.length > 0 && (
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3" style={{ background: '#100d20', border: '4px solid #332f57', padding: '10px 14px' }}>
           <div className="flex items-center gap-3">
             <ProgressBar value={progress} cells={targets.length} />
             <span className="shrink-0 font-display text-[11px] text-star-mid">
