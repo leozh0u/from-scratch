@@ -84,6 +84,21 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
    */
   const hudUnit = viewportWidth < 520 ? 2 : 3
 
+  /*
+   * THE BENCH GROWS WITH THE WINDOW.
+   *
+   * Leo, twice: "theres still so much empty space", "maybe make them bigger".
+   * The slots were a fixed 64px and the key a fixed unit 5, so on a laptop
+   * they sat in the middle of a 620px panel looking like a phone layout that
+   * had been stretched. Three steps rather than a continuous scale, because a
+   * sprite drawn at a fractional multiple stops being pixel art — the icon
+   * scale has to stay a whole number, and so does the slot it sits in.
+   */
+  const benchStep = viewportWidth >= 900 ? 2 : viewportWidth >= 560 ? 1 : 0
+  const slotSize = [64, 80, 96][benchStep]
+  const slotScale = [3, 4, 5][benchStep]
+  const combineUnit = [5, 6, 7][benchStep]
+
   const [feedback, setFeedback] = useState<Feedback | null>(null)
   const [discovery, setDiscovery] = useState<Discovery | null>(null)
   const [receiptElement, setReceiptElement] = useState<ElementDef | null>(null)
@@ -162,7 +177,8 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
    * is one press away in the inventory, and a bar that tries to be the
    * inventory is a worse inventory.
    */
-  const stillMissing = (() => {
+  const MISSING_SHOWN = 6
+  const missingAll = (() => {
     const held = new Set(inventory)
     const byOutput = new Map(data.recipes.map((r) => [r.output, r]))
     return [...new Set(craftableIds)]
@@ -173,9 +189,16 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
         return { element: elementById(id), ready }
       })
       .sort((a, b) => b.ready - a.ready || a.element.name.localeCompare(b.element.name))
-      .slice(0, 6)
-      .map((entry) => entry.element)
   })()
+  /*
+   * Recomputed every render from `game.isDiscovered`, which is what makes the
+   * strip self-healing: find one of the six and it drops out on the next paint
+   * and the seventh takes its place, with no bookkeeping and nothing to go
+   * stale. That is worth stating because the obvious implementation — pick six
+   * once and remember them — looks identical until the moment it matters.
+   */
+  const stillMissing = missingAll.slice(0, MISSING_SHOWN).map((entry) => entry.element)
+  const missingBeyond = Math.max(0, missingAll.length - MISSING_SHOWN)
 
   /*
    * Hints: earned by playing, spent one at a time, and chosen by the SOLVER
@@ -237,6 +260,10 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
    * exists only to be refused is a nag.
    */
   const rules = modeById(mode)
+  const tries = game.attempts[realm] ?? 0
+  // Guarded rather than formatted: 0/0 is NaN, and "NaN%" on the bench is a
+  // worse first impression than a dash.
+  const hitRate = tries === 0 ? '—' : `${Math.round((realmFound / tries) * 100)}%`
   const earned =
     hintsEarned(realmFound, (game.misses[realm] ?? []).length) - (game.hintsSpent[realm] ?? 0)
   const hintsLeft = rules.infiniteHints ? Infinity : earned
@@ -491,7 +518,7 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
                 * something to aim at; it does not tell you it comes from slag
                 * and cement.
                 */}
-              <div className="flex flex-wrap justify-center gap-2">
+              <div className="flex flex-wrap items-center justify-center gap-2">
                 {stillMissing.map((element) => (
                   <ElementTile
                     key={element.id}
@@ -501,6 +528,23 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
                     unit={3}
                   />
                 ))}
+                {missingBeyond > 0 && (
+                  /*
+                   * Six is a window onto a much longer list and the strip has
+                   * to say so, or a player who makes those six believes they
+                   * are nearly done. It is a button because the full list
+                   * already exists one press away, and a count that cannot be
+                   * opened is a tease.
+                   */
+                  <PixelButton
+                    tone="default"
+                    unit={3}
+                    onClick={onOpenInventory}
+                    aria-label={`${missingBeyond} more still missing. Open the inventory.`}
+                  >
+                    +{missingBeyond} more
+                  </PixelButton>
+                )}
               </div>
             </div>
           )}
@@ -532,14 +576,20 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
                   playPress()
                   clearSlot(i as 0 | 1)
                 }}
-                className="flex size-16 cursor-pointer items-center justify-center"
+                className="flex cursor-pointer items-center justify-center"
                 aria-label={`Remove ${elementById(id).name} from slot`}
-                style={{ background: 'none', border: 'none', padding: 0 }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  padding: 0,
+                  width: slotSize,
+                  height: slotSize,
+                }}
               >
-                <PixelArt sprite={resolveIcon(elementById(id).icon)} scale={3} />
+                <PixelArt sprite={resolveIcon(elementById(id).icon)} scale={slotScale} />
               </button>
             ) : (
-              <EmptySlot key={i} unit={4} size={64} />
+              <EmptySlot key={i} unit={4} size={slotSize} />
             ),
           )}
         </div>
@@ -578,6 +628,15 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
                 { label: 'made', value: `${realmFound} of ${realmTotal}`, bright: true },
                 { label: 'tries', value: String(game.attempts[realm] ?? 0) },
                 { label: 'dead ends', value: String((game.misses[realm] ?? []).length) },
+                /*
+                 * A hit rate rather than another raw count. Over 97% of pairs
+                 * in this game do nothing, so a player striking one in five is
+                 * doing extremely well and has no way to know it — a bare
+                 * "tries" number reads as a record of failure instead of a
+                 * record of exploring.
+                 */
+                { label: 'hit rate', value: hitRate },
+                { label: 'to go', value: String(Math.max(0, realmTotal - realmFound)) },
                 {
                   label: 'hints left',
                   value: !rules.hints ? 'none' : rules.infiniteHints ? '∞' : String(Math.max(0, earned)),
@@ -588,7 +647,7 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
 
           <PixelButton
             tone="survival"
-            unit={5}
+            unit={combineUnit}
             onClick={handleCombine}
             disabled={!slots[0] || !slots[1]}
           >
