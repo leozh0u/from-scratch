@@ -30,7 +30,9 @@
     "test:earth": "tsx scripts/earthtest.ts",
     "links": "tsx scripts/links.ts",
     "import": "tsx scripts/import.ts",
-    "test:edge": "tsx scripts/edgetest.ts"
+    "test:edge": "tsx scripts/edgetest.ts",
+    "apply": "tsx scripts/apply.ts",
+    "spread": "node scripts/spread.mjs"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
