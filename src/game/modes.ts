@@ -13,7 +13,7 @@
  * about the world does not have a difficulty setting.
  */
 
-export type ModeId = 'standard' | 'purist' | 'open' | 'cheater'
+export type ModeId = 'standard' | 'purist' | 'easy' | 'cheater'
 
 export type Mode = {
   id: ModeId
@@ -33,15 +33,19 @@ export type Mode = {
   /** The give-up route may be shown. */
   giveUp: boolean
   /**
-   * Everything is open from the start, without finishing Survival.
+   * Every element is already yours.
    *
-   * This is the ONLY thing in the game that changes what is reachable rather
-   * than how much help you get, which is why it lives behind a mode called
-   * Cheater rather than behind a build flag. A flag is invisible and ships by
-   * accident; a mode is a thing the player chose, with a name that tells them
-   * what they chose.
+   * This is the only thing in the game that changes what you HAVE rather than
+   * how much help you get, and it turns the inventory into a reference book:
+   * open anything, see the two things that make it, open either of those, and
+   * walk the whole tree down to stone and wood. That is the point of it. It
+   * lives behind a mode called Cheater because that is what it is, and calling
+   * it something gentler would be pretending.
+   *
+   * It is a VIEW and never a write. The save is untouched, so turning it off
+   * gives you back exactly the game you had.
    */
-  skipTutorial: boolean
+  revealAll: boolean
 }
 
 export const MODES: Mode[] = [
@@ -52,7 +56,7 @@ export const MODES: Mode[] = [
     hints: true,
     infiniteHints: false,
     giveUp: true,
-    skipTutorial: false,
+    revealAll: false,
   },
   {
     id: 'purist',
@@ -61,32 +65,30 @@ export const MODES: Mode[] = [
     hints: false,
     infiniteHints: false,
     giveUp: false,
-    skipTutorial: false,
+    revealAll: false,
   },
   {
-    id: 'open',
-    label: 'open',
-    blurb: 'unlimited hints',
+    id: 'easy',
+    label: 'easy',
+    blurb: 'free hints',
     hints: true,
     infiniteHints: true,
     giveUp: true,
-    skipTutorial: false,
+    revealAll: false,
   },
   {
     id: 'cheater',
     label: 'cheater',
     /*
-     * Named plainly on purpose. The lock exists because Survival teaches the
-     * verb and fifteen combinations is a short price for it — but a judge with
-     * three minutes, or somebody who has already finished it once, should not
-     * have to pay it again. Calling the door "cheater" lets them through
-     * without pretending the door was not there.
+     * Named plainly on purpose. Somebody who wants to read the whole graph
+     * rather than play it should be able to, and calling that door something
+     * gentler would be pretending the door was not there.
      */
-    blurb: 'skip tutorial',
+    blurb: 'everything open',
     hints: true,
     infiniteHints: true,
     giveUp: true,
-    skipTutorial: true,
+    revealAll: true,
   },
 ]
 
@@ -114,4 +116,29 @@ export function writeMode(id: ModeId) {
 
 export function modeById(id: ModeId): Mode {
   return MODES.find((m) => m.id === id) ?? MODES[0]
+}
+
+/**
+ * Whether the player has chosen to skip Survival.
+ *
+ * A preference rather than progress, so it lives beside the mode rather than
+ * in the save: wiping what you made should not put the tutorial back in front
+ * of somebody who has already played it.
+ */
+const SKIP_KEY = 'from-scratch:skipped'
+
+export function readSkipped(): boolean {
+  try {
+    return localStorage.getItem(SKIP_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+
+export function writeSkipped(next: boolean) {
+  try {
+    localStorage.setItem(SKIP_KEY, next ? '1' : '0')
+  } catch {
+    // Best effort; the session still honours the choice.
+  }
 }

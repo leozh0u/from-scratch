@@ -200,5 +200,87 @@ console.log('\n=== an element in two realms is still one element ===')
      `${deduped.length} distinct`)
 }
 
+/*
+ * WALKING THE TREE DOWNWARD ALWAYS TERMINATES.
+ *
+ * Cheater mode turns the inventory into a reference book: open anything, see
+ * the two things that make it, open either of those. The one way that can go
+ * wrong is a walk that never reaches the bottom, and a player following a loop
+ * forever inside a modal is a hang with no error.
+ *
+ * The solver already rejects a cyclic graph at build time, so this is the same
+ * claim checked from the other end: from every element, following the first
+ * input repeatedly reaches something with no recipe — a starter — in a bounded
+ * number of steps.
+ */
+console.log('\n=== the made-from walk reaches the bottom from anywhere ===')
+{
+  const byOutput = new Map(GAME_DATA.recipes.map((r) => [r.output, r]))
+  let worst = 0
+  let stuck: string[] = []
+  for (const element of GAME_DATA.elements) {
+    let id = element.id
+    let steps = 0
+    const seen = new Set<string>()
+    for (;;) {
+      const recipe = byOutput.get(id)
+      if (!recipe) break
+      if (seen.has(id)) { stuck.push(element.id); break }
+      seen.add(id)
+      id = recipe.inputs[0]
+      steps++
+      if (steps > GAME_DATA.elements.length) { stuck.push(element.id); break }
+    }
+    worst = Math.max(worst, steps)
+  }
+  ok('every element bottoms out at something with no recipe', stuck.length === 0,
+     stuck.length ? stuck.slice(0, 5).join(', ') : `deepest walk is ${worst} steps`)
+  ok('and the deepest walk is short enough to follow by hand', worst <= 30, `${worst} steps`)
+
+  // Both inputs, not only the first: a browser offers either door.
+  let unnamed = 0
+  for (const recipe of GAME_DATA.recipes) {
+    for (const id of recipe.inputs) {
+      if (!GAME_DATA.elements.some((e) => e.id === id)) unnamed++
+    }
+  }
+  ok('and every door has an element behind it', unnamed === 0)
+}
+
+/*
+ * A RATE'S TWO HALVES HAVE TO COUNT THE SAME EVENTS.
+ *
+ * Hit rate showed 300%. It was dividing "made" — how much of the realm exists,
+ * including elements carried over from Survival and anything found before the
+ * counter was added — by tries, which counts presses of one key. Two different
+ * populations, so the answer meant nothing and happened to be flattering.
+ *
+ * Successes are counted separately now, incremented in the same branch that
+ * grants an element, so numerator and denominator move together. Clamped as
+ * well: a percentage over 100 on screen makes a player distrust every other
+ * number beside it.
+ */
+console.log('\n=== a hit rate is between nothing and everything ===')
+{
+  const rate = (hits: number, tries: number) =>
+    tries === 0 ? '—' : `${Math.min(100, Math.round((hits / tries) * 100))}%`
+
+  ok('no tries is a dash, not NaN', rate(0, 0) === '—')
+  ok('every try a hit is 100%', rate(7, 7) === '100%')
+  ok('half is half', rate(1, 2) === '50%')
+  ok('no hits is zero', rate(0, 9) === '0%')
+  ok('and the old bug is impossible', rate(6, 2) === '100%',
+     'six discoveries over two tries used to print 300%')
+
+  let over = 0
+  for (let tries = 1; tries <= 200; tries++) {
+    for (let hits = 0; hits <= 400; hits += 7) {
+      const n = Number(rate(hits, tries).replace('%', ''))
+      if (n > 100 || n < 0) over++
+    }
+  }
+  ok('swept, nothing lands outside nought to a hundred', over === 0, '11,600 combinations')
+}
+
 console.log(`\n${pass} passed, ${fail} failed\n`)
 if (fail > 0) process.exit(1)

@@ -5,7 +5,7 @@ import { Inventory } from './components/Inventory'
 import { StartScreen } from './components/StartScreen'
 import { StyleguidePage } from './components/StyleguidePage'
 import { Workspace } from './components/Workspace'
-import { readMode, modeById, type ModeId } from './game/modes'
+import { readMode, readSkipped, writeSkipped, modeById, type ModeId } from './game/modes'
 import { useGameState } from './hooks/useGameState'
 
 /*
@@ -42,6 +42,13 @@ function Game() {
    * made, not how you like to play.
    */
   const [mode, setMode] = useState<ModeId>(() => readMode())
+  /*
+   * Skipping the tutorial is its own choice now, not a side effect of a mode.
+   * Two different wishes were sharing one control: "let me read the whole
+   * graph" and "I have played Survival before". The second is an ordinary
+   * thing to want on a second sitting.
+   */
+  const [skipped, setSkipped] = useState(() => readSkipped())
 
   /*
    * Survival is the tutorial; Everyday is the real game. Locking Everyday
@@ -54,7 +61,8 @@ function Game() {
    * for free.
    */
   const everydayUnlocked =
-    modeById(mode).skipTutorial ||
+    skipped ||
+    modeById(mode).revealAll ||
     GAME_DATA.targets.survival.every((id) => game.isDiscovered(id))
 
   /*
@@ -73,6 +81,7 @@ function Game() {
       <Inventory
         data={GAME_DATA}
         game={game}
+        revealAll={modeById(mode).revealAll}
         onBack={() => setShowInventory(false)}
         onReset={resetEverything}
       />
@@ -88,6 +97,11 @@ function Game() {
         onReset={resetEverything}
         mode={mode}
         onChangeMode={setMode}
+        skipped={skipped}
+        onSkip={() => {
+          writeSkipped(true)
+          setSkipped(true)
+        }}
       />
     )
   }

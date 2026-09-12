@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { Fragment, useEffect } from 'react'
 import { resolveIcon } from '../data/iconRegistry'
 import { dedupeSources } from '../data/sources'
 import { SourceLink } from './ui/SourceLink'
@@ -19,6 +19,18 @@ type DiscoveryCardProps = {
    * that point would just be wrong.
    */
   heading?: string
+  /**
+   * Opens one of the two inputs, so a player can walk the tree downward.
+   *
+   * Absent on a fresh discovery, where the point is the moment rather than the
+   * reference. The Inventory passes it, which is where somebody is actually
+   * asking "and what makes THAT?".
+   */
+  openInput?: (id: string) => void
+  /** Whether an input is itself open, so a locked one is not offered. */
+  inputIsOpen?: (id: string) => boolean
+  /** Names for the two inputs, since the card is given ids. */
+  nameOf?: (id: string) => string
 }
 
 /**
@@ -28,7 +40,15 @@ type DiscoveryCardProps = {
  * blurb), deduped by URL since step 15's real data may cite the same source
  * for both.
  */
-export function DiscoveryCard({ element, recipe, onClose, heading = 'New discovery' }: DiscoveryCardProps) {
+export function DiscoveryCard({
+  element,
+  recipe,
+  onClose,
+  heading = 'New discovery',
+  openInput,
+  inputIsOpen,
+  nameOf,
+}: DiscoveryCardProps) {
   const sources = dedupeSources(recipe.sources, element.sources)
 
   useEffect(() => {
@@ -102,6 +122,49 @@ export function DiscoveryCard({ element, recipe, onClose, heading = 'New discove
         >
           via {recipe.process}
         </p>
+
+        {openInput && nameOf && (
+          /*
+           * The two things this is made of, as doors rather than as text.
+           *
+           * At two hundred elements the question that actually comes up is not
+           * "what did I just make" but "and what makes that?", asked three or
+           * four times in a row. Printing the pair as a sentence answers it
+           * once; making them pressable answers it as often as somebody wants
+           * to keep going, without leaving the panel.
+           */
+          <div className="flex flex-col items-center gap-2 pt-1">
+            <p className="font-display text-[9px] tracking-widest text-muted uppercase">
+              made from
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              {recipe.inputs.map((id, i) => {
+                const open = inputIsOpen?.(id) ?? false
+                return (
+                  <Fragment key={`${id}-${i}`}>
+                    {i === 1 && (
+                      <span
+                        aria-hidden="true"
+                        className="font-display text-[11px] text-star-mid"
+                      >
+                        +
+                      </span>
+                    )}
+                    <PixelButton
+                      tone="default"
+                      unit={3}
+                      locked={!open}
+                      onClick={open ? () => openInput(id) : undefined}
+                      aria-label={open ? `Open ${nameOf(id)}` : `${nameOf(id)}, not found yet`}
+                    >
+                      {nameOf(id)}
+                    </PixelButton>
+                  </Fragment>
+                )
+              })}
+            </div>
+          </div>
+        )}
 
         {element.blurb && (
           /*

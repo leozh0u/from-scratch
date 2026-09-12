@@ -4,6 +4,7 @@ import { Starfield } from './Starfield'
 import { PixelButton } from './ui/PixelButton'
 import { MuteButton } from './ui/MuteButton'
 import { ResetButton } from './ui/ResetButton'
+import { SkipButton } from './ui/SkipButton'
 import { ModePicker } from './ui/ModePicker'
 import type { ModeId } from '../game/modes'
 import { ArcTitle } from './ArcTitle'
@@ -32,6 +33,9 @@ import { useViewport } from '../hooks/useViewport'
 const EARTH_PIXELS = 72
 
 type StartScreenProps = {
+  /** Whether Survival has been skipped, and how to skip it. */
+  skipped: boolean
+  onSkip: () => void
   /** How much help the game gives. See game/modes.ts. */
   mode: ModeId
   onChangeMode: (id: ModeId) => void
@@ -44,6 +48,8 @@ type StartScreenProps = {
 }
 
 export function StartScreen({
+  skipped,
+  onSkip,
   mode,
   onChangeMode,
   onSelectRealm,
@@ -132,6 +138,7 @@ export function StartScreen({
             maxWidth: '70vw',
           }}
         >
+          <SkipButton skipped={skipped} onSkip={onSkip} unit={3} />
           <ModePicker mode={mode} onChange={onChangeMode} unit={3} />
           <MuteButton unit={3} />
           <ResetButton onReset={onReset} unit={3} />

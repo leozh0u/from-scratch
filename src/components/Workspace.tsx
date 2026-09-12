@@ -286,9 +286,21 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
     faceWidthFor(3, 'give up', 18),
   ) + 4
   const tries = game.attempts[realm] ?? 0
-  // Guarded rather than formatted: 0/0 is NaN, and "NaN%" on the bench is a
-  // worse first impression than a dash.
-  const hitRate = tries === 0 ? '—' : `${Math.round((realmFound / tries) * 100)}%`
+  const hits = game.successes[realm] ?? 0
+  /*
+   * Successes over tries, not discoveries over tries.
+   *
+   * It used to divide "made" by tries and showed 300%, because "made" counts
+   * how much of the realm exists — including elements carried over from
+   * Survival and anything found before this counter was added — while tries
+   * counts presses of one key. A rate needs both halves to count the same
+   * events. Clamped anyway, because a rate above 100% on screen is the kind
+   * of thing that makes a player distrust every other number beside it.
+   *
+   * Guarded rather than formatted at zero: 0/0 is NaN, and "NaN%" is a worse
+   * first impression than a dash.
+   */
+  const hitRate = tries === 0 ? '—' : `${Math.min(100, Math.round((hits / tries) * 100))}%`
   /*
    * Dead ends remaining until the next hint is earned. Unlimited and none are
    * their own answers rather than a countdown to something that will not
@@ -368,9 +380,12 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
   }
 
   function handleCombine() {
-    game.countAttempt(realm)
     const [a, b] = slots
+    // Counted AFTER the guard. Pressing a disabled key is not an attempt, and
+    // counting it made the hit rate wrong in the player's favour as well as
+    // the numbers meaningless.
     if (!a || !b) return
+    game.countAttempt(realm)
 
     const result = game.combine(a, b)
     setSlots([null, null])
@@ -381,6 +396,7 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
       // instead of the lighter discovery card — it's the "level complete"
       // moment, not just a new inventory tile.
       playDiscovery()
+      game.countSuccess(realm)
       if (allTargetIds.has(discoveredElement.id)) {
         setReceiptElement(discoveredElement)
       } else {

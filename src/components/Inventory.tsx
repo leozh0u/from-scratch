@@ -16,6 +16,12 @@ type InventoryProps = {
   onBack: () => void
   /** Wipes the save AND returns to the title screen — see `confirmReset`. */
   onReset: () => void
+  /**
+   * Cheater mode: treat every element as found, so the inventory becomes a
+   * reference book rather than a record. Never written to the save — turning
+   * it off gives back exactly the game that was there.
+   */
+  revealAll?: boolean
 }
 
 const REALM_LABEL: Record<RealmId, string> = {
@@ -33,7 +39,7 @@ const REALM_LABEL: Record<RealmId, string> = {
  * same DiscoveryCard shown at the moment of discovery, rather than
  * duplicating its layout inline for every entry.
  */
-export function Inventory({ data, game, onBack, onReset }: InventoryProps) {
+export function Inventory({ data, game, onBack, onReset, revealAll = false }: InventoryProps) {
   const [selected, setSelected] = useState<ElementDef | null>(null)
 
   const starterIds = new Set([...data.starters.survival, ...data.starters.everyday])
@@ -64,9 +70,16 @@ export function Inventory({ data, game, onBack, onReset }: InventoryProps) {
   }
 
   const isFound = (id: string) =>
+    revealAll ||
+    game.discovered.survival.includes(id) ||
+    game.discovered.everyday.includes(id)
+
+  /** What was genuinely made, for the counter, which should not lie. */
+  const isReallyFound = (id: string) =>
     game.discovered.survival.includes(id) || game.discovered.everyday.includes(id)
 
-  const foundCount = (realm: RealmId) => craftable[realm].filter((e) => isFound(e.id)).length
+  const foundCount = (realm: RealmId) =>
+    craftable[realm].filter((e) => isReallyFound(e.id)).length
 
   function recipeFor(element: ElementDef) {
     const options = data.recipes.filter((r) => r.output === element.id)
@@ -181,7 +194,28 @@ export function Inventory({ data, game, onBack, onReset }: InventoryProps) {
             <DiscoveryCard
               element={selected}
               recipe={recipe}
-              heading="From your Inventory"
+              heading={revealAll ? 'What it is made of' : 'From your Inventory'}
+              /*
+               * WALKING THE TREE DOWNWARD.
+               *
+               * The card names the two things that make this one; clicking
+               * either opens ITS card, and so on until you hit something with
+               * no recipe, which is a starter. That turns the inventory from a
+               * list into the thing a player actually wants at 213 elements:
+               * a way to ask "and what makes THAT?" without leaving the panel.
+               *
+               * Offered only for inputs that are themselves open, so it never
+               * becomes a spoiler machine in normal play. In Cheater
+               * everything is open, which is the whole point of Cheater.
+               */
+              openInput={(id) => {
+                const next = data.elements.find((e) => e.id === id)
+                if (!next || !isFound(next.id)) return
+                playPress()
+                setSelected(next)
+              }}
+              inputIsOpen={(id) => isFound(id)}
+              nameOf={(id) => data.elements.find((e) => e.id === id)?.name ?? id}
               onClose={() => setSelected(null)}
             />
           ) : null

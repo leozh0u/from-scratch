@@ -16,9 +16,15 @@ import { playPress } from '../../audio/sfx'
  * comes first and sits directly under the finger that just pressed, so the
  * accidental second tap is the harmless one.
  */
+/*
+ * No side legends on the answers. "Keep it" and "wipe it" are the whole
+ * sentence already, and a second line under each in smaller type is the same
+ * words again. The legend earns its place on the CLOSED key, where "reset"
+ * alone does not say reset what.
+ */
 const OPTIONS = [
-  { id: 'keep', label: 'keep it', blurb: 'nothing happens', tone: 'default' as const },
-  { id: 'wipe', label: 'wipe it', blurb: 'both realms go', tone: 'danger' as const },
+  { id: 'keep', label: 'keep it', tone: 'default' as const },
+  { id: 'wipe', label: 'wipe it', tone: 'danger' as const },
 ]
 
 export function ResetButton({ onReset, unit = 3 }: { onReset: () => void; unit?: number }) {
@@ -26,10 +32,7 @@ export function ResetButton({ onReset, unit = 3 }: { onReset: () => void; unit?:
 
   // One width for both answers and for the closed key, so the corner does not
   // change shape as it opens. Taken from the widest legend rather than picked.
-  const shared = Math.max(
-    minWidthForSide(unit, 'start over'),
-    ...OPTIONS.map((o) => minWidthForSide(unit, o.blurb)),
-  )
+  const shared = minWidthForSide(unit, 'start over')
 
   if (!open) {
     return (
@@ -55,7 +58,6 @@ export function ResetButton({ onReset, unit = 3 }: { onReset: () => void; unit?:
           key={o.id}
           tone={o.tone}
           unit={unit}
-          side={o.blurb}
           style={{ minWidth: shared }}
           onClick={() => {
             playPress()

@@ -22,6 +22,16 @@ type PersistedState = {
   /** How many combines have been pressed, per realm. Shown as a stat. */
   attempts?: Record<RealmId, number>
   /**
+   * How many of those produced something new, per realm.
+   *
+   * Counted separately from the discovery total on purpose. "Made" is how much
+   * of the realm exists — it includes elements carried over from Survival and
+   * anything found before this counter existed — so dividing it by tries gave
+   * a hit rate of 300%. A rate needs a numerator and a denominator that count
+   * the same events, and these two do.
+   */
+  successes?: Record<RealmId, number>
+  /**
    * Distinct pairs that were tried and produced nothing, per realm.
    *
    * Stored as pair keys rather than a count, because the count has to ignore
@@ -129,6 +139,14 @@ export function useGameState(data: RecipeData) {
     setAttempts((prev) => ({ ...prev, [realm]: (prev[realm] ?? 0) + 1 }))
   }, [])
 
+  const [successes, setSuccesses] = useState<Record<RealmId, number>>(
+    () => readStorage()?.successes ?? { survival: 0, everyday: 0 },
+  )
+
+  const countSuccess = useCallback((realm: RealmId) => {
+    setSuccesses((prev) => ({ ...prev, [realm]: (prev[realm] ?? 0) + 1 }))
+  }, [])
+
   /*
    * The distinct dead pairs, per realm. A Set would be the natural shape and
    * an array is what survives JSON, so it is stored as one and deduped on the
@@ -148,8 +166,8 @@ export function useGameState(data: RecipeData) {
   }, [])
 
   useEffect(() => {
-    writeStorage({ discovered, routes, hintsSpent, attempts, misses })
-  }, [discovered, routes, hintsSpent, attempts, misses])
+    writeStorage({ discovered, routes, hintsSpent, attempts, successes, misses })
+  }, [discovered, routes, hintsSpent, attempts, successes, misses])
 
   const isDiscovered = useCallback(
     (elementId: string) =>
@@ -229,8 +247,9 @@ export function useGameState(data: RecipeData) {
     setRoutes({})
     setHintsSpent({ survival: 0, everyday: 0 })
     setAttempts({ survival: 0, everyday: 0 })
+    setSuccesses({ survival: 0, everyday: 0 })
     setMisses({ survival: [], everyday: [] })
   }, [data.starters])
 
-  return { discovered, allDiscovered, isDiscovered, combine, reset, routes, hintsSpent, spendHint, attempts, countAttempt, misses, countMiss }
+  return { discovered, allDiscovered, isDiscovered, combine, reset, routes, hintsSpent, spendHint, attempts, countAttempt, successes, countSuccess, misses, countMiss }
 }
