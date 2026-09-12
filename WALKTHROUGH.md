@@ -2,7 +2,7 @@
 
 **Generated from `src/data/gameData.ts` by `npm run walkthrough`. Do not edit by hand.**
 
-272 elements, 275 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
+302 elements, 305 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
 
 ## Survival
 
@@ -304,6 +304,36 @@ The main game. Everything a person can point at, and what it actually cost to ma
 | 255 | Laser | + Ink | Barcode | printing | — |
 | 256 | Solar Cell | + Alloy Frame | Solar Panel | framing | — |
 | 257 | Generator | + Propeller | Wind Turbine | erecting | — |
+| 258 | Compost | + Stone | Coal | burial | — |
+| 259 | Coal | + Fire | Coke | coking | — |
+| 260 | Coke | + Water | Coal Tar | condensing | — |
+| 261 | Coal Tar | + Quicklime | Benzene | distilling | — |
+| 262 | Benzene | + Ammonia | Aniline | aminating | — |
+| 263 | Aniline | + Sulfuric Acid | Synthetic Dye | coupling | — |
+| 264 | Benzene | + Sodium Hydroxide | Phenol | sulfonating | — |
+| 265 | Phenol | + Wood Ash | Bakelite | curing | — |
+| 266 | Benzene | + Sulfuric Acid | Nylon | polycondensing | — |
+| 267 | Wood Pulp | + Sodium Hydroxide | Rayon | spinning | — |
+| 268 | Woollen Yarn | + Canvas | Carpet | tufting | — |
+| 269 | Linen | + Chain | Curtain | hanging | — |
+| 270 | Nylon | + Steel Spring | Umbrella | ribbing | — |
+| 271 | Nylon | + Rope | Tent | pitching | — |
+| 272 | Nylon | + Leather | Backpack | stitching | — |
+| 273 | Copper | + Limestone | Brass | alloying | — |
+| 274 | Brass | + Nylon | Zip | meshing | — |
+| 275 | Brass | + Pipe | Trumpet | belling | — |
+| 276 | Steel Wire | + Felt | Piano | voicing | — |
+| 277 | Plywood | + Bow Hair | Violin | luthiery | — |
+| 278 | Lead | + Fire | Silver | cupellation | — |
+| 279 | Wood Pulp | + Sulfuric Acid | Celluloid | nitrating | — |
+| 280 | Celluloid | + Silver | Film | coating | — |
+| 281 | Record | + Brass | Gramophone | cranking | — |
+| 282 | Film | + Lamp | Projector | shuttering | — |
+| 283 | Projector | + Screen | Cinema | showing | — |
+| 284 | Glass Pane | + Knife | Slide | cutting | — |
+| 285 | Slide | + Antiseptic | Vaccine | attenuating | — |
+| 286 | Yeast | + Slide | Penicillin | culturing | — |
+| 287 | Glass Bottle | + Steel Wire | Syringe | grinding | — |
 
 All 3 targets reachable. ✅
 
@@ -328,4 +358,4 @@ Elements with more than one real way to make them. The receipt tells you which r
 
 ## How much of the board is a dead end
 
-272 elements make 36,856 possible pairs, and 275 of them are recipes. **99.3% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
+302 elements make 45,451 possible pairs, and 305 of them are recipes. **99.3% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
