@@ -13,13 +13,14 @@ check that proved it. Nothing leaves this list silently. The **oldest** open
 item is the one most at risk, so it is first.
 
 Last verified: 2026-09-12, against the current commit and the live deployment.
+72 elements, 74 recipes, 13 of them with more than one real route.
 
 ## Open
 
 | # | Asked | State | Next |
 | --- | --- | --- | --- |
 | 1 | `UNLOCK_EVERYTHING` back to `false` | **open — blocks submission.** Verified still `true` at `src/App.tsx:30`. | One-line change. Leo asked for it on while iterating on Everyday Objects; Survival is now ~15 combinations so the gate is reasonable again. Must flip before 09:00. |
-| 2 | *"add more and more combinations"* | **open — two batches done, 69 elements and 67 recipes.** Six from the adjudicator's own findings, then the cement chain, paper and the lime products. More to mine: `npm run probe` found 56 real pairs in a sample of 90. | Run the probe wider and hand-verify the next batch. Each one needs a real source. |
+| 2 | *"add more and more combinations"* | **open, and it stays open on purpose — 72 elements, 74 recipes, up from 43 and 26.** Three batches: the adjudicator's own findings, the cement chain, then the second-road batch. The probe still turns up real pairs faster than they can be sourced, so this is a seam to keep mining rather than a job that finishes. | Run `npm run probe`, hand-verify, source each one. |
 | 3 | *"should we add a small chat for more questions"* | **open — needs Leo's call.** Recommended against: the endpoint never sees the recipe list, which is what makes "the model cannot grant a discovery" structural rather than a promise. A free-form chat gives that up. | His decision. |
 | 4 | Silkscreen is caps-only, so the wordmark reads FROM SCRATCH | **open — needs Leo's call.** Verified by rendering `a` and `A` and comparing bitmaps. Jersey 10/15/25 are pixel sans faces with true lowercase and a distinct `c`, checked the same way. | One-line swap either way. |
 
@@ -53,11 +54,11 @@ Last verified: 2026-09-12, against the current commit and the live deployment.
 | *"make it mobile friendly / not bug out in different orientations"* | `scripts/layouttest.ts`: 24 device orientations plus a sweep of every size from 320x320 to 2560x1440, zero overflows. Verified in-browser at 390x844 and 844x390 that no button is off-screen. |
 | *"why is there nothing now"* — empty shelf | Reproduced by seeding an old save, then fixed twice (prune on load, and a starter fallback). Verified the shelf shows stone/wood/plant fibre with a fully stale save. |
 | *"is the gemini api key working right now"* | Hit production twice with new-element pairs; both returned real answers. It serves one thing: the *why not?* button. |
-| *"we need to add more combinations"* (two batches) | Six added, each sourced. `npm run solve` reports all 59 elements reachable; `iron ore + natural gas -> pig iron` verified by playing it in the browser. |
+| *"we need to add more combinations"* (three batches) | 43 elements and 26 recipes at the start of the day, 72 and 74 now, every one sourced. `npm run solve` reports all reachable; the cement chain, the compost route and the syngas route each played through in the browser. |
 | *"why are these pixles like not actaully pixels but weird shapes"* | Measured the trace: run lengths pile up at 4, 8, 12, 16 and 75% of colour changes land on a multiple of 4, so the art was drawn at 128 and traced at 512. `scripts/snapToGrid.mjs` rebuilds it on that grid. The city reduction verified **lossless across all 262,144 pixels**. |
 | *"add some fun small animations like the forrest"* | Lights and birds. Both rates were wrong on the first pass (7.6 window changes a second, birds on screen 76% of the time) and `citytest.ts` caught both before Leo saw them. Verified live: bird sprite rows present in the deployed bundle. |
 | *"we want things that cant go together also explained why"* | Measured across all non-recipe pairs: fallback share 73% before, 12.9% after at 69 elements, 37 distinct answers, no line using the forbidden "impossible / cannot / never". |
-| *"fix everthing, make sure no bugs"* | Swept all five screens on **production** for non-pixel type, radii, blurs, offscreen controls and horizontal overflow. Found and fixed two real layout bugs (the item grid's column count, an invisible 92px spacer). Zero overflow on every screen afterwards. |
+| *"fix everthing, make sure no bugs"* | Swept all five screens on **production** for non-pixel type, radii, blurs, offscreen controls and horizontal overflow. Found and fixed two real layout bugs (the item grid's column count, an invisible 92px spacer). Swept again after the third batch, at 72 elements: clean on every screen. |
 | *"can you also put it on github to launch"* | Live on Vercel from `main`. Verified the deployed bundle contains this commit's work (`big-city.png`, `padBlock`, Silkscreen). |
 | *"occasional shooting stars"* | Retuned after they proved invisible; `scripts/startest.ts` measures one every ~6.5s, on screen 17% of the time, 14px tail. |
 | *"ACCURATE LOOKING pixelated emoji things for every object"* | All 57 elements have distinct art; `datatest.ts` fails the build if any falls back to the flame or shares a sprite. |
