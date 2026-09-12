@@ -347,3 +347,59 @@ the empty receipt for 2 of 3 targets, no tests, stock README.
 DREAD still blocked on Leo: MathWorks, rotating the four exposed keys, the 66
 `Co-Authored-By: Claude` trailers, the video, and whether two submissions are
 allowed at all.
+
+---
+
+## LEDGER — 2026-09-12, ~14:40 Saturday
+
+### Done this stretch
+
+| Asked, in his words | State |
+|---|---|
+| "make sure the reset button works" | **done** — tested end to end: planted 3 discoveries, clicked through the confirm, store and localStorage both back to starters |
+| "tell me the logic behind the connections" | **done** — answered: chains, self-combination, convergence, cross-realm |
+| "the survival should start with mininmal objects" | **done** — 8 tiles, was 26 |
+| "make a clicking sound… nice interactive sound" | **done** — synthesised, not sampled |
+| "a little too loud/abrupt… include it for all buttons and clicks" | **done** — 6ms attack, master 0.9→0.55, low-pass 3600→2400, wired to every control |
+| "should be in the middle" (combine panel) | **done** — `Card` was applying its class to the outer plate |
+| "rename the codex… maybe like item inventory" | **done** |
+| "the forrest needs much work… much brighter and fun" | **done** — now uses his own SVG |
+| "can't you use the photos i gave you" | **done** — yes, and I should have from the start |
+| "only minimal [movement]… swaying bushes and trees on top, occasional leaves" | **done** — edge tufts + 8 leaves on 14-30s falls |
+| Tests | **done** — 34 checks, wired into `npm test` |
+
+### The backdrop, honestly
+
+Two procedural versions were worse than the reference they imitated. A good
+pixel background is art somebody composed; a generator reproduces its rules
+without the judgement. The SVG is now the backdrop — a **vector** of pixel art,
+so it scales to any window with hard edges intact.
+
+**Open question for Leo: where did `forest hillside.svg` come from?** If it
+needs attribution, that has to go in the Devpost and the README before
+submission.
+
+### OPEN — mine to do
+
+| Item | State |
+|---|---|
+| Everyday = bustling metropolis, pixel people walking | **open, not started** — his direction from the first scene message |
+| Glass bottle has no footprint at all | **open** — now pinned by a test that fails when fixed |
+| T-shirt has no CO2; can has no water | **open** |
+| Little Alchemy scope, hundreds of elements | **open** — planned in ARCHITECTURE.md |
+| Two-speed failure explanation + "why not" | **open** — planned |
+| Sprite vocabulary | **open** |
+| Nintendo zoom-out | **open** — Leo has not said where it goes |
+| README still the Vite template | **open** |
+
+### BLOCKED ON LEO
+
+| Item | Why |
+|---|---|
+| **13 commits unpushed** | Asked five times. Repo ownership unresolved — fork vs transfer vs stay a contributor |
+| Repo on his GitHub | Nathalie's repo; needs her to transfer, or a fork the team agrees on |
+| DREAD: MathWorks | ~30 seconds, unclaimed at comparable events |
+| DREAD: rotate 4 exposed API keys | Never confirmed |
+| DREAD: 66 `Co-Authored-By: Claude` trailers | Public repo, breaks his own standing rule |
+| DREAD: video | Not shot |
+| Two submissions allowed? | Needs an organiser — decides whether DREAD matters at all |
