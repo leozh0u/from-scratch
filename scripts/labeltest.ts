@@ -13,6 +13,8 @@
 import { fitFontSize, unbreakableRuns, lineCount } from '../src/components/ui/labelFit'
 import { arcTitleWidth, fitArcUnit, arcTitlePlacement } from '../src/components/ArcTitle'
 import { GAME_DATA } from '../src/data/gameData'
+import { sizeAt, advanceEm, stripHeight, contrast, SQUASH, FLOOR_PX } from '../src/components/ui/legend'
+import { TONES, LOCKED } from '../src/components/ui/PixelButton'
 
 let pass = 0, fail = 0
 const ok = (l: string, c: boolean, d = '') => {
@@ -155,6 +157,66 @@ console.log('\n=== the word break sits at the top of the arc ===')
       return Math.max(...gaps) - Math.min(...gaps) < 0.001
     })(),
   )
+}
+
+/*
+ * THE SIDE-OF-KEY LEGENDS.
+ *
+ * Two regressions, both arithmetic and both invisible to the type-checker.
+ * The size lost its floor when it moved to a container query and resolved to
+ * 6px in landscape; and the locked tone borrowed the bevel highlight for its
+ * legend colour, which measured 2.26:1 against the base it was printed on
+ * while the other two sat near 5. The one carrying an instruction was the one
+ * you could not read.
+ */
+console.log('\n=== the legend printed on the side of a key ===')
+{
+  const LEGENDS = ['the tutorial', 'the main game', 'finish survival first']
+
+  // Every unit the start screen can pick, against every button width a
+  // viewport from a small phone to a desktop produces.
+  let smallest = Infinity
+  let tightest = Infinity
+  let fits = true
+  for (let unit = 3; unit <= 10; unit++) {
+    for (let width = 240; width <= 560; width += 8) {
+      for (const text of LEGENDS) {
+        const size = sizeAt(unit, width, text)
+        smallest = Math.min(smallest, size * SQUASH)
+        const needed = advanceEm(text) * size
+        const room = width - unit * 2
+        tightest = Math.min(tightest, room - needed)
+        if (needed > room) fits = false
+      }
+    }
+  }
+  ok('never resolves below the floor', smallest >= FLOOR_PX * SQUASH - 0.001,
+     `smallest drawn height ${smallest.toFixed(1)}px`)
+  ok('and that is still readable', smallest >= 6, `${smallest.toFixed(1)}px of drawn height`)
+  ok('every legend fits every button width', fits, `tightest fit had ${tightest.toFixed(0)}px to spare`)
+
+  let insideStrip = true
+  for (let unit = 3; unit <= 10; unit++) {
+    const tallest = Math.round(unit * 2.1) * SQUASH
+    if (tallest > stripHeight(unit)) insideStrip = false
+  }
+  ok('and sits inside the visible side face', insideStrip)
+
+  /*
+   * 4.5:1 is the text threshold. It is not decoration — the locked legend is
+   * the only place the game says what you have to do to get in.
+   */
+  const tones: [string, { legend: string; base: string }][] = [
+    ['survival', TONES.survival],
+    ['everyday', TONES.everyday],
+    ['default', TONES.default],
+    ['danger', TONES.danger],
+    ['locked', LOCKED],
+  ]
+  for (const [name, t] of tones) {
+    const ratio = contrast(t.legend, t.base)
+    ok(`${name} legend reads against its own side face`, ratio >= 4.5, `${ratio.toFixed(2)}:1`)
+  }
 }
 
 console.log(`\n${pass} passed, ${fail} failed\n`)

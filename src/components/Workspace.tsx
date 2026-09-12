@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { Fragment, useRef, useState } from 'react'
 import { adjudicate } from '../adjudicator/client'
 import { explainFailure } from '../adjudicator/explain'
 import { resolveIcon } from '../data/iconRegistry'
@@ -132,20 +132,6 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
   // Guard divide-by-zero for a realm with no targets yet (Everyday, pre-step-15).
   const progress = targets.length === 0 ? 0 : (foundCount / targets.length) * 100
 
-  /*
-   * The only onboarding this game gets: one line, shown whenever a
-   * first-time player is looking at empty slots with nothing discovered yet.
-   * It steps aside the moment a slot is filled or a result is showing, and
-   * disappears for good after the first real discovery. No tutorial screen,
-   * no modal — the empty slots plus this sentence are the whole explanation.
-   */
-  // "First run" is global: once a player has combined anything, in either
-  // realm, they have learned the verb and do not need reminding. Measured
-  // against everything they own rather than against the filtered view above,
-  // or entering Survival after finishing it would look like a fresh start.
-  const totalStarters = data.starters.survival.length + data.starters.everyday.length
-  const isFirstRun = game.allDiscovered().length === totalStarters
-  const showHint = isFirstRun && !feedback && slots[0] === null && slots[1] === null
 
   /*
    * Picking from the inventory always fills the next empty slot — it never
@@ -326,44 +312,101 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
         </HudBar>
       )}
 
-      <Card className="flex flex-col items-center gap-5 p-6">
-        <div className="flex items-center gap-4">
-          {slots.map((id, i) =>
-            id ? (
-              <button
-                key={i}
-                type="button"
-                onClick={() => {
-                  playPress()
-                  clearSlot(i as 0 | 1)
-                }}
-                className="flex size-16 cursor-pointer items-center justify-center"
-                aria-label={`Remove ${elementById(id).name} from slot`}
-                style={{ background: 'none', border: 'none', padding: 0 }}
-              >
-                <PixelArt sprite={resolveIcon(elementById(id).icon)} scale={3} />
-              </button>
-            ) : (
-              <EmptySlot key={i} unit={4} size={64} />
-            ),
-          )}
+      {/*
+       * THE BENCH IS A ROW, NOT A COLUMN.
+       *
+       * It was a stack — two slots, then the combine key underneath, then a
+       * line of instructions — inside a card as wide as the page. That is a
+       * tall box with most of its area empty on either side, and the thing it
+       * is asking you to do is three small objects in the middle of it.
+       *
+       * Laid out across instead, the same controls use the width the card
+       * already had and cost about half the height, which matters because
+       * everything below this is the inventory you are actually reading. It
+       * wraps back to a stack when the row genuinely will not fit.
+       */}
+      {/*
+       * The bench hugs its contents instead of spanning the page.
+       *
+       * Full width, it was a slab with three small objects in the middle and
+       * a hand's width of empty panel either side of them. There is a forest
+       * behind this, and showing it is better than painting over it — the
+       * room the game is played in was the reason for drawing the scene at
+       * all. The bars above stay full width because a status bar is a bar.
+       */}
+      {/*
+       * Sizing goes in `style`, not `className`.
+       *
+       * Card puts the className on its CONTENT and keeps the outer plate for
+       * the outline — so `w-fit` narrowed the face and left the black shell
+       * spanning the page, which looked like the panel had been cropped. The
+       * shell is what has to shrink, and the shell is what `style` reaches.
+       */}
+      <Card
+        className="flex flex-col items-center gap-3"
+        style={{ width: 'fit-content', maxWidth: '100%', alignSelf: 'center' }}
+      >
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          {slots.map((id, i) => (
+            <Fragment key={i}>
+              {i === 1 && (
+                <span
+                  aria-hidden="true"
+                  className="font-display text-star-mid"
+                  style={{ fontSize: 18 }}
+                >
+                  +
+                </span>
+              )}
+              {id ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    playPress()
+                    clearSlot(i as 0 | 1)
+                  }}
+                  className="flex size-16 cursor-pointer items-center justify-center"
+                  aria-label={`Remove ${elementById(id).name} from slot`}
+                  style={{ background: 'none', border: 'none', padding: 0 }}
+                >
+                  <PixelArt sprite={resolveIcon(elementById(id).icon)} scale={3} />
+                </button>
+              ) : (
+                <EmptySlot unit={4} size={64} />
+              )}
+            </Fragment>
+          ))}
+
+          <PixelButton
+            tone="survival"
+            /*
+             * Unit 4, not 5. In a row the key sits beside a 64px slot, and at
+             * unit 5 it stood 90px tall next to it and set the height of the
+             * whole bench on its own.
+             */
+            unit={4}
+            onClick={handleCombine}
+            disabled={!slots[0] || !slots[1]}
+            style={{ marginLeft: 8 }}
+          >
+            combine
+          </PixelButton>
         </div>
 
-        <PixelButton
-          tone="survival"
-          unit={5}
-          onClick={handleCombine}
-          disabled={!slots[0] || !slots[1]}
-        >
-          combine
-        </PixelButton>
-
         {/* role="status" so a screen reader announces the result without a page jump */}
+        {/*
+         * No standing instruction line.
+         *
+         * It read "pick two things. see what happens." under two empty slots
+         * and a key marked COMBINE, which is the same sentence the controls
+         * were already saying. It also held a blank line open for itself for
+         * the whole rest of the game, which is why the bench had a strip of
+         * nothing along the bottom of it.
+         */}
         <p
-          className="min-h-5 max-w-[34ch] text-center font-display text-[10px] leading-[2] lowercase text-star-mid"
+          className="max-w-[34ch] text-center font-display text-[10px] leading-[2] lowercase text-star-mid empty:hidden"
           role="status"
         >
-          {showHint && 'pick two things. see what happens.'}
           {feedback?.kind === 'already-known' && `already have ${feedback.name}.`}
           {feedback?.kind === 'no-match' && (feedback.deeper ?? feedback.reason)}
         </p>

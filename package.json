@@ -23,7 +23,9 @@
     "probe": "tsx scripts/probe.ts",
     "test:city": "tsx scripts/citytest.ts",
     "snap": "node scripts/snapToGrid.mjs",
-    "sheet": "tsx scripts/contactsheet.ts"
+    "sheet": "tsx scripts/contactsheet.ts",
+    "load": "k6 run load/gameplay.js",
+    "load:api": "k6 run load/adjudicate.js"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",

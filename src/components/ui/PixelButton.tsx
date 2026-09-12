@@ -2,6 +2,7 @@ import { useRef, useState, type ButtonHTMLAttributes, type ReactNode, type Ref }
 import { PixelArt } from '../PixelArt'
 import { PADLOCK } from '../../art/sprites'
 import { steppedNotch, OUTLINE } from './pixelShape'
+import { fontSizeCss, SQUASH, SKEW_DEG } from './legend'
 import { playPress, playRelease, playHover, playLocked } from '../../audio/sfx'
 
 /**
@@ -86,6 +87,17 @@ type Tone = {
   lo: string
   /** The extruded side face beneath the button. */
   base: string
+  /**
+   * The legend printed on that side face.
+   *
+   * Named rather than reusing `hi`, which is what it was. `hi` is the bevel
+   * highlight — it is chosen to sit one step above the FACE, and on the three
+   * lit tones that also happened to read well against the base. On the locked
+   * tone it did not: measured, `hi` on `base` came to 2.26:1, against 4.87
+   * and 6.11 for the other two. The locked legend is the only one carrying an
+   * instruction rather than a label, so it was the worst one to have lost.
+   */
+  legend: string
   text: string
   textShadow: string
 }
@@ -96,12 +108,13 @@ type Tone = {
  * deliberate — an 8-bit palette had no room for tasteful desaturation, and
  * muted versions of these read as a modern UI wearing a costume.
  */
-const TONES: Record<PixelButtonTone, Tone> = {
+export const TONES: Record<PixelButtonTone, Tone> = {
   default: {
     face: '#5b58a8',
     hi: '#8e8ad8',
     lo: '#3c3a7a',
     base: '#272552',
+    legend: '#8e8ad8',
     text: '#ffffff',
     textShadow: '#241f4d',
   },
@@ -110,6 +123,7 @@ const TONES: Record<PixelButtonTone, Tone> = {
     hi: '#ffab5e',
     lo: '#b5501a',
     base: '#7a3310',
+    legend: '#ffab5e',
     text: '#ffffff',
     textShadow: '#6b2c0d',
   },
@@ -118,6 +132,7 @@ const TONES: Record<PixelButtonTone, Tone> = {
     hi: '#68dcef',
     lo: '#137689',
     base: '#0b4a59',
+    legend: '#68dcef',
     text: '#ffffff',
     textShadow: '#093f4c',
   },
@@ -126,6 +141,7 @@ const TONES: Record<PixelButtonTone, Tone> = {
     hi: '#ff7d7d',
     lo: '#9c2424',
     base: '#651414',
+    legend: '#ff7d7d',
     text: '#ffffff',
     textShadow: '#571010',
   },
@@ -140,11 +156,14 @@ const TONES: Record<PixelButtonTone, Tone> = {
  * control that is unavailable is still a solid object — it is just a cold,
  * dead one, and then it gets chained shut.
  */
-const LOCKED: Tone = {
+export const LOCKED: Tone = {
   face: '#3f3d63',
   hi: '#56537f',
   lo: '#2e2c4c',
   base: '#1f1e38',
+  // The face's own text colour, not a new one: at 5.16:1 on the base it sits
+  // alongside survival's 4.87 and everyday's 6.11 instead of half of them.
+  legend: '#908dbb',
   text: '#908dbb',
   textShadow: '#1f1e38',
 }
@@ -160,8 +179,15 @@ const LOCKED: Tone = {
  * It deliberately overhangs the button's top and bottom edges, which is why
  * this is a sibling of the face rather than a child: the face is clipped to
  * its own silhouette and anything inside gets cut off at the bevel.
+ *
+ * CENTRED ON THE FACE, NOT ON THE BUTTON. The <button> box includes the depth
+ * of the extrusion underneath it, so centring in that box hung the lock low
+ * enough to sit across the side face — and at a 320px viewport it landed on
+ * top of the legend printed there. A padlock goes on the door, not on the
+ * step. Bounding it to the face fixes the collision at every width rather
+ * than nudging it out of the way at the ones that were checked.
  */
-function Lock({ unit }: { unit: number }) {
+function Lock({ unit, depth }: { unit: number; depth: number }) {
   return (
     <span
       aria-hidden="true"
@@ -170,8 +196,10 @@ function Lock({ unit }: { unit: number }) {
         // Measured from the left edge rather than centred: dead centre puts it
         // straight through the label.
         left: unit * 4,
-        top: '50%',
-        transform: 'translateY(-50%)',
+        top: 0,
+        bottom: depth,
+        display: 'flex',
+        alignItems: 'center',
         zIndex: 2,
         pointerEvents: 'none',
       }}
@@ -377,8 +405,15 @@ export function PixelButton({
                  * adds. A container query turns that into a real fit with no
                  * measuring pass — the locked legend is nearly twice the length
                  * of "the tutorial" and would otherwise run off the key.
+                 *
+                 * The 9px FLOOR is not decoration. In landscape the unit drops
+                 * to 3 and the computed size fell to 6px, which after the
+                 * squash is 4.3 real pixels of a font whose stems are one
+                 * pixel wide — present in the DOM, unreadable on the screen.
+                 * A floor was in the first version and I dropped it moving to
+                 * the container query; a viewport sweep found it at 24 sizes.
                  */
-                fontSize: `min(${Math.round(unit * 2.1)}px, calc((100cqw - ${unit * 4}px) / ${(side.length * 1.08 + 0.25).toFixed(2)}))`,
+                fontSize: fontSizeCss(unit, side),
                 /*
                  * Squashed less than it was. The skew is what sells the
                  * receding face; the vertical squash only adds to it, and at
@@ -386,7 +421,7 @@ export function PixelButton({
                  * made of. 0.72 still reads as foreshortened and keeps the
                  * letterforms.
                  */
-                transform: 'skewX(-18deg) scaleY(0.72)',
+                transform: `skewX(-${SKEW_DEG}deg) scaleY(${SQUASH})`,
                 fontFamily: 'var(--font-display)',
                 lineHeight: 1,
                 letterSpacing: '0.08em',
@@ -394,7 +429,7 @@ export function PixelButton({
                 whiteSpace: 'nowrap',
                 // Lighter than the base it sits on, the way a moulded legend
                 // catches the light on the side of a real keycap.
-                color: c.hi,
+                color: c.legend,
               }}
             >
               {side}
@@ -480,7 +515,7 @@ export function PixelButton({
         </span>
       </span>
 
-      {locked && <Lock unit={unit} />}
+      {locked && <Lock unit={unit} depth={depth} />}
     </button>
   )
 }
