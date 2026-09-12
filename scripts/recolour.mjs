@@ -127,6 +127,10 @@ const BY_FORM = {
   bottle: '#9ac0d0', board: '#a8804a', wheel: '#8a8a94', machine: '#6a7484',
   tool: '#a8a49a', log: '#8a5a33', flame: '#e8a03a', heap: '#a09888',
   bar: '#b0a890',
+  tube: '#9aa4b0', hook: '#8a94a0', saw: '#c0c8d0', nib: '#a8a8b4',
+  jar: '#a8c8d8', cap: '#b8b8c0', pin: '#c0c0c8', clip: '#a8b0b8',
+  lens: '#bfe0ee', wave: '#79b4d6', leafy: '#6a9a4a', seedpod: '#b8a868',
+  brush: '#a8804a', anvilf: '#7a8494', coilspring: '#9aa0a8', plate: '#c8c8d0',
 }
 
 // 1. Reset every colour to its family, unless it is pinned.

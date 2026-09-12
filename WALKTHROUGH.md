@@ -2,7 +2,7 @@
 
 **Generated from `src/data/gameData.ts` by `npm run walkthrough`. Do not edit by hand.**
 
-692 elements, 695 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
+722 elements, 725 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
 
 ## Survival
 
@@ -724,6 +724,36 @@ The main game. Everything a person can point at, and what it actually cost to ma
 | 675 | Reservoir | + Steel Frame | Water Tower | standpiping | — |
 | 676 | Water Tower | + Valve | Hydrant | casting | — |
 | 677 | Hydrant | + Lorry | Fire Engine | pumping | — |
+| 678 | Paper | + Varnish | Paper Straw | spiral winding | — |
+| 679 | Raw Cotton | + Paper Straw | Cotton Bud | spinning | — |
+| 680 | Wood Pulp | + Plastic Film | Tissue | creping | — |
+| 681 | Tissue | + Polyprop | Nappy | layering | — |
+| 682 | Plaster | + Bandage | Plaster Cast | setting | — |
+| 683 | Alloy Frame | + Rubber Pad | Crutch | adjusting | — |
+| 684 | Bicycle | + Alloy Frame | Wheelchair | cambering | — |
+| 685 | Microphone | + Lithium Battery | Hearing Aid | amplifying | — |
+| 686 | Paper | + Punched Card | Braille | embossing | — |
+| 687 | Carbon Black | + Alloy Frame | Prosthetic | socketing | — |
+| 688 | X-Ray | + Film | X-Ray Plate | exposing | — |
+| 689 | Sonar | + Screen | Ultrasound | scanning | — |
+| 690 | Thermometer | + Mercury | Fever Gauge | constricting | — |
+| 691 | Barometer | + Synthetic Rubber | Pressure Cuff | occluding | — |
+| 692 | Stainless Steel | + Razor | Scalpel | honing | — |
+| 693 | Nylon | + Needle | Suture | swaging | — |
+| 694 | Steam Boiler | + Pressure Gauge | Autoclave | sterilising | — |
+| 695 | Autoclave | + Scalpel | Operating Theatre | scrubbing | — |
+| 696 | Operating Theatre | + Central Heating | Hospital | wards | — |
+| 697 | Hospital | + Lorry | Ambulance | fitting out | — |
+| 698 | Microscope | + Vacuum Pump | Electron Scope | focusing | — |
+| 699 | Agar | + Blown Glass | Petri Dish | pouring | — |
+| 700 | Electric Motor | + Balance | Centrifuge | spinning | — |
+| 701 | Centrifuge | + Fridge | Blood Bank | storing | — |
+| 702 | Pump | + Water Filter | Dialysis | filtering | — |
+| 703 | Thermostat | + Glass Pane | Incubator | warming | — |
+| 704 | Lens | + Spectacles | Bifocals | grinding | — |
+| 705 | Polyprop | + Water | Contact Lens | moulding | — |
+| 706 | Spectacles | + Carbon Black | Sunglasses | tinting | — |
+| 707 | Sunglasses | + Synthetic Rubber | Goggles | sealing | — |
 
 All 3 targets reachable. ✅
 
@@ -748,4 +778,4 @@ Elements with more than one real way to make them. The receipt tells you which r
 
 ## How much of the board is a dead end
 
-692 elements make 239,086 possible pairs, and 695 of them are recipes. **99.7% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
+722 elements make 260,281 possible pairs, and 725 of them are recipes. **99.7% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.

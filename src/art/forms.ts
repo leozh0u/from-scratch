@@ -36,6 +36,9 @@ export type FormId =
   | 'engine' | 'box' | 'tower' | 'panel' | 'drum' | 'rod' | 'ring'
   | 'blade' | 'cone' | 'dish' | 'card' | 'vial' | 'spool' | 'grid'
   | 'arch' | 'wedge' | 'spiral' | 'fan' | 'cross' | 'fork' | 'cup'
+  | 'tube' | 'hook' | 'saw' | 'nib' | 'jar' | 'cap' | 'pin' | 'clip'
+  | 'lens' | 'wave' | 'leafy' | 'seedpod' | 'brush' | 'anvilf'
+  | 'coilspring' | 'plate'
   | 'roll' | 'slab' | 'chip' | 'star' | 'shell'
 
 /** Rows only: the palette is filled in per element by `composeSprite`. */
@@ -218,6 +221,54 @@ export const FORMS: Record<FormId, string[]> = {
   ],
   shell: [
     '...........','....kkk....','..kkaaakk..','.kaaaaaaak.','kaabababaak','kababababab','kcbcbcbcbck','.kkkkkkkkk.','...........','...........','...........',
+  ],
+  tube: [
+    '...........','...........','..kkkkkkk..','.kaaaaaaak.','.kbkkkkkbk.','.kbkkkkkbk.','.kccccccck.','..kkkkkkk..','...........','...........','...........',
+  ],
+  hook: [
+    '....kkk....','...kaak....','...kak.....','...kak.....','...kak.....','..kkak.....','.kaakk.....','.kak.......','.kckkk.....','..kkkk.....','...........',
+  ],
+  saw: [
+    '...........','...........','kkkkkkkkkkk','kaaaaaaaaak','kcccccccccK','k.k.k.k.k.k','...........','...........','...........','...........','...........',
+  ],
+  nib: [
+    '.....k.....','....kak....','....kak....','...kaaak...','...kabak...','...kabak...','...kabak...','...kcack...','....k.k....','.....k.....','...........',
+  ],
+  jar: [
+    '...kkkkk...','...kaaak...','..kkkkkkk..','.kaaaaaaak.','.kbbbbbbbk.','.kbbbbbbbk.','.kbbbbbbbk.','.kccccccck.','..kkkkkkk..','...........','...........',
+  ],
+  cap: [
+    '...........','...........','..kkkkkkk..','.kaaaaaaak.','kababababab','kcccccccccK','.kkkkkkkkk.','...........','...........','...........','...........',
+  ],
+  pin: [
+    '...kkk.....','..kaaak....','..kaaak....','...kak.....','....k......','....k......','....k......','....k......','....k......','....k......','...........',
+  ],
+  clip: [
+    '..kkkkkkk..','.kaaaaaaak.','.kakkkkkak.','.kak...kak.','.kakkkkkak.','.kaaaaaaak.','.kckkkkkck.','.kk.....kk.','...........','...........','...........',
+  ],
+  lens: [
+    '...........','...kkkkk...','..kaaaaak..','.kaaaaaaak.','kaaaaaaaaak','.kaaaaaaak.','..kcccccK..','...kkkkk...','...........','...........','...........',
+  ],
+  wave: [
+    '...........','...........','.kk.....kk.','kaakk.kkaak','k..kakak..k','k...kck....','kkkkkkkkkkk','...........','...........','...........','...........',
+  ],
+  leafy: [
+    '.....k.....','....kak....','..kkaakk...','.kaaaaaak..','kaaaaaaaak.','.kaabaaak..','..kaabak...','...kcak....','....kk.....','.....k.....','...........',
+  ],
+  seedpod: [
+    '...........','....kkk....','...kaaak...','..kaabaak..','.kaabbbaak.','.kabbbbbak.','.kabbbbbak.','..kcccccK..','...kkkkk...','...........','...........',
+  ],
+  brush: [
+    '....kkk....','....kak....','....kak....','....kak....','...kkakk...','..kaaaaak..','..kbbbbbk..','..kbbbbbk..','..kcccccK..','..kkkkkkk..','...........',
+  ],
+  anvilf: [
+    '...........','kkkkkkkkkkk','kaaaaaaaaak','kcccccccccK','..kkkkkkk..','...kbbbk...','...kbbbk...','..kkbbbkk..','.kaaaaaaak.','.kkkkkkkkk.','...........',
+  ],
+  coilspring: [
+    '..kkkkkkk..','.kaaaaaaak.','.kkkkkkkkk.','..kaaaaak..','..kkkkkkk..','.kaaaaaaak.','.kkkkkkkkk.','..kcccccK..','..kkkkkkk..','...........','...........',
+  ],
+  plate: [
+    '...........','...........','.kkkkkkkkk.','kaaaaaaaaak','kabbbbbbbak','kabbbbbbbak','kcccccccccK','.kkkkkkkkk.','...........','...........','...........',
   ],
   board: [
     '...........','...........','...........','kkkkkkkkkkk','kaaaaaaaaak',
