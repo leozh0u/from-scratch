@@ -548,3 +548,19 @@ backdrop from Leo, same route as `forest-hillside.svg`.
 - Pixie URL + licence for `forest-hillside.svg` (blocked on Leo)
 - Local failure copy is thin — flint + beeswax gives only "nothing obvious
   happens." The rule table has no clause for inert mineral + wax.
+
+## The city, resolved
+
+Leo supplied a 512x512 neon-street PNG and `CityScene.tsx` is now that image
+plus a flat 28% darkening wash — no canvas, no sprites, nothing moving.
+`src/art/city.ts` (the hand-drawn walkers, cars and pigeons) is deleted.
+
+Two reasons it works where three procedural attempts did not. Its palette is
+the UI's own indigo and violet, so the panels sit inside the picture instead of
+on top of a clashing one. And its interest runs vertically down both walls as
+neon, which is the only part of a backdrop that stays visible once the UI takes
+the centre third — the procedural version spent everything on a vanishing point
+that is permanently covered.
+
+Nothing animates. The note stands that detail beats movement, and hand-drawn
+sprites over composed art would read in a visibly different hand.
