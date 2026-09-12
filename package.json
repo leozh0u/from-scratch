@@ -14,7 +14,8 @@
     "test:sway": "tsx scripts/swaytest.ts",
     "test:explain": "tsx scripts/explaintest.ts",
     "test:shape": "tsx scripts/shapetest.ts",
-    "test:label": "tsx scripts/labeltest.ts"
+    "test:label": "tsx scripts/labeltest.ts",
+    "walkthrough": "tsx scripts/walkthrough.ts"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
