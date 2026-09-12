@@ -112,6 +112,8 @@ export const GAME_DATA: RecipeData = {
     { id: 'sewing_thread', name: 'Sewing Thread', icon: 'sewing_thread', realm: 'everyday', blurb: "Yarn waxed so it slides through cloth without fraying or knotting. Paraffin or beeswax both work; saddlers have used the beeswax for centuries.", sources: [{ label: 'Thread (yarn)', url: 'https://en.wikipedia.org/wiki/Thread_(yarn)' }] },
     { id: 'cotton_t_shirt', name: 'Cotton T-Shirt', icon: 'cotton_t_shirt', realm: 'everyday', blurb: "Around 2,700 litres of water, and most of it was spent in a field months before anyone cut a pattern.", sources: [{ label: 'Water footprint', url: 'https://en.wikipedia.org/wiki/Water_footprint' }] },
     { id: 'textile_waste', name: 'Textile Waste', icon: 'textile_waste', realm: 'everyday', blurb: "Old clothes and offcuts, baled. Run them back through the gin and you get fibre again without watering a single new acre.", sources: [{ label: 'Textile recycling', url: 'https://en.wikipedia.org/wiki/Textile_recycling' }] },
+    { id: 'wrought_iron', name: 'Wrought Iron', icon: 'wrought_iron', realm: 'everyday', blurb: "Pig iron refined with lime until most of the carbon is gone. Soft, tough, and it bends instead of snapping, which is why every gate and railing used to be made of it.", sources: [{ label: 'Wrought iron', url: 'https://en.wikipedia.org/wiki/Wrought_iron' }, { label: 'Finery forge', url: 'https://en.wikipedia.org/wiki/Finery_forge' }] },
+    { id: 'mercerised_cotton', name: 'Mercerised Cotton', icon: 'mercerised_cotton', realm: 'everyday', blurb: "Cotton soaked in lye under tension. The fibres swell and straighten, so they end up stronger, shinier, and they take dye far better than they did.", sources: [{ label: 'Mercerised cotton', url: 'https://en.wikipedia.org/wiki/Mercerised_cotton' }] },
     { id: 'candle', name: 'Candle', icon: 'candle', realm: 'everyday', blurb: "Wax and a braided wick. The wick is not what burns: it draws liquid wax up by capillary action and the wax burns at the top, which is why the thing lasts hours instead of seconds.", sources: [{ label: 'Candle', url: 'https://en.wikipedia.org/wiki/Candle' }] },
     { id: 'butane', name: 'Butane', icon: 'butane', realm: 'everyday', blurb: "Pulled out of natural gas by chilling it. It goes liquid under gentle pressure, and that is the only reason a lighter fits in a pocket.", sources: [{ label: 'Butane', url: 'https://en.wikipedia.org/wiki/Butane' }] },
     { id: 'lighter', name: 'Lighter', icon: 'lighter', realm: 'everyday', blurb: "Fuel, a valve, a flint and a pressed steel case. The end of a road that started with a stick spun between two palms.", sources: [{ label: 'Lighter', url: 'https://en.wikipedia.org/wiki/Lighter' }] },
@@ -482,6 +484,58 @@ export const GAME_DATA: RecipeData = {
       process: 'sewing',
       cost: ZERO_COST,
       sources: [{ label: 'T-shirt', url: 'https://en.wikipedia.org/wiki/T-shirt' }],
+    },
+    {
+      // The model, asked about iron ore and natural gas, said it was real. It
+      // is: direct reduction is how a large and growing share of the world's
+      // iron is made, and it is the route that does not need a blast furnace.
+      inputs: ['iron_ore', 'natural_gas'],
+      output: 'pig_iron',
+      process: 'direct reduction',
+      route: 'gas',
+      cost: ZERO_COST,
+      sources: [{ label: 'Direct reduced iron', url: 'https://en.wikipedia.org/wiki/Direct_reduced_iron' }],
+    },
+    {
+      // Solvay's actual inputs are brine and limestone; the quicklime route
+      // already in the game is the same cycle seen a step later. Both are real
+      // and the receipt records which one you took.
+      inputs: ['limestone', 'salt'],
+      output: 'soda_ash',
+      process: 'the Solvay process',
+      route: 'brine and limestone',
+      cost: ZERO_COST,
+      sources: [{ label: 'Solvay process', url: 'https://en.wikipedia.org/wiki/Solvay_process' }],
+    },
+    {
+      inputs: ['quicklime', 'pig_iron'],
+      output: 'wrought_iron',
+      process: 'refining',
+      cost: ZERO_COST,
+      sources: [{ label: 'Finery forge', url: 'https://en.wikipedia.org/wiki/Finery_forge' }],
+    },
+    {
+      inputs: ['wrought_iron', 'charcoal'],
+      output: 'high_carbon_steel',
+      process: 'blister steelmaking',
+      route: 'cementation',
+      cost: ZERO_COST,
+      sources: [{ label: 'Cementation process', url: 'https://en.wikipedia.org/wiki/Cementation_process' }],
+    },
+    {
+      inputs: ['sodium_hydroxide', 'cotton_jersey'],
+      output: 'mercerised_cotton',
+      process: 'mercerising',
+      cost: ZERO_COST,
+      sources: [{ label: 'Mercerised cotton', url: 'https://en.wikipedia.org/wiki/Mercerised_cotton' }],
+    },
+    {
+      inputs: ['mercerised_cotton', 'dye'],
+      output: 'dyed_cotton_fabric',
+      process: 'dyeing',
+      route: 'mercerised',
+      cost: { waterL: 380, co2kg: 0 },
+      sources: [{ label: 'The Water Footprint of Cotton Consumption', url: 'https://waterfootprint.org/resources/Report18.pdf' }],
     },
     {
       inputs: ['paraffin_wax', 'cordage'],

@@ -49,3 +49,9 @@ E|natural_gas+fire|butane
 E|butane+high_carbon_steel|lighter
 E|beeswax+cordage|candle
 E|beeswax+cotton_yarn|sewing_thread
+E|iron_ore+natural_gas|pig_iron
+E|limestone+salt|soda_ash
+E|quicklime+pig_iron|wrought_iron
+E|wrought_iron+charcoal|high_carbon_steel
+E|sodium_hydroxide+cotton_jersey|mercerised_cotton
+E|mercerised_cotton+dye|dyed_cotton_fabric

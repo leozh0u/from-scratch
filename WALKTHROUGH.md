@@ -2,7 +2,7 @@
 
 **Generated from `src/data/gameData.ts` by `npm run walkthrough`. Do not edit by hand.**
 
-57 elements, 51 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
+59 elements, 57 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
 
 ## Survival
 
@@ -76,10 +76,16 @@ Teaches what ordinary manufactured things actually cost. Carries the real footpr
 | 28 | Cotton Yarn | + Paraffin Wax | Sewing Thread _(paraffin)_ | waxing | — |
 | 29 | Beeswax | + Cotton Yarn | Sewing Thread _(beeswax)_ | waxing | — |
 | 30 | Dyed Cotton Fabric | + Sewing Thread | **Cotton T-Shirt** | sewing | — |
-| 31 | Paraffin Wax | + Cordage | Candle _(paraffin)_ | dipping | — |
-| 32 | Beeswax | + Cordage | Candle _(beeswax)_ | dipping | — |
-| 33 | Natural Gas | + Fire | Butane | fractionating | — |
-| 34 | Butane | + High-Carbon Steel | Lighter | assembling | — |
+| 31 | Iron Ore | + Natural Gas | Pig Iron _(gas)_ | direct reduction | — |
+| 32 | Limestone | + Salt | Soda Ash _(brine and limestone)_ | the Solvay process | — |
+| 33 | Quicklime | + Pig Iron | Wrought Iron | refining | — |
+| 34 | Wrought Iron | + Charcoal | High-Carbon Steel _(cementation)_ | blister steelmaking | — |
+| 35 | Sodium Hydroxide | + Cotton Jersey | Mercerised Cotton | mercerising | — |
+| 36 | Mercerised Cotton | + Dye | Dyed Cotton Fabric _(mercerised)_ | dyeing | 380 L water |
+| 37 | Paraffin Wax | + Cordage | Candle _(paraffin)_ | dipping | — |
+| 38 | Beeswax | + Cordage | Candle _(beeswax)_ | dipping | — |
+| 39 | Natural Gas | + Fire | Butane | fractionating | — |
+| 40 | Butane | + High-Carbon Steel | Lighter | assembling | — |
 
 All 3 targets reachable. ✅
 
@@ -89,11 +95,15 @@ Elements with more than one real way to make them. The receipt tells you which r
 
 - **Tinder Bundle** — Stone + Plant Fibre; or Bark + Sharp Stone
 - **Ember** — Hand Drill + Fire Board (hand drill); or Bow Drill + Fire Board (bow drill)
+- **Soda Ash** — Salt + Quicklime; or Limestone + Salt (brine and limestone)
+- **Pig Iron** — Iron Ore + Charcoal; or Iron Ore + Natural Gas (gas)
+- **High-Carbon Steel** — Pig Iron + Charcoal; or Wrought Iron + Charcoal (cementation)
 - **Ginned Cotton** — Raw Cotton + Cotton Gin (virgin); or Textile Waste + Cotton Gin (recycled)
 - **Dye** — Plant Fibre + Water (plant); or Iron Ore + Fire (ochre)
+- **Dyed Cotton Fabric** — Cotton Jersey + Dye; or Mercerised Cotton + Dye (mercerised)
 - **Sewing Thread** — Cotton Yarn + Paraffin Wax (paraffin); or Beeswax + Cotton Yarn (beeswax)
 - **Candle** — Paraffin Wax + Cordage (paraffin); or Beeswax + Cordage (beeswax)
 
 ## How much of the board is a dead end
 
-57 elements make 1,596 possible pairs, and 51 of them are recipes. **96.8% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
+59 elements make 1,711 possible pairs, and 57 of them are recipes. **96.7% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.

@@ -1492,3 +1492,39 @@ export const DISTILLATE: Sprite = {
   ],
   palette: { k: '#1b1722', y: '#e8c45c', g: '#b07a3a', b: '#4b3520' },
 }
+
+/** A refined iron bar. Lighter than pig iron on top, shadowed underneath. */
+export const WROUGHT_IRON: Sprite = {
+  rows: [
+    '...........',
+    '...........',
+    '..kkkkkkk..',
+    '.klllllllk.',
+    '.klgggggLk.',
+    '.kggggggLk.',
+    '.kgggggLLk.',
+    '.kLLLLLLLk.',
+    '..kkkkkkk..',
+    '...........',
+    '...........',
+  ],
+  palette: { k: '#1a1a22', l: '#c3c7d4', g: '#8e94a6', L: '#5d6377' },
+}
+
+/** Cotton after the lye: the same weave, with a sheen the raw fibre has not. */
+export const MERCERISED_COTTON: Sprite = {
+  rows: [
+    '...........',
+    '...........',
+    '.ooooooooo.',
+    '.owWwWwWwo.',
+    '.oWwWwWwWo.',
+    '.owWwWwWwo.',
+    '.oWwWwWwWo.',
+    '.owWwWwWwo.',
+    '.ooooooooo.',
+    '...........',
+    '...........',
+  ],
+  palette: { o: '#7d86a8', w: '#ffffff', W: '#d7ddf2' },
+}

@@ -19,7 +19,8 @@
     "test:star": "tsx scripts/startest.ts",
     "test:plan": "tsx scripts/plancheck.ts",
     "plan": "tsx scripts/planrender.ts",
-    "test:layout": "tsx scripts/layouttest.ts"
+    "test:layout": "tsx scripts/layouttest.ts",
+    "probe": "tsx scripts/probe.ts"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",

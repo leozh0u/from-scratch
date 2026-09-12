@@ -466,3 +466,39 @@ In the HUD the title now yields and the buttons never do. All three were
 `shrink-0`, so a narrow screen pushed the overflow onto the right-hand end and
 cut the INVENTORY button in half. A clipped label is untidy; a clipped control
 is broken, and on a phone that button is the only way into the inventory.
+
+## More combinations, found by the model
+
+Leo: "when i click why not for some combinations it says actually this
+combination does exist."
+
+That is the design working. The adjudicator only ever gets two element NAMES,
+never the recipe list, so when it says "that's actually real" it is reporting a
+gap rather than reciting from the graph. `npm run probe` turns that into a
+worklist: it walks the pairs that are not recipes, skips the ones the local
+rule table already answers, asks the live endpoint, and writes the hits to
+`plan/candidates.md`. Nothing from it reaches `src/` without a human checking
+the transformation and finding a source.
+
+**56 of 90 sampled pairs came back real**, which is the measure of how much was
+missing. Most are interactions rather than recipes — a lit torch will set fire
+to cloth, oil can be stored in a glass bottle — and those stay out. Six were
+real transformations that make something, and they are in, each with a source:
+
+- **Iron Ore + Natural Gas -> Pig Iron**, direct reduction. A large and growing
+  share of the world's iron, and the route that needs no blast furnace.
+- **Limestone + Salt -> Soda Ash**, Solvay's own inputs. A second route beside
+  the quicklime one, which is the same cycle a step later.
+- **Quicklime + Pig Iron -> Wrought Iron**, lime as the flux that pulls the
+  carbon and impurities out.
+- **Wrought Iron + Charcoal -> High-Carbon Steel**, the cementation process, a
+  second road to steel.
+- **Sodium Hydroxide + Cotton Jersey -> Mercerised Cotton**, and mercerised
+  cotton dyes as a route of its own. Lye under tension swells the fibre so it
+  takes colour far better, which is why almost every good cotton shirt has had
+  it done.
+
+59 elements, 57 recipes. Solver passes with everything reachable; the new
+direct-reduction route puts pig iron at depth 1 without breaking the cross-realm
+dependency, since steel still needs Survival's charcoal and wrought iron still
+needs its fire.

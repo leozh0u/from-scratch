@@ -105,6 +105,7 @@ export const PROPERTIES: Record<string, Properties> = {
 
   // Everyday - metal
   pig_iron: P('solid', 'metal', 'processed'),
+  wrought_iron: P('solid', 'metal', 'processed'),
   high_carbon_steel: P('solid', 'tool', 'finished'),
   cotton_gin: P('solid', 'tool', 'finished'),
   alumina: P('granular', 'chemical', 'processed'),
@@ -127,6 +128,7 @@ export const PROPERTIES: Record<string, Properties> = {
   ginned_cotton: P('fibre', 'organic', 'processed'),
   cotton_yarn: P('fibre', 'textile', 'processed'),
   cotton_jersey: P('fibre', 'textile', 'processed'),
+  mercerised_cotton: P('fibre', 'textile', 'processed'),
   dyed_cotton_fabric: P('fibre', 'textile', 'processed'),
   sewing_thread: P('fibre', 'textile', 'processed'),
   cotton_t_shirt: P('fibre', 'product', 'finished'),

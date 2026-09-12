@@ -62,5 +62,11 @@
 | 32 | Butane | + High-Carbon Steel | = **Lighter** |
 | 33 | Beeswax | + Cordage | = **Candle** |
 | 34 | Beeswax | + Cotton Yarn | = **Sewing Thread** |
+| 35 | Iron Ore | + Natural Gas | = **Pig Iron** |
+| 36 | Limestone | + Salt | = **Soda Ash** |
+| 37 | Quicklime | + Pig Iron | = **Wrought Iron** |
+| 38 | Wrought Iron | + Charcoal | = **High-Carbon Steel** |
+| 39 | Sodium Hydroxide | + Cotton Jersey | = **Mercerised Cotton** |
+| 40 | Mercerised Cotton | + Dye | = **Dyed Cotton Fabric** |
 
-57 elements, 51 recipes.
+59 elements, 57 recipes.
