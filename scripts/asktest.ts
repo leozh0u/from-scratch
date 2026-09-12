@@ -20,6 +20,7 @@ import { readFileSync } from 'node:fs'
 import { QUESTION_KEYS, QUESTION_LABELS } from '../src/adjudicator/questions'
 import { toWholeSentences } from '../api/ask'
 import { pageTitle, titleMatches } from './links'
+import { faceWidthFor, minWidthForSide } from '../src/components/ui/legend'
 
 let pass = 0, fail = 0
 const ok = (l: string, c: boolean, d = '') => {
@@ -212,6 +213,30 @@ console.log('\n=== the link checker knows a real page from a dead one ===')
   ok('so is a bot wall', !titleMatches('Bayer process', 'Just a moment...'))
   ok('and a link that goes somewhere else entirely',
      !titleMatches('Bayer process', 'Cotton gin - Wikipedia'))
+}
+
+/*
+ * Two keys doing the same job are the same size.
+ *
+ * They were each sized by their own label — "hint" against "give up" with a
+ * flag beside it — so the pair came out ragged next to a stats block that is
+ * a tidy rectangle. Estimating each one's width got to 129 against an
+ * intrinsic 132, and close is still ragged, so they share a column and stretch
+ * to fill it. What is asserted here is the arithmetic the column width comes
+ * from.
+ */
+console.log('\n=== the two help keys share one width ===')
+{
+  const wider = faceWidthFor(3, 'give up', 18)
+  const narrower = faceWidthFor(3, 'hint', 18)
+  ok('the longer label needs more room', wider > narrower, `${wider} vs ${narrower}`)
+  ok('and the shared width is the larger of the two',
+     Math.max(wider, narrower) === wider)
+  ok('a side legend can widen it further',
+     minWidthForSide(3, 'a legend far longer than either label') > wider,
+     'so a long message widens both keys rather than breaking the pair')
+  ok('an icon costs its own width plus a gap',
+     faceWidthFor(3, 'hint', 18) - faceWidthFor(3, 'hint', 0) === 18 + 6)
 }
 
 console.log(`\n${pass} passed, ${fail} failed\n`)

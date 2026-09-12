@@ -87,3 +87,25 @@ export function contrast(a: string, b: string): number {
 export function minWidthForSide(unit: number, text: string): number {
   return Math.ceil(advanceEm(text) * FLOOR_PX) + unit * 4
 }
+
+/**
+ * How wide a button's own FACE needs to be for its label.
+ *
+ * Sibling of `minWidthForSide`, and the same arithmetic: the display face
+ * advances exactly 1em a character plus 0.08em of letter-spacing, so the label
+ * width is computable rather than measurable. Added because two keys that do
+ * the same job should be the same size, and taking the max of their side
+ * legends alone was not enough — "give up" with a flag beside it is wider than
+ * any legend either of them carries, so the pair still came out ragged.
+ *
+ * The pieces are PixelButton's own: the face is `unit * 3` type inside
+ * `unit * 5` of padding either side, with `unit` of border, and an icon costs
+ * its own width plus a `unit * 2` gap.
+ */
+export function faceWidthFor(unit: number, label: string, iconPx = 0): number {
+  const type = Math.ceil(label.length * ADVANCE_EM * (unit * 3))
+  const padding = unit * 10
+  const border = unit * 2
+  const icon = iconPx > 0 ? iconPx + unit * 2 : 0
+  return type + padding + border + icon
+}

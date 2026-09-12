@@ -33,14 +33,18 @@ const FLAG: Sprite = {
 export function GiveUpButton({
   onClick,
   disabled,
+  block,
 }: {
   onClick: () => void
   disabled?: boolean
+  /** Fills its column, so this key and the other one are the same width. */
+  block?: boolean
 }) {
   return (
     <PixelButton
       tone="danger"
       unit={3}
+      block={block}
       locked={disabled}
       side="show me"
       onClick={onClick}

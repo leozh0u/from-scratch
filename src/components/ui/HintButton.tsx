@@ -34,15 +34,19 @@ export function HintButton({
   left,
   onClick,
   disabled,
+  block,
 }: {
   left: number
   onClick: () => void
   disabled?: boolean
+  /** Fills its column, so this key and the other one are the same width. */
+  block?: boolean
 }) {
   return (
     <PixelButton
       tone="default"
       unit={3}
+      block={block}
       locked={disabled}
       side={left === Infinity ? 'unlimited' : left > 0 ? `${left} left` : 'find more'}
       onClick={onClick}

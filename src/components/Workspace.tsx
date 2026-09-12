@@ -17,6 +17,7 @@ import { GiveUpButton } from './ui/GiveUpButton'
 import { ConfirmDialog } from './ui/ConfirmDialog'
 import { pickHint, hintsEarned, pathToTarget, nextUnfoundTarget, MISSES_PER_HINT } from '../solver/hint'
 import { modeById, type ModeId } from '../game/modes'
+import { minWidthForSide, faceWidthFor } from './ui/legend'
 import { Card } from './ui/Card'
 import { ElementTile, TILE_WIDTH } from './ui/ElementTile'
 import { ProgressBar } from './ui/ProgressBar'
@@ -270,6 +271,20 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
    * exists only to be refused is a nag.
    */
   const rules = modeById(mode)
+  /*
+   * One width for the hint and give-up keys. Taken from the widest legend
+   * either of them can carry rather than picked, so a longer message widens
+   * both instead of breaking the pair.
+   */
+  const helpWidth = Math.max(
+    // What either key's side legend can ever need...
+    minWidthForSide(3, 'unlimited'),
+    minWidthForSide(3, 'find more'),
+    // ...and what either key's own face needs, which for "give up" with a
+    // flag beside it is the wider of the two.
+    faceWidthFor(3, 'hint', 18),
+    faceWidthFor(3, 'give up', 18),
+  ) + 4
   const tries = game.attempts[realm] ?? 0
   // Guarded rather than formatted: 0/0 is NaN, and "NaN%" on the bench is a
   // worse first impression than a dash.
@@ -672,13 +687,33 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
             </PixelButton>
           </div>
 
-          <div className="flex min-w-0 flex-[1_1_140px] flex-col items-center gap-2 sm:items-start">
-            {rules.hints && (
-              <HintButton left={hintsLeft} onClick={useHint} disabled={hintsLeft <= 0} />
-            )}
-            {rules.giveUp && (
-              <GiveUpButton onClick={() => setGivingUp(true)} disabled={!giveUpTarget} />
-            )}
+          {/*
+            * Centred in its half, like the stats are in theirs, and the two
+            * keys share one width. They were left-aligned and each sized by
+            * its own label, so "hint" and "give up" made a ragged pair hanging
+            * off the side of the panel while the stats sat as a tidy block on
+            * the other. A pair of controls that do the same kind of job should
+            * look like a pair.
+            */}
+          <div className="flex min-w-0 flex-[1_1_140px] flex-col items-center gap-2">
+            {/*
+              * A column of a fixed width with both keys filling it, rather
+              * than two keys each given a computed minimum. The computation
+              * was close — 129 against an intrinsic 132 — and close is a
+              * ragged pair. Letting them stretch to one width is exact and
+              * cannot drift when a label changes.
+              */}
+            <div
+              className="flex flex-col gap-2"
+              style={{ width: helpWidth, maxWidth: '100%' }}
+            >
+              {rules.hints && (
+                <HintButton left={hintsLeft} onClick={useHint} disabled={hintsLeft <= 0} block />
+              )}
+              {rules.giveUp && (
+                <GiveUpButton onClick={() => setGivingUp(true)} disabled={!giveUpTarget} block />
+              )}
+            </div>
             {!rules.hints && (
               <span
                 className="font-display text-[9px] leading-[1.8] lowercase text-muted"
