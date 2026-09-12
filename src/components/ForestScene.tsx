@@ -55,13 +55,23 @@ function hash(n: number): number {
  * is a fractional offset, because that is what puts pixels between pixels.
  */
 export function swayAt(now: number, phase: number): { dx: number; dy: number } {
-  const FRAME_MS = 260
+  const FRAME_MS = 240
+  /*
+   * Eight positions rather than six, reaching two pixels at the extremes.
+   *
+   * One pixel either side is a twitch; the eye reads it as a rendering
+   * artefact rather than as wind. Two gives the tips somewhere to travel, and
+   * the extra intermediate steps mean it still arrives there gradually instead
+   * of snapping between two poses.
+   */
   const STEPS = [
     { dx: 0, dy: 0 },
     { dx: 1, dy: 0 },
+    { dx: 2, dy: -1 },
     { dx: 1, dy: -1 },
     { dx: 0, dy: 0 },
     { dx: -1, dy: 0 },
+    { dx: -2, dy: -1 },
     { dx: -1, dy: -1 },
   ]
   const i = Math.floor(now / FRAME_MS + phase) % STEPS.length
@@ -135,12 +145,30 @@ export function ForestScene({ pixelScale = 4, className }: ForestSceneProps) {
       upward: boolean,
     ) {
       ctx.fillStyle = colour
-      for (let i = 0; i < h; i++) {
-        const t = i / h
+
+      /*
+       * THE BASE IS DRAWN PAST THE EDGE, SO IT CANNOT COME OFF IT.
+       *
+       * A tuft anchored exactly on the frame edge detaches the moment the sway
+       * moves it a pixel the wrong way — which is what "the bottom ones
+       * sometimes start floating" is. Overshooting by the sway's full
+       * amplitude means the root is always outside the visible area and the
+       * thing stays rooted no matter which pose it is in.
+       */
+      const ROOT_OVERSHOOT = 3
+      for (let i = -ROOT_OVERSHOOT; i < h; i++) {
+        const t = Math.max(0, i) / h
         const jag = Math.round((hash(seed + i * 17) - 0.5) * 3)
         const halfW = Math.max(1, Math.round(w * (1 - t * 0.75)) + jag)
-        const dx = Math.round(sway.dx * t)
-        const dy = Math.round(sway.dy * t)
+        /*
+         * The bottom fifth does not move at all. Scaling the offset by height
+         * alone still shifts the second and third rows once the amplitude
+         * reaches two pixels, and a stem that slides at its base reads as
+         * sliding rather than bending.
+         */
+        const anchored = t < 0.2 ? 0 : (t - 0.2) / 0.8
+        const dx = Math.round(sway.dx * anchored)
+        const dy = Math.round(sway.dy * anchored)
         const y = upward ? baseY - i : baseY + i
         ctx.fillRect(x - halfW + dx, y + dy, halfW * 2, 1)
       }
@@ -176,6 +204,33 @@ export function ForestScene({ pixelScale = 4, className }: ForestSceneProps) {
         const w = 5 + Math.round(hash(i * 233) * 6)
         const h = 4 + Math.round(hash(i * 251) * 7)
         tuft(x, 0, w, h, i % 2 ? CANOPY_DEEP : CANOPY_MID, i * 47, highSway, false)
+      }
+
+      /*
+       * Fronds along the left and right edges, on their own phases.
+       *
+       * Motion only along the top and bottom left the middle two thirds of the
+       * frame completely still, so the scene read as a picture with a moving
+       * border. The sides are still outside where any panel sits, so this adds
+       * life across the whole height without crossing the UI.
+       */
+      const sideSway = swayAt(now, 4)
+      for (let i = 0; i < Math.ceil(height / 22); i++) {
+        const y = Math.round(hash(i * 271 + 3) * height)
+        const w = 4 + Math.round(hash(i * 293) * 5)
+        const h = 5 + Math.round(hash(i * 311) * 9)
+        const onLeft = i % 2 === 0
+        // Drawn as an upward tuft rooted past the side edge, then nudged in.
+        tuft(
+          onLeft ? -2 : width + 2,
+          y,
+          w,
+          h,
+          i % 3 === 0 ? CANOPY_MID : CANOPY_DARK,
+          i * 53,
+          sideSway,
+          true,
+        )
       }
 
       // Occasional leaves. Eight in the air at once across the whole screen.

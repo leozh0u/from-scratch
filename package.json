@@ -9,8 +9,9 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "solve": "tsx scripts/solve.ts",
-    "test": "tsc -b && tsx scripts/datatest.ts && vite build",
-    "test:data": "tsx scripts/datatest.ts"
+    "test": "tsc -b && tsx scripts/datatest.ts && tsx scripts/swaytest.ts && vite build",
+    "test:data": "tsx scripts/datatest.ts",
+    "test:sway": "tsx scripts/swaytest.ts"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
