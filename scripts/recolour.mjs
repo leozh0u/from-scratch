@@ -191,10 +191,13 @@ for (const [, list] of byForm) {
      * picture is worse, because one of them is then simply wrong.
      */
     if (!best) {
-      for (let h = 0; h < 360 && !best; h += 6) {
-        for (const l of [0.34, 0.5, 0.66, 0.78]) {
-          const c = fromHsl(h, 0.5, l)
-          if (kept.every((k) => dist(k.colour, c) >= MIN)) { best = c; break }
+      for (let h = 0; h < 360 && !best; h += 4) {
+        for (const l of [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]) {
+          for (const sat of [0.55, 0.3, 0.8, 0.12]) {
+            const c = fromHsl(h, sat, l)
+            if (kept.every((k) => dist(k.colour, c) >= MIN)) { best = c; break }
+          }
+          if (best) break
         }
       }
       if (best) { escaped++ }

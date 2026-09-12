@@ -2,7 +2,7 @@
 
 **Generated from `src/data/gameData.ts` by `npm run walkthrough`. Do not edit by hand.**
 
-812 elements, 815 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
+842 elements, 845 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
 
 ## Survival
 
@@ -844,6 +844,36 @@ The main game. Everything a person can point at, and what it actually cost to ma
 | 795 | Kerb | + Pipe | Drain | gullying | — |
 | 796 | Cast Iron | + Drain | Manhole | casting | — |
 | 797 | Paint | + Road | Crossing | striping | — |
+| 798 | Wool | + Filtered Water | Lanolin | scouring | — |
+| 799 | Lanolin | + Essential Oil | Ointment | emulsifying | — |
+| 800 | Detergent | + Essential Oil | Shampoo | blending | — |
+| 801 | Bakelite | + File | Comb | cutting teeth | — |
+| 802 | Mirror | + Bakelite | Hand Mirror | backing | — |
+| 803 | Beeswax | + Synthetic Dye | Lipstick | moulding | — |
+| 804 | Varnish | + Synthetic Dye | Nail Varnish | thinning | — |
+| 805 | Quarry | + Shredder | Talc | milling | — |
+| 806 | Talc | + Ointment | Sunscreen | milling | — |
+| 807 | Essential Oil | + Ethanol | Repellent | blending | — |
+| 808 | Nylon | + Loom | Mosquito Net | knitting | — |
+| 809 | Bark | + Sulfuric Acid | Quinine | extracting | — |
+| 810 | Quinine | + Compressed Air | Tonic Water | carbonating | — |
+| 811 | Filtered Water | + Fire Bottle | Soda Water | carbonating | — |
+| 812 | Soda Water | + Sugar | Lemonade | blending | — |
+| 813 | Ice | + Butter | Ice Cream | churning | — |
+| 814 | Fridge | + Insulation | Freezer | insulating | — |
+| 815 | Freezer | + Packaging | Frozen Food | blast freezing | — |
+| 816 | Radar | + Transformer | Microwave | magnetron | — |
+| 817 | Chromium | + Zinc | Nichrome | alloying | — |
+| 818 | Brass | + Steel Wire | Bimetal Strip | bonding | — |
+| 819 | Nichrome | + Bimetal Strip | Toaster | timing | — |
+| 820 | Nichrome | + Kettle | Electric Kettle | elementing | — |
+| 821 | Nichrome | + Propeller | Hairdryer | ducting | — |
+| 822 | Nichrome | + Thermostat | Oven | insulating | — |
+| 823 | Oven | + Natural Gas | Hob | burner drilling | — |
+| 824 | Propeller | + Water Filter | Extractor Fan | ducting | — |
+| 825 | Hob | + Sink | Kitchen | fitting out | — |
+| 826 | Printed Book | + Kitchen | Recipe Book | testing | — |
+| 827 | Kitchen | + Market | Restaurant | serving | — |
 
 All 3 targets reachable. ✅
 
@@ -868,4 +898,4 @@ Elements with more than one real way to make them. The receipt tells you which r
 
 ## How much of the board is a dead end
 
-812 elements make 329,266 possible pairs, and 815 of them are recipes. **99.8% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
+842 elements make 354,061 possible pairs, and 845 of them are recipes. **99.8% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
