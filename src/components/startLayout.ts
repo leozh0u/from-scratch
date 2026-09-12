@@ -77,8 +77,22 @@ export const CAPTION_HEIGHT = 0
  * Everything below is fitted into this.
  */
 export function startScreenLayout(width: number, height: number): StartLayout {
-  // The reset button lives in the corner and the wordmark must clear it.
-  const topInset = Math.min(78, Math.round(height * 0.12))
+  /*
+   * The corner controls live above the wordmark and it has to clear them.
+   *
+   * There are four of them now — skip, mode, mute, reset — and below about
+   * 460px they cannot fit on one line at any size that is still tappable, so
+   * they wrap onto two. Reserving one row's worth on every screen put the
+   * second row straight through the middle of "FROM SCRATCH" on a phone.
+   *
+   * Measured rather than guessed: two rows of a unit-2 key plus the gap is
+   * about ninety-six pixels, which is the floor below the wrap point.
+   */
+  const CORNER_WRAPS_BELOW = 460
+  const topInset = Math.max(
+    Math.min(78, Math.round(height * 0.12)),
+    width < CORNER_WRAPS_BELOW ? 96 : 0,
+  )
 
   /*
    * SEARCHED, NOT THRESHOLDED.

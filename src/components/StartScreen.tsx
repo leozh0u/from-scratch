@@ -72,6 +72,7 @@ export function StartScreen({
    * orientation of a dozen real devices.
    */
   const { scale, unit, titleUnit, gap, topInset, padBlock } = startScreenLayout(width, height)
+  const cornerUnit = width < 560 ? 2 : width < 760 ? 2 : 3
 
   return (
     <>
@@ -138,10 +139,20 @@ export function StartScreen({
             maxWidth: '70vw',
           }}
         >
-          <SkipButton skipped={skipped} onSkip={onSkip} unit={3} />
-          <ModePicker mode={mode} onChange={onChangeMode} unit={3} />
-          <MuteButton unit={3} />
-          <ResetButton onReset={onReset} unit={3} />
+          {/*
+            * The corner shrinks before it wraps.
+            *
+            * Four keys at unit 3 need about six hundred pixels, so on anything
+            * narrower the row folded onto a second line and the second line
+            * landed on the wordmark. The layout reserves one row of top inset,
+            * not two, and reserving two would push the title down on every
+            * screen to pay for the few that need it. A smaller unit keeps it
+            * to one row instead.
+            */}
+          <SkipButton skipped={skipped} onSkip={onSkip} unit={cornerUnit} />
+          <ModePicker mode={mode} onChange={onChangeMode} unit={cornerUnit} />
+          <MuteButton unit={cornerUnit} />
+          <ResetButton onReset={onReset} unit={cornerUnit} />
         </div>
       </div>
 

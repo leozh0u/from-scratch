@@ -11,6 +11,7 @@
  * matter of squinting at the page and hoping.
  */
 import { shootingStarAt } from '../src/components/Starfield'
+import { startScreenLayout } from '../src/components/startLayout'
 
 let pass = 0, fail = 0
 const ok = (l: string, c: boolean, d = '') => {
@@ -120,6 +121,32 @@ console.log('\n=== the three never synchronise ===')
     if (live === 3) together++
   }
   ok('all three are never on screen at once', together === 0, `${together} samples`)
+}
+
+/*
+ * THE WORDMARK CLEARS THE CORNER CONTROLS ON A PHONE.
+ *
+ * There are four of them — skip, mode, mute, reset — and below about 460px
+ * they cannot fit on one line at any size still worth tapping, so they wrap.
+ * The layout reserved one row's worth on every screen, which put the second
+ * row straight through the middle of "FROM SCRATCH".
+ */
+{
+  console.log('\n=== the wordmark clears a wrapped corner ===')
+  let tooTight = 0
+  for (let w = 280; w < 460; w += 10) {
+    for (const h of [568, 640, 740, 844, 932]) {
+      if (startScreenLayout(w, h).topInset < 96) tooTight++
+    }
+  }
+  ok('every narrow screen reserves two rows', tooTight === 0, `${tooTight} too tight`)
+
+  let wasteful = 0
+  for (let w = 560; w <= 1600; w += 40) {
+    if (startScreenLayout(w, 900).topInset > 78) wasteful++
+  }
+  ok('and a wide one is not made to pay for it', wasteful === 0,
+     'the second row only exists where the corner actually wraps')
 }
 
 console.log(`\n${pass} passed, ${fail} failed\n`)
