@@ -679,3 +679,31 @@ is the game's best trick.
 
 Thirteen elements now have more than one route. The failure table held again
 without being touched: 2,554 non-recipe pairs, fallback 13.3%.
+
+## The inventory lists what is missing, not only what is found
+
+Leo, on Clash Royale's missing cards: "all objects that can be made... scrolling
+through the missing inventory gives motivation and direction of whats next to
+make."
+
+It listed discoveries alone, so an empty one said "nothing here yet" and a full
+one told you nothing about what was left. It now lists **every element that is
+the output of some recipe**, found or not, split by realm and counted: Survival
+0 of 15, Everyday Objects 0 of 45. Starters stay out, since they were handed
+over rather than made and are already on the shelf.
+
+A locked tile is the sprite with every colour collapsed to one, so the
+silhouette is recognisable once you have seen the real thing, in a muted
+palette rather than at reduced opacity — a translucent tile over a busy
+backdrop turns to mush, which is how the locked realm button failed before it
+was rebuilt.
+
+**The name stays readable, and that is the deliberate part.** It is not a
+spoiler, because the puzzle here is the PAIRING and not the vocabulary: knowing
+Wrought Iron exists gives you something to aim at without telling you it comes
+from quicklime and pig iron. With over 97% of pairs producing nothing, a target
+list is the difference between searching and guessing, and that was the single
+worst thing about playing this.
+
+Locked tiles are not buttons. There is nothing to show yet, and a card saying
+"you have not made this" would be worse than no card.

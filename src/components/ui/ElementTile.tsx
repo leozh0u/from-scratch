@@ -35,8 +35,45 @@ type ElementTileProps = {
   label: string
   selected?: boolean
   disabled?: boolean
+  /**
+   * Not found yet: drawn as a silhouette in a muted palette, with the name
+   * still readable. See the note on `SILHOUETTE` below for why the name stays.
+   */
+  locked?: boolean
   unit?: number
   onClick?: () => void
+}
+
+/*
+ * A LOCKED TILE SHOWS THE SHAPE AND THE NAME, AND HIDES THE COLOUR.
+ *
+ * The inventory lists everything that can be made, not only what has been
+ * made, so a player scrolling it can see what is left. That only works if the
+ * entries are legible: a grid of identical question marks tells you how many
+ * are missing and nothing about what they are.
+ *
+ * Showing the name is deliberate and it is not a spoiler, because the puzzle
+ * here is the PAIRING, not the vocabulary. Knowing that Wrought Iron exists
+ * gives you something to aim at; it does not tell you it comes from quicklime
+ * and pig iron. With over 97% of pairs producing nothing, a target list is the
+ * difference between searching and guessing.
+ *
+ * The silhouette is the sprite with every colour collapsed to one, so the
+ * outline is still recognisable once you have seen the real thing.
+ */
+const SILHOUETTE = '#1b1833'
+
+const LOCKED_FACE = '#211e3d'
+const LOCKED_HOVER = '#2a2650'
+const LOCKED_HI = '#332e58'
+const LOCKED_LO = '#14122a'
+const LOCKED_BASE = '#181530'
+
+/** The same sprite with one colour, so the shape survives and the detail does not. */
+function silhouetteOf(sprite: Sprite): Sprite {
+  const palette: Record<string, string> = {}
+  for (const key of Object.keys(sprite.palette)) palette[key] = SILHOUETTE
+  return { rows: sprite.rows, palette }
 }
 
 /*
@@ -64,18 +101,26 @@ export function ElementTile({
   label,
   selected = false,
   disabled = false,
+  locked = false,
   unit = 4,
   onClick,
 }: ElementTileProps) {
   const [pressed, setPressed] = useState(false)
   const [hovered, setHovered] = useState(false)
 
-  const down = pressed && !disabled
+  const down = pressed && !disabled && !locked
   const depth = unit * 3
-  const face = selected ? SELECTED_FACE : FACE
-  const hi = selected ? SELECTED_HI : HI
-  const lo = selected ? SELECTED_LO : LO
-  const base = selected ? SELECTED_BASE : BASE
+  const face = locked ? LOCKED_FACE : selected ? SELECTED_FACE : FACE
+  const hi = locked ? LOCKED_HI : selected ? SELECTED_HI : HI
+  const lo = locked ? LOCKED_LO : selected ? SELECTED_LO : LO
+  const base = locked ? LOCKED_BASE : selected ? SELECTED_BASE : BASE
+  /*
+   * A muted palette rather than `opacity`. A translucent tile lets the backdrop
+   * through and the whole thing turns to mush over a busy picture, which is
+   * exactly how the locked realm button failed before it was rebuilt the same
+   * way.
+   */
+  const sprite = locked ? silhouetteOf(icon) : icon
 
   /*
    * The line the label has to fit on is the face minus its bevel — the raised
@@ -188,7 +233,14 @@ export function ElementTile({
             width: unit * 24,
             height: unit * 26,
             boxSizing: 'border-box',
-            background: hovered && !disabled && !selected ? FACE_HOVER : face,
+            background:
+              hovered && !disabled
+                ? locked
+                  ? LOCKED_HOVER
+                  : selected
+                    ? face
+                    : FACE_HOVER
+                : face,
             /*
              * A bevel on ALL FOUR sides, not just top and bottom.
              *
@@ -221,7 +273,7 @@ export function ElementTile({
               justifyContent: 'center',
             }}
           >
-            <PixelArt sprite={icon} scale={3} />
+            <PixelArt sprite={sprite} scale={3} />
           </span>
           <span
             style={{
@@ -240,7 +292,7 @@ export function ElementTile({
               overflow: 'hidden',
               width: '100%',
               textAlign: 'center',
-              color: '#ffffff',
+              color: locked ? '#7d77a8' : '#ffffff',
               // Near-black, not the face's own shadow tone: the label needs to
               // separate from the surface, not blend into it.
               textShadow: `2px 2px 0 ${OUTLINE}`,

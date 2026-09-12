@@ -3,7 +3,6 @@ import { resolveIcon } from '../data/iconRegistry'
 import type { ElementDef, RealmId, RecipeData } from '../data/types'
 import type { useGameState } from '../hooks/useGameState'
 import { DiscoveryCard } from './DiscoveryCard'
-import { Card } from './ui/Card'
 import { ElementTile, TILE_WIDTH } from './ui/ElementTile'
 import { PixelButton } from './ui/PixelButton'
 import { ConfirmDialog } from './ui/ConfirmDialog'
@@ -38,16 +37,36 @@ export function Inventory({ data, game, onBack, onReset }: InventoryProps) {
   const [confirming, setConfirming] = useState(false)
 
   const starterIds = new Set([...data.starters.survival, ...data.starters.everyday])
-  const elementById = new Map(data.elements.map((el) => [el.id, el]))
 
-  const crafted: { realm: RealmId; element: ElementDef }[] = []
-  for (const realm of ['survival', 'everyday'] as RealmId[]) {
-    for (const id of game.discovered[realm]) {
-      if (starterIds.has(id)) continue
-      const element = elementById.get(id)
-      if (element) crafted.push({ realm, element })
+  /*
+   * EVERYTHING THAT CAN BE MADE, NOT ONLY WHAT HAS BEEN MADE.
+   *
+   * This used to list discoveries alone, so an empty inventory said "nothing
+   * here yet" and a full one told you nothing about what was left. With 72
+   * elements and over 97% of pairs producing nothing, the hardest thing about
+   * the game is not knowing what you are aiming at.
+   *
+   * Now it lists every element that is the output of some recipe, found or
+   * not, split by realm and counted. Scrolling it is the closest thing the
+   * game has to a map.
+   *
+   * Starters are excluded on purpose: they were handed to you, not made, and
+   * they are already sitting on the shelf in the realm.
+   */
+  const craftable: Record<RealmId, ElementDef[]> = { survival: [], everyday: [] }
+  {
+    const madeSomewhere = new Set(data.recipes.map((r) => r.output))
+    for (const element of data.elements) {
+      if (starterIds.has(element.id)) continue
+      if (!madeSomewhere.has(element.id)) continue
+      craftable[element.realm].push(element)
     }
   }
+
+  const isFound = (id: string) =>
+    game.discovered.survival.includes(id) || game.discovered.everyday.includes(id)
+
+  const foundCount = (realm: RealmId) => craftable[realm].filter((e) => isFound(e.id)).length
 
   function recipeFor(element: ElementDef) {
     const options = data.recipes.filter((r) => r.output === element.id)
@@ -94,41 +113,41 @@ export function Inventory({ data, game, onBack, onReset }: InventoryProps) {
          */}
       </HudBar>
 
-      {crafted.length === 0 ? (
-        <Card className="p-8 text-center">
-          <p className="font-display text-[10px] leading-loose lowercase text-muted">
-            nothing here yet. combine two things in a realm.
-          </p>
-        </Card>
-      ) : (
-        <div className="flex flex-col gap-8">
-          {(['survival', 'everyday'] as RealmId[]).map((realm) => {
-            const entries = crafted.filter((c) => c.realm === realm)
-            if (entries.length === 0) return null
+      <div className="flex flex-col gap-8">
+        {(['survival', 'everyday'] as RealmId[]).map((realm) => {
+          const entries = craftable[realm]
+          if (entries.length === 0) return null
+          const found = foundCount(realm)
 
-            return (
-              <div key={realm} className="flex flex-col gap-3">
-                <p className="font-display text-[9px] tracking-widest text-muted uppercase">
-                  {REALM_LABEL[realm]} · {entries.length} found
-                </p>
-                <div
-                  className="grid justify-center gap-3"
-                  style={{ gridTemplateColumns: `repeat(auto-fill, ${TILE_WIDTH}px)` }}
-                >
-                  {entries.map(({ element }) => (
+          return (
+            <div key={realm} className="flex flex-col gap-3">
+              <p className="font-display text-[9px] tracking-widest text-muted uppercase">
+                {REALM_LABEL[realm]} · {found} of {entries.length}
+              </p>
+              <div
+                className="grid justify-center gap-3"
+                style={{ gridTemplateColumns: `repeat(auto-fill, ${TILE_WIDTH}px)` }}
+              >
+                {entries.map((element) => {
+                  const found = isFound(element.id)
+                  return (
                     <ElementTile
                       key={element.id}
                       icon={resolveIcon(element.icon)}
                       label={element.name}
-                      onClick={() => { playPress(); setSelected(element) }}
+                      locked={!found}
+                      // A locked tile is not a button. There is nothing to
+                      // show yet, and a card that said "you have not made
+                      // this" would be a worse answer than no card.
+                      onClick={found ? () => { playPress(); setSelected(element) } : undefined}
                     />
-                  ))}
-                </div>
+                  )
+                })}
               </div>
-            )
-          })}
-        </div>
-      )}
+            </div>
+          )
+        })}
+      </div>
 
       <div
         className="mt-4 flex flex-col items-center gap-3 pt-6"
