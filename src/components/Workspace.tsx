@@ -15,7 +15,7 @@ import { StatPanel } from './ui/StatPanel'
 import { HintButton } from './ui/HintButton'
 import { GiveUpButton } from './ui/GiveUpButton'
 import { ConfirmDialog } from './ui/ConfirmDialog'
-import { pickHint, hintsEarned, pathToTarget, nextUnfoundTarget } from '../solver/hint'
+import { pickHint, hintsEarned, pathToTarget, nextUnfoundTarget, MISSES_PER_HINT } from '../solver/hint'
 import { modeById, type ModeId } from '../game/modes'
 import { Card } from './ui/Card'
 import { ElementTile, TILE_WIDTH } from './ui/ElementTile'
@@ -274,6 +274,19 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
   // Guarded rather than formatted: 0/0 is NaN, and "NaN%" on the bench is a
   // worse first impression than a dash.
   const hitRate = tries === 0 ? '—' : `${Math.round((realmFound / tries) * 100)}%`
+  /*
+   * Dead ends remaining until the next hint is earned. Unlimited and none are
+   * their own answers rather than a countdown to something that will not
+   * arrive or has already arrived.
+   */
+  const deadEnds = (game.misses[realm] ?? []).length
+  const nextHintIn = !rules.hints
+    ? '—'
+    : rules.infiniteHints
+      ? '—'
+      // Just the number. "10 fails" wrapped to two lines in its cell and the
+      // label underneath already says what it counts.
+      : String(MISSES_PER_HINT - (deadEnds % MISSES_PER_HINT))
   const earned =
     hintsEarned(realmFound, (game.misses[realm] ?? []).length) - (game.hintsSpent[realm] ?? 0)
   const hintsLeft = rules.infiniteHints ? Infinity : earned
@@ -594,7 +607,7 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
           <div className="flex min-w-0 flex-[1_1_140px] justify-center sm:justify-end">
             <StatPanel
               stats={[
-                { label: 'made', value: `${realmFound} of ${realmTotal}`, bright: true },
+                { label: 'made', value: `${realmFound}/${realmTotal}`, lead: true },
                 { label: 'tries', value: String(game.attempts[realm] ?? 0) },
                 { label: 'dead ends', value: String((game.misses[realm] ?? []).length) },
                 /*
@@ -605,11 +618,17 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
                  * record of exploring.
                  */
                 { label: 'hit rate', value: hitRate },
-                { label: 'to go', value: String(Math.max(0, realmTotal - realmFound)) },
                 {
-                  label: 'hints left',
+                  label: 'hints',
                   value: !rules.hints ? 'none' : rules.infiniteHints ? '\u221e' : String(Math.max(0, earned)),
                 },
+                /*
+                 * How many more dead ends earn the next one. Leo asked for it
+                 * and it is the stat that changes behaviour: "four more" is a
+                 * reason to keep trying things, where a bare count of failures
+                 * is only a record of them.
+                 */
+                { label: 'fails to hint', value: nextHintIn },
               ]}
             />
           </div>

@@ -1,51 +1,125 @@
+import { steppedNotch, OUTLINE } from './pixelShape'
+
 /**
  * The left side of the bench: what you have done so far.
  *
- * The panel is as wide as the two bars above it and the controls used the
- * middle of it, which Leo's note — "i dont like when its too empty" — is
- * about. Numbers are the right thing to put there rather than decoration,
- * because the goal in Everything is now to make everything, and a completion
- * goal with no running tally is a goal you are asked to hold in your head.
+ * REBUILT AS A PANEL RATHER THAN A LIST.
  *
- * Laid out as a column of rows rather than a grid: three short lines read
- * faster than a 3x2 arrangement at this size, and pixel type wants the
- * horizontal space more than it wants the vertical.
+ * Leo: "the stats page is a little ugly and hard to read, try to make it maybe
+ * in a box or something." It was six rows of label-left, value-right with
+ * nothing holding them together, floating on the card, and at this type size
+ * that is a column of grey words with numbers a long way from them — the eye
+ * has to travel to pair each one up.
+ *
+ * It is a real inset now: the same staircase silhouette and hard outline as
+ * every other surface, sunk rather than raised, because a readout is a hole in
+ * the machine and not a control on it. Inside, each stat is its own small
+ * block with the number above its label, so the number and the word it belongs
+ * to are touching. Two columns, so the block is wide rather than tall and sits
+ * beside the slots instead of below them.
  */
-type Stat = { label: string; value: string; bright?: boolean }
+export type Stat = {
+  label: string
+  value: string
+  /** The one stat the panel exists for. Larger, white, spans both columns. */
+  lead?: boolean
+}
 
-export function StatPanel({ stats }: { stats: Stat[] }) {
+const FACE = '#1e1b38'
+const EDGE = '#3a3560'
+
+export function StatPanel({ stats, unit = 3 }: { stats: Stat[]; unit?: number }) {
+  const lead = stats.find((s) => s.lead)
+  const rest = stats.filter((s) => !s.lead)
+
   return (
-    <dl className="m-0 flex flex-col gap-2">
-      {stats.map((stat) => (
-        <div key={stat.label} className="flex items-baseline justify-between gap-3">
-          <dt
-            style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 8,
-              letterSpacing: '0.08em',
-              textTransform: 'lowercase',
-              color: 'var(--color-muted)',
-              margin: 0,
-            }}
+    <div
+      style={{
+        background: OUTLINE,
+        clipPath: steppedNotch(unit, 2),
+        padding: unit,
+      }}
+    >
+      <div
+        style={{
+          background: FACE,
+          clipPath: steppedNotch(unit, 2),
+          padding: unit * 3,
+          /*
+           * Lit from BELOW, unlike every button in the game. That inversion is
+           * the whole reason it reads as recessed rather than as another key
+           * somebody forgot to make pressable.
+           */
+          boxShadow: `inset 0 -${unit}px 0 0 ${EDGE}, inset 0 ${unit}px 0 0 #12102a`,
+        }}
+      >
+        {lead && (
+          <div
+            className="flex flex-col items-center"
+            style={{ marginBottom: unit * 3 }}
           >
-            {stat.label}
-          </dt>
-          <dd
-            style={{
-              fontFamily: 'var(--font-display)',
-              // The number is the thing being read, so it is the thing that
-              // is large. A label and a value at one size is a table.
-              fontSize: stat.bright ? 14 : 11,
-              lineHeight: 1,
-              color: stat.bright ? '#ffffff' : '#b9b3e0',
-              textShadow: stat.bright ? '2px 2px 0 #100d20' : 'none',
-              margin: 0,
-            }}
-          >
-            {stat.value}
-          </dd>
+            <span
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 16,
+                lineHeight: 1,
+                color: '#ffffff',
+                textShadow: '2px 2px 0 #100d20',
+              }}
+            >
+              {lead.value}
+            </span>
+            <span
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 8,
+                marginTop: unit * 2,
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                color: 'var(--color-muted)',
+              }}
+            >
+              {lead.label}
+            </span>
+          </div>
+        )}
+
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: `${unit * 3}px ${unit * 4}px`,
+          }}
+        >
+          {rest.map((stat) => (
+            <div key={stat.label} className="flex flex-col items-center">
+              <span
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 11,
+                  lineHeight: 1,
+                  color: '#ddd8ff',
+                }}
+              >
+                {stat.value}
+              </span>
+              <span
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 7,
+                  marginTop: unit * 1.5,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  color: 'var(--color-muted)',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {stat.label}
+              </span>
+            </div>
+          ))}
         </div>
-      ))}
-    </dl>
+      </div>
+    </div>
   )
 }
