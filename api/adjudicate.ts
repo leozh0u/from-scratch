@@ -67,7 +67,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts: [{ text: PROMPT(a, b) }] }],
-        generationConfig: { maxOutputTokens: 120 },
+        generationConfig: {
+          maxOutputTokens: 120,
+          // This model reasons by default and burns its output budget on
+          // hidden "thinking" tokens before writing anything visible —
+          // confirmed by finishReason: MAX_TOKENS with 111 of 120 tokens
+          // spent on thoughtsTokenCount before a single word of the answer.
+          // A one-sentence explanation needs zero reasoning, and disabling
+          // it roughly halves the token cost per call as a side effect.
+          thinkingConfig: { thinkingBudget: 0 },
+        },
       }),
     })
 
