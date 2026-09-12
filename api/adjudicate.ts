@@ -68,13 +68,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       body: JSON.stringify({
         contents: [{ parts: [{ text: PROMPT(a, b) }] }],
         generationConfig: {
-          maxOutputTokens: 120,
           // This model reasons by default and burns its output budget on
-          // hidden "thinking" tokens before writing anything visible —
-          // confirmed by finishReason: MAX_TOKENS with 111 of 120 tokens
-          // spent on thoughtsTokenCount before a single word of the answer.
-          // A one-sentence explanation needs zero reasoning, and disabling
-          // it roughly halves the token cost per call as a side effect.
+          // hidden "thinking" tokens before writing anything visible. Setting
+          // thinkingBudget to 0 does NOT reliably suppress this for a
+          // multi-instruction prompt like ours — measured thoughtsTokenCount
+          // still ranged from ~75 to ~275 across test pairs even with budget
+          // 0. So the real fix is headroom: 500 comfortably covers observed
+          // thinking plus a ~30-word answer, rather than relying on thinking
+          // being eliminated. (Confirmed via finishReason: MAX_TOKENS
+          // truncating live responses at a 120-token ceiling before this fix.)
+          maxOutputTokens: 500,
           thinkingConfig: { thinkingBudget: 0 },
         },
       }),
