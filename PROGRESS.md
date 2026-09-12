@@ -707,3 +707,35 @@ worst thing about playing this.
 
 Locked tiles are not buttons. There is nothing to show yet, and a card saying
 "you have not made this" would be worse than no card.
+
+## Clouds, treetops and a second distance of birds
+
+"let the clouds occasioanly sway, or the trees below, or like bird pixels far
+in the distance." All three, and all three found in the artwork rather than
+placed by hand.
+
+**Clouds are stored as edges, not bodies.** There are 2,608 cloud pixels in the
+picture, and a one-pixel sway only changes two columns: the edge it leaves and
+the edge it arrives at. So each row of a cloud is a run that remembers the
+colour of the pixel immediately outside it on both sides.
+
+That second part fixed a bug that would have been very visible. The first
+version erased a cloud with "whatever colour the top-left pixel is", on the
+assumption that the top-left of a street scene is sky. Measured, it is
+`rgb(83,76,138)` — a dark building. Every cloud would have been rubbed out in
+purple. Sampling the neighbour of each run means there is nothing to assume.
+
+Clouds are also discarded unless the whole region clears the skyline, so there
+is never a roofline underneath one to damage.
+
+**Only the tips of the foliage move**, which is the forest's rule and the
+reason its sway reads as wind rather than as a tree sliding sideways. 53
+treetops found, each storing the colour directly above it so erasing one is not
+a guess.
+
+**Distant birds are a single pixel**, higher and slower than the near ones,
+because a sky with one thing in it is a decoration and a sky with two distances
+in it is depth.
+
+Measured on screen: the overlay now moves 429 to 633 pixels and changes on
+every sample, against 36 to 90 before.

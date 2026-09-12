@@ -107,3 +107,51 @@ export const BIRD_FRAMES: string[][] = [
   ['.#...#.', '..###..', '.......'],
   ['.......', '#.....#', '.#####.'],
 ]
+
+/**
+ * A whole-pixel sway, the same shape the forest uses.
+ *
+ * Never a fraction and never a rotation: a pixel moved half a pixel is a
+ * blurred pixel, and a rotated one is resampled off its own grid. The cycle
+ * returns to rest, so nothing drifts away from where it started over an hour.
+ *
+ * Slow on purpose. Clouds at this distance do not scud.
+ */
+export function swayAt(now: number, seed: number, periodMs: number): -1 | 0 | 1 {
+  const phase = (now + hash(seed * 53.7) * periodMs) % periodMs
+  const step = phase / periodMs
+  if (step < 0.25) return 0
+  if (step < 0.5) return 1
+  if (step < 0.75) return 0
+  return -1
+}
+
+/**
+ * A bird far enough away to be one pixel.
+ *
+ * The near birds are a five-pixel sprite with a wingbeat. These are a single
+ * pixel high in the sky, crossing slowly, and they exist because a sky with
+ * one thing in it reads as a decoration while a sky with two distances in it
+ * reads as depth. Rarer than the near ones, or the sky turns into an aviary.
+ */
+export function farBirdAt(
+  now: number,
+  seed: number,
+  width: number,
+  skyHeight: number,
+): { x: number; y: number } | null {
+  const period = 50_000 + hash(seed * 61.3) * 50_000
+  const crossing = 16_000 + hash(seed * 67.1) * 8_000
+  const t = (now + hash(seed * 71.9) * period) % period
+  if (t > crossing) return null
+
+  const progress = t / crossing
+  const leftToRight = hash(seed * 73.3) > 0.5
+  const travel = leftToRight ? progress : 1 - progress
+  const lane = 0.06 + hash(seed * 79.7) * 0.3
+
+  return {
+    x: Math.round(-4 + travel * (width + 8)),
+    y: Math.round(skyHeight * lane + Math.sin(progress * Math.PI * 2) * 2),
+  }
+}

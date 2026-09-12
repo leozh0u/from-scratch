@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useViewport } from '../hooks/useViewport'
-import { coverTransform, windowLitAt, birdAt, BIRD_FRAMES } from './cityMotion'
+import { coverTransform, windowLitAt, birdAt, farBirdAt, swayAt, BIRD_FRAMES } from './cityMotion'
 
 /**
  * The Everyday Objects backdrop: a city avenue in daylight.
@@ -67,6 +67,33 @@ const OBJECT_POSITION_Y = 0.42
  */
 type Window = { x: number; y: number; off: string }
 
+/**
+ * A cloud, stored as its EDGES rather than its body.
+ *
+ * Two problems with keeping the whole region. It is 2,608 pixels in this
+ * picture, redrawn every frame for a one-pixel shift. And erasing it needs the
+ * colour behind, which the first version took as "whatever the top-left pixel
+ * is" — in this image that corner is a dark building, so the clouds would have
+ * been rubbed out in purple.
+ *
+ * A one-pixel sway only changes two columns: the edge it leaves and the edge
+ * it arrives at. So each row of the cloud is a run, and each run remembers the
+ * colour of the pixel immediately outside it on both sides. Sampled from the
+ * artwork, so there is nothing to assume.
+ */
+type CloudRun = { y: number; x0: number; x1: number; before: string; after: string }
+type Cloud = { runs: CloudRun[]; fill: string }
+
+/**
+ * A treetop: the topmost pixel of a column of foliage, and whatever sits
+ * directly above it.
+ *
+ * Only the tips move, which is the forest's rule and the reason its sway reads
+ * as wind rather than as the whole tree sliding. Storing the colour above each
+ * tip is what lets one be erased without guessing.
+ */
+type Treetop = { x: number; y: number; leaf: string; above: string }
+
 function findWindows(data: Uint8ClampedArray): Window[] {
   const found: Window[] = []
   const taken = new Set<string>()
@@ -93,11 +120,108 @@ function findWindows(data: Uint8ClampedArray): Window[] {
   return found
 }
 
+/** Near-white, in the sky: a cloud. */
+const isCloud = (r: number, g: number, b: number) => r > 200 && g > 205 && b > 210
+/** Green enough to be foliage rather than a painted sign. */
+const isLeaf = (r: number, g: number, b: number) => g > r + 14 && g > b + 10 && g > 60
+
+/**
+ * Everything the overlay animates, read out of the artwork in one pass.
+ *
+ * Found rather than placed, for the same reason throughout: a list of
+ * coordinates typed by hand drifts the moment the art changes, and half of
+ * them end up on brickwork.
+ */
+function analyse(data: Uint8ClampedArray) {
+  const at = (x: number, y: number) => (y * IMAGE_SIZE + x) * 4
+  const rgb = (i: number) => `rgb(${data[i]},${data[i + 1]},${data[i + 2]})`
+
+  // The sky is whatever the top-left corner is, which is sky in this picture
+  // and in any street scene shot from the pavement.
+  const sky = rgb(at(1, 1))
+
+  /* --- the skyline: the first non-sky, non-cloud row in each column --- */
+  const skyline = new Int16Array(IMAGE_SIZE)
+  for (let x = 0; x < IMAGE_SIZE; x++) {
+    skyline[x] = IMAGE_SIZE
+    for (let y = 0; y < IMAGE_SIZE; y++) {
+      const i = at(x, y)
+      if (rgb(i) === sky || isCloud(data[i], data[i + 1], data[i + 2])) continue
+      skyline[x] = y
+      break
+    }
+  }
+
+  /* --- clouds, by flood fill, kept only if they clear the skyline --- */
+  const clouds: Cloud[] = []
+  const seen = new Uint8Array(IMAGE_SIZE * IMAGE_SIZE)
+  for (let y = 0; y < IMAGE_SIZE * 0.45; y++) {
+    for (let x = 0; x < IMAGE_SIZE; x++) {
+      const start = at(x, y)
+      if (seen[y * IMAGE_SIZE + x]) continue
+      if (!isCloud(data[start], data[start + 1], data[start + 2])) continue
+
+      const pixels: { x: number; y: number }[] = []
+      const stack = [[x, y]]
+      let clear = true
+      while (stack.length && pixels.length < 2000) {
+        const [cx, cy] = stack.pop()!
+        if (cx < 1 || cy < 0 || cx >= IMAGE_SIZE - 1 || cy >= IMAGE_SIZE) continue
+        if (seen[cy * IMAGE_SIZE + cx]) continue
+        const i = at(cx, cy)
+        if (!isCloud(data[i], data[i + 1], data[i + 2])) continue
+        seen[cy * IMAGE_SIZE + cx] = 1
+        pixels.push({ x: cx, y: cy })
+        if (cy >= skyline[cx]) clear = false
+        stack.push([cx + 1, cy], [cx - 1, cy], [cx, cy + 1], [cx, cy - 1])
+      }
+      // Single specks are noise, not weather.
+      if (!clear || pixels.length <= 14) continue
+
+      // Collapse to one run per row, and sample what sits either side of it.
+      const byRow = new Map<number, { min: number; max: number }>()
+      for (const p of pixels) {
+        const row = byRow.get(p.y)
+        if (!row) byRow.set(p.y, { min: p.x, max: p.x })
+        else { row.min = Math.min(row.min, p.x); row.max = Math.max(row.max, p.x) }
+      }
+      const runs: CloudRun[] = []
+      for (const [ry, { min, max }] of byRow) {
+        runs.push({
+          y: ry,
+          x0: min,
+          x1: max,
+          before: rgb(at(min - 1, ry)),
+          after: rgb(at(max + 1, ry)),
+        })
+      }
+      clouds.push({ runs, fill: rgb(at(x, y)) })
+    }
+  }
+
+  /* --- treetops: foliage with something that is not foliage above it --- */
+  const treetops: Treetop[] = []
+  for (let x = 1; x < IMAGE_SIZE - 1; x++) {
+    for (let y = Math.floor(IMAGE_SIZE * 0.35); y < IMAGE_SIZE - 1; y++) {
+      const i = at(x, y)
+      if (!isLeaf(data[i], data[i + 1], data[i + 2])) continue
+      const up = at(x, y - 1)
+      if (isLeaf(data[up], data[up + 1], data[up + 2])) continue
+      treetops.push({ x, y, leaf: rgb(i), above: rgb(up) })
+      break
+    }
+  }
+
+  return { clouds, treetops }
+}
+
 type CitySceneProps = { className?: string }
 
 export function CityScene({ className }: CitySceneProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const windowsRef = useRef<Window[] | null>(null)
+  const cloudsRef = useRef<Cloud[]>([])
+  const treetopsRef = useRef<Treetop[]>([])
   const { width, height } = useViewport()
 
   /*
@@ -117,7 +241,11 @@ export function CityScene({ className }: CitySceneProps) {
       const ctx = off.getContext('2d', { willReadFrequently: true })
       if (!ctx) return
       ctx.drawImage(img, 0, 0, IMAGE_SIZE, IMAGE_SIZE)
-      windowsRef.current = findWindows(ctx.getImageData(0, 0, IMAGE_SIZE, IMAGE_SIZE).data)
+      const pixels = ctx.getImageData(0, 0, IMAGE_SIZE, IMAGE_SIZE).data
+      windowsRef.current = findWindows(pixels)
+      const { clouds, treetops } = analyse(pixels)
+      cloudsRef.current = clouds
+      treetopsRef.current = treetops
     }).catch(() => {
       // No windows found means no flicker. The backdrop is still the backdrop.
     })
@@ -159,6 +287,72 @@ export function CityScene({ className }: CitySceneProps) {
             block,
           )
         }
+      }
+
+      /*
+       * Clouds sway a whole pixel and come back. Painting sky over the old
+       * position is only safe because `analyse` threw away any cloud that
+       * touches the skyline, so there is never a roofline underneath.
+       */
+      const clouds = cloudsRef.current
+      for (let c = 0; c < clouds.length; c++) {
+        const dx = swayAt(now, c + 1, 26_000)
+        if (dx === 0) continue
+        const cloud = clouds[c]
+        const paint = (px: number, py: number, colour: string) => {
+          ctx.fillStyle = colour
+          ctx.fillRect(
+            Math.round(offsetX + px * scale),
+            Math.round(offsetY + py * scale),
+            block,
+            block,
+          )
+        }
+        for (const run of cloud.runs) {
+          if (dx === 1) {
+            // Leaves the left edge, arrives one past the right.
+            paint(run.x0, run.y, run.before)
+            paint(run.x1 + 1, run.y, cloud.fill)
+          } else {
+            paint(run.x1, run.y, run.after)
+            paint(run.x0 - 1, run.y, cloud.fill)
+          }
+        }
+      }
+
+      /*
+       * Only the tips of the foliage move, which is the forest's rule: a whole
+       * tree sliding sideways reads as a bug, a moving canopy reads as wind.
+       * The colour above each tip was stored when it was found, so erasing one
+       * is not a guess.
+       */
+      const treetops = treetopsRef.current
+      for (let t = 0; t < treetops.length; t++) {
+        const dx = swayAt(now, t * 3 + 1, 6_400)
+        if (dx === 0) continue
+        const tip = treetops[t]
+        ctx.fillStyle = tip.above
+        ctx.fillRect(
+          Math.round(offsetX + tip.x * scale),
+          Math.round(offsetY + tip.y * scale),
+          block,
+          block,
+        )
+        ctx.fillStyle = tip.leaf
+        ctx.fillRect(
+          Math.round(offsetX + (tip.x + dx) * scale),
+          Math.round(offsetY + tip.y * scale),
+          block,
+          block,
+        )
+      }
+
+      // Distant birds: one pixel, high up, slower than the near ones.
+      ctx.fillStyle = '#4a5170'
+      for (let seed = 1; seed <= 3; seed++) {
+        const far = farBirdAt(now, seed, width, skyHeight)
+        if (!far) continue
+        ctx.fillRect(far.x, far.y, block, block)
       }
 
       // Birds, in the sky and nowhere else.
