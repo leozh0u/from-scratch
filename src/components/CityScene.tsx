@@ -40,7 +40,17 @@ import { coverTransform, windowLitAt, birdAt, BIRD_FRAMES } from './cityMotion'
  * seam that makes something look assembled rather than made.
  */
 
-const IMAGE_SIZE = 512
+/*
+ * The artwork's REAL size. It shipped at 512, but every run length in it is a
+ * multiple of four and 100% of its colour transitions land on a multiple of
+ * four, so it was a clean 4x upscale of a 128 grid. `npm run snap` reduced it
+ * back, verified lossless across all 262,144 pixels.
+ *
+ * This matters to the overlay more than to the file size: a light has to be
+ * drawn one of the ARTWORK's pixels wide. Drawn one 512-pixel wide it was a
+ * quarter of a window and effectively invisible.
+ */
+const IMAGE_SIZE = 128
 const OBJECT_POSITION_Y = 0.42
 
 /**
@@ -62,8 +72,10 @@ function findWindows(data: Uint8ClampedArray): Window[] {
   const taken = new Set<string>()
   const at = (x: number, y: number) => (y * IMAGE_SIZE + x) * 4
 
-  for (let y = 40; y < IMAGE_SIZE - 8; y++) {
-    for (let x = 4; x < IMAGE_SIZE - 4; x++) {
+  // Skip the top of the frame: that is sky, and a warm pixel up there is a
+  // cloud edge rather than a window.
+  for (let y = 10; y < IMAGE_SIZE - 2; y++) {
+    for (let x = 1; x < IMAGE_SIZE - 1; x++) {
       const i = at(x, y)
       const r = data[i]
       const g = data[i + 1]
@@ -71,10 +83,10 @@ function findWindows(data: Uint8ClampedArray): Window[] {
       // Warm and bright: a lit pane or a sign, never sky or masonry.
       if (!(r > 185 && g > 140 && b < 140 && r - b > 70)) continue
       // Thin them out, or a single lit facade becomes fifty flickering dots.
-      const cell = `${x >> 3}:${y >> 3}`
+      const cell = `${x >> 1}:${y >> 1}`
       if (taken.has(cell)) continue
       taken.add(cell)
-      const w = at(x, Math.min(IMAGE_SIZE - 1, y + 5))
+      const w = at(x, Math.min(IMAGE_SIZE - 1, y + 2))
       found.push({ x, y, off: `rgb(${data[w]},${data[w + 1]},${data[w + 2]})` })
     }
   }

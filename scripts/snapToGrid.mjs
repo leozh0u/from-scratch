@@ -38,13 +38,26 @@ if (!src || !dest) {
 const GRID = Number(gridArg ?? 128)
 const RENDER = GRID * 4
 
-/** The palette is the set of fills the trace itself declares. */
-const palette = [...new Set([...readFileSync(src, 'utf8').matchAll(/fill="#([0-9a-fA-F]{6})"/g)].map((m) => m[1]))]
-  .map((h) => [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)])
-if (palette.length === 0) throw new Error('no fills found in the svg')
+/*
+ * A PNG can be snapped too, and for the same reason. `big-city.png` is stored
+ * at 512 but every run length in it is a multiple of four and 100% of its
+ * colour transitions land on a multiple of four, so it is a clean 4x upscale
+ * of a 128 grid. Reducing it back is lossless, makes the file a quarter of the
+ * size, and — the part that matters — tells the overlay how big one of the
+ * artwork's pixels actually is.
+ */
+const isSvg = src.toLowerCase().endsWith('.svg')
+
+/** For an SVG the palette is declared; for a bitmap it is whatever is in it. */
+const palette = isSvg
+  ? [...new Set([...readFileSync(src, 'utf8').matchAll(/fill="#([0-9a-fA-F]{6})"/g)].map((m) => m[1]))]
+      .map((h) => [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)])
+  : null
+if (isSvg && palette.length === 0) throw new Error('no fills found in the svg')
 
 const tmp = `${dest}.tmp.png`
-execFileSync('rsvg-convert', ['-w', String(RENDER), '-h', String(RENDER), src, '-o', tmp])
+if (isSvg) execFileSync('rsvg-convert', ['-w', String(RENDER), '-h', String(RENDER), src, '-o', tmp])
+else execFileSync('cp', [src, tmp])
 
 /* --- minimal PNG read: the renderer emits 8-bit RGBA, non-interlaced. --- */
 function readPng(path) {
@@ -142,20 +155,27 @@ const nearest = (r, g, b) => {
 const out = Buffer.alloc(GRID * GRID * 3)
 for (let gy = 0; gy < GRID; gy++) {
   for (let gx = 0; gx < GRID; gx++) {
-    const votes = new Array(palette.length).fill(0)
+    // Majority vote over the cell. Against a declared palette for a trace;
+    // against the colours actually present for a bitmap, where a clean upscale
+    // means every vote in the cell is the same anyway.
+    const votes = new Map()
     for (let y = 0; y < cell; y++) {
       for (let x = 0; x < cell; x++) {
         const i = ((gy * cell + y) * img.width + (gx * cell + x)) * img.channels
-        votes[nearest(img.data[i], img.data[i + 1], img.data[i + 2])]++
+        const k = palette
+          ? nearest(img.data[i], img.data[i + 1], img.data[i + 2])
+          : (img.data[i] << 16) | (img.data[i + 1] << 8) | img.data[i + 2]
+        votes.set(k, (votes.get(k) ?? 0) + 1)
       }
     }
-    let win = 0
-    for (let i = 1; i < votes.length; i++) if (votes[i] > votes[win]) win = i
-    const q = palette[win]
+    let win = null
+    let most = -1
+    for (const [k, n] of votes) if (n > most) { most = n; win = k }
+    const q = palette ? palette[win] : [(win >> 16) & 255, (win >> 8) & 255, win & 255]
     const o = (gy * GRID + gx) * 3
     out[o] = q[0]; out[o + 1] = q[1]; out[o + 2] = q[2]
   }
 }
 
 writePng(dest, GRID, GRID, out)
-console.log(`${src} -> ${dest} at ${GRID}x${GRID}, ${palette.length} colours`)
+console.log(`${src} -> ${dest} at ${GRID}x${GRID}${palette ? `, ${palette.length} colours` : ''}`)

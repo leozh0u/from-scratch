@@ -551,3 +551,19 @@ seconds. Birds were on screen 76% of the time, which is a flock; two birds on
 longer crossings puts it at 42%, one every 25 seconds.
 
 That is the shooting-star lesson applied before Leo saw it rather than after.
+
+## Both backdrops are 128x128, and that is not a compression trick
+
+`big-city.png` shipped at 512. Every run length in it is a multiple of four and
+**100% of its colour transitions land on a multiple of four**, so it was a clean
+4x upscale of a 128 grid. `npm run snap` reduced it back and a check confirmed
+the reduction is **lossless across all 262,144 pixels**. 22KB to 6.3KB.
+
+The size is incidental. What mattered is that the overlay now knows how big one
+of the artwork's pixels is. The window lights were being drawn one 512-pixel
+wide, which is a QUARTER of a window: measured, the whole overlay was painting
+four pixels on screen and was effectively invisible. Drawn one artwork pixel
+wide it is 36 to 90 pixels, four to ten windows dark at a time out of about
+250, changing every few seconds.
+
+Both scenes now: 128x128 source, `image-rendering: pixelated`, square blocks.
