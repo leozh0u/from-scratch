@@ -34,9 +34,17 @@ export function Card({
   style,
   ...rest
 }: CardProps) {
+  /*
+   * The className lands on the CONTENT, not on the outer plate.
+   *
+   * It used to go on the shell, which is only the outline and the silhouette —
+   * so a caller passing `flex flex-col items-center` got a centred layout
+   * applied to a box with exactly one child, and the actual content inside
+   * stayed left-aligned. That is why the combine slots and button sat against
+   * the left edge of their panel.
+   */
   return (
     <div
-      className={className}
       style={{
         background: OUTLINE,
         clipPath: steppedNotch(unit, 3),
@@ -46,6 +54,7 @@ export function Card({
       {...rest}
     >
       <div
+        className={className}
         style={{
           background: tone,
           clipPath: steppedNotch(unit, 2),

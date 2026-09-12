@@ -49,7 +49,10 @@ function audio(): AudioContext | null {
     if (!ctx) {
       ctx = new AudioContext()
       master = ctx.createGain()
-      master.gain.value = muted ? 0 : 0.9
+      // Down from 0.9. Everything below is mixed relative to this, so the
+      // whole interface gets quieter together rather than each sound being
+      // retuned individually.
+      master.gain.value = muted ? 0 : 0.55
       master.connect(ctx.destination)
     }
     if (ctx.state === 'suspended') void ctx.resume()
@@ -69,7 +72,7 @@ export function setMuted(next: boolean) {
   if (master && ctx) {
     // A hard cut on a gain node clicks audibly. Ten milliseconds is inaudible
     // as a fade and long enough to avoid the discontinuity.
-    master.gain.setTargetAtTime(next ? 0 : 0.9, ctx.currentTime, 0.01)
+    master.gain.setTargetAtTime(next ? 0 : 0.55, ctx.currentTime, 0.01)
   }
 }
 
@@ -120,9 +123,19 @@ function tone(spec: ToneSpec) {
   }
 
   const env = audioCtx.createGain()
+  /*
+   * A slightly softer attack than the first version, which used 2ms.
+   *
+   * Leo's note was that the click was "a little too loud/abrupt". Abruptness
+   * in a short sound is almost entirely the attack: at 2ms the waveform is
+   * effectively a step, and a step has energy across the whole spectrum, which
+   * the ear reads as a snap sitting on top of the note. Six milliseconds is
+   * still well under the ~20ms where an attack becomes audible as a fade-in,
+   * but it rounds the leading edge enough to stop it cracking.
+   */
   env.gain.setValueAtTime(0.0001, start)
-  env.gain.linearRampToValueAtTime(gain, start + 0.002)
-  env.gain.setTargetAtTime(0.0001, start + length * 0.35, length * 0.25)
+  env.gain.linearRampToValueAtTime(gain, start + 0.006)
+  env.gain.setTargetAtTime(0.0001, start + length * 0.35, length * 0.28)
 
   /*
    * A gentle low-pass. A raw square wave at these frequencies is genuinely
@@ -132,8 +145,12 @@ function tone(spec: ToneSpec) {
    */
   const filter = audioCtx.createBiquadFilter()
   filter.type = 'lowpass'
-  filter.frequency.value = 3600
-  filter.Q.value = 0.7
+  // Brought down from 3600. The upper harmonics of a square wave are what
+  // make it read as harsh rather than as bright, and they carry almost none of
+  // the pitch information — rolling them off earlier costs nothing audible
+  // except the edge.
+  filter.frequency.value = 2400
+  filter.Q.value = 0.6
 
   osc.connect(env).connect(filter).connect(master)
   osc.start(start)
@@ -180,21 +197,23 @@ function tick(gain = 0.1, length = 0.02) {
  * is a descending sound — the same shape reversed on release.
  */
 export function playPress() {
-  tick(0.09, 0.016)
-  tone({ from: 660, to: 380, length: 0.05, gain: 0.16 })
+  // The noise transient is the abrupt part by nature, so it takes the biggest
+  // cut — it is there to suggest contact, not to be heard as noise.
+  tick(0.04, 0.014)
+  tone({ from: 620, to: 380, length: 0.055, gain: 0.11, type: 'triangle' })
 }
 
 /** The release. Quieter, shorter and rising — the key coming back up. Without
  * it a button feels like it never let go. */
 export function playRelease() {
-  tone({ from: 420, to: 620, length: 0.035, gain: 0.08 })
+  tone({ from: 420, to: 600, length: 0.035, gain: 0.05, type: 'triangle' })
 }
 
 /** Hover. Very quiet and very high; at this level it registers as texture
  * rather than as a sound, which is what stops it becoming irritating when the
  * pointer crosses a row of controls. */
 export function playHover() {
-  tone({ from: 1320, length: 0.022, gain: 0.035, type: 'triangle' })
+  tone({ from: 1180, length: 0.022, gain: 0.022, type: 'triangle' })
 }
 
 /**
@@ -205,8 +224,8 @@ export function playHover() {
  * whine, and that reads as a malfunction rather than as a locked door.
  */
 export function playLocked() {
-  tick(0.07, 0.03)
-  tone({ from: 150, to: 120, length: 0.12, gain: 0.16, type: 'triangle' })
+  tick(0.035, 0.028)
+  tone({ from: 150, to: 120, length: 0.12, gain: 0.11, type: 'triangle' })
 }
 
 /** A discovery. A rising major arpeggio — the oldest trick in the console
@@ -229,5 +248,5 @@ export function playNoMatch() {
 
 /** Picking an element up. */
 export function playSelect() {
-  tone({ from: 880, to: 1100, length: 0.03, gain: 0.09, type: 'triangle' })
+  tone({ from: 860, to: 1060, length: 0.03, gain: 0.055, type: 'triangle' })
 }

@@ -12,6 +12,7 @@ import { Card } from './ui/Card'
 import { ElementTile } from './ui/ElementTile'
 import { ProgressBar } from './ui/ProgressBar'
 import { ForestScene } from './ForestScene'
+import { playPress, playHover, playDiscovery, playNoMatch } from '../audio/sfx'
 
 type WorkspaceProps = {
   realm: RealmId
@@ -141,6 +142,7 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
       // A target gets the full receipt (dependency tree, footprint, sources)
       // instead of the lighter discovery card — it's the "level complete"
       // moment, not just a new inventory tile.
+      playDiscovery()
       if (allTargetIds.has(discoveredElement.id)) {
         setReceiptElement(discoveredElement)
       } else {
@@ -149,6 +151,7 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
     } else if (result.status === 'already-known') {
       setFeedback({ kind: 'already-known', name: elementById(result.recipe.output).name })
     } else {
+      playNoMatch()
       const attempt = ++attemptRef.current
       setFeedback({ kind: 'no-match' })
       adjudicate(a, b, elementById(a).name, elementById(b).name).then((explanation) => {
@@ -169,7 +172,8 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
       <div className="flex items-center justify-between">
         <button
           type="button"
-          onClick={onBack}
+          onClick={() => { playPress(); onBack() }}
+          onPointerEnter={playHover}
           className="cursor-pointer font-display text-[11px] lowercase tracking-wide text-star-mid hover:text-white"
         >
           ← Realms
@@ -179,7 +183,8 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
         </h1>
         <button
           type="button"
-          onClick={onOpenInventory}
+          onClick={() => { playPress(); onOpenInventory() }}
+          onPointerEnter={playHover}
           className="cursor-pointer font-display text-[11px] lowercase tracking-wide text-star-mid hover:text-white"
         >
           Inventory
@@ -208,7 +213,7 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
               {id ? (
                 <button
                   type="button"
-                  onClick={() => clearSlot(i as 0 | 1)}
+                  onClick={() => { playPress(); clearSlot(i as 0 | 1) }}
                   className="flex cursor-pointer flex-col items-center"
                   aria-label={`Remove ${elementById(id).name} from slot`}
                 >

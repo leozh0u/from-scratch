@@ -5,7 +5,8 @@ import type { useGameState } from '../hooks/useGameState'
 import { DiscoveryCard } from './DiscoveryCard'
 import { Card } from './ui/Card'
 import { ElementTile } from './ui/ElementTile'
-import { Button } from './ui/Button'
+import { PixelButton } from './ui/PixelButton'
+import { playPress, playHover } from '../audio/sfx'
 
 type InventoryProps = {
   data: RecipeData
@@ -62,7 +63,8 @@ export function Inventory({ data, game, onBack }: InventoryProps) {
       <div className="flex items-center justify-between">
         <button
           type="button"
-          onClick={onBack}
+          onClick={() => { playPress(); onBack() }}
+          onPointerEnter={playHover}
           className="cursor-pointer text-sm font-extrabold text-muted hover:text-ink"
         >
           ← Back
@@ -95,7 +97,7 @@ export function Inventory({ data, game, onBack }: InventoryProps) {
                       key={element.id}
                       icon={resolveIcon(element.icon)}
                       label={element.name}
-                      onClick={() => setSelected(element)}
+                      onClick={() => { playPress(); setSelected(element) }}
                     />
                   ))}
                 </div>
@@ -109,9 +111,9 @@ export function Inventory({ data, game, onBack }: InventoryProps) {
         <p className="text-xs font-semibold text-muted">
           Starting over clears every discovery in both realms.
         </p>
-        <Button variant="secondary" onClick={handleReset}>
+        <PixelButton tone="danger" unit={4} onClick={handleReset}>
           Reset progress
-        </Button>
+        </PixelButton>
       </div>
 
       {selected &&
