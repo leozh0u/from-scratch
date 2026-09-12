@@ -9,6 +9,8 @@ import { PixelArt } from './PixelArt'
 import { Receipt } from './Receipt'
 import { TargetList } from './TargetList'
 import { PixelButton } from './ui/PixelButton'
+import { BackArrow } from './ui/BackArrow'
+import { LearnMore } from './LearnMore'
 import { Card } from './ui/Card'
 import { ElementTile, TILE_WIDTH } from './ui/ElementTile'
 import { ProgressBar } from './ui/ProgressBar'
@@ -261,7 +263,8 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
        */}
       <HudBar className="flex items-center gap-3">
         <PixelButton tone="default" unit={hudUnit} onClick={onBack}>
-          ← realms
+          <BackArrow unit={hudUnit} />
+          realms
         </PixelButton>
         <span className="flex-1" aria-hidden="true" />
         <h1
@@ -393,6 +396,41 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
           >
             {feedback.asking ? 'asking...' : 'why not?'}
           </PixelButton>
+        )}
+
+        {/*
+          * AND THEN KEEP GOING.
+          *
+          * "Why not" answers once and stops, which wastes the moment: the
+          * player has just been told what happens between two things and is
+          * more curious than they will be at any other point in the session.
+          * So once the answer has landed, either of the two is a door into
+          * the same three fixed questions the discovery card uses.
+          *
+          * It reuses api/ask.ts exactly — no new prompt surface, no new way
+          * for text to reach a model, the same closed set of three keys. More
+          * of the model, through the same fence.
+          */}
+        {feedback?.kind === 'no-match' && feedback.deeper && (
+          <div className="flex w-full flex-col items-center gap-2">
+            <p
+              className="font-display text-[9px] lowercase text-star-mid"
+              style={{ letterSpacing: '0.04em' }}
+            >
+              want to know more about
+            </p>
+            <div className="flex flex-wrap justify-center gap-2">
+              {feedback.pair.map((id, i) => (
+                <LearnMore
+                  key={id}
+                  elementId={id}
+                  name={feedback.names[i]}
+                  label={feedback.names[i]}
+                  unit={3}
+                />
+              ))}
+            </div>
+          </div>
         )}
       </Card>
 

@@ -5,6 +5,7 @@ import type { useGameState } from '../hooks/useGameState'
 import { DiscoveryCard } from './DiscoveryCard'
 import { ElementTile, TILE_WIDTH } from './ui/ElementTile'
 import { PixelButton } from './ui/PixelButton'
+import { BackArrow } from './ui/BackArrow'
 import { ConfirmDialog } from './ui/ConfirmDialog'
 import { HudBar } from './ui/HudBar'
 import { playPress } from '../audio/sfx'
@@ -95,7 +96,8 @@ export function Inventory({ data, game, onBack, onReset }: InventoryProps) {
         * read as the same machine. */}
       <HudBar className="flex items-center gap-3">
         <PixelButton tone="default" unit={3} onClick={onBack}>
-          ← back
+          <BackArrow unit={3} />
+          back
         </PixelButton>
         <span className="flex-1" aria-hidden="true" />
         {/*

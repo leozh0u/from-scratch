@@ -31,10 +31,18 @@ import { playPress } from '../audio/sfx'
 type LearnMoreProps = {
   elementId: string
   name: string
+  /**
+   * What the closed button says. Defaults to "learn more", which is right on a
+   * discovery card where the subject is obvious. After a failed combine there
+   * are TWO of these side by side, and two buttons both saying "learn more"
+   * do not say which thing they are about — so there they carry the element's
+   * own name instead.
+   */
+  label?: string
   unit?: number
 }
 
-export function LearnMore({ elementId, name, unit = 3 }: LearnMoreProps) {
+export function LearnMore({ elementId, name, label, unit = 3 }: LearnMoreProps) {
   const [open, setOpen] = useState(false)
   const [asking, setAsking] = useState<QuestionKey | null>(null)
   /** Answers are kept per question, so switching back and forth costs nothing. */
@@ -64,7 +72,7 @@ export function LearnMore({ elementId, name, unit = 3 }: LearnMoreProps) {
           setOpen(true)
         }}
       >
-        learn more
+        {label ?? 'learn more'}
       </PixelButton>
     )
   }
