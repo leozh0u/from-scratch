@@ -2,7 +2,7 @@
 
 **Generated from `src/data/gameData.ts` by `npm run walkthrough`. Do not edit by hand.**
 
-782 elements, 785 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
+812 elements, 815 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
 
 ## Survival
 
@@ -814,6 +814,36 @@ The main game. Everything a person can point at, and what it actually cost to ma
 | 765 | Cork | + Timber Frame | Noticeboard | backing | — |
 | 766 | Noticeboard | + Whiteboard | School | timetabling | — |
 | 767 | School | + Printer | Exam Paper | invigilating | — |
+| 768 | Reed | + Varnish | Wicker | weaving | — |
+| 769 | Straw | + Ruler | Broom | binding | — |
+| 770 | Cotton Yarn | + Broom | Mop | twisting | — |
+| 771 | Electric Motor | + Tissue | Vacuum Cleaner | filtering | — |
+| 772 | Stamped Part | + Broom | Dustpan | pressing | — |
+| 773 | Polyprop | + Pedal | Bin | levering | — |
+| 774 | Plastic Film | + Bin | Bin Bag | gusseting | — |
+| 775 | Plywood | + Steel Spring | Clothes Peg | pivoting | — |
+| 776 | Rope | + Clothes Peg | Washing Line | stringing | — |
+| 777 | Cast Iron | + Thermostat | Iron | pressing | — |
+| 778 | Alloy Frame | + Felt | Ironing Board | padding | — |
+| 779 | Steel Wire | + Pulley | Coat Hanger | bending | — |
+| 780 | Cupboard | + Coat Hanger | Wardrobe | hanging | — |
+| 781 | Mattress | + Timber Frame | Bed | slatting | — |
+| 782 | Felt | + Linen | Pillow | stuffing | — |
+| 783 | Felt | + Towel | Duvet | quilting | — |
+| 784 | Woollen Yarn | + Felt | Blanket | fulling | — |
+| 785 | Aluminium Cable | + Bearing | Curtain Rail | gliding | — |
+| 786 | Aluminium Cable | + Cordage | Blind | slatting | — |
+| 787 | Seaweed | + Sieve | Coir | retting | — |
+| 788 | Coir | + Synthetic Rubber | Doormat | tufting | — |
+| 789 | Bell | + Battery | Doorbell | chiming | — |
+| 790 | Door | + Steel Spring | Letterbox | flapping | — |
+| 791 | Enamel | + Screw | House Number | fixing | — |
+| 792 | Enamel | + Street Lamp | Street Sign | mounting | — |
+| 793 | Quarry | + Render | Kerb | dressing | — |
+| 794 | Concrete | + Kerb | Pavement | laying | — |
+| 795 | Kerb | + Pipe | Drain | gullying | — |
+| 796 | Cast Iron | + Drain | Manhole | casting | — |
+| 797 | Paint | + Road | Crossing | striping | — |
 
 All 3 targets reachable. ✅
 
@@ -838,4 +868,4 @@ Elements with more than one real way to make them. The receipt tells you which r
 
 ## How much of the board is a dead end
 
-782 elements make 305,371 possible pairs, and 785 of them are recipes. **99.7% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
+812 elements make 329,266 possible pairs, and 815 of them are recipes. **99.8% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.

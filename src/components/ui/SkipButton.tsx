@@ -38,7 +38,7 @@ export function SkipButton({
    * does not say skip WHAT.
    */
   const shared = Math.max(
-    minWidthForSide(unit, 'the tutorial'),
+    minWidthForSide(unit, 'tutorial'),
     minWidthForSide(unit, 'already open'),
   )
 
@@ -62,7 +62,7 @@ export function SkipButton({
       <PixelButton
         tone="default"
         unit={unit}
-        side="the tutorial"
+        side="tutorial"
         style={{ minWidth: shared }}
         onClick={() => {
           playPress()

@@ -32,14 +32,18 @@ export function ResetButton({ onReset, unit = 3 }: { onReset: () => void; unit?:
 
   // One width for both answers and for the closed key, so the corner does not
   // change shape as it opens. Taken from the widest legend rather than picked.
-  const shared = minWidthForSide(unit, 'start over')
+  /*
+   * No legend on the closed key either. "Reset" beside a Skip key and a mode
+   * key is already unambiguous, and Leo's note is that the corner reads better
+   * without the second line of small type under every button.
+   */
+  const shared = minWidthForSide(unit, 'keep it')
 
   if (!open) {
     return (
       <PixelButton
         tone="danger"
         unit={unit}
-        side="start over"
         style={{ minWidth: shared }}
         onClick={() => {
           playPress()
