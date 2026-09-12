@@ -98,7 +98,22 @@ export function Inventory({ data, game, onBack, onReset }: InventoryProps) {
           ← back
         </PixelButton>
         <span className="flex-1" aria-hidden="true" />
-        <h1 className="shrink-0 font-display text-[11px] whitespace-nowrap lowercase tracking-wide text-white">
+        {/*
+          * Sized like the workspace's realm title, not at a fixed 11px.
+          *
+          * It was the smallest thing in a bar built out of slabs, which made
+          * the name of the screen read as a caption on the back button. The
+          * same clamp the workspace uses keeps it the largest thing in the
+          * bar on a laptop and still clear of the button on a phone.
+          */}
+        <h1
+          className="min-w-0 overflow-hidden whitespace-nowrap lowercase text-white"
+          style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: 'clamp(9px, 1.9vw, 22px)',
+            letterSpacing: '0.04em',
+          }}
+        >
           inventory
         </h1>
         <span className="flex-1" aria-hidden="true" />
@@ -153,9 +168,6 @@ export function Inventory({ data, game, onBack, onReset }: InventoryProps) {
         className="mt-4 flex flex-col items-center gap-3 pt-6"
         style={{ borderTop: '4px solid var(--color-hairline)' }}
       >
-        <p className="font-display text-[9px] leading-loose lowercase text-muted">
-          this wipes both realms.
-        </p>
         <PixelButton tone="danger" unit={4} onClick={() => setConfirming(true)}>
           start over
         </PixelButton>

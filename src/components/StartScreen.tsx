@@ -220,7 +220,7 @@ export function StartScreen({
           pointerEvents: 'none',
         }}
       >
-        <PixelEarth size={EARTH_PIXELS} scale={scale} secondsPerTurn={180} />
+        <PixelEarth size={EARTH_PIXELS} scale={scale} secondsPerTurn={32} />
       </div>
     </main>
 
