@@ -2,7 +2,7 @@
 
 **Generated from `src/data/gameData.ts` by `npm run walkthrough`. Do not edit by hand.**
 
-213 elements, 216 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
+242 elements, 245 recipes. Steps are in an order you can actually follow: a combination only appears once you already hold both of its inputs.
 
 ## Survival
 
@@ -245,6 +245,35 @@ The main game. Everything a person can point at, and what it actually cost to ma
 | 196 | Anvil | + Plank | Plough | shaping | — |
 | 197 | Sail | + Gear | Windmill | milling | — |
 | 198 | Cart Wheel | + Boat | Water Wheel | damming | — |
+| 199 | Tempered Steel | + Wire Mesh | Steel Wire | drawing | — |
+| 200 | Steel Wire | + Anvil | Chain | linking | — |
+| 201 | Hardened Steel | + Chalk | File | cutting teeth | — |
+| 202 | Tempered Steel | + File | Saw | setting | — |
+| 203 | Pig Iron | + Plank | Hammer | hafting | — |
+| 204 | Hardened Steel | + Hammer | Chisel | grinding | — |
+| 205 | Electric Motor | + Bearing | Lathe | turning | — |
+| 206 | Lathe | + Steel Wire | Threaded Rod | threading | — |
+| 207 | Threaded Rod | + Wrought Iron | Clamp | assembling | — |
+| 208 | Plank | + Glaze | Plywood | laminating | — |
+| 209 | Silica Sand | + Paper | Sandpaper | gluing | — |
+| 210 | Pitch | + Ethanol | Varnish | dissolving | — |
+| 211 | Whitewash | + Dye | Paint | milling | — |
+| 212 | Wool | + Threaded Rod | Brush | setting | — |
+| 213 | Linen | + Varnish | Canvas | priming | — |
+| 214 | Canvas | + Paint | Painting | painting | — |
+| 215 | Wool | + Knife | Quill | cutting | — |
+| 216 | Leather | + Chalk | Parchment | stretching | — |
+| 217 | Parchment | + Compass | Map | surveying | — |
+| 218 | Molten Glass | + Sandpaper | Lens | grinding | — |
+| 219 | Lens | + Copper Wire | Spectacles | fitting | — |
+| 220 | Lens | + Bronze | Magnifier | mounting | — |
+| 221 | Molten Glass | + Lens | Prism | polishing | — |
+| 222 | Prism | + Camera | Spectrum | calibrating | — |
+| 223 | Clay | + Charcoal | Mould | packing | — |
+| 224 | Pig Iron | + Mould | Cast Iron | casting | — |
+| 225 | Cast Iron | + Pipe | Stove | fitting | — |
+| 226 | Cast Iron | + Water | Kettle | spinning | — |
+| 227 | Bronze | + Mould | Bell | founding | — |
 
 All 3 targets reachable. ✅
 
@@ -269,4 +298,4 @@ Elements with more than one real way to make them. The receipt tells you which r
 
 ## How much of the board is a dead end
 
-213 elements make 22,578 possible pairs, and 216 of them are recipes. **99.0% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
+242 elements make 29,161 possible pairs, and 245 of them are recipes. **99.2% of everything you can try does nothing** — which is why explaining failure is where the teaching has to happen.
