@@ -201,12 +201,14 @@ export function PixelButton({
    * reference sheet has.
    */
   const border = unit
-  const depth = unit * 3
+  const depth = unit * 4
   const bevel = unit
   // Three treads of one unit each. Two reads as a chamfer, four starts
   // rounding the corner off entirely.
-  const shape = steppedNotch(unit, 3)
-  const innerShape = steppedNotch(unit, 2)
+  // Four treads rather than three: coarser steps read as more clearly
+  // pixel-drawn, which is the note the reference keeps making.
+  const shape = steppedNotch(unit, 4)
+  const innerShape = steppedNotch(unit, 3)
 
   function press(from: 'pointer' | 'key') {
     // A locked control still answers — with a dull thud rather than silence.
@@ -347,9 +349,23 @@ export function PixelButton({
              * the highlight goes and only the dark band stays, so the face
              * reads as sunk into its own hole.
              */
+            /*
+             * A bevel on ALL FOUR sides, not just top and bottom.
+             *
+             * The reference sheet is lit from the upper left: a bright band
+             * down the top AND the left, a dark band down the bottom AND the
+             * right. Two bands read as a stripe across a rectangle; four read
+             * as a raised block. That is most of what separates a button that
+             * looks pressable from one that looks printed.
+             */
             boxShadow: down
-              ? `inset 0 ${bevel}px 0 0 ${c.lo}`
-              : `inset 0 ${bevel}px 0 0 ${c.hi}, inset 0 -${bevel}px 0 0 ${c.lo}`,
+              ? `inset 0 ${bevel}px 0 0 ${c.lo}, inset ${bevel}px 0 0 0 ${c.lo}`
+              : [
+                  `inset 0 ${bevel}px 0 0 ${c.hi}`,
+                  `inset ${bevel}px 0 0 0 ${c.hi}`,
+                  `inset 0 -${bevel}px 0 0 ${c.lo}`,
+                  `inset -${bevel}px 0 0 0 ${c.lo}`,
+                ].join(', '),
             fontFamily: 'var(--font-display)',
             fontSize: unit * 3,
             lineHeight: 1.3,

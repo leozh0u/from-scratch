@@ -255,7 +255,7 @@ export function Workspace({ realm, data, game, onBack, onOpenInventory }: Worksp
 
         {/* role="status" so a screen reader announces the result without a page jump */}
         <p className="min-h-5 font-display text-[11px] leading-relaxed lowercase text-star-mid" role="status">
-          {showHint && 'Tap two elements below, then hit Combine.'}
+          {showHint && 'pick two things. see what happens.'}
           {feedback?.kind === 'already-known' && `You already have ${feedback.name}.`}
           {feedback?.kind === 'no-match' && (feedback.explanation ?? 'Hmm…')}
         </p>

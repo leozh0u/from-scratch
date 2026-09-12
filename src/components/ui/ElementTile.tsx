@@ -59,7 +59,7 @@ export function ElementTile({
   const [hovered, setHovered] = useState(false)
 
   const down = pressed && !disabled
-  const depth = unit * 2
+  const depth = unit * 3
   const face = selected ? SELECTED_FACE : FACE
   const hi = selected ? SELECTED_HI : HI
   const lo = selected ? SELECTED_LO : LO
@@ -120,7 +120,7 @@ export function ElementTile({
           top: depth,
           bottom: 0,
           background: OUTLINE,
-          clipPath: steppedNotch(unit, 2),
+          clipPath: steppedNotch(unit, 3),
           display: down ? 'none' : 'block',
         }}
       >
@@ -139,7 +139,7 @@ export function ElementTile({
           position: 'relative',
           display: 'block',
           background: OUTLINE,
-          clipPath: steppedNotch(unit, 2),
+          clipPath: steppedNotch(unit, 3),
           // No transition. A press is instantaneous.
           transform: down ? `translateY(${depth}px)` : 'none',
         }}
@@ -150,17 +150,57 @@ export function ElementTile({
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
+            /*
+             * EVERY TILE IS THE SAME SIZE, AND THAT HAS TO BE ENFORCED.
+             *
+             * With `minWidth` alone, "high-carbon steel" wrapped to three
+             * lines and grew a tile half again as tall as its neighbours, so
+             * the grid went ragged and that one element read as a different
+             * kind of thing. Names are data and cannot be shortened to suit
+             * the layout, so the box is fixed instead and the label is made to
+             * fit inside it.
+             */
             gap: unit,
             margin: unit,
             padding: `${unit * 2}px ${unit}px`,
-            minWidth: unit * 22,
+            width: unit * 24,
+            height: unit * 26,
+            boxSizing: 'border-box',
             background: hovered && !disabled && !selected ? FACE_HOVER : face,
+            /*
+             * A bevel on ALL FOUR sides, not just top and bottom.
+             *
+             * The reference sheet's buttons are lit from the upper left: a
+             * bright band down the top AND the left edge, a dark band down the
+             * bottom AND the right. Two bands alone read as a stripe; four
+             * read as a raised block, which is the whole difference between a
+             * coloured rectangle and something that looks pressable.
+             *
+             * Hard-edged insets with zero blur — the same two rows of lighter
+             * pixels a sprite artist would draw along the lip.
+             */
             boxShadow: down
-              ? `inset 0 ${unit}px 0 0 ${lo}`
-              : `inset 0 ${unit}px 0 0 ${hi}, inset 0 -${unit}px 0 0 ${lo}`,
+              ? `inset 0 ${unit}px 0 0 ${lo}, inset ${unit}px 0 0 0 ${lo}`
+              : [
+                  `inset 0 ${unit}px 0 0 ${hi}`,
+                  `inset ${unit}px 0 0 0 ${hi}`,
+                  `inset 0 -${unit}px 0 0 ${lo}`,
+                  `inset -${unit}px 0 0 0 ${lo}`,
+                ].join(', '),
           }}
         >
-          <PixelArt sprite={icon} scale={3} />
+          {/* A fixed row for the icon, so sprites of different heights do
+            * not shift the label up and down between tiles. */}
+          <span
+            style={{
+              height: unit * 8,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <PixelArt sprite={icon} scale={3} />
+          </span>
           <span
             style={{
               fontFamily: 'var(--font-display)',
@@ -170,8 +210,18 @@ export function ElementTile({
                * about nine pixels the strokes start landing on half-pixels and
                * the letterforms dissolve. This is the floor, not a preference.
                */
-              fontSize: unit * 2.5,
-              lineHeight: 1.7,
+              /*
+               * Long names step down one size rather than wrapping to a third
+               * line. Two lines is what the box has room for; a pixel font
+               * below about eight pixels dissolves, so this is the one step of
+               * headroom available and the box is sized to fit the rest.
+               */
+              fontSize: label.length > 13 ? unit * 2 : unit * 2.5,
+              lineHeight: 1.6,
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
               textAlign: 'center',
               color: '#ffffff',
               // Near-black, not the face's own shadow tone: the label needs to

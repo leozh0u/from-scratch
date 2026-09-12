@@ -20,8 +20,20 @@ const RATE_LIMIT_WINDOW_MS = 60_000
 const RATE_LIMIT_MAX_PER_WINDOW = 5
 const SESSION_CALL_CAP = 20
 
-export const FALLBACK_MESSAGE =
-  "Nothing happens — at least not in a way anyone's figured out yet."
+/*
+ * What the game says when it cannot ask the model — offline, rate-limited, or
+ * no key configured.
+ *
+ * This was "Nothing happens — at least not in a way anyone's figured out yet."
+ * Leo's note was that it reads as AI, and it does: the hedge, the em-dash
+ * qualifier, the vague appeal to nobody-knows. It is a sentence that carefully
+ * avoids committing to anything.
+ *
+ * A game says the short, concrete thing. "They just sit there" is an
+ * observation a person would make, and it is honest about what actually
+ * happened, which is nothing.
+ */
+export const FALLBACK_MESSAGE = 'They just sit there.'
 
 /** Order-independent, matching how recipes themselves are looked up. */
 function pairKey(a: string, b: string): string {
