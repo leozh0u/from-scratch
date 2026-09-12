@@ -464,3 +464,63 @@ not in this game" and the two would contradict each other.
 | DREAD: 66 Claude co-author trailers | Public repo, breaks his own standing rule |
 | DREAD: video | Not shot |
 | Two submissions allowed? | Needs an organiser |
+
+---
+
+## LEDGER — 2026-09-12, ~15:50 Saturday
+
+### Done this stretch
+
+| Asked | State |
+|---|---|
+| "i would like walking pedestrians, and car… flying pigeons etc" | **done** — crowd in varied coats, cabs with turning wheels, pigeons on a rising arc |
+| "occasional shooting stars on the main ui" | **done** — rare by design: a 24–64s window, under 1s of streak |
+| "the tops dont have rounded/pixellated edges and sides" | **done** — `HudBar`; empty slots are recessed sockets, not CSS dashes |
+| "why are the left and right sides rounded differently" | **done** — real bug in the corner generator, see below |
+| "for now let items be unlocked" | **done** — `UNLOCK_EVERYTHING` flag, named so it cannot be mistaken for design |
+| "it doesnt need to be good, just fun pixelated animations" | **done** — drew a placeholder street rather than waiting on art |
+| README still the Vite template | **done** — oldest purely-mine item, open since setup |
+
+### The corner bug was real
+
+The staircase was four separate hand-rolled loops that disagreed: two emitted
+two points per tread, two emitted three, walking the staircase in different
+orders. Narrow controls hid it; a wide panel stepped on the left and came out
+square on the right.
+
+One corner routine called four times cannot disagree with itself.
+`scripts/shapetest.ts` (14 checks) asserts the thing that would have caught it:
+**mirror the polygon about its centreline and the point set must be
+unchanged.**
+
+### Verified end to end
+
+Combined molten glass with high-carbon steel in the browser. The receipt opens
+and reads **270 g CO₂**, charged to the melt, with its FEVE source and the full
+six-element ancestor chain. That screen was completely blank this morning.
+
+**Test count: 71.**
+
+### OPEN — mine
+
+| Item | State |
+|---|---|
+| Little Alchemy scope, hundreds of elements | **open** — planned in ARCHITECTURE.md, biggest remaining piece |
+| Sprite vocabulary | **open** |
+| Nintendo zoom-out | **open** — Leo has not placed it |
+| T-shirt CO₂, aluminium can water | **open** — pinned by test; zero is honest until a source is good enough |
+| `UNLOCK_EVERYTHING` must go back to `false` | **open — before submission** |
+
+### BLOCKED ON LEO
+
+| Item | Why |
+|---|---|
+| **Re-shoot anything already filmed** | The UI is unrecognisable from two hours ago |
+| **Pixie URL + licence for `forest-hillside.svg`** | Ships in the repo; README credits it as unconfirmed |
+| City street art | Placeholder street is drawn; real art drops in behind the actors |
+| **Repo description + homepage are empty** | I have no admin on Nathalie's repo — 404. She sets them, or she transfers it |
+| DREAD: MathWorks | ~30 seconds, unclaimed at comparable events |
+| DREAD: rotate 4 exposed API keys | Never confirmed |
+| DREAD: 66 Claude co-author trailers | Public repo, breaks his own standing rule |
+| DREAD: video | Not shot |
+| Two submissions allowed? | Needs an organiser |
