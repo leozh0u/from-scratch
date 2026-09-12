@@ -21,13 +21,31 @@ function Game() {
   const [showCodex, setShowCodex] = useState(false)
   const game = useGameState(GAME_DATA)
 
+  /*
+   * Survival is the tutorial; Everyday is the real game. Locking Everyday
+   * until Survival's targets are done is what makes Survival a tutorial
+   * rather than a menu option people skip — and it is why Survival starts
+   * with a deliberately small inventory.
+   *
+   * Computed from discoveries rather than stored as a flag, so it can never
+   * disagree with what the player has actually done and survives any reset
+   * for free.
+   */
+  const everydayUnlocked = GAME_DATA.targets.survival.every((id) =>
+    game.isDiscovered(id),
+  )
+
   if (showCodex) {
     return <Codex data={GAME_DATA} game={game} onBack={() => setShowCodex(false)} />
   }
 
   if (realm === null) {
     return (
-      <StartScreen onSelectRealm={setRealm} onOpenCodex={() => setShowCodex(true)} />
+      <StartScreen
+        onSelectRealm={setRealm}
+        onOpenCodex={() => setShowCodex(true)}
+        everydayUnlocked={everydayUnlocked}
+      />
     )
   }
 

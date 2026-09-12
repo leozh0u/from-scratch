@@ -1,21 +1,34 @@
 @import 'tailwindcss';
 
 /*
- * Two layers, deliberately different.
+ * ONE WORLD, NOT TWO LAYERS.
  *
- *   The SCENE is 8-bit: hard-stop colour bands, notched edges, whole-pixel
- *   offsets, no smoothing. Press Start 2P appears here and only here — as the
- *   wordmark.
+ * This file used to define a deliberate split: an 8-bit scene with a clean,
+ * modern panel floating on top of it, and a rule that scene styling must never
+ * leak into the panel.
  *
- *   The UI sitting on top of it is clean and modern: Nunito, real radii, one
- *   soft shadow, generous space. Retro backdrop, crisp panel.
+ * That split is gone, on purpose. It reads as a retro theme applied to a
+ * normal web app, and a rounded card with a soft shadow sitting on pixel art
+ * is what every template looks like. The game now commits completely to being
+ * a game: one palette, one typeface, pixels all the way through. See
+ * DESIGN.md.
  *
- * Keeping the two separate is what makes it read as intentional rather than as
- * a pixel theme applied unevenly. Don't leak scene styling into the panel.
+ * The rules that follow from that, and they are not negotiable:
+ *   - no blurs, no soft shadows, no smooth gradients
+ *   - depth comes from a hard offset block of darker colour, never from blur
+ *   - integer scale factors only; a sprite at 3.5x has soft edges
+ *   - colour bands are hard stops
  */
 @theme {
   --font-display: 'Press Start 2P', ui-monospace, monospace;
   --font-body: 'Nunito', ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  /* Space — the title screen's ground. One flat field, never a gradient. */
+  --color-space: #2b2a4a;
+  --color-space-deep: #1c1b34;
+  --color-star: #ffffff;
+  --color-star-mid: #a8a6c8;
+  --color-star-dim: #6f6c9a;
 
   /* Brand red — the wordmark, and the default accent for neutral UI */
   --color-brand: #e03e3e;

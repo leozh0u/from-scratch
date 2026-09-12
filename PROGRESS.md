@@ -149,3 +149,86 @@ Open questions for Leo are listed at the end of that file: how big "huge"
 actually is, where the Nintendo zoom-out shot belongs, and how Layer 1 should
 be worded so Layer 2's "that's actually real" stays a reveal rather than a
 contradiction.
+
+---
+
+## Title screen rebuilt to the Figma direction
+
+Leo confirmed his instructions override the codebase's stated visual
+philosophy, so `src/index.css`'s "retro backdrop, crisp panel — don't leak
+scene styling into the panel" is deleted rather than worked around. One world,
+pixels throughout.
+
+### The Earth is real geography, not drawn by eye
+
+`scripts/makeLandMask.mjs` decodes NASA's Blue Marble land mask (public domain,
+taken from `~/Projects/vestigo`, credited the same way), area-averages it down
+to a 360x180 one-bit grid and writes `src/art/landMask.ts` (~11KB). It asserts
+the resulting land fraction lands between 20% and 45% — Earth is ~29% land and
+an equirectangular grid over-weights the poles — so a bad decode fails loudly
+instead of shipping a wrong planet. Verified by rendering the mask as ASCII:
+the Americas, Eurasia, Africa, Australia and Antarctica are all where they
+should be.
+
+`PixelEarth.tsx` projects that mask orthographically onto a sphere every frame
+with a real 23.4° axial tilt, and rotates continuously. Canvas rather than SVG
+because this redraws every pixel per frame. Six colours, two discrete shading
+bands, hard one-pixel rim — no gradients anywhere.
+
+Chosen over committing pre-rendered rotation frames: a dozen 64x64 sprites is
+~65KB of uneditable text that locks the resolution and steps instead of
+turning.
+
+### New components
+
+- `Starfield.tsx` — seeded hash so the sky is identical on every load and can
+  be art-directed; density gradient so it is not a uniform CSS pattern;
+  twinkling steps between three fixed greys rather than fading, because a fade
+  is a sub-pixel alpha ramp. Capped at ~12 redraws/sec.
+- `ui/PixelButton.tsx` — the atom everything inherits from. The face translates
+  down by exactly the height of the dark block beneath it, which vanishes.
+  **No transition on the press**; the old `Button` had the right mechanic and
+  killed it with `transition-all duration-100`. Press state is tracked across
+  pointer *and* keyboard, because the old one used `:active` and was visually
+  dead for anyone pressing Enter.
+- `ArcTitle.tsx` — per-letter rotation snapped to whole degrees, not a warped
+  line. Flagged in `DESIGN.md` that a hand-drawn arc sprite is the safer answer
+  if it reads badly at final size.
+
+### Progression gate
+
+`App.tsx` computes `everydayUnlocked` from whether all of Survival's targets
+are discovered, rather than storing a flag — it can never disagree with what
+the player actually did, and survives a reset for free.
+
+### Two bugs found by looking at it on screen
+
+1. **Locked buttons used `opacity: 0.55`.** Fine on a flat background;
+   over the planet the globe showed straight through the button face and the
+   label became unreadable. Locked is now its own muted, fully opaque palette.
+2. **Ice cap was a white stripe across the picture.** The globe is cropped to
+   its northern crown and the axial tilt turns that pole toward the viewer, so
+   a 68° ice threshold painted a band through the middle of the frame. Moved to
+   81°.
+
+Horizon depth was tuned by looking: half the diameter matches the mock most
+literally but puts bright green land behind the small type, which no drop
+shadow rescues. Three quarters keeps every word on flat navy.
+
+### Wind animation technique researched
+
+From SLYNYRD's Pixelblog 33, the real numbers: trees use one wave per loop with
+each layer moving up-and-right 1px, down 1px, left 1px to return, at 0.2s per
+frame. Grass is 4 frames with 2–4 positions per leaf. Cloth uses flow points
+12px apart moving 2px/frame over a 6-frame loop.
+
+**The key point: sway is whole-pixel offsets per layer with a phase delay, not
+a rotation or a skew.** A rotation resamples the pixel grid and destroys it.
+This is what the forest and the city scenes should be built on. Not yet built.
+
+### Still open
+
+- Forest scene for Survival, city scene for Everyday — not started.
+- Survival still shows all 26 starters including Everyday's. Needs trimming to
+  a minimal set, per Leo's direction.
+- No sound yet.

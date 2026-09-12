@@ -1,273 +1,196 @@
-import { CLOUD, FLAME, GROUND, PINE, SHIRT } from '../art/sprites'
 import type { RealmId } from '../data/types'
-import type { Sprite } from './PixelArt'
+import { PixelEarth } from './PixelEarth'
+import { Starfield } from './Starfield'
+import { PixelButton } from './ui/PixelButton'
+import { ArcTitle } from './ArcTitle'
 import { useViewport } from '../hooks/useViewport'
-import { PixelArt, PixelTile } from './PixelArt'
 
-type Realm = {
-  id: RealmId
-  name: string
-  blurb: string
-  icon: Sprite
-  badge?: string
-  accent: string
-  soft: string
-}
+/**
+ * The title screen: a planet in space, and two ways into it.
+ *
+ * This replaces a light-blue parallax meadow with clean white cards on it. The
+ * old version followed the codebase's stated split — 8-bit scene, modern panel
+ * on top — and that split is the thing being deliberately abandoned. A card
+ * with a soft shadow sitting on pixel art is what every template looks like;
+ * committing completely to being a game is the part nobody else will have.
+ * See DESIGN.md.
+ *
+ * PROGRESSION
+ *
+ * Survival is the tutorial and Everyday is the real game, so Everyday stays
+ * locked until Survival's targets are done. The locked button is dimmed but
+ * fully legible and still says what it is — a lock the player cannot read is
+ * not a goal, it is just a wall.
+ */
 
-const REALMS: Realm[] = [
-  {
-    id: 'survival',
-    name: 'Survival',
-    blurb: 'Fire, candles, a lighter',
-    icon: FLAME,
-    badge: 'Tutorial',
-    accent: 'var(--color-survival)',
-    soft: 'var(--color-survival-soft)',
-  },
-  {
-    id: 'everyday',
-    name: 'Everyday Objects',
-    blurb: 'The things around you, and what they really cost',
-    icon: SHIRT,
-    accent: 'var(--color-everyday)',
-    soft: 'var(--color-everyday-soft)',
-  },
-]
+/** Sprite-pixel dimensions of the globe. Scaled up by whole numbers only. */
+const EARTH_PIXELS = 72
 
 type StartScreenProps = {
   onSelectRealm: (realm: RealmId) => void
   onOpenCodex: () => void
+  /** Survival's targets are all discovered — Everyday is playable. */
+  everydayUnlocked: boolean
 }
 
-const SKY = `linear-gradient(
-  to bottom,
-  var(--color-sky-1) 0%, var(--color-sky-1) 20%,
-  var(--color-sky-2) 20%, var(--color-sky-2) 38%,
-  var(--color-sky-3) 38%, var(--color-sky-3) 54%,
-  var(--color-sky-4) 54%, var(--color-sky-4) 70%,
-  var(--color-sky-5) 70%, var(--color-sky-5) 86%,
-  var(--color-sky-6) 86%, var(--color-sky-6) 100%
-)`
-
-/** Base scales, tuned for a desktop viewport and stepped down from there. */
-const CLOUDS = [
-  { left: '6%', top: '14%', scale: 5 },
-  { left: '68%', top: '9%', scale: 7 },
-  { left: '38%', top: '26%', scale: 4 },
-  { left: '85%', top: '34%', scale: 5 },
-]
-
-const TREES = [
-  { left: '2%', scale: 7 },
-  { left: '10%', scale: 5 },
-  { left: '16%', scale: 6 },
-  { left: '83%', scale: 6 },
-  { left: '91%', scale: 8 },
-]
-
-const clamp = (value: number, min: number, max: number) =>
-  Math.min(Math.max(value, min), max)
-
-export function StartScreen({ onSelectRealm, onOpenCodex }: StartScreenProps) {
-  const { width, height } = useViewport()
+export function StartScreen({
+  onSelectRealm,
+  onOpenCodex,
+  everydayUnlocked,
+}: StartScreenProps) {
+  const { width } = useViewport()
 
   /*
-   * Sprite scales must be whole numbers — a fractional scale puts rect edges on
-   * half pixels and the art picks up seams. Ground height is driven by viewport
-   * *height* so the scene keeps the same share of the screen on a short laptop
-   * and a tall phone alike, then capped by width so sprites don't crowd.
+   * Integer scale, chosen from the viewport rather than set in CSS.
+   *
+   * A pixel sprite drawn at 7.5x has soft edges and the whole illusion
+   * collapses, so this steps between whole numbers instead of stretching.
+   * The globe is meant to be cropped by the bottom of the frame — it should
+   * read as enormous and too big for the screen, not as a ball sitting on it.
    */
-  const groundScale = Math.min(
-    clamp(Math.round((height * 0.12) / GROUND.rows.length), 3, 6),
-    width < 480 ? 4 : 6,
-  )
-  const step = (base: number) =>
-    Math.max(2, Math.round((base * groundScale) / 6))
-
-  const groundHeight = GROUND.rows.length * groundScale
-  /** Trees sink into the grass cap so they don't look pasted on top. */
-  const treeLine = groundHeight - 4 * groundScale
-
-  /*
-   * Only the ground is reserved, not the treetops: the trees sit at the far
-   * edges where the centred panel never reaches.
-   */
-  const reserve = Math.min(groundHeight, Math.round(height * 0.3))
-
-  /*
-   * Sized against BOTH axes. A `vw`-only clamp renders a full-size wordmark in
-   * a short, wide window and pushes the panel through the treeline.
-   */
-  const fit = (byWidth: number, byHeight: number, min: number, max: number) =>
-    clamp(Math.min(width * byWidth, height * byHeight), min, max)
-
-  const titleSize = fit(0.042, 0.062, 15, 34)
-
-  /*
-   * Three height tiers, not two. `tiny` exists for a phone held in landscape
-   * (844x390) and for a short desktop window — at that height the full-size
-   * panel is taller than the sky and pushes the page into a scroll.
-   */
-  const tiny = height < 520
-  const short = height < 600
-
-  const pad = tiny ? 14 : short ? 20 : 40
-  const cardPad = tiny ? 18 : short ? 24 : 36
-  const listGap = tiny ? 8 : 12
-  const listTop = tiny ? 14 : short ? 20 : 28
-  const iconSize = tiny ? 36 : 44
-  const rowPadY = tiny ? 8 : 14
+  const scale = width < 560 ? 7 : width < 900 ? 10 : 13
+  const unit = width < 560 ? 3 : 4
 
   return (
     <main
-      className="relative flex min-h-dvh flex-col overflow-hidden"
-      style={{ background: SKY }}
+      style={{
+        position: 'relative',
+        minHeight: '100dvh',
+        overflow: 'hidden',
+        background: 'var(--color-space)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
     >
-      {CLOUDS.map((cloud) => (
-        <PixelArt
-          key={cloud.left}
-          sprite={CLOUD}
-          scale={step(cloud.scale)}
-          className="pointer-events-none absolute"
-          style={{ left: cloud.left, top: cloud.top }}
-        />
-      ))}
+      <Starfield />
 
-      {TREES.map((tree) => (
-        <PixelArt
-          key={tree.left}
-          sprite={PINE}
-          scale={step(tree.scale)}
-          className="pointer-events-none absolute"
-          style={{ left: tree.left, bottom: treeLine }}
-        />
-      ))}
-
+      {/*
+       * The globe is positioned from the bottom and centred, so the viewport
+       * crops its lower half no matter the window size. Everything else
+       * stacks above it in normal flow and simply overlaps.
+       */}
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-0"
-        style={{ height: groundHeight }}
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          left: '50%',
+          /*
+           * How deep the planet sits is the one number that decides this
+           * screen, and it was tuned by looking at it. Sinking it by half its
+           * diameter matches the mock most literally but puts bright green
+           * land directly behind the small type, which no drop shadow rescues.
+           * Three quarters keeps the horizon below the buttons, so every word
+           * on the screen sits on flat navy, and the planet still reads as
+           * something far too large for the window.
+           */
+          bottom: `-${Math.round(EARTH_PIXELS * scale * 0.74)}px`,
+          transform: 'translateX(-50%)',
+          pointerEvents: 'none',
+        }}
       >
-        <PixelTile sprite={GROUND} scale={groundScale} />
+        <PixelEarth size={EARTH_PIXELS} scale={scale} secondsPerTurn={180} />
       </div>
 
       <div
-        className="relative z-10 flex flex-1 flex-col items-center justify-center px-5"
-        /* Equal pads keep the panel centred on the sky region above the ground */
-        style={{ paddingTop: pad, paddingBottom: reserve + pad }}
+        style={{
+          position: 'relative',
+          zIndex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: unit * 5,
+          paddingTop: unit * 7,
+          paddingBottom: unit * 8,
+          width: '100%',
+          maxWidth: 560,
+          paddingInline: unit * 4,
+        }}
       >
-        <div
-          className="w-full max-w-lg rounded-panel bg-white shadow-[0_12px_40px_rgba(20,40,60,0.18)]"
-          style={{ padding: cardPad }}
+        <ArcTitle text="From Scratch" unit={unit} />
+
+        <p
+          style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: unit * 2.5,
+            lineHeight: 1.9,
+            color: 'var(--color-star-mid)',
+            textAlign: 'center',
+            margin: 0,
+            textTransform: 'lowercase',
+            // A hard one-pixel drop shadow, not a blur. This is how console
+            // UIs kept text legible over a busy background, and it is the
+            // only kind of shadow this design allows.
+            textShadow: '2px 2px 0 var(--color-space-deep)',
+          }}
         >
-          <header
-            className="flex flex-col items-center text-center"
-            style={{ gap: tiny ? 6 : 12 }}
+          find out how things are really made
+        </p>
+
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: unit * 4,
+            width: '100%',
+            alignItems: 'stretch',
+          }}
+        >
+          <PixelButton
+            tone="survival"
+            unit={unit}
+            block
+            onClick={() => onSelectRealm('survival')}
           >
-            {/* The one place Press Start 2P appears — it's the wordmark, not UI */}
-            <h1
-              className="wordmark-outline font-display text-brand leading-[1.35]"
-              style={{ fontSize: titleSize }}
-            >
-              From Scratch
-            </h1>
+            survival
+          </PixelButton>
+
+          <PixelButton
+            tone="everyday"
+            unit={unit}
+            block
+            locked={!everydayUnlocked}
+            onClick={() => everydayUnlocked && onSelectRealm('everyday')}
+          >
+            {everydayUnlocked ? 'items' : 'items — locked'}
+          </PixelButton>
+
+          {!everydayUnlocked && (
             <p
-              className="font-semibold text-muted"
-              style={{ fontSize: tiny ? 13 : 17 }}
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: unit * 2,
+                lineHeight: 1.9,
+                color: 'var(--color-star-mid)',
+                textAlign: 'center',
+                margin: 0,
+                textTransform: 'lowercase',
+                textShadow: '2px 2px 0 var(--color-space-deep)',
+              }}
             >
-              Find out how things are really made
+              finish survival first
             </p>
-          </header>
-
-          <nav aria-label="Choose a realm">
-            <ul
-              className="flex flex-col"
-              style={{ marginTop: listTop, gap: listGap }}
-            >
-              {REALMS.map((realm) => (
-                <li key={realm.id}>
-                  <button
-                    type="button"
-                    data-realm={realm.id}
-                    onClick={() => onSelectRealm(realm.id)}
-                    className="group flex w-full cursor-pointer items-center gap-4 rounded-row border-2 border-hairline bg-white px-4 text-left transition-colors duration-150 hover:border-(--accent) hover:bg-(--soft) focus-visible:border-(--accent) focus-visible:bg-(--soft) focus-visible:outline-none"
-                    style={
-                      {
-                        '--accent': realm.accent,
-                        '--soft': realm.soft,
-                        paddingTop: rowPadY,
-                        paddingBottom: rowPadY,
-                      } as React.CSSProperties
-                    }
-                  >
-                    {/* Pixel icons are the one retro note inside the clean panel */}
-                    <span
-                      className="flex shrink-0 items-center justify-center rounded-row"
-                      style={{
-                        background: realm.soft,
-                        width: iconSize,
-                        height: iconSize,
-                      }}
-                    >
-                      <PixelArt sprite={realm.icon} scale={2} />
-                    </span>
-
-                    <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                      <span className="flex flex-wrap items-center gap-2">
-                        <span
-                          className="font-extrabold text-ink"
-                          style={{ fontSize: tiny ? 15 : 18 }}
-                        >
-                          {realm.name}
-                        </span>
-                        {realm.badge && (
-                          <span
-                            className="rounded-full px-2 py-0.5 text-[0.65rem] font-extrabold tracking-wide uppercase"
-                            style={{
-                              background: realm.soft,
-                              color: realm.accent,
-                            }}
-                          >
-                            {realm.badge}
-                          </span>
-                        )}
-                      </span>
-                      {/* Dropped on a landscape phone, where the panel has no room */}
-                      {!tiny && (
-                        <span className="text-sm font-semibold text-muted">
-                          {realm.blurb}
-                        </span>
-                      )}
-                    </span>
-
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="size-5 shrink-0 text-muted transition-transform duration-150 group-hover:translate-x-0.5 group-hover:text-(--accent)"
-                      aria-hidden="true"
-                    >
-                      <path d="m9 18 6-6-6-6" />
-                    </svg>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          {/* Dropped on a landscape phone, same as the blurb line above — no room */}
-          {!tiny && (
-            <button
-              type="button"
-              onClick={onOpenCodex}
-              className="mt-5 w-full cursor-pointer text-center text-sm font-bold text-muted hover:text-ink"
-            >
-              View your Codex
-            </button>
           )}
         </div>
+
+        <button
+          type="button"
+          onClick={onOpenCodex}
+          style={{
+            background: 'none',
+            border: 'none',
+            padding: unit * 2,
+            cursor: 'pointer',
+            fontFamily: 'var(--font-display)',
+            fontSize: unit * 2.25,
+            color: 'var(--color-star-mid)',
+            textTransform: 'lowercase',
+            letterSpacing: '0.04em',
+            textShadow: '2px 2px 0 var(--color-space-deep)',
+          }}
+        >
+          view your codex
+        </button>
       </div>
     </main>
   )
