@@ -60,8 +60,9 @@ minute at Leo's pace. Roughly 18 / 15 / 17 / 12 seconds.
 > the entire recipe graph is a 514 kilobyte import bundled straight into the
 > page, so once it loads you can play it offline. The only backend is two
 > serverless functions on Vercel, and they exist for one reason, to hold the
-> Gemini key so it is never in the browser. Vite builds it, Oxlint checks it,
-> and Playwright and k6 are how we test it. None of that goes out with the game.
+> Gemini key so it is never in the browser. There are no accounts and no
+> database, your progress just sits in your own browser. Vite builds it, Oxlint
+> checks it, and Playwright and k6 are how we test it.
 
 **2. HOW IT PLAYS**
 
@@ -89,13 +90,15 @@ stated as the search space it makes finding a chain an achievement.
 
 **4. NUMBERS**
 
-> 1,033 things, 1,036 recipes, 2,074 citations, zero unsourced recipes, and
-> every URL is fetched and title checked on every build. No accounts, no
-> database, your progress sits in your own browser, and we load tested it to 250
-> new players a second. Nothing in it is invented.
+> That's everything counted, and the number I'd point at is 2,074 citations with
+> zero unsourced recipes, so nothing in this game is invented.
 
-If you are running long, cut the Vite/Oxlint sentence on slide 1 and the last
-sentence of slide 2. The fence on slide 3 is the one that must survive.
+If you are running long, cut the Vite/Oxlint sentence on slide 1 and the
+developer-tools clause on slide 3. The fence line is the one that must survive.
+
+Hold the k6 figure back for a question. "We load tested it to 250 new players a
+second" is a much better answer to *"does this scale?"* than a line nobody asked
+for, and it is the only scaling claim here that was measured.
 
 ## 1. Why this exists at all — 20 seconds
 
