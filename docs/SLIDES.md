@@ -3,7 +3,7 @@
 Leo: *"these diagrams should last us to the end of the thing. as soon as the
 demo ends, these diagrams have to last us many minutes."*
 
-31 slides, eight acts, in `docs/slides/diagram-*.png`. At roughly twenty seconds each
+30 slides, eight acts, in `docs/slides/diagram-*.png`. At roughly twenty seconds each
 that is about ten minutes of material — so this is a menu, not a script. Take
 the acts the room wants and skip the rest; every slide stands alone.
 
@@ -17,16 +17,15 @@ out of `gameData.ts` at build time, so nothing here can drift from the game.
 **`point`** — We asked four people to draw how something they own is made. None
 could. *Open with this whatever else you cut.*
 
-**`what`** — You start with twelve things, you put two together, you find out
-what it took. No account, no install.
+**`play`** — The flowchart. Twelve things, put two together, and the branch:
+0.2% of the time a new thing and a card showing what it took; 99.8% of the time
+nothing, one of 36 rules saying why, and the option to ask. Both paths return to
+the same key.
 
-## Act 2 — the game (5 slides)
+## Act 2 — the game (4 slides)
 
 **`journey`** — Title, Survival's eighteen things, Everything's 1,015, a
 discovery card, the inventory.
-
-**`theloop`** — Try, nothing, *why not?*, try again knowing more. Being wrong is
-the content, not the punishment.
 
 **`wrong`** — 99.8% of pairs make nothing, and a player is told why every single
 time: 36 rules answer instantly, one key asks Gemini.

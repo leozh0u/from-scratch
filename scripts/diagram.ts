@@ -908,24 +908,73 @@ const wrong = slide(
 
 
 /*
- * THE PLAIN END OF THE RANGE.
- *
- * Leo: *"have diagrams of very technical stuff and very not, all levels,
- * everything."* This one and `point` assume nothing at all — no stack, no
- * numbers over four digits, nothing a judge has to be technical to read.
+ * THE PLAIN END OF THE RANGE. `play` and `point` assume nothing at all — no
+ * stack, no numbers over four digits, nothing a judge has to be technical to
+ * read.
  */
-const what = slide(
-  'WHAT IT IS',
-  () =>
-    row(
-      [
-        { title: 'YOU START', tone: 'teal', lines: [`with ${FACTS.starters} things`] },
-        { title: 'YOU COMBINE', tone: 'purple', lines: ['two at a time'] },
-        { title: 'YOU FIND OUT', tone: 'orange', lines: ['what it took'] },
-      ],
-      ['', ''],
-    ),
-  'no account. no install. no ads.',
+/**
+ * ONE PRESS, BOTH OUTCOMES.
+ *
+ * Leo: *"combine the What It Is and The Loop, like a flow chart, if it works
+ * what happens if it doensnt what happens."*
+ *
+ * Two slides were describing halves of one thing — `what` said you start with
+ * twelve things and combine them, `theloop` said being wrong is the content —
+ * and neither showed the branch, which is the only interesting part. A press
+ * has exactly two outcomes and they are wildly lopsided, so the slide is a fork
+ * with the odds written on it and both paths returning to the same key.
+ *
+ * No headings on the branches. The 0.2% and the 99.8% say which side is which.
+ */
+const play = slide(
+  'HOW IT PLAYS',
+  () => {
+    const out: string[] = []
+    const u = 6
+    const mid = 960
+
+    const box = (x: number, y: number, w: number, h: number, label: string, tone: ToneId) => {
+      out.push(key(x, y, w, h, tone))
+      out.push(text(x + w / 2, y + (h - 24) / 2 + 12, label, fit(label, 26, w - 60, 1), TEXT, { spacing: 1, shadow: INK }))
+    }
+    const wire = (x: number, y: number, w: number, h: number) =>
+      out.push(`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${BRAND}"/>`)
+
+    box(760, 170, 400, 110, '12 THINGS TO START', 'teal')
+    out.push(arrowDown(mid, 280, 340))
+    box(760, 340, 400, 110, 'PUT TWO TOGETHER', 'orange')
+
+    // The fork. A stub, a bar, and one arrow down each side — the same join
+    // shape as the graph slide, running the other way.
+    wire(mid - u / 2, 450, u, 45)
+    wire(480, 495, 960, u)
+    out.push(arrowDown(480, 501, 545), arrowDown(1440, 501, 545))
+    out.push(text(660, 484, '0.2%', 24, GOOD, { spacing: 2 }))
+    out.push(text(1268, 484, '99.8%', 24, MUTED, { spacing: 2 }))
+
+    const left = ['A NEW THING', 'A CARD SHOWS WHAT IT TOOK', 'IT JOINS THE INVENTORY']
+    const right = ['NOTHING HAPPENS', `ONE OF ${FACTS.rules} RULES SAYS WHY`, 'PRESS WHY? AND ASK GEMINI']
+    ;[left, right].forEach((column, side) => {
+      const x = side === 0 ? 220 : 1180
+      const cx = side === 0 ? 480 : 1440
+      column.forEach((label, i) => {
+        const y = 545 + i * 120
+        box(x, y, 520, 100, label, side === 0 ? 'green' : 'purple')
+        if (i < column.length - 1) out.push(arrowDown(cx, y + 100, y + 120))
+      })
+    })
+
+    // Both paths return to the same key, which is the whole point of a loop.
+    wire(480 - u / 2, 885, u, 40)
+    wire(1440 - u / 2, 885, u, 40)
+    wire(120, 925, 1320, u)
+    wire(120, 390, u, 535)
+    out.push(arrow(126, 393, 754))
+    out.push(text(452, 370, 'AND AGAIN', 22, BRAND))
+
+    return out.join('')
+  },
+  'one press in five hundred makes something. the rest teach you why not.',
   102,
 )
 
@@ -1201,22 +1250,6 @@ const where = slide(
   277,
 )
 
-const theloop = slide(
-  'THE LOOP',
-  () =>
-    row(
-      [
-        { title: 'TRY', tone: 'teal', lines: ['two things'] },
-        { title: 'NOTHING', tone: 'sunk', lines: ['99.8% of the time'] },
-        { title: 'WHY NOT?', tone: 'orange', lines: ['a real reason'] },
-        { title: 'TRY AGAIN', tone: 'green', lines: ['knowing more'] },
-      ],
-      ['', '', ''],
-    ),
-  'being wrong is the content, not the punishment.',
-  289,
-)
-
 const feel = slide(
   'EVERY PIXEL IS WHOLE',
   () =>
@@ -1285,11 +1318,11 @@ const SLIDES: [string, string][] = [
   ['chain', chain], ['icons', icons], ['forms', forms], ['stack', stack],
   ['combine', combine], ['fence', fence], ['gate', gate],
   ['honesty', honesty], ['checks', checks], ['loop', loop], ['wrong', wrong],
-  ['what', what], ['point', point], ['api', api], ['failure', failure],
+  ['play', play], ['point', point], ['api', api], ['failure', failure],
   ['sponsors', sponsors], ['journey', journey],
   ['tests', tests], ['load', load], ['slides', slides],
   ['gemini', gemini], ['hints', hints], ['responsible', responsible],
-  ['where', where], ['theloop', theloop], ['feel', feel], ['record', record],
+  ['where', where], ['feel', feel], ['record', record],
 ]
 for (const [name, doc] of SLIDES) {
   writeFileSync(`${SVG_OUT}/diagram-${name}.svg`, doc)
