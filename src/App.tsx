@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { GAME_DATA } from './data/gameData'
 import type { RealmId } from './data/types'
 import { Inventory } from './components/Inventory'
+import { Processes } from './components/Processes'
 import { StartScreen } from './components/StartScreen'
 import { StyleguidePage } from './components/StyleguidePage'
 import { Workspace } from './components/Workspace'
@@ -35,6 +36,7 @@ function Game() {
   // An overlay, not a third state alongside `realm` — closing it returns to
   // whichever screen was already showing, start or workspace, for free.
   const [showInventory, setShowInventory] = useState(false)
+  const [showProcesses, setShowProcesses] = useState(false)
   const game = useGameState(GAME_DATA)
   /*
    * How much help the game gives. Lives here rather than in useGameState
@@ -89,6 +91,21 @@ function Game() {
     setRealm(null)
   }
 
+  /*
+   * Above the inventory in the stack, because it is opened FROM the inventory
+   * and closing it should land back there rather than on the title screen.
+   */
+  if (showProcesses) {
+    return (
+      <Processes
+        data={GAME_DATA}
+        game={game}
+        revealAll={modeById(mode).revealAll}
+        onBack={() => setShowProcesses(false)}
+      />
+    )
+  }
+
   if (showInventory) {
     return (
       <Inventory
@@ -97,6 +114,7 @@ function Game() {
         revealAll={modeById(mode).revealAll}
         onBack={() => setShowInventory(false)}
         onReset={resetEverything}
+        onOpenProcesses={() => setShowProcesses(true)}
       />
     )
   }

@@ -9,6 +9,7 @@ import { BackArrow } from './ui/BackArrow'
 import { ResetButton } from './ui/ResetButton'
 import { HudBar } from './ui/HudBar'
 import { playPress } from '../audio/sfx'
+import { useViewport } from '../hooks/useViewport'
 
 type InventoryProps = {
   data: RecipeData
@@ -16,6 +17,15 @@ type InventoryProps = {
   onBack: () => void
   /** Wipes the save AND returns to the title screen — see `confirmReset`. */
   onReset: () => void
+  /**
+   * Through to the process record.
+   *
+   * It hangs off the inventory rather than the title screen because the two
+   * are the same kind of thing — the inventory is what you have made, this is
+   * what you have DONE to make it — and because the title screen is the one
+   * place where another button would cost the layout something.
+   */
+  onOpenProcesses: () => void
   /**
    * Cheater mode: treat every element as found, so the inventory becomes a
    * reference book rather than a record. Never written to the save — turning
@@ -39,7 +49,25 @@ const REALM_LABEL: Record<RealmId, string> = {
  * same DiscoveryCard shown at the moment of discovery, rather than
  * duplicating its layout inline for every entry.
  */
-export function Inventory({ data, game, onBack, onReset, revealAll = false }: InventoryProps) {
+export function Inventory({
+  data,
+  game,
+  onBack,
+  onReset,
+  onOpenProcesses,
+  revealAll = false,
+}: InventoryProps) {
+  /*
+   * The bar's keys step down on a narrow screen, and the back key drops its
+   * word below 380px.
+   *
+   * Without it the two buttons take the whole strip: at 320px they wanted 207
+   * of the 252 available and the title was left with nine pixels, so it
+   * clipped however it was sized. An arrow on its own is still an unambiguous
+   * back control; a screen name nobody can read is not a title.
+   */
+  const { width: viewportWidth } = useViewport()
+  const hudUnit = viewportWidth < 520 ? 2 : 3
   const [selected, setSelected] = useState<ElementDef | null>(null)
 
   const starterIds = new Set([...data.starters.survival, ...data.starters.everyday])
@@ -106,39 +134,59 @@ export function Inventory({ data, game, onBack, onReset, revealAll = false }: In
       {/* The same opaque HUD strip the workspace uses, so the two screens
         * read as the same machine. */}
       <HudBar className="flex items-center gap-3">
-        <PixelButton tone="default" unit={3} onClick={onBack}>
-          <BackArrow unit={3} />
-          back
+        <PixelButton tone="default" unit={hudUnit} onClick={onBack} aria-label="Back">
+          <BackArrow unit={hudUnit} />
+          {viewportWidth >= 380 && 'back'}
         </PixelButton>
-        <span className="flex-1" aria-hidden="true" />
         {/*
-          * Sized like the workspace's realm title, not at a fixed 11px.
-          *
-          * It was the smallest thing in a bar built out of slabs, which made
-          * the name of the screen read as a caption on the back button. The
-          * same clamp the workspace uses keeps it the largest thing in the
-          * bar on a laptop and still clear of the button on a phone.
-          */}
-        <h1
-          className="min-w-0 overflow-hidden whitespace-nowrap uppercase text-white"
-          style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(9px, 1.9vw, 22px)',
-            letterSpacing: '0.04em',
+         * SIZED BY THE ROOM IT HAS, NOT BY THE WINDOW.
+         *
+         * `clamp(9px, 1.9vw, 22px)` is a guess about how much of the viewport
+         * the buttons either side will take, and the guess broke the moment a
+         * second button arrived: "INVENTORY" lost its last letters on every
+         * phone. This wrapper is the flexible element AND the container the
+         * type is measured against, which breaks the circularity — its width
+         * comes from the row, never from the text inside it.
+         *
+         * Press Start 2P advances exactly 1em a character and this carries
+         * 0.04em of tracking, so nine characters need 9.36 times the font
+         * size. Dividing the wrapper's own width by that cannot clip.
+         */}
+        <div
+          className="flex min-w-0 flex-1 justify-center"
+          style={{ containerType: 'inline-size' }}
+        >
+          <h1
+            className="overflow-hidden whitespace-nowrap uppercase text-white"
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(7px, 100cqw / 9.36, 22px)',
+              letterSpacing: '0.04em',
+              margin: 0,
+            }}
+          >
+            inventory
+          </h1>
+        </div>
+        {/*
+         * A real control where an invisible spacer used to be.
+         *
+         * There was a 92px `shrink-0` span here to balance the back button,
+         * and on a narrow screen it was the only thing on the page overflowing
+         * the viewport — an invisible element pushing a horizontal scrollbar
+         * onto a phone. This does the same balancing job and is something you
+         * can press.
+         */}
+        <PixelButton
+          tone="default"
+          unit={hudUnit}
+          onClick={() => {
+            playPress()
+            onOpenProcesses()
           }}
         >
-          inventory
-        </h1>
-        <span className="flex-1" aria-hidden="true" />
-        {/*
-         * No fixed-width spacer here to balance the back button.
-         *
-         * There was one, 92px and `shrink-0`, and on a narrow screen it was the
-         * only thing on the page overflowing the viewport - an invisible span
-         * pushing a horizontal scrollbar onto a phone. The two flex spacers
-         * centre the heading in what is left, which is half a button off true
-         * and costs nothing.
-         */}
+          processes
+        </PixelButton>
       </HudBar>
 
       <div className="flex flex-col gap-8">

@@ -172,6 +172,11 @@ async function main() {
         await page.goto(`${base}/`)
         await clickLabel(page, 'inventory')
       }],
+      ['processes', async () => {
+        await page.goto(`${base}/`)
+        await clickLabel(page, 'inventory')
+        await clickLabel(page, 'processes')
+      }],
     ]) {
       await go()
       await page.waitForTimeout(220)
@@ -189,7 +194,7 @@ async function main() {
   await browser.close()
   server.close()
 
-  console.log(`\n${pass} passed, ${fail} failed  (${DEVICES.length} sizes, 4 screens each)\n`)
+  console.log(`\n${pass} passed, ${fail} failed  (${DEVICES.length} sizes, 5 screens each)\n`)
   process.exit(fail === 0 ? 0 : 1)
 }
 
