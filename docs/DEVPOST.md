@@ -107,3 +107,13 @@ about anything you have made, so you can go and learn more about it. We used it
 because the game is meant to teach, and a wrong guess is only useful if
 something tells you why it was wrong. It never sees the recipe list though, so
 it can explain a failure but it can't hand you an item.
+
+## An issue we ran into, and how we solved it
+
+We load tested the site with k6 and pointed it at the live URL, which was a
+mistake. It did about 48,000 requests in two minutes, Vercel's DDoS protection
+flagged it and denied our whole IP, and the site stopped loading for everyone on
+our network in the middle of the hackathon. Nothing was actually broken, the
+platform was doing exactly what it should. We fixed it by pointing the test at a
+local preview build instead, which serves the same files with no CDN in front of
+them, so we are measuring our own app rather than Vercel's patience.
