@@ -49,6 +49,46 @@ Two alternatives, same length:
 
 > Twelve raw materials, a thousand everyday things, and every step has a source.
 
+## The one-minute technical, four slides
+
+`stack` then `play` then `gemini` then `tally`. Around 230 words, which is a
+minute at Leo's pace. Roughly 18 / 15 / 17 / 12 seconds.
+
+**1. THE STACK**
+
+> So the whole game runs in the browser, React and TypeScript and Tailwind, and
+> the entire recipe graph is a 514 kilobyte import bundled straight into the
+> page, so once it loads you can play it offline. The only backend is two
+> serverless functions on Vercel, adjudicate and ask, and they exist for one
+> reason, which is that they hold the Gemini key. Vite, Oxlint, Playwright and
+> k6 along the bottom are all build time, none of that ships.
+
+**2. HOW IT PLAYS**
+
+> Every press does this. You put two things together, and about 0.2% of the time
+> you get something new and a card showing what it took, and the other 99.8% of
+> the time nothing happens and one of 36 rules tells you why not, locally, in
+> under a millisecond. So being wrong is the loop rather than a dead end.
+
+**3. FOUR USES OF GEMINI**
+
+> Gemini does four things. Two run while you play, the why not explanation and
+> the learn more questions, and two ran on my laptop while we were building the
+> data, one probing the graph for gaps and one drafting chains for a human to
+> check. And none of the four has ever seen the recipe list, it can't, they're
+> bundled separately, so the most you can ever send is two names and one enum
+> value, which is 1,761 bytes.
+
+**4. NUMBERS**
+
+> And then the numbers. 1,033 things, 1,036 recipes, 557 processes, 2,074
+> citations and zero unsourced recipes, and every URL gets fetched and title
+> checked on every build. I think that's the part I'd defend hardest, as nothing
+> in it is invented.
+
+If you are running long, cut the Vite/Oxlint sentence on slide 1 and the last
+sentence of slide 2. The fence on slide 3 is the one that must survive.
+
 ## 1. Why this exists at all — 20 seconds
 
 Follows straight out of the intro, where four people try to draw how something
