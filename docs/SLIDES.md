@@ -122,3 +122,48 @@ test: would this integration exist if the sponsor did not?
 
 Why it exists, what the game actually is, the architectural claim, and the limit
 we volunteer before anyone finds it.
+
+---
+
+## The 90-second stack block
+
+Four slides, roughly 22 seconds each. About 230 words, which is 90 seconds at a
+normal speaking pace — do not rush it, the numbers are the point and they need
+air. Every figure is checked; see `PROGRESS.md`.
+
+**`stack` — 0:00**
+
+> The whole game is in the browser. All 1,036 recipes, the save, everything —
+> one static bundle. Once it's loaded you could turn the wifi off and keep
+> playing.
+>
+> There are two serverless functions behind it. They're stateless, there's no
+> database, and the only thing they hold is the API key.
+
+**`tech` — 0:22**
+
+> React 19, TypeScript, Vite, Tailwind. Four runtime dependencies — react and
+> react-dom are the only packages the app imports when it runs. No router, no
+> state library, no UI kit. Every sprite, every corner, the star field behind
+> it, all hand-built.
+
+**`combine` — 0:44**
+
+> So when you press combine: first a map lookup. If it's a recipe, you get the
+> thing. If it isn't, a table of 36 rules answers in under a millisecond and
+> tells you why not — not "nothing happened", an actual reason.
+>
+> The model only runs if you press *why?*. 99.8% of presses never leave the
+> browser.
+
+**`fence` — 1:06**
+
+> This is the part I'd defend hardest. The graph is 514 kilobytes and it never
+> leaves. What goes to Gemini is 1,761 bytes — two names and one question out of
+> a closed list.
+>
+> The model has never seen the recipe list, and it can't: they're bundled
+> separately. It couldn't tell you a real recipe if you asked it to.
+
+**If you get interrupted**, the one to finish on is `fence`. The other three are
+description; that one is an argument.
