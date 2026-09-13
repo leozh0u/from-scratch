@@ -26,7 +26,7 @@ import {
   NOTHING_IN_REACH,
 } from '../solver/hint'
 import { modeById, type ModeId } from '../game/modes'
-import { readDemoSettings, nextDemoStep } from '../game/demo'
+import { readDemoSettings, nextDemoStep, nextHumanTurn, rng } from '../game/demo'
 import { minWidthForSide, faceWidthFor } from './ui/legend'
 import { Readout } from './ui/Readout'
 import { WhyNot } from './WhyNot'
@@ -567,7 +567,7 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
   })
 
   useEffect(() => {
-    if (!demo.on) return
+    if (demo.mode !== 'fast') return
     const timer = window.setInterval(() => {
       const current = gameRef.current
       /*
@@ -604,7 +604,158 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
       }
     }, demo.ms)
     return () => window.clearInterval(timer)
-  }, [demo.on, demo.ms, demo.stop, demo.batch, realm, data])
+  }, [demo.mode, demo.ms, demo.stop, demo.batch, realm, data])
+
+  /*
+   * A PERSON PLAYING, AT FOUR TIMES LIFE.
+   *
+   * Leo: "i want you to mimic real speed time lampse like getting things wrong
+   * and right and the aniamtions etc etc."
+   *
+   * The difference from the mode above is not the speed, it is what gets
+   * driven. That one calls `game.combine` and moves the counter; this one
+   * presses the same functions the buttons press — `pickTile`, `handleCombine`,
+   * `useHint`, `askWhyNot` — so the slots fill, the key depresses, the
+   * discovery card arrives and is dismissed, and the readout prints a real
+   * reason for a real dead end. Nothing here is a reenactment of play; it IS
+   * play, with the delays chosen rather than felt.
+   *
+   * Written as an async loop with a cancel flag rather than an interval,
+   * because a turn is a SEQUENCE of unequal waits — a beat to read a dead end,
+   * a longer one to look at a card — and an interval can only do one tempo.
+   */
+  const actionsRef = useRef({
+    pickTile,
+    handleCombine,
+    useHint,
+    askWhyNot,
+    closeCard: () => {},
+    hasCard: false,
+    hintsLeft: 0,
+  })
+  useEffect(() => {
+    actionsRef.current = {
+      pickTile,
+      handleCombine,
+      useHint,
+      askWhyNot,
+      closeCard: () => {
+        setDiscovery(null)
+        setReceiptElement(null)
+        setWhyOpen(false)
+      },
+      hasCard: discovery !== null || receiptElement !== null,
+      hintsLeft: rules.infiniteHints ? Infinity : earned,
+    }
+  })
+
+  /*
+   * ONE DRIVER AT A TIME, AND STRICT MODE MAKES THAT NON-OBVIOUS.
+   *
+   * React runs every effect twice in development — mount, clean up, mount —
+   * to catch exactly this kind of thing, and it caught it. A plain `cancelled`
+   * flag is not enough, because the first loop's opening move happens before
+   * its first await, so both drivers got a click in. Two drivers alternating
+   * picks into two slots means the second pick of one lands as the first pick
+   * of the other, the third resets the pair, and combine is pressed on a half
+   * empty bench forever: three turns played, zero attempts counted.
+   *
+   * A run id fixes it in both directions. Each run claims the ref, the loop
+   * yields before touching anything, and a run that no longer owns the ref
+   * stops without having done a thing.
+   */
+  const demoRunRef = useRef(0)
+
+  useEffect(() => {
+    if (demo.mode !== 'human') return
+    const myRun = ++demoRunRef.current
+    const alive = () => demoRunRef.current === myRun
+    const sleep = (ms: number) =>
+      new Promise<void>((resolve) => window.setTimeout(resolve, ms))
+    const random = rng(demo.seed)
+    const tried = new Set<string>()
+
+    async function play() {
+      // Yield once before the opening move, so a run that has already been
+      // superseded stops before it touches the board.
+      await sleep(0)
+      let turns = 0
+      let sinceHit = 0
+      while (alive() && turns < demo.stop) {
+        const act = actionsRef.current
+        const held = new Set(gameRef.current.allDiscovered())
+
+        /*
+         * Forced after four misses in a row regardless of the dice. A run of
+         * failures is what the real game feels like and it is also what makes
+         * a clip look broken, and the viewer cannot tell the difference
+         * between bad luck and a bug.
+         */
+        const wantHit = random() < demo.hitRate || sinceHit >= 4
+        const turn = nextHumanTurn(data, held, realm, wantHit, random, tried)
+        if (turn.kind === 'stuck') break
+
+        const [a, b] = turn.inputs
+        tried.add([a, b].sort().join('+'))
+
+        act.pickTile(a)
+        await sleep(demo.ms)
+        if (!alive()) return
+        actionsRef.current.pickTile(b)
+        await sleep(demo.ms)
+        if (!alive()) return
+        actionsRef.current.handleCombine()
+        await sleep(demo.ms)
+        if (!alive()) return
+
+        if (turn.kind === 'hit') {
+          sinceHit = 0
+          // A beat to actually look at the card, then close it by hand.
+          await sleep(demo.ms * 3)
+          if (!alive()) return
+          if (actionsRef.current.hasCard) {
+            actionsRef.current.closeCard()
+            await sleep(demo.ms)
+          }
+        } else {
+          sinceHit++
+          // Long enough to read the reason, which is the teaching.
+          await sleep(demo.ms * 2)
+          if (!alive()) return
+
+          /*
+           * Every fifth dead end or so, ask the model. This is the one beat in
+           * the clip that shows the Gemini integration doing its job, and it
+           * has to look like curiosity rather than a feature tour — so it
+           * happens on a dead end that has just been read, not on a schedule.
+           */
+          if (random() < 0.22) {
+            actionsRef.current.askWhyNot()
+            await sleep(demo.ms * 6)
+            if (!alive()) return
+            actionsRef.current.closeCard()
+            await sleep(demo.ms)
+          }
+        }
+
+        // And when the misses pile up, spend a hint, which is what the counter
+        // on the left has been telling the player to do.
+        if (alive() && sinceHit >= 3 && actionsRef.current.hintsLeft > 0 && random() < 0.5) {
+          actionsRef.current.useHint()
+          await sleep(demo.ms * 3)
+        }
+
+        turns++
+      }
+    }
+
+    void play()
+    return () => {
+      // Invalidate this run. The next one claims the ref; if there is no next
+      // one, `alive()` stays false and the loop unwinds at its next await.
+      demoRunRef.current++
+    }
+  }, [demo.mode, demo.ms, demo.stop, demo.hitRate, demo.seed, realm, data])
 
   function askWhyNot() {
     if (!feedback || feedback.kind !== 'no-match') return

@@ -35,8 +35,14 @@ const arg = (name, fallback) => {
   return hit ? hit.split('=')[1] : fallback
 }
 
-const WIDTH = Number(arg('width', 1920))
-const HEIGHT = Number(arg('height', 1080))
+/*
+ * 1280x720 rather than 1080p. The game's column is `max-w-3xl` — 768px — so at
+ * 1920 it occupies 40% of the frame and the type is small on anything watched
+ * on a phone. At 1280 it is 60%, with the forest and the city filling the rest,
+ * which is pixel art rather than dead space.
+ */
+const WIDTH = Number(arg('width', 1280))
+const HEIGHT = Number(arg('height', 720))
 /*
  * Paced for the edit, not for speed. Headless has no compositor, so the same
  * settings that take twenty-eight seconds in a real browser finish in seven —
@@ -46,6 +52,30 @@ const HEIGHT = Number(arg('height', 1080))
  */
 const MS = Number(arg('ms', 90))
 const BATCH = Number(arg('batch', 4))
+/*
+ * The acted section. 220ms a click is about four times life — fast enough to
+ * read as a timelapse, slow enough that a viewer can see WHICH two tiles went
+ * in. One attempt in three lands, which is not the real rate (that is under
+ * 3%) but is the truthful impression: somebody exploring and getting
+ * somewhere. The seed is fixed so a re-take is the take before it.
+ */
+/*
+ * WHERE TO RECORD FROM.
+ *
+ * Local by default, which is right for iterating and wrong for one shot in the
+ * cut: `vite preview` does not run Vercel's functions, so the "why not?" panel
+ * shows its offline fallback instead of a real answer from the model. Pointing
+ * this at the deployment fixes that — and it has to be run from a machine the
+ * deployment is not challenging, which this one currently is:
+ *
+ *   npm run capture -- --base=https://from-scratch-three.vercel.app
+ */
+const BASE = arg('base', null)
+
+const HUMAN_MS = Number(arg('humanms', 220))
+const HUMAN_SECONDS = Number(arg('humansecs', 22))
+const HIT = Number(arg('hit', 0.34))
+const SEED = Number(arg('seed', 11))
 const OUT = 'capture'
 
 /*
@@ -74,7 +104,7 @@ function serveDist() {
 }
 
 async function main() {
-  if (!existsSync('dist/index.html')) {
+  if (!BASE && !existsSync('dist/index.html')) {
     console.error('\nNo build to record. Run `npm run build` first.\n')
     process.exit(1)
   }
@@ -82,8 +112,9 @@ async function main() {
   rmSync(OUT, { recursive: true, force: true })
   mkdirSync(OUT, { recursive: true })
 
-  const { server, port } = await serveDist()
-  const base = `http://127.0.0.1:${port}`
+  const { server, port } = BASE ? { server: null, port: 0 } : await serveDist()
+  const base = BASE ?? `http://127.0.0.1:${port}`
+  if (BASE) console.log(`  recording against ${BASE} — the model will really answer`)
   const browser = await chromium.launch()
   const context = await browser.newContext({
     viewport: { width: WIDTH, height: HEIGHT },
@@ -100,17 +131,39 @@ async function main() {
 
   console.log(`\nRecording ${WIDTH}x${HEIGHT} at ms=${MS} batch=${BATCH}\n`)
 
-  // Survival, from nothing, at a speed a viewer can follow.
-  await page.goto(`${base}/?demo=1&ms=260`)
+  /*
+   * ACT ONE: SOMEBODY PLAYING.
+   *
+   * Leo: "i want you to mimic real speed time lampse like getting things wrong
+   * and right and the aniamtions etc etc." This section drives the UI rather
+   * than the state — tiles go into slots, combine is pressed, most attempts
+   * fail and print a real reason, the model gets asked why, a hint gets spent
+   * and a discovery card gets dismissed. Every animation runs because the
+   * handler behind it ran.
+   */
+  await page.goto(`${base}/?demo=human&ms=${HUMAN_MS}&hit=${HIT}&seed=${SEED}`)
   await page.evaluate(() => localStorage.clear())
   await page.reload()
+  await page.getByRole('button', { name: /survival/i }).first().click()
+  await page.waitForTimeout(HUMAN_SECONDS * 1000)
+  const played = await page.evaluate(() => {
+    const m = document.body.innerText.match(/(\d+)\s*TRIES/i)
+    return m ? m[1] : '?'
+  })
+  console.log(`  played ${played} attempts by hand`)
+
+  /*
+   * ACT TWO: the rest of the tutorial, quickly, so the cut does not spend a
+   * minute watching somebody finish a chapter the viewer already understands.
+   */
+  await page.goto(`${base}/?demo=fast&ms=70&batch=2`)
   await page.getByRole('button', { name: /survival/i }).first().click()
   await page.waitForFunction(() => /15\/15/.test(document.body.innerText), null, { timeout: 60_000 })
   console.log('  survival complete')
   await page.waitForTimeout(1200)
 
-  // Then Everything, flat out.
-  await page.goto(`${base}/?demo=1&ms=${MS}&batch=${BATCH}`)
+  // ACT THREE: Everything, flat out — the scale shot.
+  await page.goto(`${base}/?demo=fast&ms=${MS}&batch=${BATCH}`)
   await page.getByRole('button', { name: /everything/i }).first().click()
   await page.waitForFunction(
     () => {
@@ -151,7 +204,7 @@ async function main() {
 
   await context.close()
   await browser.close()
-  server.close()
+  server?.close()
 
   const webm = readdirSync(OUT).find((f) => f.endsWith('.webm'))
   if (!webm) throw new Error('playwright wrote no video')
