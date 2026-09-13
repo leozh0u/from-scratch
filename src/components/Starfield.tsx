@@ -4,7 +4,7 @@ import { useViewport } from '../hooks/useViewport'
 /**
  * The night sky behind everything.
  *
- * THREE RULES, ALL FROM DESIGN.md
+ * THREE RULES, ALL FROM docs/DESIGN.md
  *
  * 1. Irregular, not scattered evenly. Stars placed by a plain random walk
  *    across a grid look like a CSS pattern, and a CSS pattern is exactly the

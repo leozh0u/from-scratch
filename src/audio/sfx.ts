@@ -239,7 +239,7 @@ export function playDiscovery() {
 }
 
 /** A combination that does nothing. Two flat low notes — a shrug, not a
- * buzzer. Failure is the main loop of this game (see ARCHITECTURE.md), so it
+ * buzzer. Failure is the main loop of this game (see docs/ARCHITECTURE.md), so it
  * has to be something a player can hear several hundred times. */
 export function playNoMatch() {
   tone({ from: 300, length: 0.07, gain: 0.1, type: 'triangle' })

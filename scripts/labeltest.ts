@@ -6,7 +6,7 @@
  * pixels. Nothing in the type-checker or the solver can see that, and it is
  * invisible until someone looks at that one tile, so it goes here instead.
  *
- * The stakes rise as the game grows: ARCHITECTURE.md plans hundreds of
+ * The stakes rise as the game grows: docs/ARCHITECTURE.md plans hundreds of
  * elements, and every new name is another chance to reintroduce this. The test
  * walks the real data, so adding an unfittable name fails the build.
  */

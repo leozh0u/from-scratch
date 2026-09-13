@@ -10,11 +10,11 @@
 > work on next", the four places the model is used and why each is safe, and
 > the rules that do not bend.
 >
-> **Also read `DESIGN.md`** (visual direction and sponsor routes),
-> **`ARCHITECTURE.md`** (how the logic scales to Little Alchemy size), and
-> **`PROGRESS.md`** (what has happened and what is open). `DESIGN.md`
+> **Also read `docs/DESIGN.md`** (visual direction and sponsor routes),
+> **`docs/ARCHITECTURE.md`** (how the logic scales to Little Alchemy size), and
+> **`PROGRESS.md`** (what has happened and what is open). `docs/DESIGN.md`
 > reverses the two-layer visual split described in section 3 below; where the
-> two disagree, `DESIGN.md` is current.
+> two disagree, `docs/DESIGN.md` is current.
 
 ---
 

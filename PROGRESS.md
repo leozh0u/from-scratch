@@ -1,7 +1,7 @@
 # From Scratch — running log
 
 > Written so work can be resumed in a fresh session with no context. Newest
-> section at the bottom. `CLAUDE.md` is what the project is; `DESIGN.md` is
+> section at the bottom. `CLAUDE.md` is what the project is; `docs/DESIGN.md` is
 > what it should look and feel like; this is what has happened.
 
 ---
@@ -233,7 +233,7 @@ or Gamification track.** The three tracks are **Fintech**, **Health**, and
 challenges.
 
 → **From Scratch enters Machine Learning/AI.** Full sponsor analysis in
-`DESIGN.md` §5. Short version: Gemini is already earned and strong; GoDaddy and
+`docs/DESIGN.md` §5. Short version: Gemini is already earned and strong; GoDaddy and
 Notability are nearly free; MathWorks, ElevenLabs and Backboard are worth real
 effort in thin fields.
 
@@ -245,7 +245,7 @@ the viewport, arced Press Start 2P wordmark, chunky lowercase pixel buttons.
 **This reverses the codebase's stated design philosophy.** `src/index.css`
 currently commits in writing to "retro backdrop, crisp panel — don't leak scene
 styling into the panel". The new direction is pixel all the way through. Full
-brief, principles and techniques in `DESIGN.md`.
+brief, principles and techniques in `docs/DESIGN.md`.
 
 Leo's stated veto: **nothing may look AI-generated.** That rules out NES.css,
 RPGUI, soft shadows, blurs, smooth gradients, and evenly-spaced decoration.
@@ -256,10 +256,10 @@ like an object.
 ### Open
 
 - Leo is still describing the game's logic and goals — more direction incoming.
-- Nothing has been changed in the repo yet beyond adding `DESIGN.md` and this
+- Nothing has been changed in the repo yet beyond adding `docs/DESIGN.md` and this
   file. No commits pushed.
 
-### Architecture plan written — `ARCHITECTURE.md`
+### Architecture plan written — `docs/ARCHITECTURE.md`
 
 Leo's direction: Little Alchemy scope, accurate pixel "emoji" for every object,
 sound logic, failures explained, Nintendo theme throughout, education gamified.
@@ -336,7 +336,7 @@ turning.
   pointer *and* keyboard, because the old one used `:active` and was visually
   dead for anyone pressing Enter.
 - `ArcTitle.tsx` — per-letter rotation snapped to whole degrees, not a warped
-  line. Flagged in `DESIGN.md` that a hand-drawn arc sprite is the safer answer
+  line. Flagged in `docs/DESIGN.md` that a hand-drawn arc sprite is the safer answer
   if it reads badly at final size.
 
 ### Progression gate

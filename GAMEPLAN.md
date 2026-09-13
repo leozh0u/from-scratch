@@ -1,7 +1,7 @@
 # The game plan — the whole system, both realms
 
-> `CLAUDE.md` is what the project is. `ARCHITECTURE.md` is how the logic
-> scales. `DESIGN.md` is how it looks. **This is the content**: every element
+> `CLAUDE.md` is what the project is. `docs/ARCHITECTURE.md` is how the logic
+> scales. `docs/DESIGN.md` is how it looks. **This is the content**: every element
 > and every recipe, for both realms, from three starting things.
 >
 > The tables below are **generated** from `plan/graph.txt` by

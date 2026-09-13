@@ -19,7 +19,7 @@ import { useViewport } from '../hooks/useViewport'
  * on top — and that split is the thing being deliberately abandoned. A card
  * with a soft shadow sitting on pixel art is what every template looks like;
  * committing completely to being a game is the part nobody else will have.
- * See DESIGN.md.
+ * See docs/DESIGN.md.
  *
  * PROGRESSION
  *

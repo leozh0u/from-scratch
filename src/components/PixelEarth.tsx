@@ -109,7 +109,7 @@ const ICE_LATITUDE = (81 * Math.PI) / 180
 type PixelEarthProps = {
   /** Diameter in sprite pixels. The canvas is this size; CSS scales it up. */
   size?: number
-  /** CSS pixels per sprite pixel. Integers only — see DESIGN.md. */
+  /** CSS pixels per sprite pixel. Integers only — see docs/DESIGN.md. */
   scale?: number
   /**
    * Seconds for one full rotation. 0 freezes it.

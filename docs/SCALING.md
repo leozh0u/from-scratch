@@ -35,7 +35,7 @@ palette from its own properties.
 
 Two hundred elements becomes twenty drawings and two hundred colour triples.
 The "no two elements share a sprite" test still passes, because a recoloured
-form is a different bitmap. This is already sketched in `ARCHITECTURE.md` and
+form is a different bitmap. This is already sketched in `docs/ARCHITECTURE.md` and
 never built.
 
 **Cost: about 2 hours. It removes the ceiling entirely.**
@@ -46,7 +46,7 @@ Every element and recipe currently carries a source a human read. Nobody can
 read 600 of those before morning, and inventing them is the one mistake that
 would destroy the project.
 
-**The fix is already designed in `ARCHITECTURE.md`: two tiers, stated in the
+**The fix is already designed in `docs/ARCHITECTURE.md`: two tiers, stated in the
 UI.**
 
 - **Sourced** — a human checked the source says what we claim, and the units

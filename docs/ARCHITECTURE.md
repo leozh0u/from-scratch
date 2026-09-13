@@ -1,6 +1,6 @@
 # From Scratch — how the game has to be built to reach Little Alchemy scale
 
-> Read `CLAUDE.md` for what the project is, `DESIGN.md` for how it should look,
+> Read `CLAUDE.md` for what the project is, `docs/DESIGN.md` for how it should look,
 > `PROGRESS.md` for what has happened. This file is the plan for the logic:
 > the scope problem, and the specific architecture that solves it.
 
@@ -170,7 +170,7 @@ be the norm, not the exception.
 ## 5. Art at scale
 
 Several hundred hand-drawn sprites is not achievable before Sunday, and
-generated art is vetoed (`DESIGN.md` §3).
+generated art is vetoed (`docs/DESIGN.md` §3).
 
 **Build a sprite vocabulary instead.** A small set of hand-drawn *forms* —
 powder pile, ingot, sheet, vial of liquid, gas wisp, raw lump, coil, tool
@@ -197,7 +197,7 @@ The one-sentence version worth aiming at:
 > invented: recipes are real and traceable, the failures teach you why, and the
 > model that explains them is structurally incapable of inventing one.
 
-That is a Machine Learning/AI track submission (see `DESIGN.md` §5) that is
+That is a Machine Learning/AI track submission (see `docs/DESIGN.md` §5) that is
 about **using an LLM responsibly at scale**, which is a far more interesting
 claim than "we called an API".
 
