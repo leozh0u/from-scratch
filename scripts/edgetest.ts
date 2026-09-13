@@ -9,6 +9,7 @@
  * Each is reproduced against the real data rather than a fixture, because a
  * fixture proves the fixture.
  */
+import { nextDemoStep } from '../src/game/demo'
 import { GAME_DATA } from '../src/data/gameData'
 import { pickHint, hintsEarned, pathToTarget, nextUnfoundTarget } from '../src/solver/hint'
 import { explainFailure } from '../src/adjudicator/explain'
@@ -280,6 +281,53 @@ console.log('\n=== a hit rate is between nothing and everything ===')
     }
   }
   ok('swept, nothing lands outside nought to a hundred', over === 0, '11,600 combinations')
+}
+
+/*
+ * THE DEMO DRIVER FINISHES, AND FINISHING IS THE PROOF.
+ *
+ * `game/demo.ts` plays the game for the camera by repeatedly taking the best
+ * pair it can make. If it ever stalls, the timelapse stops halfway through a
+ * take — but more usefully, a stall means there is an element nothing can
+ * reach, which is a data bug the driver happens to be a perfect detector for.
+ */
+console.log('\n=== the game can play itself to the end of both realms ===')
+{
+  for (const realm of ['survival', 'everyday'] as const) {
+    const held = new Set<string>([
+      ...GAME_DATA.starters.survival,
+      ...(realm === 'everyday' ? GAME_DATA.starters.everyday : []),
+    ])
+    let steps = 0
+    for (;;) {
+      const next = nextDemoStep(GAME_DATA, held, realm)
+      if (!next) break
+      held.add(next.output)
+      steps++
+      if (steps > GAME_DATA.recipes.length + 10) break
+    }
+    const craftable = new Set(
+      GAME_DATA.recipes
+        .map((r) => r.output)
+        .filter((id) => {
+          const el = GAME_DATA.elements.find((e) => e.id === id)
+          return el && (realm === 'everyday' || el.realm === 'survival')
+        }),
+    )
+    const made = [...craftable].filter((id) => held.has(id)).length
+    ok(
+      `${realm}: the driver reaches every craftable element`,
+      made === craftable.size,
+      `${made} of ${craftable.size} in ${steps} steps`,
+    )
+  }
+
+  // And it stops rather than spinning once there is nothing left.
+  const everything = new Set(GAME_DATA.elements.map((e) => e.id))
+  ok(
+    'and it returns null when nothing is left to make',
+    nextDemoStep(GAME_DATA, everything, 'everyday') === null,
+  )
 }
 
 console.log(`\n${pass} passed, ${fail} failed\n`)

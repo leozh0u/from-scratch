@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { adjudicate } from '../adjudicator/client'
 import { explainFailure, RULE_MESSAGES } from '../adjudicator/explain'
 import { resolveIcon } from '../data/iconRegistry'
@@ -26,6 +26,7 @@ import {
   NOTHING_IN_REACH,
 } from '../solver/hint'
 import { modeById, type ModeId } from '../game/modes'
+import { readDemoSettings, nextDemoStep } from '../game/demo'
 import { minWidthForSide, faceWidthFor } from './ui/legend'
 import { Readout } from './ui/Readout'
 import { WhyNot } from './WhyNot'
@@ -531,6 +532,76 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
       })
     }
   }
+
+  /*
+   * THE GAME PLAYING ITSELF, FOR THE CAMERA.
+   *
+   * Off unless the URL says otherwise, so nothing about a normal session
+   * changes. See game/demo.ts for why the timelapse is driven rather than
+   * filmed and sped up.
+   *
+   * It goes through `game.combine` like a press does, so every tile it puts on
+   * the shelf is a real discovery down the real path — but it does not open the
+   * discovery card, because twenty-five full-screen cards a second is a strobe
+   * rather than a shot. The readout names each one instead, and the thing to
+   * watch is the grid filling and the counter climbing.
+   */
+  const demo = useMemo(
+    () => readDemoSettings(typeof window === 'undefined' ? '' : window.location.search),
+    [],
+  )
+  const demoMade = useRef(0)
+  /*
+   * The interval is created once and would otherwise hold the FIRST render's
+   * `game` forever — and `combine` closes over the discovered set, so every
+   * tick would read an inventory from before anything was made and the driver
+   * would make the same element nine hundred times. The ref is refreshed on
+   * every render, so the tick always reads the current one.
+   */
+  const gameRef = useRef(game)
+  useEffect(() => {
+    gameRef.current = game
+  })
+
+  useEffect(() => {
+    if (!demo.on) return
+    const timer = window.setInterval(() => {
+      const current = gameRef.current
+      /*
+       * The inventory is tracked here rather than re-read from `game` between
+       * steps, because state set inside this tick has not landed yet — without
+       * it every step in a batch would find the same pair and make it once.
+       */
+      const held = new Set(current.allDiscovered())
+      let last: string | null = null
+
+      for (let i = 0; i < demo.batch; i++) {
+        if (demoMade.current >= demo.stop) {
+          window.clearInterval(timer)
+          break
+        }
+        const step = nextDemoStep(data, held, realm)
+        if (!step) {
+          window.clearInterval(timer)
+          break
+        }
+        const [a, b] = step.inputs
+        current.countAttempt(realm)
+        const result = current.combine(a, b)
+        if (result.status !== 'discovered') break
+        current.countSuccess(realm)
+        held.add(result.recipe.output)
+        demoMade.current += 1
+        last = result.recipe.output
+      }
+
+      if (last) {
+        const made = data.elements.find((el) => el.id === last)
+        if (made) setFeedback({ kind: 'already-known', name: made.name })
+      }
+    }, demo.ms)
+    return () => window.clearInterval(timer)
+  }, [demo.on, demo.ms, demo.stop, demo.batch, realm, data])
 
   function askWhyNot() {
     if (!feedback || feedback.kind !== 'no-match') return

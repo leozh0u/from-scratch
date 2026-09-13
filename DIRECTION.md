@@ -262,6 +262,86 @@ a missing integration, and a category we did not claim costs nothing. Claim
 what is true: an educational game whose content is verifiable, built with a
 model that is not allowed to invent any of it.
 
+Leo: *"the sponsors also shouldnt be a stretch. they have to make sense being
+there. not there for the sake of it. so think about it a lot. think about
+realistically what we could win."*
+
+### Sponsor by sponsor, honestly
+
+The test each one has to pass: **would this integration exist if the sponsor
+did not?** If the answer is no, it is a shoehorn and it costs more than it
+earns.
+
+**Claim — Google / Gemini.** The core, and four distinct uses: the "why not?"
+adjudicator, the "learn more" questions, the probe that finds gaps in the
+graph, and the proposer that drafts chains. What makes it worth a prize is not
+the count, it is the **fence**: the runtime endpoints have never seen
+`gameData.ts` and cannot import it, the player cannot send free text, and no
+model output is ever a number. Fifteen seconds and a devtools window proves it.
+
+**Claim — Ken Kennedy Institute (responsible AI).** The strongest fit after
+Gemini and probably the least contested. Most submissions in this category
+*describe* how their model behaves. This one has a build step that **fails**
+when the rule is broken: `npm run links` fetches every citation and checks its
+title against its label, `npm run import` rejects fabricated URLs by their 404,
+and `npm test` fails if a recipe carries a footprint figure without a hand-read
+source. The rule is enforced by the repository, not promised in a prompt.
+
+**Claim — GoDaddy.** A domain. Not a shoehorn in any direction: the game needs
+a URL a judge can type, and a `vercel.app` subdomain is worse than one. Twenty
+minutes.
+
+**Claim — Games & Gamification.** Obviously, and it is the thinnest field.
+
+**Conditional — MathWorks.** There is a genuine fit and it is worth stating
+because it is not obvious. Computing embodied footprint over a graph where
+sub-paths are shared is **Leontief input-output analysis** — the standard method
+in life-cycle assessment, and exactly what this game claims to do. Build the
+recipe graph as a sparse matrix in MATLAB, solve for total embodied water and
+CO2 per element, export a lookup table the game reads at runtime. Never call
+MATLAB live.
+
+The catch is real: **most footprints here are zero**, because a figure needs a
+human to have read the source, so the matrix would be mostly zeros and the
+result would be technically correct and substantively empty. Making it mean
+something needs forty to sixty hand-read figures along one chain — the cotton
+t-shirt, say — and that is hours of reading, not hours of coding.
+
+**So: worth it only if a teammate takes the sourcing.** It must not come out of
+the video's time.
+
+**Skip — Tiger Data.** This is the stretch, and naming it is the point of this
+list. The game has no backend storage and no time-series data **on purpose**.
+The nearest honest use would be logging anonymous combine attempts to show
+which pairs people try — genuinely interesting, and in direct contradiction with
+the thing we lead with, which is that nothing leaves the browser and there are
+no accounts. Either the use is fake or the pitch is weaker. Skip.
+
+**Skip — ElevenLabs.** The audio is 8-bit and the standing rule is that nothing
+looks or sounds AI-generated. Narration over the demo video is a video asset
+rather than a product feature, and a judge can tell which one they are being
+shown.
+
+**Skip — Persona, Backboard.** Both need an account. There are none, deliberately.
+
+**Skip — Vultr.** It is deployed and working on Vercel. Moving hosting the day
+before submission to claim a prize is how the demo gets lost.
+
+**Skip — Capital One, Solana.** No finance angle that is not invented.
+
+**Marginal — Lilie.** Judged on venture potential. There is a real story — a
+classroom tool where every claim is sourced — but it is a free educational game,
+and a weak venture pitch beside a strong product one costs credibility.
+
+**Nearly free — Notability**, if anyone kept the ideation notes from hour zero.
+
+### What could realistically win
+
+Four claims, all defensible: **Games**, **Gemini**, **Ken Kennedy**, **GoDaddy**.
+Games is the thinnest field and this is a finished game with 932 sourced
+elements. Ken Kennedy is the least contested and the best fit on the merits.
+Gemini's field is crowded, but the fence is an unusual angle in it.
+
 **Ask an organiser** which sponsor categories actually exist this year and how
 the ones that are not on Devpost are judged. Nothing in this file should be
 treated as current fact about the event.
