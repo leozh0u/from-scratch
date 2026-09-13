@@ -53,23 +53,27 @@ Two alternatives, same length:
 
 `stack` then `play` then `gemini` then `tally`.
 
-**TIMED AT LEO'S REAL PACE.** The 265-word version of this ran 1:30 with him
-speaking fast, which puts him at roughly 175 words a minute rather than the 220
-I assumed. This is 152 words, so about 50 to 55 seconds with headroom. When in
-doubt, cut another sentence: he has never once run short.
+**TIMED AT LEO'S REAL PACE.** The 265-word version ran 1:30 with him speaking
+fast, which puts him near 175 words a minute rather than the 220 I assumed. A
+152-word cut after that was too clipped to sound like anyone talking. This one
+is about 195 words in full sentences, so roughly 65 seconds. If it needs to be
+shorter, drop the developer-tools sentence on slide 3 first.
 
 **1. THE STACK**
 
-> The whole game runs in the browser. React, TypeScript, Tailwind, and the
-> entire recipe graph is bundled into the page, so it plays offline. The only
-> backend is two functions on Vercel, and they exist to hold the Gemini key so
-> it is never in the browser.
+> So the whole game runs in the browser. React for the interface, TypeScript
+> throughout, Tailwind for the styling, and the entire recipe graph is bundled
+> into the page as one import, so once it loads you can play the whole thing
+> offline. The only backend is two small functions on Vercel, and they are there
+> to hold the Gemini key so it never has to sit in the browser.
 
 **2. HOW IT PLAYS**
 
-> Every press does this. If the pair is a real process you get the item and a
-> card showing what went into it, and if it is not, one of 36 rules tells you
-> why not, instantly. Those percentages are the search space, not your hit rate.
+> Every press works like this. You put two things together, and if that pair is
+> a real process, you get the item and a card showing you what went into making
+> it. If it is not, one of 36 rules answers locally in under a millisecond and
+> tells you why those two do not react. And the percentages you see there are
+> the size of the search space, not your hit rate.
 
 *Never say "you are wrong 99.8% of the time" as a hit rate.* Leo: *"the percent
 is bad, because it takes skill to figure out."* Stated as a hit rate it makes
@@ -78,14 +82,17 @@ achievement.
 
 **3. FOUR USES OF GEMINI**
 
-> Gemini does four things and only two run while you play. Learn more is three
-> fixed questions, not a chat box. And the recipe list never goes to any of
-> them, so it can tell you why two things do not react, but every item comes
-> from the game.
+> We use Gemini in four ways, and only two of them run while you are playing.
+> Learn more is the second one, and instead of a chat box it is three fixed
+> questions, so a player can never send it free text. The other two are
+> developer tools we ran while building the data. But the recipe list never goes
+> to any of them, so Gemini can tell you why two things do not react, and every
+> item you make still comes from the game itself.
 
 **4. NUMBERS**
 
-> 2,074 citations and zero unsourced recipes. Nothing in this game is invented.
+> And then the numbers. There are 2,074 citations behind it and zero unsourced
+> recipes, so nothing in this game is invented.
 
 ### Held back on purpose, for questions
 
