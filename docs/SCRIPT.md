@@ -39,6 +39,16 @@ Fifteen-second cut, if someone is walking:
 > every one of them is real and sourced. You're wrong 99.8% of the time and it
 > tells you why every time.
 
+One sentence, if that is all there is room for:
+
+> It's Little Alchemy, except everything in it is real and sourced.
+
+Two alternatives, same length:
+
+> A game about how the things around you are made, where every recipe is real.
+
+> Twelve raw materials, a thousand everyday things, and every step has a source.
+
 ## 1. Why this exists at all — 20 seconds
 
 Follows straight out of the intro, where four people try to draw how something
