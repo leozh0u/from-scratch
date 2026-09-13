@@ -67,9 +67,16 @@ In priority order, so cutting from the bottom costs the least. Every one is
 something the repository actually uses; nothing here is padding for the count.
 
 react · typescript · vite · tailwind · vercel · google-gemini · serverless ·
-node.js · rest-api · playwright · k6 · oxlint · javascript · html5 · css3 ·
-canvas · svg · localstorage · json · wikipedia · google-fonts · figma · ffmpeg ·
-github · npm
+node.js · playwright · k6 · oxlint · javascript · html5 · css3 · canvas · svg ·
+localstorage · json · wikipedia · google-fonts · figma · ffmpeg · github · npm
+
+That is 24, not 25, and deliberately. **`rest-api` was on this list and came
+off.** REST means resources identified by URIs with HTTP verbs acting on them;
+`api/adjudicate.ts` and `api/ask.ts` are two POST endpoints that perform an
+action and return a sentence, with no resource, no GET and no PUT. That is RPC
+over HTTP with JSON. Most people would call it a REST API and nobody would
+challenge it, but the standing rule is to claim only what survives being asked
+about, and "what is RESTful about it?" has no good answer here.
 
 Where each one is used, if anyone asks:
 
