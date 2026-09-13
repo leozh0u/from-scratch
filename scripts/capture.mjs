@@ -22,6 +22,21 @@
  *   npm run capture -- --width=1920      for a 1080p timeline
  *
  * Output lands in `capture/` as webm and mp4. The mp4 is the one to import.
+ *
+ * THE CUT, AND WHY IT IS IN THIS ORDER
+ *
+ *   1. somebody plays Survival by hand, slowly enough to follow      ~10s
+ *   2. the rest of the tutorial, quickly                              ~4s
+ *   3. Everything fills to 600, so the grid has depth                 ~6s
+ *   4. the frenzy: real play at twelve times life, over a 16,000px
+ *      grid it has to scroll to reach                                ~26s
+ *   5. flat out to 920/920                                            ~4s
+ *   6. a slow pass down the finished inventory                        ~7s
+ *
+ * Act three is before act four rather than after it, which looks backwards
+ * and is not: a fresh Everything is fifteen tiles on one screen, so there is
+ * nothing to scroll through and the frenzy has no motion in it. Filling the
+ * grid first is what gives act four somewhere to go.
  */
 import { chromium } from 'playwright'
 import { mkdirSync, rmSync, readdirSync, renameSync } from 'node:fs'
@@ -50,8 +65,8 @@ const HEIGHT = Number(arg('height', 720))
  * a tick is 230 ticks and about twenty seconds, which is long enough to watch
  * the counter climb and short enough for a demo that has a minute in total.
  */
-const MS = Number(arg('ms', 90))
-const BATCH = Number(arg('batch', 4))
+const MS = Number(arg('ms', 70))
+const BATCH = Number(arg('batch', 8))
 /*
  * The acted section. 220ms a click is about four times life — fast enough to
  * read as a timelapse, slow enough that a viewer can see WHICH two tiles went
@@ -73,7 +88,7 @@ const BATCH = Number(arg('batch', 4))
 const BASE = arg('base', null)
 
 const HUMAN_MS = Number(arg('humanms', 220))
-const HUMAN_SECONDS = Number(arg('humansecs', 13))
+const HUMAN_SECONDS = Number(arg('humansecs', 10))
 const HIT = Number(arg('hit', 0.34))
 const SEED = Number(arg('seed', 11))
 /*
@@ -81,8 +96,8 @@ const SEED = Number(arg('seed', 11))
  * life; nothing is legible and it is not meant to be. A higher hit rate here
  * than in the acted opening, because this act is about things appearing.
  */
-const FRENZY_MS = Number(arg('frenzyms', 70))
-const FRENZY_SECONDS = Number(arg('frenzysecs', 20))
+const FRENZY_MS = Number(arg('frenzyms', 55))
+const FRENZY_SECONDS = Number(arg('frenzysecs', 26))
 /** How full the grid is before the frenzy, so the scrolling has distance. */
 const FILL_TO = Number(arg('fill', 600))
 const FRENZY_HIT = Number(arg('frenzyhit', 0.55))
