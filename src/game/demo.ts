@@ -28,6 +28,7 @@
  *   ?demo=human&hit=0.25       wrong three times in four, like the real thing
  *   ?demo=fast&ms=90&batch=4   the scale shot: a full realm in twenty seconds
  *   ?demo=fast&stop=200        stop after 200 discoveries
+ *   ?demo=film                 frame-by-frame, driven from outside — see below
  *
  * Inert without the parameter, so nothing about the normal game changes.
  */
@@ -54,8 +55,23 @@ import type { RecipeData, RecipeDef } from '../data/types'
  *
  * `fast` is the old one, kept for the tail of the video where the point is the
  * scale rather than the play.
+ *
+ * `film` is neither, and it exists because of a hard limit. Leo wants all 920
+ * discoveries to actually appear in thirty seconds — "i want 920 diffferent
+ * new discovery pages, and some wrongs, some hints, scattered across. making
+ * it seem like a 1 hour video of completing the everything is time lapsed to
+ * 30 seconds."
+ *
+ * Thirty seconds is 900 frames at 30fps, so each card gets about ONE FRAME.
+ * No amount of playing fast produces that: the browser cannot open and close
+ * 920 full-screen panels in half a minute, and speeding the footage up
+ * afterwards drops exactly the frames the cards are on. A timelapse of real
+ * hours is not filmed, it is assembled — one exposure per event — which is
+ * what `film` does. It advances one beat when something outside asks it to,
+ * and `scripts/capture.mjs` photographs each one. Every frame is a real
+ * discovery through the real code path; only the shutter is artificial.
  */
-export type DemoMode = 'off' | 'human' | 'fast'
+export type DemoMode = 'off' | 'human' | 'fast' | 'film'
 
 export type DemoSettings = {
   mode: DemoMode
@@ -97,7 +113,8 @@ export function readDemoSettings(search: string): DemoSettings {
   const params = new URLSearchParams(search)
   const raw = params.get('demo')
   const on = raw !== null && raw !== '0' && raw !== 'false'
-  const mode: DemoMode = !on ? 'off' : raw === 'human' ? 'human' : 'fast'
+  const mode: DemoMode =
+    !on ? 'off' : raw === 'human' ? 'human' : raw === 'film' ? 'film' : 'fast'
   if (!on) {
     return { mode, on: false, ms: DEMO_DEFAULT_MS, stop: Infinity, batch: 1, hitRate: 0.3, seed: 7 }
   }

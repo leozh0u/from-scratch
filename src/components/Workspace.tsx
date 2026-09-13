@@ -420,7 +420,13 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
     hintsEarned(realmFound, (game.misses[realm] ?? []).length) - (game.hintsSpent[realm] ?? 0)
   const hintsLeft = rules.infiniteHints ? Infinity : earned
 
-  function useHint() {
+  /*
+   * Named `takeHint` and not `useHint`: it is an event handler, not a React
+   * hook, and the lint rule that enforces that naming is right to. A function
+   * called `useX` is assumed to follow the rules of hooks by every tool that
+   * reads this file, and this one is called from a timer.
+   */
+  function takeHint() {
     if (!rules.hints || hintsLeft <= 0) return
     playPress()
     const found = pickHint(data, new Set(inventory), realm, game.hintsSpent[realm] ?? 0)
@@ -627,7 +633,7 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
   const actionsRef = useRef({
     pickTile,
     handleCombine,
-    useHint,
+    takeHint,
     askWhyNot,
     closeCard: () => {},
     hasCard: false,
@@ -637,7 +643,7 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
     actionsRef.current = {
       pickTile,
       handleCombine,
-      useHint,
+      takeHint,
       askWhyNot,
       closeCard: () => {
         setDiscovery(null)
@@ -779,7 +785,7 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
         // And when the misses pile up, spend a hint, which is what the counter
         // on the left has been telling the player to do.
         if (alive() && sinceHit >= 3 && actionsRef.current.hintsLeft > 0 && random() < 0.5) {
-          actionsRef.current.useHint()
+          actionsRef.current.takeHint()
           await sleep(demo.ms * 3)
         }
 
@@ -800,6 +806,135 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
       if (demoRunRef.current === myRun) demoRunRef.current = myRun + 1
     }
   }, [demo.mode, demo.ms, demo.stop, demo.hitRate, demo.seed, realm, data])
+
+  /*
+   * FRAME BY FRAME, FOR THE THIRTY-SECOND CUT.
+   *
+   * Leo: "give me a 30 second or less video of 'finishing' all 920
+   * combinations... i want 920 diffferent new discovery pages, and some
+   * wrongs, some hints, scattered across. making it seem like a 1 hour video
+   * of completing the everything is time lapsed to 30 seconds."
+   *
+   * Thirty seconds is 900 frames. 920 cards do not fit into that by playing
+   * faster — the browser cannot mount and unmount that many full-screen panels
+   * in half a minute, and speeding footage up afterwards drops precisely the
+   * frames the cards are on. A timelapse of real hours has never been filmed
+   * in real time; it is one exposure per event, assembled. So this advances
+   * exactly one beat per call and lets the camera outside decide when.
+   *
+   * Every beat is the real code path — `game.combine` grants the element and
+   * `explainFailure` writes the refusal. Only the shutter is artificial.
+   */
+  const filmRef = useRef({ n: 0, held: new Set<string>() })
+  useEffect(() => {
+    if (demo.mode !== 'film') return
+    const random = rng(demo.seed)
+    const state = filmRef.current
+    state.n = 0
+    state.held = new Set(gameRef.current.allDiscovered())
+
+    /*
+     * Derived here rather than closed over from the render, so the dependency
+     * list is the truth. All three are functions of `data` and `realm`, which
+     * are the deps — reading the render's copies would have worked and would
+     * have been a lie the next person has to re-derive.
+     */
+    const nameOf = (id: string) => data.elements.find((el) => el.id === id)!
+    const targets = new Set(Object.values(data.targets).flat())
+    const total = new Set(
+      data.recipes
+        .map((r) => r.output)
+        .filter((id) => {
+          const el = data.elements.find((e) => e.id === id)
+          return el && (realm === 'everyday' || el.realm === 'survival')
+        }),
+    ).size
+
+    const film = {
+      /** One beat. Returns what it did, so the camera can log the cut. */
+      next(): string {
+        const current = gameRef.current
+        const n = state.n++
+
+        /*
+         * Scatter the refusals and the hints through the run rather than
+         * bunching them. Primes, so the three never coincide and the pattern
+         * never becomes visible as a pattern.
+         */
+        if (n > 0 && n % 17 === 0) {
+          setDiscovery(null)
+          setReceiptElement(null)
+          const held = [...state.held]
+          const real = new Set(
+            data.recipes.map((r) => [r.inputs[0], r.inputs[1]].sort().join('+')),
+          )
+          for (let i = 0; i < 40; i++) {
+            const a = held[Math.floor(random() * held.length)]
+            const b = held[Math.floor(random() * held.length)]
+            if (!a || !b || a === b) continue
+            if (real.has([a, b].sort().join('+'))) continue
+            current.countAttempt(realm)
+            current.countMiss(realm, a, b)
+            setSlots([null, null])
+            setFeedback({
+              kind: 'no-match',
+              reason: explainFailure(a, b).message,
+              pair: [a, b],
+              names: [nameOf(a).name, nameOf(b).name],
+            })
+            return 'miss'
+          }
+        }
+
+        if (n > 0 && n % 43 === 0) {
+          setDiscovery(null)
+          setReceiptElement(null)
+          actionsRef.current.takeHint()
+          return 'hint'
+        }
+
+        const step = nextDemoStep(data, state.held, realm)
+        if (!step) return 'done'
+
+        const [a, b] = step.inputs
+        current.countAttempt(realm)
+        const result = current.combine(a, b)
+        if (result.status !== 'discovered') return 'skip'
+        current.countSuccess(realm)
+        state.held.add(result.recipe.output)
+
+        const made = nameOf(result.recipe.output)
+        setHint(null)
+        setFeedback(null)
+        setReceiptElement(null)
+        /*
+         * A target gets its receipt, exactly as it would in play — the
+         * dependency tree and the footprint. Those are the few frames in the
+         * run that look different from the rest, which is what stops nine
+         * hundred cards reading as one long card.
+         */
+        if (targets.has(made.id)) {
+          setDiscovery(null)
+          setReceiptElement(made)
+        } else {
+          setDiscovery({ element: made, recipe: result.recipe })
+        }
+        return 'discovery'
+      },
+      /** How much is left, so the camera knows when to stop. */
+      remaining(): number {
+        return total - state.held.size
+      },
+      made(): number {
+        return state.held.size
+      },
+    }
+
+    ;(window as unknown as { __film?: typeof film }).__film = film
+    return () => {
+      delete (window as unknown as { __film?: typeof film }).__film
+    }
+  }, [demo.mode, demo.seed, realm, data])
 
   function askWhyNot() {
     if (!feedback || feedback.kind !== 'no-match') return
@@ -1122,7 +1257,7 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
               style={{ width: helpWidth, maxWidth: '100%' }}
             >
               {rules.hints && (
-                <HintButton left={hintsLeft} onClick={useHint} disabled={hintsLeft <= 0} block />
+                <HintButton left={hintsLeft} onClick={takeHint} disabled={hintsLeft <= 0} block />
               )}
               {rules.giveUp && (
                 <GiveUpButton onClick={() => setGivingUp(true)} disabled={!giveUpTarget} block />

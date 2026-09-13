@@ -19,6 +19,13 @@ import { playPress } from '../../audio/sfx'
  *
  * Once skipped it stays skipped, and it says so — a button that has already
  * done its job and still looks armed is a button people press twice.
+ *
+ * The skipped state carries NO side legend. "Already open" was saying the same
+ * thing as the padlock beside it and the word SKIPPED above it, three times in
+ * three sizes, and paying for it in width. Leo: "no need for the already open.
+ * so it can keep its width." It also frees the button from the shared minimum,
+ * which only ever existed to stop two legends of different lengths making a
+ * ragged pair — and there is only one legend now.
  */
 export function SkipButton({
   skipped,
@@ -37,10 +44,7 @@ export function SkipButton({
    * type — the legend earns its place on the closed key, where "skip" alone
    * does not say skip WHAT.
    */
-  const shared = Math.max(
-    minWidthForSide(unit, 'tutorial'),
-    minWidthForSide(unit, 'already open'),
-  )
+  const shared = minWidthForSide(unit, 'tutorial')
 
   if (skipped) {
     return (
@@ -48,8 +52,6 @@ export function SkipButton({
         tone="default"
         unit={unit}
         locked
-        side="already open"
-        style={{ minWidth: shared }}
         aria-label="Survival is already skipped"
       >
         skipped
