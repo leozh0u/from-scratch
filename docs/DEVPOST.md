@@ -97,3 +97,13 @@ Where each one is used, if anyone asks:
 **Add `godaddy` only if the domain is actually registered**, and drop `npm` to
 make room. Three slides already claim GoDaddy, so this tag and those chips
 should be true or gone together.
+
+## Did you implement a generative AI model or API? How and why?
+
+Yes, we used the Gemini API. When you combine two things that don't make
+anything, which is most of the time, one endpoint asks Gemini to explain in a
+sentence why those two don't react, and a second answers three fixed questions
+about anything you have made, so you can go and learn more about it. We used it
+because the game is meant to teach, and a wrong guess is only useful if
+something tells you why it was wrong. It never sees the recipe list though, so
+it can explain a failure but it can't hand you an item.
