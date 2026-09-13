@@ -102,6 +102,24 @@ export function minWidthForSide(unit: number, text: string): number {
  * `unit * 5` of padding either side, with `unit` of border, and an icon costs
  * its own width plus a `unit * 2` gap.
  */
+/**
+ * How tall a key stands, including the extruded base under it.
+ *
+ * The same arithmetic PixelButton lays out with, stated once so a caller can
+ * reserve room for a key that is not there yet: a border of one unit each
+ * side, four units of padding each side, a line box of `unit * 3` type at 1.3,
+ * and four units of depth beneath. The bench's readout needs this because its
+ * "why not?" key appears only after a failure — and a slot that grows when the
+ * key arrives is the layout shift the strip exists to remove, just later.
+ */
+export function faceHeightFor(unit: number): number {
+  const border = unit * 2
+  const padding = unit * 8
+  const line = unit * 3 * 1.3
+  const depth = unit * 4
+  return Math.ceil(border + padding + line + depth)
+}
+
 export function faceWidthFor(unit: number, label: string, iconPx = 0): number {
   const type = Math.ceil(label.length * ADVANCE_EM * (unit * 3))
   const padding = unit * 10

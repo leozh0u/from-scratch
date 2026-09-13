@@ -1,6 +1,6 @@
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { adjudicate } from '../adjudicator/client'
-import { explainFailure } from '../adjudicator/explain'
+import { explainFailure, RULE_MESSAGES } from '../adjudicator/explain'
 import { resolveIcon } from '../data/iconRegistry'
 import type { ElementDef, RealmId, RecipeData, RecipeDef } from '../data/types'
 import type { useGameState } from '../hooks/useGameState'
@@ -10,14 +10,26 @@ import { Receipt } from './Receipt'
 import { TargetList } from './TargetList'
 import { PixelButton } from './ui/PixelButton'
 import { BackArrow } from './ui/BackArrow'
-import { LearnMore } from './LearnMore'
 import { StatPanel } from './ui/StatPanel'
 import { HintButton } from './ui/HintButton'
 import { GiveUpButton } from './ui/GiveUpButton'
 import { ConfirmDialog } from './ui/ConfirmDialog'
-import { pickHint, hintsEarned, pathToTarget, nextUnfoundTarget, MISSES_PER_HINT } from '../solver/hint'
+import {
+  pickHint,
+  hintsEarned,
+  pathToTarget,
+  nextUnfoundTarget,
+  MISSES_PER_HINT,
+  hintTexts,
+  firstHintText,
+  fullHintText,
+  NOTHING_IN_REACH,
+} from '../solver/hint'
 import { modeById, type ModeId } from '../game/modes'
 import { minWidthForSide, faceWidthFor } from './ui/legend'
+import { Readout } from './ui/Readout'
+import { WhyNot } from './WhyNot'
+import { RouteCard } from './RouteCard'
 import { Card } from './ui/Card'
 import { ElementTile, TILE_WIDTH } from './ui/ElementTile'
 import { ProgressBar } from './ui/ProgressBar'
@@ -73,6 +85,15 @@ const REALM_LABEL: Record<RealmId, string> = {
   survival: 'Survival',
   everyday: 'Everything',
 }
+
+/**
+ * Width of the longest realm name in ems, tracking included. Press Start 2P
+ * advances exactly 1em a character; the HUD title adds 0.04em after each one.
+ * Derived rather than typed, so renaming a realm cannot leave it stale.
+ */
+const LONGEST_REALM_EMS = (
+  Math.max(...Object.values(REALM_LABEL).map((label) => label.length)) * 1.04
+).toFixed(2)
 
 export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: WorkspaceProps) {
   const [slots, setSlots] = useState<Slots>([null, null])
@@ -239,7 +260,12 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
    * missing rather than replaying what the player has already done.
    */
   const [givingUp, setGivingUp] = useState(false)
-  const [revealed, setRevealed] = useState<string[] | null>(null)
+  const [revealed, setRevealed] = useState<{ target: string; steps: string[] } | null>(null)
+  /*
+   * The route opens a panel rather than printing into the bench. It is as long
+   * as it is — seven steps deep in places — so in the bench's flow it moved
+   * every tile in the inventory by however many steps were left.
+   */
   const giveUpTarget = nextUnfoundTarget(data, new Set(inventory), realm)
 
   function confirmGiveUp() {
@@ -252,16 +278,18 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
      * is completable from its own starters — but showing an empty list would
      * read as the feature being broken rather than as an impossible position.
      */
+    const target = elementById(giveUpTarget).name
     if (steps.length === 0) {
-      setRevealed(['no route from here.'])
+      setRevealed({ target, steps: ['no route from here.'] })
       return
     }
-    setRevealed(
-      steps.map(
+    setRevealed({
+      target,
+      steps: steps.map(
         (step) =>
           `${elementById(step.inputs[0]).name.toLowerCase()} + ${elementById(step.inputs[1]).name.toLowerCase()} = ${elementById(step.output).name.toLowerCase()}`,
       ),
-    )
+    })
   }
   /*
    * The mode changes only how much help is available, never the graph. Open
@@ -285,6 +313,76 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
     faceWidthFor(3, 'hint', 18),
     faceWidthFor(3, 'give up', 18),
   ) + 4
+
+  /*
+   * THE READOUT IS BUILT TO THE TALLEST THING IT CAN EVER SAY.
+   *
+   * Leo: "the size of this block is inconsistent as it gives the explanations
+   * for wrong combinations, hints, etc. that kind of trips up the location of
+   * the items below which is bad for the user experience."
+   *
+   * Every message the strip can hold is a known string — the failure table is
+   * a fixed list, the hints are three templates, the rest are element names —
+   * so the worst case is computable rather than guessable, and the strip is
+   * built exactly that tall. It then never changes height again. The model's
+   * prose and the give-up route are the two things that are NOT knowable in
+   * advance, and both of them open a panel instead. See ui/readoutFit.ts.
+   */
+  /*
+   * The key's box is reserved whether or not the key is there, so on a phone
+   * every character of its label costs the message a character of its own. At
+   * 320px "why not?" took 76 of the strip's 224 and pushed the worst message
+   * to seven lines; "why?" takes 50 and it sits directly beside the reason it
+   * refers to, which is all the sentence it needs.
+   */
+  const whyLabel = viewportWidth < 520 ? 'why?' : 'why not?'
+  const whyUnit = viewportWidth < 520 ? 2 : 3
+  const whyWidth = faceWidthFor(whyUnit, whyLabel)
+
+  /*
+   * Every message the strip can ever hold. The failure table is a fixed list,
+   * the hints are three templates and the rest are element names, so the
+   * tallest is computable rather than guessable — which is what lets the strip
+   * be built to it once and never move again.
+   */
+  const readoutCandidates = useMemo(() => {
+    const longestName = data.elements.reduce(
+      (longest, el) => (el.name.length > longest.length ? el.name : longest),
+      '',
+    )
+    const name = longestName.toLowerCase()
+    return [
+      ...RULE_MESSAGES,
+      ...hintTexts(longestName),
+      `already have ${name}.`,
+      `${name} + ${name}`,
+    ]
+  }, [data.elements])
+
+  /*
+   * What to assume for one frame before the strip has measured itself: px-5
+   * inside max-w-3xl, then the Card's plate and padding, then the strip's own.
+   * The observer corrects it if the page's chrome ever changes underneath.
+   */
+  const readoutEstimate = Math.max(240, Math.min(768, viewportWidth) - 40) - 2 * (4 + 12) - 2 * (3 + 9)
+
+  /*
+   * The model's answer opens a panel. Kept separate from `feedback.deeper` so
+   * closing the panel does not throw the answer away — pressing the key again
+   * reopens it without asking twice.
+   */
+  const [whyOpen, setWhyOpen] = useState(false)
+
+  /*
+   * What the strip says when it has no news: the pair being assembled, by
+   * name. The slots show two 11x11 sprites, which at a glance are a shape and
+   * a colour — naming them is the one piece of information the bench was not
+   * giving, and it means the readout is only ever blank before the player has
+   * touched anything.
+   */
+  const pairPreview = slots[0]
+    ? `${elementById(slots[0]).name} + ${slots[1] ? elementById(slots[1]).name : '?'}`
+    : ''
   const tries = game.attempts[realm] ?? 0
   const hits = game.successes[realm] ?? 0
   /*
@@ -324,16 +422,16 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
     const found = pickHint(data, new Set(inventory), realm, game.hintsSpent[realm] ?? 0)
     if (!found) {
       // Not charged for. Being told there is nothing to find is not a hint.
-      setHint('nothing new is within reach from here. make something first.')
+      setHint(NOTHING_IN_REACH)
       return
     }
     if (!rules.infiniteHints) game.spendHint(realm)
     const names = found.recipe.inputs.map((id) => elementById(id).name.toLowerCase())
     if (hintDepth === 0) {
       setHintDepth(1)
-      setHint(`${elementById(found.knownInput).name.toLowerCase()} goes with something you already have, and makes ${found.shape}.`)
+      setHint(firstHintText(elementById(found.knownInput).name.toLowerCase(), found.shape))
     } else {
-      setHint(`${names[0]} and ${names[1]}.`)
+      setHint(fullHintText(names[0], names[1]))
     }
   }
 
@@ -386,6 +484,7 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
     // the numbers meaningless.
     if (!a || !b) return
     game.countAttempt(realm)
+    setWhyOpen(false)
 
     const result = game.combine(a, b)
     setSlots([null, null])
@@ -434,8 +533,12 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
   }
 
   function askWhyNot() {
-    if (!feedback || feedback.kind !== 'no-match' || feedback.deeper) return
+    if (!feedback || feedback.kind !== 'no-match') return
     playPress()
+    setWhyOpen(true)
+    // Already answered: the panel reopens on what it said before rather than
+    // asking the same question twice.
+    if (feedback.deeper) return
     const attempt = ++attemptRef.current
     setFeedback({ ...feedback, asking: true })
     const [a, b] = feedback.pair
@@ -483,43 +586,69 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
        * slabs everything else in the game is built from, and gave a tap target
        * the height of the type. A small unit keeps them inside the strip.
        */}
-      <HudBar className="flex items-center gap-3">
-        <PixelButton tone="default" unit={hudUnit} onClick={onBack}>
-          <BackArrow unit={hudUnit} />
-          realms
-        </PixelButton>
-        <span className="flex-1" aria-hidden="true" />
-        <h1
-          /*
-           * The title yields, the buttons never do.
-           *
-           * All three were `shrink-0`, so when the row wanted more width than
-           * the bar had, the overflow came off the right-hand end and it was
-           * the INVENTORY button that got cut in half. A clipped label is
-           * untidy; a clipped control is broken, and on a phone it is the only
-           * way into the inventory.
-           */
-          className="min-w-0 overflow-hidden whitespace-nowrap uppercase text-white"
-          style={{
-            fontFamily: 'var(--font-display)',
-            /*
-             * Scales with the window instead of sitting at one size.
-             *
-             * It is the name of where you are and it was set smaller than the
-             * two buttons either side of it, which is backwards. The ceiling
-             * is what it looks like on a laptop; the floor is what keeps
-             * "everyday objects" - sixteen characters of a monospaced pixel
-             * font, and unbreakable - from colliding with the buttons on a
-             * narrow window. 1.9vw is the widest slope that still clears them
-             * at 440px, measured rather than guessed.
-             */
-            fontSize: 'clamp(8px, 1.9vw, 22px)',
-            letterSpacing: '0.04em',
-          }}
+      <HudBar className={`flex items-center ${viewportWidth < 380 ? 'gap-2' : 'gap-3'}`}>
+        {/*
+         * THE WORD GOES BEFORE THE TITLE DOES.
+         *
+         * At 320px the two keys take 171 of the bar's 252 and the title is
+         * left with 49 — which is a 4.7px pixel font, in the DOM and invisible
+         * on the screen. An arrow on its own is still an unambiguous back
+         * control; a realm name nobody can read is not a title. So below
+         * 380px the key drops its label and the title gets the 39px.
+         */}
+        <PixelButton
+          tone="default"
+          unit={hudUnit}
+          onClick={onBack}
+          aria-label="Back to realms"
         >
-          {REALM_LABEL[realm]}
-        </h1>
-        <span className="flex-1" aria-hidden="true" />
+          <BackArrow unit={hudUnit} />
+          {viewportWidth >= 380 && 'realms'}
+        </PixelButton>
+        {/*
+         * THE TITLE IS SIZED BY THE ROOM IT HAS, NOT BY THE WINDOW.
+         *
+         * It was `clamp(8px, 1.9vw, 22px)`, and a slope off the viewport is a
+         * guess about how much of that viewport the two buttons will take. At
+         * 375px they take 171 of it, which leaves 80 for a title that wants
+         * 83 — so "everything" lost its last letter to `overflow-hidden` on
+         * the single most common phone width. The buttons never yield, so the
+         * title has to be told what is actually left.
+         *
+         * This wrapper is the flexible element and the container the type is
+         * measured against, which breaks the circularity: its width comes from
+         * the row, never from the text inside it. Press Start 2P advances
+         * exactly 1em a character and the title carries 0.04em of tracking, so
+         * ten characters need 10.4 times the font size — and dividing the
+         * wrapper's own width by 10.4 is a size that cannot clip.
+         *
+         * TEN because that is "everything", the longer of the two realm names.
+         * Both realms get the same size on purpose: the bar should not change
+         * height or weight depending on which one you are in.
+         */}
+        <div
+          className="flex min-w-0 flex-1 justify-center"
+          style={{ containerType: 'inline-size' }}
+        >
+          <h1
+            className="overflow-hidden whitespace-nowrap uppercase text-white"
+            style={{
+              fontFamily: 'var(--font-display)',
+              /*
+               * The floor matters as much as the ceiling: an unfloored size
+               * resolved to 4.7px at 320, which is a font built from one-pixel
+               * stems rendered at half a pixel. Below the floor the title
+               * clips rather than vanishes, and the arrow-only back key above
+               * is what keeps it from ever getting there.
+               */
+              fontSize: `clamp(7px, 100cqw / ${LONGEST_REALM_EMS}, 22px)`,
+              letterSpacing: '0.04em',
+              margin: 0,
+            }}
+          >
+            {REALM_LABEL[realm]}
+          </h1>
+        </div>
         <PixelButton tone="default" unit={hudUnit} onClick={onOpenInventory}>
           inventory
         </PixelButton>
@@ -741,108 +870,65 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
           </div>
         </div>
 
-        {hint && (
-          <p
-            role="status"
-            className="max-w-[34ch] text-center font-display text-[10px] leading-[2] lowercase text-brand"
-          >
-            {hint}
-          </p>
-        )}
-
-        {revealed && (
-          <div className="flex w-full flex-col items-center gap-2 pt-1">
-            <p className="font-display text-[9px] tracking-widest text-muted uppercase">
-              the rest of the way
-            </p>
-            <ol className="m-0 flex list-none flex-col gap-1 p-0 text-center">
-              {revealed.map((line, i) => (
-                <li
-                  key={line}
-                  className="font-display text-[9px] leading-[1.9] lowercase"
-                  style={{ color: i === revealed.length - 1 ? '#ffffff' : '#b9b3e0' }}
-                >
-                  {line}
-                </li>
-              ))}
-            </ol>
-            <PixelButton tone="default" unit={3} onClick={() => setRevealed(null)}>
-              hide
-            </PixelButton>
-          </div>
-        )}
-
         {/*
-         * No standing instruction line.
+         * THE BENCH'S DISPLAY — one strip, one height, every state.
          *
-         * It read "pick two things. see what happens." under two empty slots
-         * and a key marked COMBINE, which is the same sentence the controls
-         * were already saying. It also held a blank line open for itself for
-         * the whole rest of the game, which is why the bench had a strip of
-         * nothing along the bottom of it.
+         * What used to be here was five things that each appeared and
+         * disappeared in the panel's own flow: a hint, a route, a reason, a
+         * key to ask the model, and whatever that key opened. The panel was a
+         * different height in every one of those states, so the inventory
+         * below it moved on almost every press — with the player's hand
+         * already travelling toward a tile.
+         *
+         * Two of the five were never going to fit a fixed strip, because
+         * their length is not knowable in advance: the model writes as many
+         * sentences as it writes, and a route is as deep as the graph is.
+         * Those open panels. The other three are known strings, so the strip
+         * is built to the tallest of them and nothing below it ever moves.
+         *
+         * There is no standing instruction line: it read "pick two things.
+         * see what happens." under two empty slots and a key marked COMBINE,
+         * which is the same sentence the controls were already saying. The
+         * strip is empty until the player touches something, and an empty
+         * recess reads as a screen with nothing on it.
          */}
-        <p
-          className="max-w-[34ch] text-center font-display text-[10px] leading-[2] lowercase text-star-mid empty:hidden"
-          role="status"
+        <Readout
+          candidates={readoutCandidates}
+          estimatedWidth={readoutEstimate}
+          keyWidth={whyWidth}
+          keyUnit={whyUnit}
+          tone={
+            hint
+              ? 'var(--color-brand)'
+              : feedback
+                ? 'var(--color-star-mid)'
+                : 'var(--color-muted)'
+          }
+          action={
+            feedback?.kind === 'no-match' ? (
+              /*
+               * "WHY NOT" — the model, on request.
+               *
+               * Behind a press rather than in front of every failure. Over 98%
+               * of attempts fail, so asking on every one of them put a five to
+               * ten second stall in the game's most common interaction. The
+               * label does not change while it is asking: the panel it opens
+               * is where the waiting is shown, and a key that renames itself
+               * inside a fixed slot is a second thing moving.
+               */
+              <PixelButton tone="default" unit={whyUnit} onClick={askWhyNot}>
+                {whyLabel}
+              </PixelButton>
+            ) : null
+          }
         >
-          {feedback?.kind === 'already-known' && `already have ${feedback.name}.`}
-          {feedback?.kind === 'no-match' && (feedback.deeper ?? feedback.reason)}
-        </p>
-
-        {/*
-         * "WHY NOT" — the model, on request.
-         *
-         * Shown only after a failure, and only until it has been answered.
-         * Putting Gemini behind a press rather than in front of every failure
-         * is what removes the five-to-ten-second stall from the game's most
-         * common interaction, and it means the wait only ever happens to
-         * someone who has actively asked for it.
-         */}
-        {feedback?.kind === 'no-match' && !feedback.deeper && (
-          <PixelButton
-            tone="default"
-            unit={3}
-            disabled={feedback.asking}
-            onClick={askWhyNot}
-          >
-            {feedback.asking ? 'asking...' : 'why not?'}
-          </PixelButton>
-        )}
-
-        {/*
-          * AND THEN KEEP GOING.
-          *
-          * "Why not" answers once and stops, which wastes the moment: the
-          * player has just been told what happens between two things and is
-          * more curious than they will be at any other point in the session.
-          * So once the answer has landed, either of the two is a door into
-          * the same three fixed questions the discovery card uses.
-          *
-          * It reuses api/ask.ts exactly — no new prompt surface, no new way
-          * for text to reach a model, the same closed set of three keys. More
-          * of the model, through the same fence.
-          */}
-        {feedback?.kind === 'no-match' && feedback.deeper && (
-          <div className="flex w-full flex-col items-center gap-2">
-            <p
-              className="font-display text-[9px] lowercase text-star-mid"
-              style={{ letterSpacing: '0.04em' }}
-            >
-              want to know more about
-            </p>
-            <div className="flex flex-wrap justify-center gap-2">
-              {feedback.pair.map((id, i) => (
-                <LearnMore
-                  key={id}
-                  elementId={id}
-                  name={feedback.names[i]}
-                  label={feedback.names[i]}
-                  unit={3}
-                />
-              ))}
-            </div>
-          </div>
-        )}
+          {hint ??
+            (feedback?.kind === 'already-known'
+              ? `already have ${feedback.name}.`
+              : feedback?.kind === 'no-match'
+                ? feedback.reason
+                : pairPreview)}
+        </Readout>
       </Card>
 
       <div
@@ -880,14 +966,35 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
         ))}
       </div>
 
+      {/*
+       * No paragraph under the question. Leo asked for it gone, and it was
+       * doing the title's job at a third of the size: "show the route?"
+       * against "keep trying" and "show me" is the whole decision.
+       */}
       {givingUp && giveUpTarget && (
         <ConfirmDialog
           title="show the route?"
-          body={`this prints every step still between you and ${elementById(giveUpTarget).name.toLowerCase()}. nothing is wiped.`}
           confirmLabel="show me"
           cancelLabel="keep trying"
           onConfirm={confirmGiveUp}
           onCancel={() => setGivingUp(false)}
+        />
+      )}
+
+      {revealed && (
+        <RouteCard
+          target={revealed.target}
+          steps={revealed.steps}
+          onClose={() => setRevealed(null)}
+        />
+      )}
+
+      {whyOpen && feedback?.kind === 'no-match' && (
+        <WhyNot
+          pair={feedback.pair}
+          names={feedback.names}
+          answer={feedback.deeper}
+          onClose={() => setWhyOpen(false)}
         />
       )}
 

@@ -317,3 +317,12 @@ export function explainFailure(idA: string, idB: string): Failure {
 
 /** Exposed for the test, so the table can be walked rather than guessed at. */
 export const RULE_IDS = RULES.map((r) => r.id)
+
+/**
+ * Every line this table can ever print.
+ *
+ * The bench's readout is built to the height of the tallest message it can
+ * hold, so that height has to be computed from the real set rather than
+ * guessed at. Exported for `ui/readoutFit.ts` and for the test that checks it.
+ */
+export const RULE_MESSAGES = [...RULES.map((r) => r.message), NOTHING_OBVIOUS]

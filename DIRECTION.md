@@ -7,6 +7,30 @@
 
 ---
 
+## The pitch, in Leo's words
+
+> *"the point of this site, is to gamify/make it a game/ make it fun to make
+> people learn more about the things around them, both lering how thing they
+> know are made, but also learn new things completely. we undersatnd it is very
+> dumbed down and basic, but its fun. so since it is so dumbed down details can
+> be aadded in with the ai gemini api to learn more, and the wikepedia links.
+> etc. thats the main pitch."*
+
+This is the sentence every other decision answers to, and it settles an
+argument that keeps coming back: **the simplification is not a weakness to
+apologise for, it is the on-ramp.** Two things combining into a third is a lie
+about how manufacturing works, and it is the lie that gets somebody to find out
+that bauxite becomes aluminium. The depth is not removed, it is moved — into
+the model's answers and into the citation on every card, both of which are one
+press away and neither of which is in the way.
+
+So a feature earns its place by making somebody curious, then having something
+real to give them when they are. That is why "why not?" and "learn more" are
+buttons rather than automatic text, and why every element carries a source
+somebody can open.
+
+---
+
 ## The one-sentence claim
 
 **Nothing in this game is invented.** Every recipe is a transformation that
@@ -176,6 +200,53 @@ board, a plastic bottle, a rope bridge, a knife, a lamp.
 
 ---
 
+## The ceiling — how many elements is realistic
+
+**Where it stands: 932 elements, 935 recipes, 920 of them craftable.** Sixty-eight
+short of a thousand, which is two batches of thirty.
+
+Leo asked what the realistic maximum is. Four things bind, in this order:
+
+**1. Art, and it is the one that bites first.** Icons are composed from a shared
+vocabulary of forms plus one colour. That vocabulary has had to grow three times
+already — 20 forms to 65 — and the colour-distance floor has come down from 60 to
+38 as density rose. At 65 forms and roughly eleven members each before two tiles
+start reading as the same tile, the honest capacity is **around 1,200**. Past that
+needs a different kind of sprite, not more shades.
+
+**2. Guessability, which is a design ceiling rather than a data one.** Under 3% of
+pairs do anything now. Every element added makes that fraction smaller, so past
+some point more content makes the game emptier to explore rather than richer.
+
+**3. Citations.** Every element needs a URL that resolves and whose title matches
+its label. This scales linearly with effort and is the slow part, not the hard
+part — 926 of 926 currently pass.
+
+**4. Names.** Eleven characters at the middle tile size. This is a real filter:
+Polyethylene, Refrigerator and Electron Microscope all had to be renamed.
+
+**The answer: 1,000 is comfortable, 1,200 is the honest ceiling, and stopping at
+1,000 is right** — the remaining hours are worth more on the video than on
+element 1,050.
+
+### What is actually missing at 932
+
+A 190-item probe across everyday categories — tools, clothing, kitchen,
+medicine, music, sport, transport, electronics, food — finds **159 already in the
+game**. The 31 absent are all real, buildable from what exists, and enough for one
+batch on their own:
+
+> match, belt, cd, crayon, sleeping bag, carabiner, kayak, basketball, tennis
+> racket, golf club, sword, armour, shield, wrench, pliers, resistor, capacitor,
+> semiconductor, fibre optic, aeroplane, helicopter, train, tyre, windscreen,
+> airbag, seatbelt, yoghurt, pasta, soy sauce, tofu, pizza
+
+Transport is the thinnest area (no aeroplane, helicopter, train, and a car with
+no tyres or seatbelt), and it is also the most recognisable, so it is where the
+next batch should go.
+
+---
+
 ## Hedging, honestly
 
 The strongest thing here is not that the Gemini integration is deep. It is that
@@ -224,6 +295,28 @@ paraphrase — a paraphrase of a decision loses the thing that made it one.
 - *"details matter more than movement."*
 - *"make sure when i give you important stuff its always rememebered/written
   down."*
+- *"the point of this site, is to gamify... make it fun to make people learn
+  more about the things around them, both lering how thing they know are made,
+  but also learn new things completely. we undersatnd it is very dumbed down and
+  basic, but its fun. so since it is so dumbed down details can be aadded in with
+  the ai gemini api to learn more, and the wikepedia links. etc. thats the main
+  pitch."* See the top of this file.
+- *"if 500 comes easy aim for 800, or even 1000. 1000 would be a great number to
+  say, like there are over 1000 combinations etc etc. make sure they all make
+  sense though."*
+- *"in reality, whats around the max you can do/think of thats realistc and the
+  logic makes snese."* Answered in **The ceiling** below.
+- *"the sponsors also shouldnt be a stretch. they have to make sense being there.
+  not there for the sake of it. so think about it a lot. think about
+  realistically what we could win."*
+- *"the size of this block is inconsistent as it gives the explanations for wrong
+  combinations, hints, etc. that kind of trips up the location of the items below
+  which is bad for the user experience."* Fixed: the bench has one fixed-height
+  readout, and the two replies whose length cannot be known in advance — the
+  model's prose and the give-up route — open panels.
+- On the demo video: *"after the fun intro, for the demo, i think we can play a
+  bit, then time lapse finishing the game, or going far. like very very speedy
+  time lapse."*
 
 ---
 

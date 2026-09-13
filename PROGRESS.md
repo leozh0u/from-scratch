@@ -13,7 +13,7 @@ check that proved it. Nothing leaves this list silently. The **oldest** open
 item is the one most at risk, so it is first.
 
 Last verified: 2026-09-12, against the current commit and the live deployment.
-213 elements, 216 recipes, 13 of them with more than one real route. 151 sourced citations, 218 URLs all checked.
+**932 elements, 935 recipes, 920 of them craftable, 12 starters.** 926 of 926 citation URLs answer and match their label. 292 assertions green, 0 lint errors.
 
 ## Open
 
@@ -27,6 +27,10 @@ Last verified: 2026-09-12, against the current commit and the live deployment.
 | ~~3~~ | *"a learn more or something that links to the api for a chatbot... we can have it be premade questions"* | **done — built as the premade-question version, and the free-form chat stays dropped.** The player sends a question KEY out of a closed set of three; the server owns the wording. Verified live on the deployment: all three questions answer, the cache stores `tinder_bundle:how` and `tinder_bundle:where` and re-answers instantly, and the handler returns 400 for a made-up key, 400 for a missing one and 405 for a GET. Found and fixed a real bug doing it — charcoal's "where" answer came back cut off mid-clause by the model's token ceiling, so replies are now trimmed to the last complete sentence. 24 assertions in `scripts/asktest.ts`. |
 | ~~8~~ | *"do we keep the 15 for the starter and add much much more for the everything"* | **answered and adopted: yes.** Survival is frozen at 18 elements and 17 recipes, which is the tutorial-sized number he asked for. Everything is at 54 and 57 and is where every new element goes. | Nothing to decide; it is the authoring rule from here. |
 | 4 | Silkscreen is caps-only, so the wordmark reads FROM SCRATCH | **open — needs Leo's call.** Verified by rendering `a` and `A` and comparing bitmaps. Jersey 10/15/25 are pixel sans faces with true lowercase and a distinct `c`, checked the same way. | One-line swap either way. |
+| ~~15~~ | *"the size of this block is inconsistent as it gives the explanations for wrong combinations, hints, etc. that kind of trips up the location of the items below which is bad for the user experience"* | **done — the bench has one fixed-height readout and nothing below it moves.** Five replies were printing into the panel's flow at five different heights. The two whose length cannot be known in advance — the model's prose and the give-up route — open panels now (`WhyNot.tsx`, `RouteCard.tsx`); the other three are known strings, so `ui/readoutFit.ts` computes the tallest over the real set (37 reachable failure messages, three hint templates, the longest element name) and the strip is built to it. Checked: 292 assertions, 13 device widths swept in `scripts/layouttest.ts`, and the live DOM at 320/375/700/900px gives the first tile an identical `top` in the idle, pair, dead-end and hint states. Three bugs found verifying it: the key's box was not reserved (17.7px jump), the width came from `window.innerWidth` (15px wrong wherever scrollbars take space), and the HUD title clipped `EVERYTHING` at 375px. |
+| ~~16~~ | *"remove: this prints every step still between you and fire. nothing is wiped"* | **done.** `grep` for the sentence across `src/` returns nothing; the confirm is now the question and its two keys. |
+| 17 | *"whats next it whaat to do with the sponsors, like tigerdata, mathworks, godaddy"* + *"the sponsors also shouldnt be a stretch. they have to make sense being there. not there for the sake of it"* | **open — needs Leo's call on which to claim.** Analysis in `DIRECTION.md` under *Hedging, honestly*. | Pick the claimable ones, then an hour each at most. |
+| 18 | The demo video: *"after the fun intro... play a bit, then time lapse finishing the game, or going far. like very very speedy time lapse"* | **open.** The timelapse can be generated rather than filmed — the solver already knows a full route, so the game can play itself on camera. | Decide generated vs screen-recorded, then build the driver. |
 
 | ~~9~~ | *"make it try to look like its spinning"* (the planet) | **done.** It was already rotating; at a three-minute period on a 72-pixel disc each frame moved the surface by a fraction of a texel, so all you could see was dither. Now stepped in `2 x size` increments, one pixel of travel at the disc centre per step, 4.5 steps a second, 32s a turn. Checked in Node rather than by looking, because `requestAnimationFrame` does not run in a hidden tab: rendering two consecutive steps and diffing gives a median move of 313 of 4,072 disc pixels, worst case 161. `scripts/earthtest.ts`, 11 assertions. |
 | ~~10~~ | *"inventory is tiny"* | **done.** The heading was a fixed 11px, the smallest thing in a bar built out of slabs. It now uses the workspace's `clamp(9px, 1.9vw, 22px)`. Build clean, 187 assertions green. |
@@ -874,3 +878,53 @@ game: the wood tile renders 35 SVG rects from a composed sprite.
 
 The legend on the side of each key sits inside an `aria-hidden` element, so it
 is in `innerText` but not in the button's accessible name. Checked.
+
+---
+
+## The bench stops moving — one readout, two panels
+
+**done — the block below the slots is the same height in every state.**
+
+Leo: *"the size of this block is inconsistent as it gives the explanations for
+wrong combinations, hints, etc. that kind of trips up the location of the items
+below which is bad for the user experience."*
+
+Five things were printing into the panel's own flow — a hint, a route, a
+reason, the key to ask the model, and whatever that key opened — each a
+different height. The tiles below moved on almost every press, with the
+player's hand already travelling toward one.
+
+**Two of the five could never fit a fixed strip**, because their length is not
+knowable in advance: the model writes as many sentences as it writes, and a
+route is as deep as the graph. Those now open panels (`WhyNot.tsx`,
+`RouteCard.tsx`), which is also where they belong — the model's answer is the
+thing the player pressed a button to get, and it was previously a footnote.
+
+**The other three are known strings**, so the strip is built to the tallest of
+them. `ui/readoutFit.ts` does that sum over the real set: 37 messages the
+failure table can reach, three hint templates, and the longest element name.
+The strip shows the pair being assembled when it has no news, so it is only
+ever blank before the player has touched anything.
+
+Checked: 292 assertions pass, and `scripts/layouttest.ts` now sweeps 13 device
+widths asserting the worst message fits, that the height depends on the window
+and nothing else, and that the message, gap and key fit inside the recess.
+Verified against the live DOM at 320, 375, 700 and 900px — the first tile's
+`top` is identical in the idle, pair, dead-end and hint states.
+
+**Three real bugs came out of verifying it, none of which a screenshot shows:**
+
+- The key is taller than the text, so the strip grew 17.7px the moment a
+  failure appeared — exactly when it was meant to hold still. Its box is now
+  reserved whether or not the key is in it.
+- The width was derived from `window.innerWidth`, which includes a classic
+  scrollbar — quietly 15px wrong on Windows and Linux, where nobody here would
+  see it. The strip measures its own box now.
+- The HUD title clipped `EVERYTHING` to `EVERYTHINC` at 375px, the most common
+  phone width. It was sized off a `vw` slope, which is a guess about how much
+  of the viewport the two buttons will take; it is sized off its own container
+  now. At 320px the back key drops its word so the realm name stays legible.
+
+Also removed, as asked: the paragraph under *show the route?*. And `Overlay`
+now holds the scrim and the Escape key that four panels each had their own copy
+of.

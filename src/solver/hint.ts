@@ -102,7 +102,39 @@ export function pickHint(
  * would be useless; the element's own name would be the answer.
  */
 function describe(realm: RealmId | undefined): string {
-  return realm === 'survival' ? 'something you can use' : 'something further along'
+  return realm === 'survival' ? SHAPES[0] : SHAPES[1]
+}
+
+/**
+ * THE WORDING LIVES HERE, NOT AT THE CALL SITE.
+ *
+ * The bench's readout is built to the height of the tallest thing it can ever
+ * say, which means something has to be able to enumerate that. Keeping the
+ * phrasings beside the solver that chooses them is what stops the strip being
+ * sized against sentences the game no longer uses. See ui/readoutFit.ts.
+ */
+export const SHAPES = ['something you can use', 'something further along'] as const
+
+export const NOTHING_IN_REACH = 'nothing new is within reach from here. make something first.'
+
+/** First press: one of the two, and what kind of thing comes out. */
+export function firstHintText(knownName: string, shape: string): string {
+  return `${knownName} goes with something you already have, and makes ${shape}.`
+}
+
+/** Second press on the same board: both names, which is the answer. */
+export function fullHintText(a: string, b: string): string {
+  return `${a} and ${b}.`
+}
+
+/** Every hint the game can print, given the longest element name it has. */
+export function hintTexts(longestName: string): string[] {
+  const name = longestName.toLowerCase()
+  return [
+    ...SHAPES.map((shape) => firstHintText(name, shape)),
+    fullHintText(name, name),
+    NOTHING_IN_REACH,
+  ]
 }
 
 /**

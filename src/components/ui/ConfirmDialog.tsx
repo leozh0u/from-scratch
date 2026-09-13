@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { Card } from './Card'
+import { Overlay } from './Overlay'
 import { PixelButton } from './PixelButton'
 import { playPress } from '../../audio/sfx'
 
@@ -18,10 +19,8 @@ import { playPress } from '../../audio/sfx'
  * It is also a real interaction problem: `window.confirm` blocks the main
  * thread, so the audio and the starfield freeze behind it.
  *
- * The scrim is a flat wash rather than a translucent tint, for the same reason
- * the discovery card's is — a blur or an alpha ramp is the thing this look
- * cannot survive. The world stops and the box is all there is, which is what a
- * console does.
+ * The scrim and the Escape key come from `Overlay`, which every full-screen
+ * panel in the game now shares.
  */
 
 type ConfirmDialogProps = {
@@ -56,22 +55,8 @@ export function ConfirmDialog({
     cancelRef.current?.focus()
   }, [])
 
-  useEffect(() => {
-    function onKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') onCancel()
-    }
-    window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
-  }, [onCancel])
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center px-5"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="confirm-title"
-      style={{ background: 'rgba(9, 7, 20, 0.82)' }}
-    >
+    <Overlay onClose={onCancel} labelledBy="confirm-title">
       <Card unit={5} className="flex w-full max-w-md flex-col items-center gap-6 py-4 text-center">
         {/*
          * THE QUESTION CARRIES IT, NOT A PARAGRAPH.
@@ -139,6 +124,6 @@ export function ConfirmDialog({
           </PixelButton>
         </div>
       </Card>
-    </div>
+    </Overlay>
   )
 }

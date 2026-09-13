@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from 'react'
+import { Fragment } from 'react'
 import { resolveIcon } from '../data/iconRegistry'
 import { dedupeSources } from '../data/sources'
 import { SourceLink } from './ui/SourceLink'
@@ -8,6 +8,7 @@ import { PixelButton } from './ui/PixelButton'
 import { LearnMore } from './LearnMore'
 import { playPress } from '../audio/sfx'
 import { Card } from './ui/Card'
+import { Overlay } from './ui/Overlay'
 
 type DiscoveryCardProps = {
   element: ElementDef
@@ -51,31 +52,8 @@ export function DiscoveryCard({
 }: DiscoveryCardProps) {
   const sources = dedupeSources(recipe.sources, element.sources)
 
-  useEffect(() => {
-    function onKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') onClose()
-    }
-    window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
-  }, [onClose])
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center px-5"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="discovery-name"
-      style={{
-        /*
-         * A flat wash, not a translucent tint over a blur. The old backdrop
-         * was `bg-ink/50`, and once `ink` became white for the dark theme that
-         * turned into a white veil over the whole screen. A solid dark scrim
-         * at high opacity is also simply what a console does — the world stops
-         * and the box is all there is.
-         */
-        background: 'rgba(9, 7, 20, 0.82)',
-      }}
-    >
+    <Overlay onClose={onClose} labelledBy="discovery-name">
       <Card
         unit={5}
         className="flex w-full max-w-sm flex-col items-center gap-3 text-center"
@@ -220,6 +198,6 @@ export function DiscoveryCard({
           continue
         </PixelButton>
       </Card>
-    </div>
+    </Overlay>
   )
 }

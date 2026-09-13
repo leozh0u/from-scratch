@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import {
   CO2_COMPARISON_SOURCE,
   co2ComparisonText,
@@ -14,6 +13,7 @@ import { PixelButton } from './ui/PixelButton'
 import { playPress } from '../audio/sfx'
 import { SourceLink } from './ui/SourceLink'
 import { Card } from './ui/Card'
+import { Overlay } from './ui/Overlay'
 
 type ReceiptProps = {
   element: ElementDef
@@ -47,22 +47,9 @@ export function Receipt({ element, data, routes, onClose }: ReceiptProps) {
   const hasCo2 = total.co2kg > 0
   const hasFootprint = hasWater || hasCo2
 
-  useEffect(() => {
-    function onKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') onClose()
-    }
-    window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
-  }, [onClose])
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center px-5 py-8"
-      style={{ background: 'rgba(9, 7, 20, 0.82)' }}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="receipt-name"
-    >
+    <Overlay onClose={onClose} labelledBy="receipt-name" className="px-5 py-8">
       <Card className="flex max-h-full w-full max-w-lg flex-col overflow-hidden">
         <div className="flex flex-col items-center gap-3 p-8 pb-6 text-center">
           <p className="font-display text-[9px] tracking-widest text-brand uppercase">
@@ -243,6 +230,6 @@ export function Receipt({ element, data, routes, onClose }: ReceiptProps) {
           </PixelButton>
         </div>
       </Card>
-    </div>
+    </Overlay>
   )
 }
