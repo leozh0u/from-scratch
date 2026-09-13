@@ -83,8 +83,9 @@ stated as the search space it makes finding a chain an achievement.
 > learn more, which is three fixed questions rather than a chat box, so a player
 > can never send it free text. The other two are developer tools, one probes the
 > graph for gaps and one drafts recipe chains, and we approve or reject every one
-> of those by hand. And none of them has ever seen the recipe list, so it can
-> tell you why something failed, it can't hand you a new item.
+> of those by hand. And the recipe list never goes to any of them, so Gemini can
+> tell you why two things don't react, but every item you make comes from the
+> game itself, never from the model.
 
 **4. NUMBERS**
 
