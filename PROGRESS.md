@@ -1026,3 +1026,81 @@ Data: `numbers`, `count`, `graph`, `depth`, `chain`, `honesty`. Art: `icons`,
 
 Running order with what to say over each: `docs/SLIDES.md`. Eight acts, about
 ten minutes, and a ninety-second cut (`point` → `wrong` → `fence` → `honesty`).
+
+## Ledger — 2026-09-13, 00:30
+
+### done, with the check that proved it
+
+- **Tech slide** (`diagram-tech`) — rendered and viewed; versions read from the
+  installed packages, not from `package.json` ranges.
+- **Corner glitch** — `stepped()` now emits three points a tread. Re-rendered
+  and inspected at full size; the triangular slivers are gone.
+- **Stars behind type** — every `text()`/`key()` reserves its box before the sky
+  is generated. Verified across all 32 renders on the contact sheet.
+- **Overflowing text** — `fit()` applied to titles, equation cells, figures,
+  tile roles and footers. Two footers that ran off the frame now fit.
+- **"twenty-four steps from nothing…"** and **"one silhouette, one colour…"** —
+  removed; `grep` over `scripts/` and `docs/slides/svg/` returns nothing.
+- **Number accuracy** — 36 rules (was 37), 14 things with a second route (was
+  "15 things"), 1,033 icons = 963 composed + 70 hand-drawn, 1,033 things = 12
+  starters + 1,021 made, 1,036 recipes = 1,021 outputs + 15 alt routes. All
+  computed in `FACTS` from `GAME_DATA`, not typed in.
+- **Bundle size** — was "898 KB" (bytes/1000) beside "514 KB" (bytes/1024) on
+  the next slide. Now measured off `dist/` in KiB: **877 KB**.
+- **Assertion count** — ran `npm test`: **213 passed, 0 failed**. `SCRIPT.md`
+  said 312; corrected. The 280 device checks are a separate command and the
+  slide now says so.
+- **32 slides**, running order in `docs/SLIDES.md`, eight acts, ~10 minutes.
+- **docs cleanup** — PNGs in `docs/slides/`, SVG sources in `docs/slides/svg/`.
+  `docs/` root is now six markdown files plus `art-source/`. No off-theme
+  duplicates were found to delete: every slide comes from one generator.
+- **Arousal table** — the `~/Downloads` copy was byte-identical (SHA-256) to the
+  one committed in `dread` at `58ca446`, so the duplicate was deleted.
+- **Pushed** — `git status -sb` shows `## main...origin/main`, no divergence.
+
+### open
+
+- **GoDaddy domain** — 20 minutes, needs Leo's account. Do it *after* the link
+  is confirmed reachable.
+- **Devpost writeup**, every challenge box ticked. Leo's.
+- **The video.** Leo's.
+- **Bundle split** — 877 KB in one file. Deliberately deferred past filming.
+- **Challenges / local records** — decided tonight to leave until after
+  submission. Estimate written below.
+
+### blocked
+
+- **The live site returns HTTP 403 from this network**, `x-vercel-mitigated:
+  challenge`, fallout from the k6 run aimed at production. Cannot verify the
+  deployed bundle hash or the live API from here until it clears. Needs Leo to
+  test from cellular and from the hackathon wifi, and to check Vercel's Firewall
+  panel. **This is very likely what "its not updated on vercel" actually was.**
+- **README** — a teammate is editing it; not touched.
+- **Moving `DIRECTION`/`GAMEPLAN`/`PROGRESS`/`WALKTHROUGH` under `docs/`** —
+  waits on that same teammate.
+- **MathWorks** — conditional on someone doing 40–60 hand-read footprint
+  figures. Not started.
+
+### the challenges estimate, since Leo asked
+
+Two shapes, very different costs.
+
+**The cheap one — a list, not a realm. 60–90 minutes.** A challenge is a named
+set of target element ids checked against what the player has already
+discovered in Everything. No new starters, no new save shape, no new game mode:
+one screen that reads the data already there, the way the inventory does. Ten
+challenges is then mostly *choosing* the targets, and the solver can verify each
+set is reachable.
+
+**The real one — a third realm with its own starters. 3.5–4.5 hours.** A new
+realm means a new save key and a migration (which `edgetest.ts` will
+immediately have opinions about), a third column on the title screen, per-
+challenge progress, and a device sweep afterwards. That is the honest number
+and it is the wrong four hours before a 9:00 submission.
+
+On the starter question: yes. Survival opens with **Stone, Wood, Plant Fibre**.
+Everything opens with those three plus **Water, Soil, Limestone, Bauxite, Iron
+Ore, Crude Oil, Natural Gas, Beeswax, Textile Waste** — twelve. A challenge set
+would sit between the two: the three plus water and whichever two or three ores
+the target chain actually needs, so the chain is findable rather than a
+scavenger hunt.

@@ -772,19 +772,28 @@ const honesty = slide(
   61,
 )
 
+/*
+ * MEASURED, NOT REMEMBERED.
+ *
+ * 213 is the sum of the "N passed" lines from a real `npm test` run on
+ * 2026-09-13; 280 is devicetest's 14 devices x 5 screens x 4 assertions, which
+ * is a SEPARATE command and does not run on `npm test` — the old footer here
+ * said "14 scripts, the build fails if any of them does", and the fourteenth
+ * is the one the build never runs.
+ */
 const checks = slide(
   'WHAT IS CHECKED',
   () =>
     figures(
       [
-        ['14', 'TEST SCRIPTS'],
+        ['213', 'ASSERTIONS'],
         [n(FACTS.urls), 'URLS FETCHED'],
         ['280', 'LAYOUT CHECKS'],
         ['250', 'PLAYERS A SECOND'],
       ],
       500,
-    ) + text(W / 2, 760, 'ALL OF IT RUNS ON npm test', 34, MUTED, { spacing: 3 }),
-  'the build fails if a citation dies.',
+    ) + text(W / 2, 760, 'THIRTEEN SCRIPTS RUN ON npm test', 34, MUTED, { spacing: 3 }),
+  'the build fails if a citation dies. the device sweep is its own command.',
   77,
 )
 
@@ -983,7 +992,7 @@ const tests = slide(
     })
     return out.join('')
   },
-  `${14} scripts. the build fails if any of them does.`,
+  '13 run on npm test. devicetest.mjs is its own sweep, and finds different bugs.',
   191,
 )
 
