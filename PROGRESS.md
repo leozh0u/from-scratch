@@ -1200,3 +1200,41 @@ turning it off gives you back exactly the game you had". Half of that is still
 true and half is not, so it now says what happens: the reveal writes nothing, but
 anything you go on to COMBINE is recorded like any other discovery, because it is
 one. What the mode never does is mark things found that you did not make.
+
+## The bench follows you down the shelf
+
+Leo: *"in the cheater mode, there are so many items that when you are at the
+bottom, it is so hard to combine as you have to go all the way up. make it so
+when you scroll to the point when the combine button is about to leave from the
+top, it stays at the top... make sure its reversible."*
+
+`position: sticky` on a wrapper around the bench Card, and nothing else, which
+is what makes it reversible for free: the bench sits in its normal place, pins
+when the page scrolls past it, and lands back exactly where it started on the
+way up. No mode, no toggle, nothing stored.
+
+**It only pins when there is room.** The bench is measured with a ResizeObserver
+and left in the flow when it would take more than half the viewport, because a
+pinned bench on a short screen eats the tiles it exists to let you reach.
+
+**Measured** (`scratch/stickycheck.mjs`, Cheater + Everything, scrolled to
+y=4000):
+
+| device | bench | share | pins | combine after scrolling |
+|---|---|---|---|---|
+| iPhone SE 375x667 | 615px | 92% | no | off screen |
+| iPhone 14 390x844 | 615px | 73% | no | off screen |
+| iPad mini 744x1133 | 329px | 29% | yes | visible at y=120 |
+| MacBook Air 1440x900 | 363px | 40% | yes | visible at y=136 |
+| 1080p 1920x1080 | 363px | 34% | yes | visible at y=136 |
+
+**So it does not help on phones yet, and that is not a threshold I can tune
+away.** At 375px the bench stacks into four rows (stats, slots and combine,
+hint and give up, readout) and comes out 615px tall, so pinning it would leave
+about 50px of tiles. The fix for phones is a separate compact bar — just the two
+slots and the combine key — that appears only once the real bench scrolls out of
+view, so nothing in the flow changes height. That is a new UI surface and the
+standing rule before filming is not to add one, so it is written down rather
+than built.
+
+`npm run test:device`: 280 passed, 0 failed.

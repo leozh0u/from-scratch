@@ -43,7 +43,6 @@ import { RULE_IDS } from '../src/adjudicator/explain'
  * the source and sit under it in `svg/`, so the folder he opens is 32 images
  * and nothing else.
  */
-const OUT = 'docs/slides'
 const SVG_OUT = 'docs/slides/svg'
 const W = 1920
 const H = 1080

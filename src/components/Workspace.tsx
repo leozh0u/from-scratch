@@ -99,10 +99,41 @@ const LONGEST_REALM_EMS = (
 
 export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: WorkspaceProps) {
   const [slots, setSlots] = useState<Slots>([null, null])
-  const { width: viewportWidth } = useViewport()
+  const { width: viewportWidth, height: viewportHeight } = useViewport()
   // Read here rather than from `rules` below, because the shelf is built above
   // that line.
   const revealAll = modeById(mode).revealAll
+
+  /*
+   * THE BENCH FOLLOWS YOU DOWN THE SHELF.
+   *
+   * Leo: *"in the cheater mode, there are so many items that when you are at
+   * the bottom, it is so hard to combine as you have to go all the way up. make
+   * it so when you scroll to the point when the combine button is about to
+   * leave from the top, it stays at the top."*
+   *
+   * `position: sticky` and nothing else, which is why it is reversible for
+   * free: the bench sits in its normal place until the page scrolls past it,
+   * pins to the top while you are down in the tiles, and lands back exactly
+   * where it started on the way up. No mode, no toggle, no stored state.
+   *
+   * IT ONLY PINS WHEN THERE IS ROOM FOR IT. A bench pinned to a short screen
+   * would eat the tiles it exists to let you reach, so it is measured against
+   * the viewport and left in the flow when it would take more than half of it.
+   * Measured rather than guessed at, because the bench is a different height in
+   * Survival and Everything and different again when the mode drops the hint
+   * keys.
+   */
+  const benchRef = useRef<HTMLDivElement | null>(null)
+  const [benchHeight, setBenchHeight] = useState(0)
+  useEffect(() => {
+    const el = benchRef.current
+    if (!el) return
+    const observer = new ResizeObserver(() => setBenchHeight(el.getBoundingClientRect().height))
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+  const benchSticks = benchHeight > 0 && benchHeight <= viewportHeight * 0.5
   /*
    * The HUD's two buttons plus the realm name have to share one strip. At a
    * 335px viewport the three of them wanted 383px and the title was clipped
@@ -1330,6 +1361,20 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
        * the standing hint line and the blank row held open for it. Those are
        * gone, which is the part that needed to go.
        */}
+      <div
+        ref={benchRef}
+        style={
+          benchSticks
+            ? {
+                position: 'sticky',
+                // Clear of the very edge, so the pinned bench reads as sitting
+                // on the page rather than welded to the window.
+                top: 8,
+                zIndex: 5,
+              }
+            : undefined
+        }
+      >
       <Card className="flex flex-col items-center gap-4 p-6">
         {/*
          * ONE ROW OF THREE COLUMNS, NOT TWO ROWS.
@@ -1528,6 +1573,7 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
                 : pairPreview)}
         </Readout>
       </Card>
+      </div>
 
       <div
         /*
