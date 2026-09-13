@@ -166,3 +166,106 @@ air. Every figure is checked; see `PROGRESS.md`.
 
 **If you get interrupted**, the one to finish on is `fence`. The other three are
 description; that one is an argument.
+
+---
+
+## Crib sheet: every part on the stack slide
+
+For the question after the question. One or two sentences each — enough to
+answer without bluffing, short enough to say.
+
+### The three columns
+
+**The browser** is where the game actually runs. **Vercel** is the host: it
+serves the files and runs the two functions. **Google** is Gemini, and it is
+outside the system on purpose.
+
+### In the browser
+
+**React 19.3** — the UI library. You describe what the screen should look like
+for a given state and React works out the DOM changes. One page, no router;
+screens are state, not URLs.
+
+**TypeScript 6.0** — JavaScript with types that are checked before anything
+runs. `tsc -b` is the first thing `npm test` does, so a wrong shape fails the
+build rather than the demo.
+
+**Tailwind 4.3** — CSS as utility classes written in the markup instead of a
+separate stylesheet. The pixel-specific parts — the stepped corners, the
+four-sided bevels — are hand-written CSS, because Tailwind has no vocabulary for
+them.
+
+**4 canvas scenes** — four components that draw to a `<canvas>` rather than to
+DOM nodes. `Starfield.tsx` (the sky, seeded so it is identical every load),
+`PixelEarth.tsx` (the globe, rotating in whole-pixel steps), and `CityScene.tsx`
+and `ForestScene.tsx`, one backdrop per realm. Canvas because a thousand
+animating divs is a lot of layout work for something nobody looks at directly.
+
+**The graph, 514KB** — every element and recipe as one plain TypeScript object,
+imported and bundled into the page. Not fetched, not a database: once the page
+has loaded, the game works offline.
+
+**localStorage 6 keys** — the browser's own key/value store, per device, never
+sent anywhere. `:discovered` is the save; `:mode`, `:skipped` and `:muted` are
+settings; `:adjudications` and `:explanations` cache answers already fetched, so
+the same question never costs a second call.
+
+### On Vercel
+
+**`api/adjudicate.ts`** — the *why not?* endpoint. Two element names and a
+realm go in; one sentence about why they do not react comes back.
+
+**`api/ask.ts`** — the *learn more* endpoint. An element name and one of three
+question keys go in; a short paragraph comes back.
+
+**`@vercel/node 13`** — the adapter that lets a plain `async (req, res)`
+function be a serverless function. It is also why `apitest.ts` can run both
+handlers in Node with a stubbed `fetch`.
+
+**Edge cache** — Vercel's CDN. The static files are copied to servers near the
+player, so the page loads from a nearby machine rather than from one origin.
+The functions are not cached; they only wake when somebody asks.
+
+**`GEMINI_API_KEY`** — the secret, held as an environment variable on the
+server. It is the entire reason the two functions exist: a key in the bundle is
+a key anyone can read.
+
+**GoDaddy DNS** — the domain, pointed at Vercel. A judge types a name instead of
+a `vercel.app` subdomain.
+
+### At Google
+
+**`gemini-flash-latest`** — the model. The fast, cheap tier, which is the right
+one for a sentence a player is waiting on.
+
+**500 / 1,200 tokens** — the output caps for adjudicate and ask. A token is
+roughly three quarters of a word; the cap bounds both the cost and how long
+anyone waits.
+
+**3 question keys** — `how`, `why`, `where`. A closed set: the request carries
+the key, the server owns the wording.
+
+**2 realm values** — `survival` or `everyday`, and anything else is rejected.
+
+**No free text** — the player cannot type anything that reaches the model. Open
+devtools and the most you can send is one enum value.
+
+**No numbers out** — the prompt forbids any number, quantity, percentage,
+temperature or date. A number from a model is an unsourced fact, and the whole
+claim is that nothing here is invented.
+
+### On the shelf (build time only)
+
+**Vite 8.3** — the dev server and the bundler that produces the one static file.
+**Oxlint 1.82** — the linter, written in Rust, fast enough to run on every save.
+**tsx** — runs a TypeScript file directly in Node with no build step, which is
+how all 33 scripts in `scripts/` work. **Playwright** — a headless browser,
+driven by code: the 14-device sweep, the PNG rasterising of these slides, the
+video capture. **k6** — the load tester, scripted in JavaScript, that ramps to
+250 new players a second.
+
+### The two arrows
+
+**1,761 bytes** is the largest request that has ever gone to Google, measured
+off the wire by `apitest.ts`. **The prompt** is written entirely by the server;
+the browser contributes two names and an enum key, and nothing else.
