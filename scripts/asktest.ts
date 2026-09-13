@@ -131,9 +131,36 @@ console.log('\n=== the credit cannot be burned by holding the button ===')
      /`\$\{elementId\}:\$\{question\}`/.test(client))
   ok('there is a rolling per-minute cap', /RATE_LIMIT_MAX_PER_WINDOW/.test(client))
   ok('and a hard session cap', /SESSION_CALL_CAP/.test(client))
-  ok('a fallback is never cached',
-     /if \(message !== FALLBACK_MESSAGE\)/.test(client),
-     'or one outage would be permanent for that element')
+  /*
+   * THE PROPERTY, NOT THE LINE THAT USED TO IMPLEMENT IT.
+   *
+   * This read `/if \(message !== FALLBACK_MESSAGE\)/` — the exact guard the
+   * file happened to contain. The guard was replaced by early returns, which
+   * preserves the property completely, and the test failed anyway. A test that
+   * fails when correct code is rewritten is a test that gets deleted the third
+   * time it cries wolf.
+   *
+   * What actually matters is that nothing from a FAILURE path ever reaches the
+   * cache, because one outage would then be permanent for that element. Every
+   * failure now returns through `no(...)`, so the property is positional: each
+   * of those returns must come before the single line that writes the cache.
+   */
+  const writeAt = client.indexOf('cache[key] = message')
+  ok('the cache is written exactly once',
+     client.split('cache[key] = message').length - 1 === 1,
+     'two write sites is two chances to cache a refusal')
+  /*
+   * Position alone was tried and is the wrong test: the catch block sits
+   * textually AFTER the write and is still a failure path. What has to hold is
+   * that the write is guarded on the way in and committed on the way out — an
+   * empty or malformed body is refused before it, and what follows it is a
+   * genuine answer rather than another branch.
+   */
+  ok('an empty reply is refused before the cache is touched',
+     /if \(!message\) return no\('quiet'\)/.test(client.slice(0, writeAt)),
+     'a blank answer cached once is a blank answer forever')
+  ok('and what follows the write is an answer, not another branch',
+     /cache\[key\] = message\s*\n\s*writeCache\(cache\)\s*\n\s*return \{ text: message, outcome: 'answer' \}/.test(client))
 }
 
 /*

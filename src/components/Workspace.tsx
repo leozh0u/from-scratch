@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { adjudicate } from '../adjudicator/client'
+import type { Reply } from '../adjudicator/outcome'
 import { explainFailure, RULE_MESSAGES } from '../adjudicator/explain'
 import { resolveIcon } from '../data/iconRegistry'
 import type { ElementDef, RealmId, RecipeData, RecipeDef } from '../data/types'
@@ -68,7 +69,7 @@ type Feedback =
       pair: [string, string]
       names: [string, string]
       /** Filled in only once the player actually asks. */
-      deeper?: string
+      deeper?: Reply
       asking?: boolean
     }
 

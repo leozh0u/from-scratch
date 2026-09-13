@@ -1,3 +1,4 @@
+import { classify, type Outcome, type Reply } from './outcome'
 /*
  * Client side of the adjudicator: decides whether a request is even worth
  * sending, before it's sent. This is where the credit actually gets
@@ -33,7 +34,15 @@ const SESSION_CALL_CAP = 20
  * observation a person would make, and it is honest about what actually
  * happened, which is nothing.
  */
-export const FALLBACK_MESSAGE = 'They just sit there.'
+export const ADJUDICATE_MESSAGES: Record<Outcome, string> = {
+  answer: '',
+  quiet: 'They just sit there.',
+  limited: "That's enough asking for one session.",
+  offline: 'No connection, so no answer this time.',
+  missing: 'No answer service behind this page.',
+}
+
+export const FALLBACK_MESSAGE = ADJUDICATE_MESSAGES.quiet
 
 /**
  * Order-independent, matching how recipes themselves are looked up — and
@@ -84,12 +93,17 @@ export async function adjudicate(
   nameA: string,
   nameB: string,
   realm: string,
-): Promise<string> {
+): Promise<Reply> {
+  const no = (outcome: Exclude<Outcome, 'answer'>): Reply => ({
+    text: ADJUDICATE_MESSAGES[outcome],
+    outcome,
+  })
+
   const key = pairKey(idA, idB, realm)
   const cache = readCache()
-  if (cache[key]) return cache[key]
+  if (cache[key]) return { text: cache[key], outcome: 'answer' }
 
-  if (isRateLimited()) return FALLBACK_MESSAGE
+  if (isRateLimited()) return no('limited')
 
   callTimestamps.push(Date.now())
   sessionCallCount++
@@ -101,19 +115,24 @@ export async function adjudicate(
       body: JSON.stringify({ a: nameA, b: nameB, realm }),
     })
 
-    if (!res.ok) return FALLBACK_MESSAGE
+    if (!res.ok) return no(classify(res.status))
 
     const data = await res.json()
-    const message = typeof data?.message === 'string' && data.message.length > 0
-      ? data.message
-      : FALLBACK_MESSAGE
+    const message = typeof data?.message === 'string' ? data.message.trim() : ''
+    // Reached the service and it said nothing usable: that is the model
+    // declining, not the service being absent.
+    if (!message) return no('quiet')
 
     cache[key] = message
     writeCache(cache)
-    return message
+    return { text: message, outcome: 'answer' }
   } catch {
-    // Offline, DNS failure, the endpoint doesn't exist in local dev — all
-    // the same to the player. The game stays fully playable either way.
-    return FALLBACK_MESSAGE
+    /*
+     * A thrown fetch is the network rather than the server. Which of the two
+     * it is matters: 'missing' means this page has no functions behind it,
+     * which is always true on a dev server and should never be true in
+     * production — and saying so is how anyone finds out that it is.
+     */
+    return no(classify(null))
   }
 }

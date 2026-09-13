@@ -1,8 +1,9 @@
 import { useState } from 'react'
+import type { Reply } from '../adjudicator/outcome'
 import { Card } from './ui/Card'
 import { Overlay } from './ui/Overlay'
 import { PixelButton } from './ui/PixelButton'
-import { FALLBACK_MESSAGE } from '../adjudicator/ask'
+
 import { QUESTION_KEYS, QUESTION_LABELS } from '../adjudicator/questions'
 import { useAsk } from '../adjudicator/useAsk'
 import { playPress } from '../audio/sfx'
@@ -39,15 +40,15 @@ import { playPress } from '../audio/sfx'
 type WhyNotProps = {
   pair: [string, string]
   names: [string, string]
-  /** The local reason, which is instant. Undefined while the model answers. */
-  answer?: string
+  /** The model's reply, or why there is not one. Undefined while it answers. */
+  answer?: Reply
   onClose: () => void
 }
 
 export function WhyNot({ pair, names, answer, onClose }: WhyNotProps) {
   /** Which of the two the questions are about. The first, until told otherwise. */
   const [subject, setSubject] = useState(0)
-  const { ask, answer: deeper, showing, asking } = useAsk()
+  const { ask, reply, showing, asking } = useAsk()
 
   const label = (text: string) => text.toLowerCase()
 
@@ -89,13 +90,13 @@ export function WhyNot({ pair, names, answer, onClose }: WhyNotProps) {
             fontSize: 10,
             lineHeight: 2,
             letterSpacing: '0.02em',
-            color: answer ? '#ded9f5' : 'var(--color-muted)',
+            color: answer?.outcome === 'answer' ? '#ded9f5' : 'var(--color-muted)',
             textTransform: 'lowercase',
             maxWidth: '32ch',
             margin: 0,
           }}
         >
-          {answer ?? 'asking...'}
+          {answer?.text ?? 'asking...'}
         </p>
 
         {/*
@@ -106,7 +107,13 @@ export function WhyNot({ pair, names, answer, onClose }: WhyNotProps) {
          * The same closed set of three keys the discovery card uses, the same
          * server-owned wording — no new way for text to reach a model.
          */}
-        {answer && (
+        {/*
+         * The three follow-ups appear only when the first answer really came
+         * from the model. If the service is not there, offering three more
+         * questions is offering three more of the same refusal — and it hides
+         * the one useful fact, which is that nothing is answering.
+         */}
+        {answer?.outcome === 'answer' && (
           <>
             <div
               style={{
@@ -190,13 +197,19 @@ export function WhyNot({ pair, names, answer, onClose }: WhyNotProps) {
                   fontSize: 10,
                   lineHeight: 2,
                   letterSpacing: '0.02em',
-                  color: deeper === FALLBACK_MESSAGE ? 'var(--color-muted)' : '#ded9f5',
+                  /*
+                   * Styled off the OUTCOME, not off the text. Comparing the
+                   * message against a known fallback string breaks the day a
+                   * model returns that same sentence, and it cannot tell the
+                   * four different reasons apart at all.
+                   */
+                  color: reply && reply.outcome !== 'answer' ? 'var(--color-muted)' : '#ded9f5',
                   textTransform: 'lowercase',
                   maxWidth: '32ch',
                   margin: 0,
                 }}
               >
-                {asking ? 'asking...' : deeper}
+                {asking ? 'asking...' : reply?.text}
               </p>
             )}
           </>

@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { ask, FALLBACK_MESSAGE } from '../adjudicator/ask'
 import { QUESTION_KEYS, QUESTION_LABELS, type QuestionKey } from '../adjudicator/questions'
+import { useAsk } from '../adjudicator/useAsk'
 import { PixelButton } from './ui/PixelButton'
 import { playPress } from '../audio/sfx'
 
@@ -44,22 +44,17 @@ type LearnMoreProps = {
 
 export function LearnMore({ elementId, name, label, unit = 3 }: LearnMoreProps) {
   const [open, setOpen] = useState(false)
-  const [asking, setAsking] = useState<QuestionKey | null>(null)
-  /** Answers are kept per question, so switching back and forth costs nothing. */
-  const [answers, setAnswers] = useState<Partial<Record<QuestionKey, string>>>({})
-  const [showing, setShowing] = useState<QuestionKey | null>(null)
+  /*
+   * The cache, the in-flight flag and the rule that a repeat question costs
+   * nothing all live in `useAsk` now, shared with the "why not?" panel. This
+   * file had its own copy of all three, and two caches of the same answers is
+   * how they end up disagreeing.
+   */
+  const { ask, reply, showing, asking } = useAsk()
 
-  async function onAsk(question: QuestionKey) {
+  function onAsk(question: QuestionKey) {
     playPress()
-    if (answers[question]) {
-      setShowing(question)
-      return
-    }
-    setAsking(question)
-    setShowing(question)
-    const message = await ask(elementId, name, question)
-    setAnswers((prev) => ({ ...prev, [question]: message }))
-    setAsking(null)
+    ask(elementId, name, question)
   }
 
   if (!open) {
@@ -77,7 +72,7 @@ export function LearnMore({ elementId, name, label, unit = 3 }: LearnMoreProps) 
     )
   }
 
-  const answer = showing ? answers[showing] : undefined
+
 
   return (
     <div className="flex w-full flex-col items-center gap-2">
@@ -94,10 +89,10 @@ export function LearnMore({ elementId, name, label, unit = 3 }: LearnMoreProps) 
         {QUESTION_KEYS.map((key) => (
           <PixelButton
             key={key}
-            tone={showing === key ? 'survival' : 'default'}
+            tone={showing?.question === key ? 'survival' : 'default'}
             unit={unit}
             block
-            disabled={asking !== null}
+            disabled={asking}
             onClick={() => onAsk(key)}
           >
             {QUESTION_LABELS[key]}
@@ -117,14 +112,15 @@ export function LearnMore({ elementId, name, label, unit = 3 }: LearnMoreProps) 
             fontSize: 10,
             lineHeight: 2,
             letterSpacing: '0.02em',
-            color: answer === FALLBACK_MESSAGE ? 'var(--color-muted)' : '#ded9f5',
+            // Off the outcome, not off the text — see adjudicator/outcome.ts.
+            color: reply && reply.outcome !== 'answer' ? 'var(--color-muted)' : '#ded9f5',
             textTransform: 'lowercase',
             maxWidth: '32ch',
             margin: 0,
             textAlign: 'center',
           }}
         >
-          {asking === showing ? 'asking...' : answer}
+          {asking ? 'asking...' : reply?.text}
         </p>
       )}
     </div>

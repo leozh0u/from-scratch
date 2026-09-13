@@ -13,6 +13,7 @@
  */
 
 import { QUESTION_KEYS, type QuestionKey } from './questions'
+import { classify, type Outcome, type Reply } from './outcome'
 
 const CACHE_KEY = 'from-scratch:explanations'
 const RATE_LIMIT_WINDOW_MS = 60_000
@@ -20,13 +21,23 @@ const RATE_LIMIT_MAX_PER_WINDOW = 6
 const SESSION_CALL_CAP = 30
 
 /**
- * What the card says when it cannot ask.
+ * What the card says when it cannot ask, by reason.
  *
- * Not an apology and not an error. The element already carries a hand-written
- * sourced blurb directly above this, so nothing is actually missing — the
- * extra answer just is not coming right now.
+ * None of these is an apology and none is an error dialog. The element already
+ * carries a hand-written sourced blurb directly above this, so nothing is ever
+ * actually missing — but WHICH of these appears is information, and collapsing
+ * them into one sentence threw it away. See adjudicator/outcome.ts.
  */
-export const FALLBACK_MESSAGE = 'Nothing more to add right now.'
+export const ASK_MESSAGES: Record<Outcome, string> = {
+  answer: '',
+  quiet: 'Nothing more to add right now.',
+  limited: "That's enough questions for one session.",
+  offline: 'No connection, so this one will have to wait.',
+  missing: 'No answer service behind this page.',
+}
+
+/** Kept for callers that only want the neutral line. */
+export const FALLBACK_MESSAGE = ASK_MESSAGES.quiet
 
 function readCache(): Record<string, string> {
   try {
@@ -61,14 +72,23 @@ function isRateLimited(): boolean {
  * Cached forever per element and question, so the same card reopened from the
  * inventory answers instantly and for free.
  */
-export async function ask(elementId: string, name: string, question: QuestionKey): Promise<string> {
-  if (!QUESTION_KEYS.includes(question)) return FALLBACK_MESSAGE
+export async function ask(
+  elementId: string,
+  name: string,
+  question: QuestionKey,
+): Promise<Reply> {
+  const no = (outcome: Exclude<Outcome, 'answer'>): Reply => ({
+    text: ASK_MESSAGES[outcome],
+    outcome,
+  })
+
+  if (!QUESTION_KEYS.includes(question)) return no('quiet')
 
   const key = `${elementId}:${question}`
   const cache = readCache()
-  if (cache[key]) return cache[key]
+  if (cache[key]) return { text: cache[key], outcome: 'answer' }
 
-  if (isRateLimited()) return FALLBACK_MESSAGE
+  if (isRateLimited()) return no('limited')
 
   callTimestamps.push(Date.now())
   sessionCallCount++
@@ -79,20 +99,23 @@ export async function ask(elementId: string, name: string, question: QuestionKey
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ name, question }),
     })
-    if (!res.ok) return FALLBACK_MESSAGE
+    if (!res.ok) return no(classify(res.status))
 
     const data = await res.json()
-    const message =
-      typeof data?.message === 'string' && data.message.length > 0 ? data.message : FALLBACK_MESSAGE
+    const message = typeof data?.message === 'string' ? data.message.trim() : ''
+    // An empty or malformed body is the model having declined, not the
+    // service being absent — the request did reach it.
+    if (!message) return no('quiet')
 
-    if (message !== FALLBACK_MESSAGE) {
-      cache[key] = message
-      writeCache(cache)
-    }
-    return message
+    cache[key] = message
+    writeCache(cache)
+    return { text: message, outcome: 'answer' }
   } catch {
-    // Offline, or running the dev server with no functions behind it. The
-    // card stays complete either way.
-    return FALLBACK_MESSAGE
+    /*
+     * A thrown fetch is the network, not the server: offline, DNS, or a dev
+     * server that closed the connection. `classify(null)` reads
+     * `navigator.onLine` to tell those apart where the browser knows.
+     */
+    return no(classify(null))
   }
 }

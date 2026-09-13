@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react'
 import { ask as askServer } from './ask'
 import type { QuestionKey } from './questions'
+import type { Reply } from './outcome'
 
 /**
  * Asking the model about something, once.
@@ -19,8 +20,8 @@ import type { QuestionKey } from './questions'
 export type AskState = {
   /** Ask, or re-show a cached answer. Never asks the same thing twice. */
   ask: (elementId: string, name: string, question: QuestionKey) => void
-  /** The answer on screen, if there is one. */
-  answer: string | undefined
+  /** What is on screen: an answer, or the reason there is not one. */
+  reply: Reply | undefined
   /** Which subject and question are showing. */
   showing: { elementId: string; question: QuestionKey } | null
   /** True while that one is in flight. */
@@ -28,7 +29,7 @@ export type AskState = {
 }
 
 export function useAsk(): AskState {
-  const [answers, setAnswers] = useState<Record<string, string>>({})
+  const [answers, setAnswers] = useState<Record<string, Reply>>({})
   const [showing, setShowing] = useState<{ elementId: string; question: QuestionKey } | null>(null)
   const [inFlight, setInFlight] = useState<string | null>(null)
 
@@ -38,8 +39,8 @@ export function useAsk(): AskState {
       setShowing({ elementId, question })
       if (answers[key] !== undefined || inFlight === key) return
       setInFlight(key)
-      void askServer(elementId, name, question).then((message) => {
-        setAnswers((prev) => ({ ...prev, [key]: message }))
+      void askServer(elementId, name, question).then((reply) => {
+        setAnswers((prev) => ({ ...prev, [key]: reply }))
         setInFlight((current) => (current === key ? null : current))
       })
     },
@@ -49,7 +50,7 @@ export function useAsk(): AskState {
   const key = showing ? `${showing.elementId}:${showing.question}` : null
   return {
     ask,
-    answer: key ? answers[key] : undefined,
+    reply: key ? answers[key] : undefined,
     showing,
     asking: key !== null && inFlight === key,
   }
