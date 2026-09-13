@@ -648,53 +648,111 @@ const forms = slide(
   88,
 )
 
+/**
+ * THE STACK AND THE TOOLCHAIN, ON ONE SLIDE.
+ *
+ * Leo: *"combine daigram stack and diagram tech into a new one. make it loook
+ * complex like we did a lot and used a lot. be more specific like what two
+ * functions."* And, of the three lines of lowercase caption that used to sit
+ * under each key — "the whole game / 1,036 recipes / the save" — *"remove the
+ * stuff i snet in the image. ai slop."*
+ *
+ * He is right about the captions and right about the cause. Three keys with a
+ * sentence fragment under each is a slide carrying three facts while pretending
+ * to be an architecture. The fix is not more words, it is more SPECIFICS: the
+ * actual file names, the actual versions, the actual limits. A rack of named
+ * parts reads as a system; "stateless / no database" reads as a summary of one.
+ *
+ * Nothing on it is a category. `api/ask.ts` is a file you can open.
+ */
 const stack = slide(
   'THE STACK',
-  () =>
-    row(
-      [
-        { title: 'THE BROWSER', tone: 'teal', lines: ['the whole game', `${n(FACTS.recipes)} recipes`, 'the save'] },
-        { title: 'TWO FUNCTIONS', tone: 'purple', lines: ['stateless', 'no database', 'they hold the key'] },
-        { title: 'GEMINI', tone: 'orange', lines: ['two names', 'nothing else', 'answers in prose'] },
-      ],
-      ['two names', 'the prompt'],
-    ),
-  'the model has never seen the recipe list.',
-  9,
-)
-
-const tech = slide(
-  'BUILT WITH',
   () => {
-    const items: [string, string, ToneId][] = [
-      ['REACT 19', 'one page, no router', 'teal'],
-      ['TYPESCRIPT 6', 'zero any in src', 'teal'],
-      ['VITE 8', 'one static bundle', 'teal'],
-      ['TAILWIND 4', 'plus hand css', 'teal'],
-      ['VERCEL', 'two functions', 'purple'],
-      ['GEMINI FLASH', 'only when asked', 'orange'],
-      ['PLAYWRIGHT', '280 layout checks', 'purple'],
-      ['K6', '250 players a second', 'purple'],
-    ]
+    const out: string[] = []
     const MARGIN = 80
-    const gap = 42
-    const cols = 4
-    const w = Math.floor((W - MARGIN * 2 - gap * (cols - 1)) / cols)
-    const h = 140
-    return items
-      .map(([name, role, tone], i) => {
-        const x = MARGIN + (i % cols) * (w + gap)
-        const y = 300 + Math.floor(i / cols) * 330
-        return [
-          key(x, y, w, h, tone),
-          text(x + w / 2, y + (h - 24) / 2 + 12, name, 26, TEXT, { spacing: 2, shadow: INK }),
-          text(x + w / 2, y + h + 62, role, 23, MUTED),
-        ].join('')
+    const gap = 90
+    const w = Math.floor((W - MARGIN * 2 - gap * 2) / 3)
+    const headY = 190
+    const headH = 120
+    const rackY = 330
+    const chipH = 62
+    const chipGap = 14
+
+    const columns: [string, ToneId, string[]][] = [
+      [
+        'THE BROWSER',
+        'teal',
+        [
+          'REACT 19.3',
+          'TYPESCRIPT 6.0',
+          'TAILWIND 4.3',
+          '4 CANVAS SCENES',
+          'gameData.ts 514KB',
+          'localStorage 6 KEYS',
+        ],
+      ],
+      [
+        'VERCEL',
+        'purple',
+        [
+          'api/adjudicate.ts',
+          'api/ask.ts',
+          '@vercel/node 13',
+          'EDGE CACHE',
+          'GEMINI_API_KEY',
+          'GODADDY DNS',
+        ],
+      ],
+      [
+        'GOOGLE',
+        'orange',
+        [
+          'gemini-flash-latest',
+          '500 / 1,200 TOKENS',
+          '3 QUESTION KEYS',
+          '2 REALM VALUES',
+          'NO FREE TEXT',
+          'NO NUMBERS OUT',
+        ],
+      ],
+    ]
+
+    const count = columns[0][2].length
+    const rackH = 56 + count * chipH + (count - 1) * chipGap
+
+    columns.forEach(([title, tone, chips], i) => {
+      const x = MARGIN + i * (w + gap)
+      out.push(key(x, headY, w, headH, tone))
+      out.push(text(x + w / 2, headY + 62, title, fit(title, 32, w - 60, 2), TEXT, { spacing: 2, shadow: INK }))
+      out.push(sunk(x, rackY, w, rackH))
+      chips.forEach((chip, j) => {
+        const cy = rackY + 28 + j * (chipH + chipGap)
+        out.push(key(x + 28, cy, w - 56, chipH, 'purple', 4))
+        out.push(text(x + w / 2, cy + 32, chip, fit(chip, 22, w - 130, 1), TEXT, { spacing: 1 }))
       })
-      .join('')
+      if (i < 2) {
+        out.push(arrow(x + w + 12, headY + (headH - 16) / 2, x + w + gap - 12))
+        out.push(text(x + w + gap / 2, 176, i === 0 ? '1,761 bytes' : 'the prompt', 20, BRAND))
+      }
+    })
+
+    /*
+     * The toolchain gets a shelf rather than a fourth column, because none of
+     * it is running while anybody is playing — and a column would have implied
+     * it was.
+     */
+    const bandY = 866
+    const bw = Math.floor((W - MARGIN * 2 - 30 * 4) / 5)
+    ;['VITE 8.3', 'OXLINT 1.82', 'TSX', 'PLAYWRIGHT', 'K6'].forEach((tool, i) => {
+      const x = MARGIN + i * (bw + 30)
+      out.push(key(x, bandY, bw, 96, 'green'))
+      out.push(text(x + bw / 2, bandY + 54, tool, fit(tool, 24, bw - 44, 1), TEXT, { spacing: 1, shadow: INK }))
+    })
+
+    return out.join('')
   },
-  'react and react-dom are the only packages the app imports at runtime.',
-  68,
+  'four runtime dependencies. the model has never seen the recipe list.',
+  9,
 )
 
 const combine = slide(
@@ -1215,7 +1273,7 @@ mkdirSync(SVG_OUT, { recursive: true })
 const SLIDES: [string, string][] = [
   ['numbers', numbers], ['count', count], ['graph', graph], ['depth', depth],
   ['chain', chain], ['icons', icons], ['forms', forms], ['stack', stack],
-  ['tech', tech], ['combine', combine], ['fence', fence], ['gate', gate],
+  ['combine', combine], ['fence', fence], ['gate', gate],
   ['honesty', honesty], ['checks', checks], ['loop', loop], ['wrong', wrong],
   ['what', what], ['point', point], ['api', api], ['failure', failure],
   ['sponsors', sponsors], ['journey', journey],

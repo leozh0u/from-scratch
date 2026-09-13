@@ -65,13 +65,14 @@ footprint; 1,028 say zero, because a number needs a page somebody read.
 
 **`forms`** — The whole shape library on one screen.
 
-## Act 5 — the stack (6 slides)
+## Act 5 — the stack (5 slides)
 
-**`stack`** — The browser holds the game, two stateless functions hold the key,
-Gemini gets two names.
-
-**`tech`** — React 19, TypeScript 6, Vite 8, Tailwind 4, Vercel, Gemini Flash,
-Playwright, k6. Four runtime dependencies.
+**`stack`** — One slide, the whole system, named parts only: React 19.3,
+TypeScript 6.0, Tailwind 4.3, four canvas scenes, `gameData.ts` at 514KB, six
+localStorage keys; then `api/adjudicate.ts`, `api/ask.ts`, `@vercel/node`, the
+edge cache, the key, GoDaddy DNS; then `gemini-flash-latest` and its limits.
+Vite, Oxlint, tsx, Playwright and k6 sit on the shelf underneath, build-time
+only.
 
 **`where`** — A GoDaddy domain, Vercel's edge, one static bundle.
 
@@ -127,27 +128,25 @@ we volunteer before anyone finds it.
 
 ## The 90-second stack block
 
-Four slides, roughly 22 seconds each. About 230 words, which is 90 seconds at a
+Three slides: 40 seconds on the stack, then 25 each. About 230 words, which is 90 seconds at a
 normal speaking pace — do not rush it, the numbers are the point and they need
 air. Every figure is checked; see `PROGRESS.md`.
 
 **`stack` — 0:00**
 
-> The whole game is in the browser. All 1,036 recipes, the save, everything —
-> one static bundle. Once it's loaded you could turn the wifi off and keep
-> playing.
+> Everything you just saw runs in the browser. React 19, TypeScript, Tailwind,
+> four canvas scenes for the sky and the globe, the whole recipe graph as a
+> 514-kilobyte import, and the save in six localStorage keys.
 >
-> There are two serverless functions behind it. They're stateless, there's no
-> database, and the only thing they hold is the API key.
+> Four runtime dependencies in total — react and react-dom are the only packages
+> the app imports when it runs. No router, no state library, no UI kit.
+>
+> Behind it, two serverless functions: `api/adjudicate.ts` and `api/ask.ts`.
+> They're stateless, there's no database, and the only thing they hold is the
+> Gemini key. Vite, Oxlint, Playwright and k6 are build-time only — none of that
+> ships.
 
-**`tech` — 0:22**
-
-> React 19, TypeScript, Vite, Tailwind. Four runtime dependencies — react and
-> react-dom are the only packages the app imports when it runs. No router, no
-> state library, no UI kit. Every sprite, every corner, the star field behind
-> it, all hand-built.
-
-**`combine` — 0:44**
+**`combine` — 0:40**
 
 > So when you press combine: first a map lookup. If it's a recipe, you get the
 > thing. If it isn't, a table of 36 rules answers in under a millisecond and
