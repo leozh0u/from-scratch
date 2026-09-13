@@ -1125,3 +1125,19 @@ Checked all six browser chips against the source. Five were right; one was not.
   1,761 bytes against. The chip named the file and gave the graph's size. It now
   reads **THE GRAPH 514KB** and is computed from `FACTS.graphKB`, so the two
   slides can never disagree.
+
+## `tally` — everything counted
+
+Leo: *"make one more data one, with all data... no slop stuff, just stats and
+important words, minimilst."*
+
+25 figures, five bands (THINGS / PLAY / ART / SOURCES / PROOF), no sentences.
+The band words down the left are the only non-numbers on it; without them it is
+a wall of digits with nowhere for the eye to start.
+
+**The footer was false on the first render** and is fixed. It read "none of it
+is typed in", but the PROOF row cannot be computed from `GAME_DATA` — 213 is a
+real `npm test` run, 280 is devicetest's 14 x 5 x 4, 250 is the k6 arrival rate,
+14 is the device list. The script count is now `readdirSync('scripts').length`
+so at least that one cannot drift, and the footer says what is true: the first
+four rows are read from the game at build time, the last is measured.

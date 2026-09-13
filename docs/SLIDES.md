@@ -3,7 +3,7 @@
 Leo: *"these diagrams should last us to the end of the thing. as soon as the
 demo ends, these diagrams have to last us many minutes."*
 
-30 slides, eight acts, in `docs/slides/diagram-*.png`. At roughly twenty seconds each
+31 slides, eight acts, in `docs/slides/diagram-*.png`. At roughly twenty seconds each
 that is about ten minutes of material — so this is a menu, not a script. Take
 the acts the room wants and skip the rest; every slide stands alone.
 
@@ -37,7 +37,10 @@ model, because a hint is a claim about the graph.
 **`feel`** — No blur, no gradient, integer scales, stepped corners. *Say: the
 corner on this slide is the corner in the game; the same function draws both.*
 
-## Act 3 — the data (6 slides)
+## Act 3 — the data (7 slides)
+
+**`tally`** — Everything counted, on one screen: 25 figures in five bands —
+things, play, art, sources, proof. The slide to leave up while questions come.
 
 **`numbers`** — 1,033 things, 1,036 recipes, 557 processes, 24 deep. 534,061
 possible pairs, 0.19% of them real.

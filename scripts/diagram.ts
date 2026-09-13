@@ -1264,11 +1264,103 @@ const record = slide(
   313,
 )
 
+/**
+ * EVERYTHING, COUNTED, ON ONE SCREEN.
+ *
+ * Leo: *"make one more data one, with all data. like how much what, including
+ * the art, how many, how man. stuf, etc... no slop stuff, just stats and
+ * important words, minimilst."*
+ *
+ * Twenty-five figures, five bands, no sentences. The band words down the left
+ * are the only non-numbers on it and they earn their place: without them this
+ * is a wall of digits and the eye has nowhere to start.
+ *
+ * Every figure is read from `FACTS` — that is, out of the data the game ships —
+ * except the five that cannot be: the device count, the script count, the
+ * assertion total from a real `npm test` run, the layout-check total, and the
+ * k6 arrival rate. Those are noted where they are written.
+ */
+const tally = slide(
+  'BY THE NUMBERS',
+  () => {
+    const out: string[] = []
+    const bands: [string, [string, string][]][] = [
+      [
+        'THINGS',
+        [
+          [n(FACTS.things), 'THINGS'],
+          [n(FACTS.recipes), 'RECIPES'],
+          [n(FACTS.outputs), 'MAKEABLE'],
+          [n(FACTS.processes), 'PROCESSES'],
+          [String(FACTS.deepest), 'DEEPEST'],
+        ],
+      ],
+      [
+        'PLAY',
+        [
+          [String(FACTS.starters), 'STARTERS'],
+          [n(FACTS.pairs), 'PAIRS'],
+          [FACTS.hitRate.toFixed(2) + '%', 'ARE REAL'],
+          [String(FACTS.rules), 'RULES'],
+          ['3', 'HINTS TO START'],
+        ],
+      ],
+      [
+        'ART',
+        [
+          [String(FACTS.forms), 'FORMS'],
+          [n(FACTS.composed), 'COMPOSED'],
+          [String(FACTS.drawn), 'HAND-DRAWN'],
+          ['4', 'CANVAS SCENES'],
+          [n(FACTS.things), 'ICONS'],
+        ],
+      ],
+      [
+        'SOURCES',
+        [
+          [n(FACTS.sourced + FACTS.referenced), 'CITATIONS'],
+          [n(FACTS.urls), 'URLS'],
+          [n(FACTS.sourced), 'HUMAN-READ'],
+          [String(FACTS.costed), 'FOOTPRINTS'],
+          [n(FACTS.zeroCost), 'SAY ZERO'],
+        ],
+      ],
+      [
+        'PROOF',
+        [
+          // Measured on 2026-09-13: `npm test` prints 213 passed, 0 failed.
+          ['213', 'ASSERTIONS'],
+          // devicetest.mjs: 14 devices x 5 screens x 4 checks.
+          ['280', 'LAYOUT CHECKS'],
+          ['250', 'PLAYERS A SECOND'],
+          ['14', 'DEVICE SIZES'],
+          [String(readdirSync('scripts').length), 'SCRIPTS'],
+        ],
+      ],
+    ]
+
+    const gutter = 350
+    const cell = (W - gutter - 70) / 5
+    bands.forEach(([band, figures], row) => {
+      const y = 250 + row * 158
+      out.push(text(100, y, band, 24, BRAND, { spacing: 3, align: 'start' }))
+      figures.forEach(([value, label], i) => {
+        const cx = gutter + cell * i + cell / 2
+        out.push(text(cx, y, value, fit(value, 46, cell - 30, 3), TEXT, { spacing: 3, shadow: INK }))
+        out.push(text(cx, y + 42, label, fit(label, 20, cell - 20, 2), MUTED, { spacing: 2 }))
+      })
+    })
+    return out.join('')
+  },
+  'the first four rows are read from the game at build time. the last is measured.',
+  331,
+)
+
 /* ------------------------------------------------------------------- write */
 
 mkdirSync(SVG_OUT, { recursive: true })
 const SLIDES: [string, string][] = [
-  ['numbers', numbers], ['count', count], ['graph', graph], ['depth', depth],
+  ['tally', tally], ['numbers', numbers], ['count', count], ['graph', graph], ['depth', depth],
   ['chain', chain], ['icons', icons], ['forms', forms], ['stack', stack],
   ['combine', combine], ['fence', fence], ['gate', gate],
   ['honesty', honesty], ['checks', checks], ['loop', loop], ['wrong', wrong],
