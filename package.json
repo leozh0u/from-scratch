@@ -9,7 +9,7 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "solve": "tsx scripts/solve.ts",
-    "test": "tsc -b && tsx scripts/shapetest.ts && tsx scripts/datatest.ts && tsx scripts/explaintest.ts && tsx scripts/swaytest.ts && tsx scripts/labeltest.ts && tsx scripts/asktest.ts && tsx scripts/startest.ts && tsx scripts/plancheck.ts && tsx scripts/layouttest.ts && tsx scripts/citytest.ts && tsx scripts/earthtest.ts && tsx scripts/edgetest.ts && vite build",
+    "test": "tsc -b && tsx scripts/shapetest.ts && tsx scripts/datatest.ts && tsx scripts/explaintest.ts && tsx scripts/swaytest.ts && tsx scripts/labeltest.ts && tsx scripts/asktest.ts && tsx scripts/apitest.ts && tsx scripts/startest.ts && tsx scripts/plancheck.ts && tsx scripts/layouttest.ts && tsx scripts/citytest.ts && tsx scripts/earthtest.ts && tsx scripts/edgetest.ts && vite build",
     "test:data": "tsx scripts/datatest.ts",
     "test:sway": "tsx scripts/swaytest.ts",
     "test:explain": "tsx scripts/explaintest.ts",
@@ -38,7 +38,8 @@
     "diagram": "tsx scripts/diagram.ts && node scripts/diagrampng.mjs",
     "film": "node scripts/film.mjs",
     "test:device": "node scripts/devicetest.mjs",
-    "reform": "node scripts/reform.mjs"
+    "reform": "node scripts/reform.mjs",
+    "test:api": "tsx scripts/apitest.ts"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
