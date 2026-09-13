@@ -186,20 +186,47 @@ export const LOCKED: Tone = {
  * top of the legend printed there. A padlock goes on the door, not on the
  * step.
  *
- * Then it landed on the LABEL instead. Bounded to the face and offset from the
- * left edge, it still overlapped a centred label whenever the button was
- * narrow enough — "skipped" on the title screen wore the lock through its
- * first letter. Absolute positioning was the fault both times: a thing that
- * must not collide with the text has no business being outside the text's
- * layout. It is an inline icon now, exactly like the hint bulb and the give-up
- * flag, so overlapping is not a state it can be in.
+ * Then it landed on the LABEL instead — "skipped" on the title screen wore the
+ * lock through its first letter. The fix for that was to make it an inline
+ * icon, and that was worse: the sprite is twenty rows tall and was scaled from
+ * the button's unit, so on the big realm keys it rendered a hundred pixels
+ * high and stretched the button around it. Leo, immediately: "i liked how it
+ * looked before. why is it so tall now."
+ *
+ * So it is absolute again, which is what kept it out of the button's height in
+ * the first place, and the collision is fixed where it actually was: the label
+ * reserves the lock's width, on both sides so it stays centred. The lock
+ * cannot change the button's height, the text cannot end up underneath it, and
+ * a button sized by its container looks exactly as it did.
  */
-function Lock({ unit }: { unit: number }) {
+/** How much room the lock needs beside a label, at this unit. */
+function lockWidth(unit: number): number {
+  return PADLOCK.rows[0].length * lockScale(unit) + unit * 2
+}
+
+function lockScale(unit: number): number {
+  return Math.max(2, Math.round(unit * 0.75))
+}
+
+function Lock({ unit, depth }: { unit: number; depth: number }) {
   return (
-    <PixelArt
-      sprite={PADLOCK}
-      scale={Math.max(2, Math.round(unit * 0.75))}
-    />
+    <span
+      aria-hidden="true"
+      style={{
+        position: 'absolute',
+        // Measured from the left edge rather than centred: dead centre puts it
+        // straight through the label.
+        left: unit * 4,
+        top: 0,
+        bottom: depth,
+        display: 'flex',
+        alignItems: 'center',
+        zIndex: 2,
+        pointerEvents: 'none',
+      }}
+    >
+      <PixelArt sprite={PADLOCK} scale={lockScale(unit)} />
+    </span>
   )
 }
 
@@ -508,15 +535,31 @@ export function PixelButton({
               alignItems: 'center',
               gap: unit * 2,
               whiteSpace: 'nowrap',
+              /*
+               * Room for the padlock, reserved on BOTH sides.
+               *
+               * One side was tried and Leo caught it instantly: "now its not
+               * centreed". A centred label with padding on the left is no
+               * longer centred, it is pushed right by exactly that padding.
+               * Symmetric padding keeps it on the button's true centre line
+               * and still guarantees the clearance — and it changes nothing at
+               * all on a button whose width comes from its container, like the
+               * two realm keys, which is what makes those look identical to
+               * before. Only a button that sizes to its own contents gets
+               * wider, which is the one where the lock was landing on the
+               * letters.
+               */
+              paddingLeft: locked ? lockWidth(unit) : undefined,
+              paddingRight: locked ? lockWidth(unit) : undefined,
             }}
           >
-            {locked && <Lock unit={unit} />}
             {icon}
             {children}
           </span>
         </span>
       </span>
 
+      {locked && <Lock unit={unit} depth={depth} />}
     </button>
   )
 }

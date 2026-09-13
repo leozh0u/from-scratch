@@ -42,6 +42,8 @@ type ElementTileProps = {
   locked?: boolean
   unit?: number
   onClick?: () => void
+  /** Stamped on the button as `data-element`, for the capture driver to find. */
+  elementId?: string
 }
 
 /*
@@ -104,6 +106,7 @@ export function ElementTile({
   locked = false,
   unit = 4,
   onClick,
+  elementId,
 }: ElementTileProps) {
   const [pressed, setPressed] = useState(false)
   const [hovered, setHovered] = useState(false)
@@ -138,6 +141,16 @@ export function ElementTile({
       onClick={onClick}
       disabled={disabled}
       aria-pressed={selected}
+      /*
+       * The id, on the tile, so something outside can find it.
+       *
+       * Only the capture driver uses it — it scrolls the tile it is about to
+       * click into view, which is both what a player does with a grid nine
+       * hundred tiles deep and where the movement in the timelapse comes from.
+       * A data attribute rather than an id because ids have to be unique
+       * document-wide and the same element appears in the inventory too.
+       */
+      data-element={elementId}
       onPointerDown={() => {
         if (disabled) return
         setPressed(true)

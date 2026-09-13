@@ -73,9 +73,19 @@ const BATCH = Number(arg('batch', 4))
 const BASE = arg('base', null)
 
 const HUMAN_MS = Number(arg('humanms', 220))
-const HUMAN_SECONDS = Number(arg('humansecs', 22))
+const HUMAN_SECONDS = Number(arg('humansecs', 13))
 const HIT = Number(arg('hit', 0.34))
 const SEED = Number(arg('seed', 11))
+/*
+ * The wound-up version of the same driver. 70ms a click is about twelve times
+ * life; nothing is legible and it is not meant to be. A higher hit rate here
+ * than in the acted opening, because this act is about things appearing.
+ */
+const FRENZY_MS = Number(arg('frenzyms', 70))
+const FRENZY_SECONDS = Number(arg('frenzysecs', 20))
+/** How full the grid is before the frenzy, so the scrolling has distance. */
+const FILL_TO = Number(arg('fill', 600))
+const FRENZY_HIT = Number(arg('frenzyhit', 0.55))
 const OUT = 'capture'
 
 /*
@@ -162,7 +172,48 @@ async function main() {
   console.log('  survival complete')
   await page.waitForTimeout(1200)
 
-  // ACT THREE: Everything, flat out — the scale shot.
+  /*
+   * ACT THREE: the grid fills, so act four has somewhere to go.
+   *
+   * This is the counter-and-tiles shot, and it is deliberately BEFORE the
+   * frenzy rather than after it. The first cut had it the other way round and
+   * the scrolling did nothing, because a fresh Everything is fifteen tiles on
+   * one screen — there is no grid to travel through yet. Six hundred tiles is
+   * about fourteen thousand pixels, and that is what makes the next act move.
+   */
+  await page.goto(`${base}/?demo=fast&ms=${MS}&batch=${BATCH}&stop=${FILL_TO}`)
+  await page.getByRole('button', { name: /everything/i }).first().click()
+  await page.waitForFunction(
+    (target) => {
+      const m = document.body.innerText.match(/(\d+)\/(\d+)\s*MADE/i)
+      return m !== null && Number(m[1]) >= target
+    },
+    FILL_TO,
+    { timeout: 300_000 },
+  )
+  console.log(`  grid filled to ${FILL_TO}`)
+  await page.waitForTimeout(800)
+
+  /*
+   * ACT FOUR: THE ACTUAL TIMELAPSE.
+   *
+   * Leo: "i still want to see like the objects and new thing found tabs and
+   * hint stuff pop up very very quickly, not just the bar and numbers going
+   * up... movements quick jittery up and down, things increasing, unlovking,
+   * screens poopping up, like an acutal time lapse video."
+   *
+   * Same human driver, wound right up. Tiles go in, cards open and close,
+   * hints fire, the model gets asked, and the page hurls itself up and down
+   * the grid because the driver scrolls to whatever it is about to click.
+   * Nothing is legible and none of it is meant to be.
+   */
+  await page.goto(`${base}/?demo=human&ms=${FRENZY_MS}&hit=${FRENZY_HIT}&seed=${SEED + 1}`)
+  await page.getByRole('button', { name: /everything/i }).first().click()
+  await page.waitForTimeout(FRENZY_SECONDS * 1000)
+  const travelled = await page.evaluate(() => document.documentElement.scrollHeight)
+  console.log(`  frenzy over a grid ${travelled}px tall`)
+
+  // ACT FIVE: flat out to the end.
   await page.goto(`${base}/?demo=fast&ms=${MS}&batch=${BATCH}`)
   await page.getByRole('button', { name: /everything/i }).first().click()
   await page.waitForFunction(
@@ -192,7 +243,7 @@ async function main() {
   const scrollable = await page.evaluate(
     () => document.documentElement.scrollHeight - window.innerHeight,
   )
-  const SCROLL_SECONDS = 9
+  const SCROLL_SECONDS = 7
   const steps = SCROLL_SECONDS * 25
   const perStep = Math.max(1, Math.round(scrollable / steps))
   for (let y = 0; y <= scrollable; y += perStep) {

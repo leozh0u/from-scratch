@@ -675,6 +675,34 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
     const random = rng(demo.seed)
     const tried = new Set<string>()
 
+    /*
+     * SCROLL TO WHAT YOU ARE ABOUT TO CLICK.
+     *
+     * Leo: "i want to see things moving, not everything needs to be legible,
+     * movements quick jittery up and down, things increasing, unlovking,
+     * screens poopping up, like an acutal time lapse video."
+     *
+     * This is where that comes from, and it is not a camera move bolted on
+     * top — it is what a player does. At nine hundred elements the grid is
+     * twenty thousand pixels tall and the two tiles you want are rarely on the
+     * same screen, so the game is already mostly scrolling. Driving it
+     * honestly produces the motion.
+     *
+     * `instant` rather than `smooth` on purpose, twice over: a smooth scroll
+     * lands on fractional offsets, which resamples every sprite on the page
+     * and undoes the one thing the art is for — and a hard jump is exactly the
+     * jitter being asked for.
+     */
+    function scrollTo(id: string) {
+      const tile = document.querySelector(`[data-element="${CSS.escape(id)}"]`)
+      if (!tile) return
+      const box = tile.getBoundingClientRect()
+      const margin = 140
+      if (box.top >= margin && box.bottom <= window.innerHeight - margin) return
+      const target = window.scrollY + box.top - (window.innerHeight - box.height) / 2
+      window.scrollTo({ top: Math.max(0, Math.round(target)), behavior: 'instant' })
+    }
+
     async function play() {
       // Yield once before the opening move, so a run that has already been
       // superseded stops before it touches the board.
@@ -698,20 +726,30 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
         const [a, b] = turn.inputs
         tried.add([a, b].sort().join('+'))
 
+        scrollTo(a)
         act.pickTile(a)
         await sleep(demo.ms)
         if (!alive()) return
+        scrollTo(b)
         actionsRef.current.pickTile(b)
         await sleep(demo.ms)
         if (!alive()) return
+        /*
+         * Back to the bench to press the key. The player has to go there to
+         * combine, so the clip goes there — and it is what gives the section
+         * its rhythm: out to find a tile, back to the middle, out again.
+         */
+        window.scrollTo({ top: 0, behavior: 'instant' })
         actionsRef.current.handleCombine()
         await sleep(demo.ms)
         if (!alive()) return
 
         if (turn.kind === 'hit') {
           sinceHit = 0
-          // A beat to actually look at the card, then close it by hand.
-          await sleep(demo.ms * 3)
+          // A beat to look at the card, then close it by hand. Never shorter
+          // than a few frames: a card that opens and closes inside one frame
+          // is not a flash, it is nothing at all.
+          await sleep(Math.max(120, demo.ms * 3))
           if (!alive()) return
           if (actionsRef.current.hasCard) {
             actionsRef.current.closeCard()
@@ -1189,6 +1227,7 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
         {inventory.map((id) => (
           <ElementTile
             key={id}
+            elementId={id}
             icon={resolveIcon(elementById(id).icon)}
             label={elementById(id).name}
             selected={slots.includes(id)}
