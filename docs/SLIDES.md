@@ -66,12 +66,11 @@ footprint; 1,028 say zero, because a number needs a page somebody read.
 
 ## Act 5 — the stack (5 slides)
 
-**`stack`** — One slide, the whole system, named parts only: React 19.3,
-TypeScript 6.0, Tailwind 4.3, four canvas scenes, the graph at 514KB, six
-localStorage keys; then `api/adjudicate.ts`, `api/ask.ts`, `@vercel/node`, the
-edge cache, the key, GoDaddy DNS; then `gemini-flash-latest` and its limits.
-Vite, Oxlint, tsx, Playwright and k6 sit on the shelf underneath, build-time
-only.
+**`stack`** — The whole system in sixteen named parts. React 19, TypeScript 6,
+Tailwind 4 and the 514KB graph in the browser; `api/adjudicate.ts`,
+`api/ask.ts`, the edge cache, the key and GoDaddy DNS on Vercel; then
+`gemini-flash-latest`, no free text, no numbers out. Vite, Oxlint, Playwright
+and k6 on the shelf underneath, build-time only.
 
 **`where`** — A GoDaddy domain, Vercel's edge, one static bundle.
 
@@ -134,8 +133,8 @@ air. Every figure is checked; see `PROGRESS.md`.
 **`stack` — 0:00**
 
 > Everything you just saw runs in the browser. React 19, TypeScript, Tailwind,
-> four canvas scenes for the sky and the globe, the whole recipe graph as a
-> 514-kilobyte import, and the save in six localStorage keys.
+> and the whole recipe graph as a 514-kilobyte import — the save is in
+> localStorage, so nothing about you leaves the machine.
 >
 > Four runtime dependencies in total — react and react-dom are the only packages
 > the app imports when it runs. No router, no state library, no UI kit.

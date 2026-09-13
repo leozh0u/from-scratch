@@ -649,21 +649,23 @@ const forms = slide(
 )
 
 /**
- * THE STACK AND THE TOOLCHAIN, ON ONE SLIDE.
+ * THE STACK — NAMED PARTS, BUT ONLY THE ONES WORTH NAMING.
  *
- * Leo: *"combine daigram stack and diagram tech into a new one. make it loook
- * complex like we did a lot and used a lot. be more specific like what two
- * functions."* And, of the three lines of lowercase caption that used to sit
- * under each key — "the whole game / 1,036 recipes / the save" — *"remove the
- * stuff i snet in the image. ai slop."*
+ * Leo, first: *"combine daigram stack and diagram tech into a new one. make it
+ * loook complex... be more specific like what two functions."* Then, of the
+ * result: *"its now too much... bigger stuff less stuff less overwhleming."*
  *
- * He is right about the captions and right about the cause. Three keys with a
- * sentence fragment under each is a slide carrying three facts while pretending
- * to be an architecture. The fix is not more words, it is more SPECIFICS: the
- * actual file names, the actual versions, the actual limits. A rack of named
- * parts reads as a system; "stateless / no database" reads as a summary of one.
+ * Both notes are right and they are not in conflict. The first killed the
+ * lowercase captions ("the whole game / 1,036 recipes / the save") which said
+ * nothing a judge could check. The second killed the six-deep racks that
+ * replaced them, which said too much to read in the four seconds a slide gets.
  *
- * Nothing on it is a category. `api/ask.ts` is a file you can open.
+ * Sixteen parts rather than twenty-three, each one bigger, and no rack frame
+ * around them — the frame was pure decoration and it made three columns look
+ * like three filing cabinets. What survived is what Leo actually named plus the
+ * two function files, because "two serverless functions" is a category and
+ * `api/ask.ts` is a thing you can open. The token caps, question keys and realm
+ * values moved to `api`, which is the slide that exists for them.
  */
 const stack = slide(
   'THE STACK',
@@ -672,77 +674,29 @@ const stack = slide(
     const MARGIN = 80
     const gap = 90
     const w = Math.floor((W - MARGIN * 2 - gap * 2) / 3)
-    const headY = 190
-    const headH = 120
-    const rackY = 330
-    const chipH = 62
-    const chipGap = 14
+    const headY = 175
+    const headH = 110
+    const chipH = 88
+    const pitch = 106
 
     const columns: [string, ToneId, string[]][] = [
-      [
-        'THE BROWSER',
-        'teal',
-        [
-          'REACT 19.3',
-          'TYPESCRIPT 6.0',
-          'TAILWIND 4.3',
-          '4 CANVAS SCENES',
-          /*
-           * LABELLED FOR WHAT IT MEASURES.
-           *
-           * This read "gameData.ts 514KB", which is two different things stuck
-           * together: the FILE is 532 KiB on disk, and 514 KiB is
-           * JSON.stringify of the exported object — which is the figure the
-           * fence slide compares 1,761 bytes against. Naming the file and
-           * giving the graph's size made the one number on the slide that a
-           * judge could check come out wrong.
-           */
-          `THE GRAPH ${FACTS.graphKB}KB`,
-          'localStorage 6 KEYS',
-        ],
-      ],
-      [
-        'VERCEL',
-        'purple',
-        [
-          'api/adjudicate.ts',
-          'api/ask.ts',
-          '@vercel/node 13',
-          'EDGE CACHE',
-          'GEMINI_API_KEY',
-          'GODADDY DNS',
-        ],
-      ],
-      [
-        'GOOGLE',
-        'orange',
-        [
-          'gemini-flash-latest',
-          '500 / 1,200 TOKENS',
-          '3 QUESTION KEYS',
-          '2 REALM VALUES',
-          'NO FREE TEXT',
-          'NO NUMBERS OUT',
-        ],
-      ],
+      ['THE BROWSER', 'teal', ['REACT 19', 'TYPESCRIPT 6', 'TAILWIND 4', `THE GRAPH ${FACTS.graphKB}KB`]],
+      ['VERCEL', 'purple', ['api/adjudicate.ts', 'api/ask.ts', 'EDGE CACHE', 'GEMINI_API_KEY', 'GODADDY DNS']],
+      ['GOOGLE', 'orange', ['gemini-flash-latest', 'NO FREE TEXT', 'NO NUMBERS OUT']],
     ]
-
-    const count = columns[0][2].length
-    const rackH = 56 + count * chipH + (count - 1) * chipGap
 
     columns.forEach(([title, tone, chips], i) => {
       const x = MARGIN + i * (w + gap)
       out.push(key(x, headY, w, headH, tone))
-      out.push(text(x + w / 2, headY + 62, title, fit(title, 32, w - 60, 2), TEXT, { spacing: 2, shadow: INK }))
-      out.push(sunk(x, rackY, w, rackH))
+      out.push(text(x + w / 2, headY + 58, title, fit(title, 32, w - 60, 2), TEXT, { spacing: 2, shadow: INK }))
       chips.forEach((chip, j) => {
-        const cy = rackY + 28 + j * (chipH + chipGap)
-        out.push(key(x + 28, cy, w - 56, chipH, 'purple', 4))
-        out.push(text(x + w / 2, cy + 32, chip, fit(chip, 22, w - 130, 1), TEXT, { spacing: 1 }))
+        const y = 330 + j * pitch
+        out.push(key(x, y, w, chipH, 'purple', 5))
+        out.push(text(x + w / 2, y + 46, chip, fit(chip, 26, w - 60, 1), TEXT, { spacing: 1, shadow: INK }))
       })
       if (i < 2) {
-        out.push(arrow(x + w + 12, headY + (headH - 16) / 2, x + w + gap - 12))
-        out.push(text(x + w + gap / 2, 176, i === 0 ? '1,761 bytes' : 'the prompt', 20, BRAND))
+        out.push(arrow(x + w + 12, headY + (headH - 20) / 2, x + w + gap - 12))
+        out.push(text(x + w + gap / 2, 162, i === 0 ? '1,761 bytes' : 'the prompt', 20, BRAND))
       }
     })
 
@@ -751,12 +705,12 @@ const stack = slide(
      * it is running while anybody is playing — and a column would have implied
      * it was.
      */
-    const bandY = 866
-    const bw = Math.floor((W - MARGIN * 2 - 30 * 4) / 5)
-    ;['VITE 8.3', 'OXLINT 1.82', 'TSX', 'PLAYWRIGHT', 'K6'].forEach((tool, i) => {
+    const bandY = 880
+    const bw = Math.floor((W - MARGIN * 2 - 30 * 3) / 4)
+    ;['VITE 8.3', 'OXLINT', 'PLAYWRIGHT', 'K6'].forEach((tool, i) => {
       const x = MARGIN + i * (bw + 30)
-      out.push(key(x, bandY, bw, 96, 'green'))
-      out.push(text(x + bw / 2, bandY + 54, tool, fit(tool, 24, bw - 44, 1), TEXT, { spacing: 1, shadow: INK }))
+      out.push(key(x, bandY, bw, 88, 'green'))
+      out.push(text(x + bw / 2, bandY + 48, tool, fit(tool, 26, bw - 44, 1), TEXT, { spacing: 1, shadow: INK }))
     })
 
     return out.join('')
