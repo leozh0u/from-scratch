@@ -536,21 +536,25 @@ export function PixelButton({
               gap: unit * 2,
               whiteSpace: 'nowrap',
               /*
-               * Room for the padlock, reserved on BOTH sides.
+               * ROOM FOR THE PADLOCK, AND HOW MUCH DEPENDS ON WHO SETS THE
+               * WIDTH.
                *
-               * One side was tried and Leo caught it instantly: "now its not
-               * centreed". A centred label with padding on the left is no
-               * longer centred, it is pushed right by exactly that padding.
-               * Symmetric padding keeps it on the button's true centre line
-               * and still guarantees the clearance — and it changes nothing at
-               * all on a button whose width comes from its container, like the
-               * two realm keys, which is what makes those look identical to
-               * before. Only a button that sizes to its own contents gets
-               * wider, which is the one where the lock was landing on the
-               * letters.
+               * A `block` button fills its container, so it has spare width
+               * already: reserving the lock on both sides keeps the label on
+               * the true centre line and costs nothing. Reserving on one side
+               * there pushes a centred label right by exactly that padding,
+               * which Leo caught immediately — "now its not centreed".
+               *
+               * A button that sizes to its own contents is the opposite case.
+               * Symmetric padding there is pure waste on the right, and it is
+               * why removing the "already open" legend did not make the
+               * skipped key any narrower. Leo: "the point of removing the
+               * bottom shadow word was to let the width stay the same as
+               * before. or atleast be less wide." So it reserves the left only
+               * and the key comes out at the width it was before any of this.
                */
               paddingLeft: locked ? lockWidth(unit) : undefined,
-              paddingRight: locked ? lockWidth(unit) : undefined,
+              paddingRight: locked && block ? lockWidth(unit) : undefined,
             }}
           >
             {icon}
