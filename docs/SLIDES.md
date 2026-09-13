@@ -68,7 +68,7 @@ footprint; 1,028 say zero, because a number needs a page somebody read.
 ## Act 5 — the stack (5 slides)
 
 **`stack`** — One slide, the whole system, named parts only: React 19.3,
-TypeScript 6.0, Tailwind 4.3, four canvas scenes, `gameData.ts` at 514KB, six
+TypeScript 6.0, Tailwind 4.3, four canvas scenes, the graph at 514KB, six
 localStorage keys; then `api/adjudicate.ts`, `api/ask.ts`, `@vercel/node`, the
 edge cache, the key, GoDaddy DNS; then `gemini-flash-latest` and its limits.
 Vite, Oxlint, tsx, Playwright and k6 sit on the shelf underneath, build-time

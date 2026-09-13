@@ -1104,3 +1104,24 @@ Ore, Crude Oil, Natural Gas, Beeswax, Textile Waste** — twelve. A challenge se
 would sit between the two: the three plus water and whichever two or three ores
 the target chain actually needs, so the chain is findable rather than a
 scavenger hunt.
+
+## The stack slide, audited chip by chip
+
+Leo: *"what are 4 canvas scenes, etc, are they all accurate, explain each one"*.
+Checked all six browser chips against the source. Five were right; one was not.
+
+- **REACT 19.3 / TYPESCRIPT 6.0 / TAILWIND 4.3** — read from the installed
+  packages (19.3.0, 6.0.3, 4.3.3), not from the `^` ranges in `package.json`.
+- **4 CANVAS SCENES** — four components call `getContext('2d')`, each exactly
+  once, and all four are imported and on screen: `Starfield.tsx` and
+  `PixelEarth.tsx` by `StartScreen.tsx`; `CityScene.tsx` and `ForestScene.tsx`
+  by `Workspace.tsx`. Nothing dead.
+- **localStorage 6 KEYS** — six `setItem` calls, six distinct keys:
+  `from-scratch:discovered`, `:mode`, `:skipped`, `:muted`, `:adjudications`,
+  `:explanations`.
+- **gameData.ts 514KB — WRONG, now fixed.** Two different measurements stuck
+  together: the file is **532 KiB** on disk, and **514 KiB** is
+  `JSON.stringify(GAME_DATA)` — which is the figure the `fence` slide compares
+  1,761 bytes against. The chip named the file and gave the graph's size. It now
+  reads **THE GRAPH 514KB** and is computed from `FACTS.graphKB`, so the two
+  slides can never disagree.

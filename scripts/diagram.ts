@@ -687,7 +687,17 @@ const stack = slide(
           'TYPESCRIPT 6.0',
           'TAILWIND 4.3',
           '4 CANVAS SCENES',
-          'gameData.ts 514KB',
+          /*
+           * LABELLED FOR WHAT IT MEASURES.
+           *
+           * This read "gameData.ts 514KB", which is two different things stuck
+           * together: the FILE is 532 KiB on disk, and 514 KiB is
+           * JSON.stringify of the exported object — which is the figure the
+           * fence slide compares 1,761 bytes against. Naming the file and
+           * giving the graph's size made the one number on the slide that a
+           * judge could check come out wrong.
+           */
+          `THE GRAPH ${FACTS.graphKB}KB`,
           'localStorage 6 KEYS',
         ],
       ],
