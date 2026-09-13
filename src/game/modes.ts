@@ -52,7 +52,7 @@ export const MODES: Mode[] = [
   {
     id: 'standard',
     label: 'standard',
-    blurb: 'earned hints',
+    blurb: 'earn hints',
     hints: true,
     infiniteHints: false,
     giveUp: true,
