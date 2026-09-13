@@ -1310,7 +1310,23 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
          * and the corners are doing work.
          */}
         <div className="flex w-full flex-wrap items-center justify-center gap-3">
-          <div className="flex min-w-0 flex-[1_1_140px] justify-center sm:justify-end">
+          <div
+            /*
+             * Pushed to the OUTSIDE of its track, not the inside.
+             *
+             * It was `sm:justify-end`, which parks it against the middle
+             * column — so narrowing the panel bought space on the wrong side
+             * and the gap to the combine key did not change. Leo: "the point
+             * of making the width of data block smaller was to leave more
+             * space between combine and it. move it to the left."
+             *
+             * Then sixteen pixels back the other way, because flush against
+             * the outside was further than he wanted: "move the data block a
+             * tiny tiny bit to the right now. tiny bit." The gap to the
+             * combine key goes 15px, 54px, 38px across those three.
+             */
+            className="flex min-w-0 flex-[1_1_140px] justify-center sm:justify-start sm:pl-4"
+          >
             <StatPanel
               stats={[
                 { label: 'made', value: `${realmFound}/${realmTotal}`, lead: true },

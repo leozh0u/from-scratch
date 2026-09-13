@@ -36,7 +36,8 @@
     "rebalance": "node scripts/rebalance.mjs",
     "capture": "node scripts/capture.mjs",
     "diagram": "tsx scripts/diagram.ts && node scripts/diagrampng.mjs",
-    "film": "node scripts/film.mjs"
+    "film": "node scripts/film.mjs",
+    "test:device": "node scripts/devicetest.mjs"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
