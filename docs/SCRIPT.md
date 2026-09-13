@@ -16,6 +16,29 @@
 
 ---
 
+## The elevator pitch, spoken
+
+Roughly 35 seconds. Leo's voice, live register: chained sentences, softeners
+left in, no punchline at the end.
+
+> So we asked four people to draw how something they own is made, like a t-shirt
+> or a glass bottle, and none of them could get past the first step, and
+> honestly I couldn't either. So we made a game out of it, called From Scratch.
+> You start with twelve things, stone, water, iron ore, that kind of thing, and
+> you put two together and see what comes out, and there are around a thousand
+> things you can make, and every one of them is a process that happens in the
+> world with a source behind it. The part I like most is that you're wrong about
+> 99.8% of the time, and every time you're wrong it tells you why, so being
+> wrong is kind of the point. It all runs in your browser, so there's no account
+> and nothing to install, you just open the link.
+
+Fifteen-second cut, if someone is walking:
+
+> It's a game about how the things around you are made. You start with twelve
+> things and put two together, and there are about a thousand you can find, and
+> every one of them is real and sourced. You're wrong 99.8% of the time and it
+> tells you why every time.
+
 ## 1. Why this exists at all — 20 seconds
 
 Follows straight out of the intro, where four people try to draw how something
