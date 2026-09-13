@@ -22,8 +22,9 @@
  * on screen are 920 real discoveries. Only the shutter is artificial.
  *
  *   npm run film                       the default cut, 30s at 1280x720
- *   npm run film -- --seconds=20       shorter, by raising the frame rate
- *   npm run film -- --hold=2           two frames a card, for a slower read
+ *   npm run film -- --seconds=45       longer, so more of it can be filmed
+ *   npm run film -- --every=10         film one interaction in ten, not fifteen
+ *   npm run film -- --scroll=5         smoother scrolling, more frames per move
  */
 import { chromium } from 'playwright'
 import { mkdirSync, rmSync, statSync, existsSync, readFileSync } from 'node:fs'
@@ -38,9 +39,35 @@ const arg = (name, fallback) => {
 
 const WIDTH = Number(arg('width', 1280))
 const HEIGHT = Number(arg('height', 720))
+/*
+ * How many discoveries pass between filmed ones, and how many frames a scroll
+ * is spread over. A full interaction is about fifteen frames, so at thirty
+ * seconds roughly sixty of them fit — one in fifteen of 920. The rest still
+ * happen; they are just not photographed, which is what a timelapse is.
+ */
 const SECONDS = Number(arg('seconds', 30))
-/** Frames per beat. One is the fastest honest reading of "920 cards". */
-const HOLD = Number(arg('hold', 1))
+const SCROLL = Number(arg('scroll', 4))
+/*
+ * 30fps, fixed. Deriving the frame rate from the frame count landed the first
+ * cut at 46fps, which is a number no editor wants to see in a timeline — and
+ * the fix is to change how much gets FILMED rather than how fast it plays.
+ */
+const FPS = 30
+/*
+ * Frames a full interaction costs: three scrolls, two picks, the combine, the
+ * card held three, and the dismiss. Kept in step with the driver, because this
+ * is what decides how much gets filmed for a given length.
+ */
+const CARD_FRAMES = 3
+const PER_INTERACTION = SCROLL * 3 + 3 + CARD_FRAMES + 1
+/*
+ * How many discoveries pass between filmed ones. Derived from the length you
+ * asked for rather than picked: thirty seconds at 30fps is 900 frames, which
+ * is fifty interactions, which is one in twenty of a thousand.
+ */
+const EVERY = Number(
+  arg('every', Math.max(1, Math.round(1004 / ((SECONDS * FPS) / PER_INTERACTION)))),
+)
 const BASE = arg('base', null)
 const OUT = 'capture'
 const FRAMES = join(OUT, 'frames')
@@ -85,16 +112,17 @@ async function main() {
    * everything." Skipping the tutorial is a real control the game already has,
    * not a back door made for this.
    */
-  await page.goto(`${base}/?demo=film`)
+  const filmUrl = `${base}/?demo=film&stop=${EVERY}&batch=${SCROLL}`
+  await page.goto(filmUrl)
   await page.evaluate(() => {
     localStorage.clear()
     localStorage.setItem('from-scratch:skipped', '1')
   })
-  await page.goto(`${base}/?demo=film`)
+  await page.goto(filmUrl)
   await page.getByRole('button', { name: /everything/i }).first().click()
   await page.waitForFunction(() => '__film' in window, null, { timeout: 30_000 })
 
-  const counts = { discovery: 0, miss: 0, hint: 0, skip: 0 }
+  const counts = {}
   let frame = 0
   const started = Date.now()
 
@@ -102,7 +130,7 @@ async function main() {
     const kind = await page.evaluate(() => window.__film.next())
     if (kind === 'done') break
     counts[kind] = (counts[kind] ?? 0) + 1
-    if (kind === 'skip') continue
+    if (kind === 'skip' || kind === 'plan') continue
 
     /*
      * Two animation frames before the shutter. One is not enough: React
@@ -114,10 +142,8 @@ async function main() {
     )
 
     const shot = await page.screenshot({ type: 'png' })
-    for (let i = 0; i < HOLD; i++) {
-      const { writeFileSync } = await import('node:fs')
-      writeFileSync(join(FRAMES, `f${String(++frame).padStart(5, '0')}.png`), shot)
-    }
+    const { writeFileSync } = await import('node:fs')
+    writeFileSync(join(FRAMES, `f${String(++frame).padStart(5, '0')}.png`), shot)
 
     if (frame % 100 === 0) {
       const rate = frame / ((Date.now() - started) / 1000)
@@ -133,11 +159,15 @@ async function main() {
    * what makes "thirty seconds" true rather than approximately true: however
    * many beats the run produced, they are spread across exactly that long.
    */
-  const fps = Math.max(1, frame / SECONDS)
+  const fps = FPS
+  const seconds = frame / FPS
+  const made = await page.evaluate(() => window.__film?.made?.() ?? 0).catch(() => 0)
   console.log(
-    `\n  ${counts.discovery} discoveries, ${counts.miss} dead ends, ${counts.hint} hints` +
-      `\n  ${frame} frames at ${fps.toFixed(1)}fps = ${SECONDS}s\n`,
+    `\n  ${Object.entries(counts).map(([k, v]) => `${v} ${k}`).join(', ')}` +
+      `\n  one interaction filmed in every ${EVERY}` +
+      `\n  ${frame} frames at ${FPS}fps = ${seconds.toFixed(1)}s\n`,
   )
+  void made
 
   execFileSync('ffmpeg', [
     '-y', '-framerate', String(fps), '-i', join(FRAMES, 'f%05d.png'),

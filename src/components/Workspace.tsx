@@ -809,37 +809,65 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
   }, [demo.mode, demo.ms, demo.stop, demo.hitRate, demo.seed, realm, data])
 
   /*
-   * FRAME BY FRAME, FOR THE THIRTY-SECOND CUT.
+   * FRAME BY FRAME, AND THE WHOLE INTERACTION — NOT JUST THE PAYOFF.
    *
-   * Leo: "give me a 30 second or less video of 'finishing' all 920
-   * combinations... i want 920 diffferent new discovery pages, and some
-   * wrongs, some hints, scattered across. making it seem like a 1 hour video
-   * of completing the everything is time lapsed to 30 seconds."
+   * The first cut of this photographed one frame per discovery, which put 920
+   * cards in thirty seconds and was wrong for two reasons Leo named exactly:
    *
-   * Thirty seconds is 900 frames. 920 cards do not fit into that by playing
-   * faster — the browser cannot mount and unmount that many full-screen panels
-   * in half a minute, and speeding footage up afterwards drops precisely the
-   * frames the cards are on. A timelapse of real hours has never been filmed
-   * in real time; it is one exposure per event, assembled. So this advances
-   * exactly one beat per call and lets the camera outside decide when.
+   *   "its unrealistic, becasue to use the items below, you need to scroll
+   *   down, and click it then go back up and combine."
+   *   "theres a lot of flashing... and since theres no vertical movement is
+   *   just looks bad on the eyes."
    *
-   * Every beat is the real code path — `game.combine` grants the element and
-   * `explainFailure` writes the refusal. Only the shutter is artificial.
+   * Both are the same fault. A discovery is not one moment, it is a sequence —
+   * scroll to a tile, click it, scroll to another, click that, come back to
+   * the bench, press combine, read the card, dismiss it. Photographing only
+   * the last step gives you 920 unrelated full-screen panels cut together at
+   * thirty a second, which is a strobe rather than a timelapse.
+   *
+   * THE ARITHMETIC THAT DECIDES THE DESIGN
+   *
+   * A full interaction is about fifteen frames once the scrolling moves in
+   * steps rather than jumping. Fifteen times 920 is seven and a half minutes.
+   * So all 920 interactions do not fit in thirty seconds and no amount of
+   * cleverness changes that.
+   *
+   * Which is what a timelapse has always done about it: photograph every Nth
+   * moment. Every discovery here is real and every one of them happens — one
+   * in fifteen is FILMED, in full, and the rest go by between exposures, the
+   * way the flower keeps opening between frames. The counter still reaches
+   * 920 because it still made 920 things.
    */
-  const filmRef = useRef({ n: 0, held: new Set<string>() })
+  const filmRef = useRef({
+    /** Where we are in the current interaction. */
+    phase: 'plan' as
+      | 'plan'
+      | 'scrollA'
+      | 'pickA'
+      | 'scrollB'
+      | 'pickB'
+      | 'toBench'
+      | 'combine'
+      | 'card'
+      | 'dismiss',
+    step: 0,
+    from: 0,
+    to: 0,
+    pair: ['', ''] as [string, string],
+    kind: 'hit' as 'hit' | 'miss',
+    shown: 0,
+    held: new Set<string>(),
+  })
+
   useEffect(() => {
     if (demo.mode !== 'film') return
     const random = rng(demo.seed)
-    const state = filmRef.current
-    state.n = 0
-    state.held = new Set(gameRef.current.allDiscovered())
+    const film = filmRef.current
+    film.phase = 'plan'
+    film.step = 0
+    film.shown = 0
+    film.held = new Set(gameRef.current.allDiscovered())
 
-    /*
-     * Derived here rather than closed over from the render, so the dependency
-     * list is the truth. All three are functions of `data` and `realm`, which
-     * are the deps — reading the render's copies would have worked and would
-     * have been a lie the next person has to re-derive.
-     */
     const nameOf = (id: string) => data.elements.find((el) => el.id === id)!
     const targets = new Set(Object.values(data.targets).flat())
     const total = new Set(
@@ -851,91 +879,204 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
         }),
     ).size
 
-    const film = {
-      /** One beat. Returns what it did, so the camera can log the cut. */
+    /** How many frames a scroll is spread over. More is smoother and slower. */
+    const SCROLL_FRAMES = Math.max(1, demo.batch)
+    /** Film one interaction in this many discoveries; the rest happen unseen. */
+    const EVERY = Math.max(1, demo.stop === Infinity ? 15 : demo.stop)
+
+    function tileTop(id: string): number {
+      const tile = document.querySelector(`[data-element="${CSS.escape(id)}"]`)
+      if (!tile) return window.scrollY
+      const box = tile.getBoundingClientRect()
+      const target = window.scrollY + box.top - (window.innerHeight - box.height) / 2
+      const max = document.documentElement.scrollHeight - window.innerHeight
+      return Math.max(0, Math.min(max, Math.round(target)))
+    }
+
+    /*
+     * Stepped, not animated. The browser's own smooth scroll lands on
+     * fractional offsets, which resamples every sprite on the page — and each
+     * of these steps is a separate exposure anyway, so the smoothness has to
+     * come from the number of frames rather than from an easing curve.
+     */
+    function scrollStep(): boolean {
+      film.step++
+      const t = film.step / SCROLL_FRAMES
+      const y = Math.round(film.from + (film.to - film.from) * Math.min(1, t))
+      window.scrollTo({ top: y, behavior: 'instant' })
+      return film.step >= SCROLL_FRAMES
+    }
+
+    /** Everything that happens between two filmed interactions, unphotographed. */
+    function catchUp(n: number) {
+      const current = gameRef.current
+      for (let i = 0; i < n; i++) {
+        const step = nextDemoStep(data, film.held, realm)
+        if (!step) return
+        current.countAttempt(realm)
+        const result = current.combine(step.inputs[0], step.inputs[1])
+        if (result.status !== 'discovered') return
+        current.countSuccess(realm)
+        film.held.add(result.recipe.output)
+      }
+    }
+
+    const api = {
+      /** One FRAME. Returns what this frame shows, for the camera's log. */
       next(): string {
         const current = gameRef.current
-        const n = state.n++
 
-        /*
-         * Scatter the refusals and the hints through the run rather than
-         * bunching them. Primes, so the three never coincide and the pattern
-         * never becomes visible as a pattern.
-         */
-        if (n > 0 && n % 17 === 0) {
-          setDiscovery(null)
-          setReceiptElement(null)
-          const held = [...state.held]
-          const real = new Set(
-            data.recipes.map((r) => [r.inputs[0], r.inputs[1]].sort().join('+')),
-          )
-          for (let i = 0; i < 40; i++) {
-            const a = held[Math.floor(random() * held.length)]
-            const b = held[Math.floor(random() * held.length)]
-            if (!a || !b || a === b) continue
-            if (real.has([a, b].sort().join('+'))) continue
-            current.countAttempt(realm)
-            current.countMiss(realm, a, b)
+        switch (film.phase) {
+          case 'plan': {
+            setDiscovery(null)
+            setReceiptElement(null)
+            /*
+             * A dead end every seventh filmed interaction. Over 97% of real
+             * attempts fail, and a clip where everything works says plainly
+             * that nobody is playing — but a clip that is mostly failure is
+             * thirty seconds of nothing happening. One in seven is the
+             * compromise, and it is the same one the acted driver makes.
+             */
+            film.kind = film.shown > 0 && film.shown % 7 === 0 ? 'miss' : 'hit'
+            if (film.kind === 'hit') {
+              const step = nextDemoStep(data, film.held, realm)
+              if (!step) return 'done'
+              film.pair = [step.inputs[0], step.inputs[1]]
+            } else {
+              const held = [...film.held]
+              const real = new Set(
+                data.recipes.map((r) => [r.inputs[0], r.inputs[1]].sort().join('+')),
+              )
+              let found: [string, string] | null = null
+              for (let i = 0; i < 40 && !found; i++) {
+                const a = held[Math.floor(random() * held.length)]
+                const b = held[Math.floor(random() * held.length)]
+                if (!a || !b || a === b) continue
+                if (real.has([a, b].sort().join('+'))) continue
+                found = [a, b]
+              }
+              if (!found) return 'skip'
+              film.pair = found
+            }
             setSlots([null, null])
-            setFeedback({
-              kind: 'no-match',
-              reason: explainFailure(a, b).message,
-              pair: [a, b],
-              names: [nameOf(a).name, nameOf(b).name],
-            })
-            return 'miss'
+            setFeedback(null)
+            setHint(null)
+            film.phase = 'scrollA'
+            film.step = 0
+            film.from = window.scrollY
+            film.to = tileTop(film.pair[0])
+            return 'plan'
           }
+
+          case 'scrollA':
+            if (scrollStep()) {
+              film.phase = 'pickA'
+              film.step = 0
+            }
+            return 'scroll'
+
+          case 'pickA':
+            actionsRef.current.pickTile(film.pair[0])
+            film.phase = 'scrollB'
+            film.step = 0
+            film.from = window.scrollY
+            film.to = tileTop(film.pair[1])
+            return 'pick'
+
+          case 'scrollB':
+            if (scrollStep()) {
+              film.phase = 'pickB'
+              film.step = 0
+            }
+            return 'scroll'
+
+          case 'pickB':
+            actionsRef.current.pickTile(film.pair[1])
+            film.phase = 'toBench'
+            film.step = 0
+            film.from = window.scrollY
+            film.to = 0
+            return 'pick'
+
+          case 'toBench':
+            // Back to the bench, because that is where the key is. This is the
+            // journey the first cut left out entirely.
+            if (scrollStep()) {
+              film.phase = 'combine'
+              film.step = 0
+            }
+            return 'scroll'
+
+          case 'combine': {
+            const [a, b] = film.pair
+            current.countAttempt(realm)
+            if (film.kind === 'miss') {
+              current.countMiss(realm, a, b)
+              setSlots([null, null])
+              setFeedback({
+                kind: 'no-match',
+                reason: explainFailure(a, b).message,
+                pair: [a, b],
+                names: [nameOf(a).name, nameOf(b).name],
+              })
+              film.phase = 'dismiss'
+              film.step = 0
+              return 'deadend'
+            }
+            const result = current.combine(a, b)
+            setSlots([null, null])
+            if (result.status !== 'discovered') {
+              film.phase = 'plan'
+              return 'skip'
+            }
+            current.countSuccess(realm)
+            film.held.add(result.recipe.output)
+            const made = nameOf(result.recipe.output)
+            if (targets.has(made.id)) setReceiptElement(made)
+            else setDiscovery({ element: made, recipe: result.recipe })
+            film.phase = 'card'
+            film.step = 0
+            return 'discovery'
+          }
+
+          case 'card':
+            /*
+             * Held for three frames, which is a tenth of a second.
+             *
+             * The card's scrim is a near-black wash over the whole screen, so
+             * every discovery is a bright-dark-bright cut. At one frame that
+             * is not a flash, it is a tear; at two it still reads as a flicker.
+             * At three it reads as a beat — the cut lands, you register it, it
+             * goes. This is most of what stops the whole thing strobing.
+             */
+            film.step++
+            if (film.step >= 3) {
+              film.phase = 'dismiss'
+              film.step = 0
+            }
+            return 'card'
+
+          case 'dismiss':
+            setDiscovery(null)
+            setReceiptElement(null)
+            setFeedback(null)
+            film.shown++
+            // And the ones nobody watches. They are as real as the filmed one.
+            if (film.kind === 'hit') catchUp(EVERY - 1)
+            film.phase = 'plan'
+            return 'dismiss'
         }
-
-        if (n > 0 && n % 43 === 0) {
-          setDiscovery(null)
-          setReceiptElement(null)
-          actionsRef.current.takeHint()
-          return 'hint'
-        }
-
-        const step = nextDemoStep(data, state.held, realm)
-        if (!step) return 'done'
-
-        const [a, b] = step.inputs
-        current.countAttempt(realm)
-        const result = current.combine(a, b)
-        if (result.status !== 'discovered') return 'skip'
-        current.countSuccess(realm)
-        state.held.add(result.recipe.output)
-
-        const made = nameOf(result.recipe.output)
-        setHint(null)
-        setFeedback(null)
-        setReceiptElement(null)
-        /*
-         * A target gets its receipt, exactly as it would in play — the
-         * dependency tree and the footprint. Those are the few frames in the
-         * run that look different from the rest, which is what stops nine
-         * hundred cards reading as one long card.
-         */
-        if (targets.has(made.id)) {
-          setDiscovery(null)
-          setReceiptElement(made)
-        } else {
-          setDiscovery({ element: made, recipe: result.recipe })
-        }
-        return 'discovery'
+        return 'skip'
       },
-      /** How much is left, so the camera knows when to stop. */
-      remaining(): number {
-        return total - state.held.size
-      },
-      made(): number {
-        return state.held.size
-      },
+      made: () => film.held.size,
+      remaining: () => total - film.held.size,
     }
 
-    ;(window as unknown as { __film?: typeof film }).__film = film
+    ;(window as unknown as { __film?: typeof api }).__film = api
     return () => {
-      delete (window as unknown as { __film?: typeof film }).__film
+      delete (window as unknown as { __film?: typeof api }).__film
     }
-  }, [demo.mode, demo.seed, realm, data])
+  }, [demo.mode, demo.seed, demo.batch, demo.stop, realm, data])
 
   function askWhyNot() {
     if (!feedback || feedback.kind !== 'no-match') return
