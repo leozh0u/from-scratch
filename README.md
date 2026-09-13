@@ -27,7 +27,7 @@ guess works no matter what they try.
 | Realm | What it teaches | Targets |
 | --- | --- | --- |
 | Survival | How making anything works at all | Fire, Charcoal, Lit Torch |
-| Everything | What ordinary manufactured things cost | Cotton T-Shirt, Aluminium Can, Glass Bottle |
+| Everything | The process and work that goes into manufacturing ordinary items  | Cotton T-Shirt, Aluminium Can, Glass Bottle |
 
 They aren't two separate games. Everything can't smelt without Survival's
 charcoal or evaporate without its fire, so the aluminium can's receipt traces
