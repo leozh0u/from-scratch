@@ -91,8 +91,31 @@ export function StatPanel({ stats, unit = 3 }: { stats: Stat[]; unit?: number })
             gap: `${unit * 3}px ${unit * 4}px`,
           }}
         >
-          {rest.map((stat) => (
-            <div key={stat.label} className="flex flex-col items-center">
+          {rest.map((stat, i) => (
+            <div
+              key={stat.label}
+              className="flex flex-col items-center"
+              /*
+               * AN ODD LAST STAT SPANS BOTH COLUMNS.
+               *
+               * There are five of these and the grid has two columns, so the
+               * last one sat alone in the left-hand column — off centre, and
+               * worse, it was the widest label in the panel. "Fails to hint"
+               * is thirteen characters, so the whole left column was sized to
+               * fit it and the panel came out about forty pixels wider than it
+               * needed to be, crowding the combine key beside it.
+               *
+               * Spanning it fixes both at once: it centres, and the columns
+               * fall back to the width of what is actually in them. Leo asked
+               * for the centring and for the block to be "a tiny bit smaller";
+               * they turn out to be the same change.
+               */
+              style={
+                i === rest.length - 1 && rest.length % 2 === 1
+                  ? { gridColumn: '1 / -1' }
+                  : undefined
+              }
+            >
               <span
                 style={{
                   fontFamily: 'var(--font-display)',
