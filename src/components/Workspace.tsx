@@ -117,12 +117,18 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
    * pins to the top while you are down in the tiles, and lands back exactly
    * where it started on the way up. No mode, no toggle, no stored state.
    *
-   * IT ONLY PINS WHEN THERE IS ROOM FOR IT. A bench pinned to a short screen
-   * would eat the tiles it exists to let you reach, so it is measured against
-   * the viewport and left in the flow when it would take more than half of it.
-   * Measured rather than guessed at, because the bench is a different height in
-   * Survival and Everything and different again when the mode drops the hint
-   * keys.
+   * IT ONLY PINS WHEN THERE IS ROOM FOR IT, and the test is how much room is
+   * LEFT rather than what share the bench takes. The first version refused to
+   * pin whenever the bench passed half the viewport, which sounded reasonable
+   * and was wrong in the most common case there is: a browser window that is
+   * not full height. At a 650px viewport the 363px bench is 56% of it, so the
+   * feature quietly did nothing on the exact screen Leo was looking at.
+   *
+   * What actually matters is whether enough shelf is still visible to be worth
+   * scrolling, which is about two rows of tiles. So the rule is that the bench
+   * plus two rows has to fit, and it is measured rather than assumed, because
+   * the bench is a different height in Survival and Everything and different
+   * again when the mode drops the hint keys.
    */
   const benchRef = useRef<HTMLDivElement | null>(null)
   const [benchHeight, setBenchHeight] = useState(0)
@@ -133,7 +139,9 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
     observer.observe(el)
     return () => observer.disconnect()
   }, [])
-  const benchSticks = benchHeight > 0 && benchHeight <= viewportHeight * 0.5
+  /** Roughly two rows of tiles, which is the least worth leaving on screen. */
+  const MIN_SHELF_ROOM = 200
+  const benchSticks = benchHeight > 0 && benchHeight + MIN_SHELF_ROOM <= viewportHeight
   /*
    * The HUD's two buttons plus the realm name have to share one strip. At a
    * 335px viewport the three of them wanted 383px and the title was clipped

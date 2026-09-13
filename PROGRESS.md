@@ -1217,24 +1217,33 @@ way up. No mode, no toggle, nothing stored.
 and left in the flow when it would take more than half the viewport, because a
 pinned bench on a short screen eats the tiles it exists to let you reach.
 
+**THE FIRST VERSION DID NOTHING ON LEO'S OWN SCREEN.** Leo: *"isnt working."*
+The guard refused to pin whenever the bench passed half the viewport, which
+sounded reasonable and failed in the most common case there is: a browser window
+that is not full height. At a 650px viewport the 363px bench is 56% of it, so
+the feature silently switched itself off on exactly the screen he was testing.
+
+The test is now how much room is LEFT, not what share the bench takes: the bench
+plus two rows of tiles has to fit. `benchHeight + 200 <= viewportHeight`.
+
 **Measured** (`scratch/stickycheck.mjs`, Cheater + Everything, scrolled to
 y=4000):
 
-| device | bench | share | pins | combine after scrolling |
-|---|---|---|---|---|
-| iPhone SE 375x667 | 615px | 92% | no | off screen |
-| iPhone 14 390x844 | 615px | 73% | no | off screen |
-| iPad mini 744x1133 | 329px | 29% | yes | visible at y=120 |
-| MacBook Air 1440x900 | 363px | 40% | yes | visible at y=136 |
-| 1080p 1920x1080 | 363px | 34% | yes | visible at y=136 |
+| device | bench | pins | combine after scrolling |
+|---|---|---|---|
+| iPhone SE 375x667 | 615px | no | off screen |
+| iPhone 14 390x844 | 615px | yes | visible at y=279 |
+| small window 1000x650 | 363px | yes | visible at y=136 |
+| laptop window 1280x720 | 363px | yes | visible at y=136 |
+| iPad mini 744x1133 | 329px | yes | visible at y=120 |
+| MacBook Air 1440x900 | 363px | yes | visible at y=136 |
+| 1080p 1920x1080 | 363px | yes | visible at y=136 |
 
-**So it does not help on phones yet, and that is not a threshold I can tune
-away.** At 375px the bench stacks into four rows (stats, slots and combine,
-hint and give up, readout) and comes out 615px tall, so pinning it would leave
-about 50px of tiles. The fix for phones is a separate compact bar — just the two
-slots and the combine key — that appears only once the real bench scrolls out of
-view, so nothing in the flow changes height. That is a new UI surface and the
-standing rule before filming is not to add one, so it is written down rather
-than built.
+The one that still cannot pin is the 667px phone, where the bench stacks into
+four rows and comes out 615px tall, so there is genuinely no shelf left to
+scroll. The fix there is a separate compact bar — the two slots and the combine
+key only — appearing once the real bench scrolls out of view, so nothing in the
+flow changes height. That is a new UI surface and the standing rule before
+filming is not to add one, so it is written down rather than built.
 
 `npm run test:device`: 280 passed, 0 failed.
