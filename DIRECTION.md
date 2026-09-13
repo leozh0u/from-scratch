@@ -352,6 +352,89 @@ technical stuff": fix the thing that is actually wrong.**
 
 ---
 
+## What else the model could do, and the one thing it must not
+
+Leo: *"make sure the api stuff works, plan what more we could do with the api,
+like a chat bot or something."*
+
+### The thing it must not do: a free text box
+
+A chat box would be a fifth use of Gemini and judges like chat boxes. It is
+still the wrong build, and not by a small margin.
+
+The whole claim of this project is that **nothing in it is invented**. A free
+text field wired to a model is a machine for producing confident guesses about
+exactly the two things it must never guess about: what combines with what, and
+how much anything costs. The moment a player can type "what makes steel", the
+model will answer, it will sometimes be wrong, and the answer will appear
+inside a game whose entire pitch is that its content is verified.
+
+**So the recommendation is not "no chatbot for now". It is: say so, on camera.**
+"We deliberately did not build a chat box, and here is why" is a stronger
+thirty seconds than having one, because every other team has one and none of
+them can explain what theirs is not allowed to do.
+
+### What IS worth building, in order
+
+**1. Ask about a PROCESS, not just an element.** The game already prints "via
+knapping", "via retting", "via calcining" on every discovery — roughly two
+hundred real industrial processes, and most players have never heard of half of
+them. The same closed-set mechanism works: the client sends a process NAME out
+of a list the data already contains, and the server owns the wording. New
+surface, new teaching, same fence, and it is the single most interesting thing
+in the game that currently has no explanation attached.
+
+**2. A model-written session summary.** At the end of a run: "you used 47
+different real processes today." The model receives only the list of process
+names and may only summarise them. No numbers, no recipes, nothing it could
+invent.
+
+**3. Nothing else.** More uses past that are decoration, and each one is
+another place the fence has to hold.
+
+---
+
+## The learning side, and what makes this not Little Alchemy
+
+Leo: *"think also about how we could target more the learning side, making it
+fully unique from little alchemy."*
+
+**The honest difference today.** Little Alchemy is whimsical on purpose — human
+plus star makes an astronaut, and nobody is claiming otherwise. Four things
+separate this:
+
+- every recipe is a transformation that really happens, with a citation
+- **the failures teach**, which is the unusual one: 98% of attempts fail, and
+  each one gets a real reason out of a 37-rule table
+- the model explains on request, fenced
+- the receipt shows what a finished object actually cost
+
+That is already a different genre. But three of those four only pay off when
+something goes RIGHT, and the strongest one — teaching through refusal — is
+invisible until you have failed a few times.
+
+### What would make the learning unmistakable
+
+**1. The process glossary, and it is the best idea here.** Every discovery
+already says "via <process>", and those are real: knapping, retting, calcining,
+vulcanising, sintering, galvanising, annealing. Nobody knows most of them.
+Collect them into a browsable list with what each one makes, and the game gains
+a second axis: not just *what* is made of what, but *what you do to things*.
+
+It is almost free — the processes are already in `gameData.ts`, one per recipe
+— and it pairs exactly with the model's new use above. **This is the feature
+that would make a judge say "oh, this is a teaching tool".**
+
+**2. Retrieval practice.** Occasionally, on re-opening something from the
+inventory, ask which two things made it before showing the answer. Recognition
+is not learning; retrieval is — it is the single best-evidenced technique in
+the whole of educational psychology, and it costs one component.
+
+**3. Say the number out loud.** "You used 47 real industrial processes" is a
+sentence about the player, not about the game, and it is the one that travels.
+
+---
+
 ## The ceiling — how many elements is realistic
 
 **Where it stands: 932 elements, 935 recipes, 920 of them craftable.** Sixty-eight
