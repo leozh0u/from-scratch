@@ -27,6 +27,15 @@ import { useViewport } from '../hooks/useViewport'
  */
 
 /** Three fixed brightnesses. Stars step between these; they never blend. */
+/**
+ * How many streaks are in flight at once, each on its own window.
+ *
+ * Five rather than three, at Leo's asking. They never synchronise because
+ * every one has its own period and its own offset, so more of them reads as a
+ * busier sky rather than as a pulse.
+ */
+const STREAKS = 5
+
 const BRIGHTNESS = ['#6f6c9a', '#a8a6c8', '#ffffff']
 
 /**
@@ -110,7 +119,7 @@ export function shootingStarAt(
   seed: number,
   width: number,
   height: number,
-): { x: number; y: number; length: number } | null {
+): { x: number; y: number; length: number; dir: 1 | -1 } | null {
   /*
    * One window per streak, so several can be staggered without ever
    * synchronising.
@@ -124,8 +133,28 @@ export function shootingStarAt(
    * Rarity was never the problem. Legibility was. So the gap comes down only
    * a little and the streak itself gets much more readable: longer tail,
    * further travel, and long enough on screen to actually follow.
+   *
+   * RETUNED AGAIN, because Leo asked for "a bit more often and numerous".
+   * Five streaks rather than three and a shorter window each, which is about
+   * one every three seconds between them. That is more than the original note
+   * above argues for, and the note is still right in principle — but the sky
+   * is behind a menu somebody sits on while deciding, not behind gameplay, so
+   * it can afford to be busier than a real one.
    */
-  const windowMs = 14_000 + hash(seed * 61) * 20_000
+  /*
+   * SPREAD DELIBERATELY, THEN JITTERED — not left to the hash.
+   *
+   * A pure hash gives no guarantee of separation, and it did not: seeds 2 and
+   * 3 came out 20ms apart, which means they arrive TOGETHER every time for
+   * about ninety minutes. Two streaks that always land as a pair is the
+   * scripted look the whole approach exists to avoid, and neither the eye nor
+   * the old test caught it — it was found by printing the periods.
+   *
+   * So the periods are laid out evenly across the range first and the hash
+   * only jitters each one by under a second. Guaranteed separation, and still
+   * nothing that repeats.
+   */
+  const windowMs = 9_000 + ((seed * 2_600) % 13_000) + hash(seed * 61) * 900
   const streakMs = 1_100
   const t = (now + hash(seed * 71) * windowMs) % windowMs
   if (t > streakMs) return null
@@ -139,6 +168,7 @@ export function shootingStarAt(
   const span = width * 0.46
 
   return {
+    dir: dir as 1 | -1,
     x: Math.floor(startX + dir * progress * span),
     y: Math.floor(startY + progress * span * 0.55),
     // The tail grows as it enters and shrinks as it burns out, which is what
@@ -225,12 +255,22 @@ export function Starfield({
        * the thing this whole look avoids. It gets one pixel dimmer at the far
        * end and that is the entire falloff.
        */
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < STREAKS; i++) {
         const shot = shootingStarAt(now, i + 1, width, height)
         if (!shot) continue
         for (let t = 0; t < shot.length; t++) {
           ctx.fillStyle = t < 4 ? BRIGHTNESS[2] : t < 8 ? BRIGHTNESS[1] : BRIGHTNESS[0]
-          ctx.fillRect(shot.x - t, shot.y - t, 1, 1)
+          /*
+           * THE TAIL TRAILS BEHIND, WHICH DEPENDS ON WHICH WAY IT IS GOING.
+           *
+           * This was `shot.x - t` for both directions, so the one travelling
+           * down-and-LEFT dragged its tail down-and-left as well — the tail
+           * leading the head, which reads as a thing being pushed rather than
+           * a thing falling. Leo spotted it. Behind is the opposite of travel,
+           * so the x step is the opposite of `dir` and the y step is always
+           * upward, because the streak always falls.
+           */
+          ctx.fillRect(shot.x - shot.dir * t, shot.y - t, 1, 1)
         }
         // The head is a 2x2 block rather than a single pixel. Still whole
         // pixels on the same grid, but it gives the streak something to lead
