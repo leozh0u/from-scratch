@@ -154,6 +154,22 @@ function sprite(art: { rows: string[]; palette: Record<string, string> }, cx: nu
     .join('')
 }
 
+/**
+ * A small key with a name on its face and one short line under it.
+ *
+ * The tech slide wanted a list and a list is the one thing this deck does not
+ * do — a column of bullet points is what every other team's stack slide looks
+ * like. A grid of keys says the same eight facts in the game's own furniture,
+ * and the key face is a hard width limit, so nothing can grow into a sentence.
+ */
+function tile(x: number, y: number, w: number, h: number, name: string, role: string, tone: ToneId): string {
+  return [
+    key(x, y, w, h, tone),
+    text(x + w / 2, y + Math.round((h - 24) / 2) + 10, name, 24, TEXT, 2, INK),
+    text(x + w / 2, y + h + 42, role, 20, MUTED),
+  ].join('')
+}
+
 function slide(title: string, body: string, footer?: string, seed = 9): string {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" shape-rendering="crispEdges">
 ${starfield(seed)}
@@ -317,10 +333,52 @@ const numbers = (() => {
   return slide('WHAT IS IN IT', out.join(''), 'none of it was invented. that is the whole point.', 57)
 })()
 
+/*
+ * WHAT IT IS BUILT WITH — the specifics, because "a React app" is not an
+ * answer anybody remembers.
+ *
+ * Every line here is checked rather than recalled: the versions come from the
+ * installed packages, "zero any" from a grep over src/ and api/, 280 from the
+ * device sweep's 14 sizes x 5 screens x 4 assertions, and 250 from the arrival
+ * rate the k6 profile actually ramps to.
+ */
+const tech = (() => {
+  const items: [string, string, ToneId][] = [
+    ['REACT 19', 'one page, no router', 'teal'],
+    ['TYPESCRIPT 6', 'zero any in src', 'teal'],
+    ['VITE 8', 'one static bundle', 'teal'],
+    ['TAILWIND 4', 'plus hand css', 'teal'],
+    ['VERCEL', 'two functions', 'purple'],
+    ['GEMINI FLASH', 'only when asked', 'orange'],
+    ['PLAYWRIGHT', '280 layout checks', 'purple'],
+    ['K6', '250 players a second', 'purple'],
+  ]
+  const MARGIN = 90
+  const gap = 44
+  const cols = 4
+  const w = Math.floor((W - MARGIN * 2 - gap * (cols - 1)) / cols)
+  const h = 130
+  const out: string[] = [
+    text(W / 2, 224, 'four runtime dependencies. no state library, no ui kit.', 22, MUTED),
+  ]
+  items.forEach(([name, role, tone], i) => {
+    const x = MARGIN + (i % cols) * (w + gap)
+    const y = 366 + Math.floor(i / cols) * 300
+    out.push(tile(x, y, w, h, name, role, tone))
+  })
+  return slide(
+    'WHAT IT IS BUILT WITH',
+    out.join(''),
+    'react and react-dom are the only packages the app imports at runtime.',
+    68,
+  )
+})()
+
 mkdirSync(OUT, { recursive: true })
 for (const [name, doc] of [
   ['stack', stack], ['combine', combine], ['gate', gate],
   ['chain', chain], ['icons', icons], ['numbers', numbers],
+  ['tech', tech],
 ] as [string, string][]) {
   writeFileSync(`${OUT}/diagram-${name}.svg`, doc)
   console.log(`  ${OUT}/diagram-${name}.svg`)

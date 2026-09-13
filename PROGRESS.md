@@ -936,3 +936,29 @@ Verified against the live DOM at 320, 375, 700 and 900px — the first tile's
 Also removed, as asked: the paragraph under *show the route?*. And `Overlay`
 now holds the scrim and the Escape key that four panels each had their own copy
 of.
+
+## Diagram 7: the tech slide
+
+Leo: *"for one of the stack ones, we should include more like react, typescript,
+vite more specifics but no paragrpahs. like tech used page? i like the minimal
+stuff."*
+
+`docs/diagram-tech.png`, added to `scripts/diagram.ts` as a new `tile()` helper
+plus a 4x2 grid. A list was the obvious layout and the wrong one — a column of
+bullets is what every other team's stack slide looks like — so the eight facts
+sit on eight of the game's own keys. The key face is a hard width limit, which
+is what stops a role growing into a sentence.
+
+Every line checked rather than recalled:
+- versions from the installed packages (react 19.3.0, typescript 6.0.3,
+  vite 8.3.0, tailwind 4.3.3)
+- "zero any in src" from a grep over `src/` and `api/` — the only hit is the
+  English word in a ForestScene comment
+- 280 = devicetest's 14 devices x 5 screens x 4 assertions
+- 250 = the arrival rate `load/gameplay.js` actually ramps to
+- "four runtime dependencies" = the `dependencies` block; `src/` imports only
+  `react` and `react-dom/client`
+
+`docs/SCRIPT.md` updated: seven diagrams not six, the stack cue corrected (the
+fence is a footer line now, not a panel), and a cue for the new slide with the
+one line worth saying over it.
