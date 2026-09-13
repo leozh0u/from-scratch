@@ -1,3 +1,15 @@
+/*
+ * SUPERSEDED BY scripts/reform.mjs — DO NOT RUN THIS AFTER IT.
+ *
+ * This spread overcrowded silhouettes into related ones. It worked on capacity
+ * and paid for it in meaning: because `plate` was a fallback target for nine
+ * other forms, everything eventually drained into it — eighty members,
+ * including a house, a kettle and a road.
+ *
+ * `reform.mjs` assigns the silhouette from what the element IS, which is both
+ * more accurate and better spread. Running this after it would undo that.
+ * Kept only so the history of the batch loop reads straight.
+ */
 import { readFileSync, writeFileSync } from 'node:fs'
 const path = 'src/data/iconRegistry.ts'
 let src = readFileSync(path, 'utf8')
