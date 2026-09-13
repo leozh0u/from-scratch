@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="470" viewBox="0 0 1500 470" shape-rendering="crispEdges">
+<rect width="1500" height="470" fill="#191536"/>
+<text x="750" y="70" font-family="'Press Start 2P'" font-size="22" fill="#ffffff" text-anchor="middle" letter-spacing="3">WHAT IS ACTUALLY IN IT</text>
+<text x="232.5" y="180" font-family="'Press Start 2P'" font-size="44" fill="#ffffff" text-anchor="middle" letter-spacing="2">1033</text>
+<text x="232.5" y="220" font-family="'Press Start 2P'" font-size="10" fill="#a29ec4" text-anchor="middle" letter-spacing="1">elements</text>
+<text x="577.5" y="180" font-family="'Press Start 2P'" font-size="44" fill="#ffffff" text-anchor="middle" letter-spacing="2">1036</text>
+<text x="577.5" y="220" font-family="'Press Start 2P'" font-size="10" fill="#a29ec4" text-anchor="middle" letter-spacing="1">recipes</text>
+<text x="922.5" y="180" font-family="'Press Start 2P'" font-size="44" fill="#ffffff" text-anchor="middle" letter-spacing="2">557</text>
+<text x="922.5" y="220" font-family="'Press Start 2P'" font-size="10" fill="#a29ec4" text-anchor="middle" letter-spacing="1">real processes</text>
+<text x="1267.5" y="180" font-family="'Press Start 2P'" font-size="44" fill="#ffffff" text-anchor="middle" letter-spacing="2">1021</text>
+<text x="1267.5" y="220" font-family="'Press Start 2P'" font-size="10" fill="#a29ec4" text-anchor="middle" letter-spacing="1">you can make</text>
+<polygon points="72,270 68,274 64,278 60,282 1440,282 1436,278 1432,274 1428,270 1440,398 1436,402 1432,406 1428,410 72,410 68,406 64,402 60,398" fill="#100d20"/>
+<polygon points="72,274 68,278 64,282 1436,282 1432,278 1428,274 1436,398 1432,402 1428,406 72,406 68,402 64,398" fill="#1e1b38"/>
+<rect x="72" y="402" width="1356" height="4" fill="#3a3560"/>
+<rect x="72" y="274" width="1356" height="4" fill="#12102a"/>
+<text x="750" y="306" font-family="'Press Start 2P'" font-size="12" fill="#e8752c" text-anchor="middle" letter-spacing="1">AND WHAT THAT MEANS</text>
+<text x="750" y="330" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">534,061 possible pairs.  1036 of them do anything.  a player is wrong 99.8% of the time.</text>
+<text x="750" y="347" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">every recipe carries a citation, and all 1,024 URLs are fetched and checked against their page title at build time</text>
+<text x="750" y="364" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">two inputs and not three, because three would be 183 million combinations instead of half a million</text>
+<text x="750" y="440" font-family="'Press Start 2P'" font-size="9" fill="#6fc48d" text-anchor="middle" letter-spacing="1">none of it was invented. that is the whole point.</text>
+</svg>

@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="627" viewBox="0 0 1440 627" shape-rendering="crispEdges">
+<rect width="1440" height="627" fill="#191536"/>
+<text x="720" y="60" font-family="'Press Start 2P'" font-size="22" fill="#ffffff" text-anchor="middle" letter-spacing="3">PRESSING COMBINE</text>
+<text x="720" y="98" font-family="'Press Start 2P'" font-size="10" fill="#e8752c" text-anchor="middle" letter-spacing="1">534,061 possible pairs.  1,036 of them do something.</text>
+<text x="720" y="132" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">so the failing case is not an edge case, it is the game — and it has to be free</text>
+<polygon points="72,200 68,204 64,208 60,212 440,212 436,208 432,204 428,200 440,362 436,366 432,370 428,374 72,374 68,370 64,366 60,362" fill="#100d20"/>
+<polygon points="72,204 68,208 64,212 436,212 432,208 428,204 436,362 432,366 428,370 72,370 68,366 64,362" fill="#332f57"/>
+<rect x="72" y="204" width="356" height="4" fill="#4a4578"/>
+<rect x="72" y="366" width="356" height="4" fill="#231f40"/>
+<text x="250" y="236" font-family="'Press Start 2P'" font-size="12" fill="#ffffff" text-anchor="middle" letter-spacing="1">THE RECIPE INDEX</text>
+<text x="250" y="260" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">a map lookup in the browser</text>
+<text x="250" y="294" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">hit  -&gt; the element is granted</text>
+<text x="250" y="311" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">miss -&gt; nothing is granted, ever</text>
+<text x="250" y="345" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">this is the ONLY thing that can</text>
+<text x="250" y="362" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">give you an element</text>
+<polygon points="542,200 538,204 534,208 530,212 910,212 906,208 902,204 898,200 910,362 906,366 902,370 898,374 542,374 538,370 534,366 530,362" fill="#100d20"/>
+<polygon points="542,204 538,208 534,212 906,212 902,208 898,204 906,362 902,366 898,370 542,370 538,366 534,362" fill="#332f57"/>
+<rect x="542" y="204" width="356" height="4" fill="#4a4578"/>
+<rect x="542" y="366" width="356" height="4" fill="#231f40"/>
+<text x="720" y="236" font-family="'Press Start 2P'" font-size="12" fill="#6fc48d" text-anchor="middle" letter-spacing="1">THE RULE TABLE</text>
+<text x="720" y="260" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">37 rules over material tags</text>
+<text x="720" y="294" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">answers WHY those two do</text>
+<text x="720" y="311" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">nothing, in under a millisecond</text>
+<text x="720" y="345" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">no network. works offline.</text>
+<text x="720" y="362" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">runs on 99.8% of presses</text>
+<polygon points="1012,200 1008,204 1004,208 1000,212 1380,212 1376,208 1372,204 1368,200 1380,362 1376,366 1372,370 1368,374 1012,374 1008,370 1004,366 1000,362" fill="#100d20"/>
+<polygon points="1012,204 1008,208 1004,212 1376,212 1372,208 1368,204 1376,362 1372,366 1368,370 1012,370 1008,366 1004,362" fill="#1e1b38"/>
+<rect x="1012" y="366" width="356" height="4" fill="#3a3560"/>
+<rect x="1012" y="204" width="356" height="4" fill="#12102a"/>
+<text x="1190" y="236" font-family="'Press Start 2P'" font-size="12" fill="#e8752c" text-anchor="middle" letter-spacing="1">THE MODEL</text>
+<text x="1190" y="260" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">only when the player presses</text>
+<text x="1190" y="277" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">"why?"</text>
+<text x="1190" y="311" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">five to ten seconds, and it</text>
+<text x="1190" y="328" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">happens to somebody who asked</text>
+<text x="1190" y="362" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">never on the default path</text>
+<rect x="440" y="285" width="78" height="4" fill="#a29ec4"/>
+<rect x="526" y="285" width="4" height="4" fill="#a29ec4"/>
+<rect x="522" y="281" width="4" height="12" fill="#a29ec4"/>
+<rect x="518" y="277" width="4" height="20" fill="#a29ec4"/>
+<text x="485" y="271" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">miss</text>
+<rect x="910" y="285" width="78" height="4" fill="#e8752c"/>
+<rect x="996" y="285" width="4" height="4" fill="#e8752c"/>
+<rect x="992" y="281" width="4" height="12" fill="#e8752c"/>
+<rect x="988" y="277" width="4" height="20" fill="#e8752c"/>
+<text x="955" y="271" font-family="'Press Start 2P'" font-size="8" fill="#e8752c" text-anchor="middle" letter-spacing="0">on request</text>
+<polygon points="72,434 68,438 64,442 60,446 1380,446 1376,442 1372,438 1368,434 1380,545 1376,549 1372,553 1368,557 72,557 68,553 64,549 60,545" fill="#100d20"/>
+<polygon points="72,438 68,442 64,446 1376,446 1372,442 1368,438 1376,545 1372,549 1368,553 72,553 68,549 64,545" fill="#1e1b38"/>
+<rect x="72" y="549" width="1296" height="4" fill="#3a3560"/>
+<rect x="72" y="438" width="1296" height="4" fill="#12102a"/>
+<text x="720" y="470" font-family="'Press Start 2P'" font-size="12" fill="#6fc48d" text-anchor="middle" letter-spacing="1">WHY THE ORDER MATTERS</text>
+<text x="720" y="494" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">this used to call the model on every failure and show "hmm..." for five seconds — on the most common interaction in the game</text>
+<text x="720" y="511" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">the local answer arrives first and always. the model sits behind a press, so the wait only ever reaches somebody who wanted it</text>
+<text x="720" y="601" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">measured: 48,154 requests, 401 a second, zero failures, p95 903 microseconds.</text>
+</svg>
