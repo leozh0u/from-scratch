@@ -6,7 +6,15 @@ import { Processes } from './components/Processes'
 import { StartScreen } from './components/StartScreen'
 import { StyleguidePage } from './components/StyleguidePage'
 import { Workspace } from './components/Workspace'
-import { readMode, readSkipped, writeSkipped, modeById, type ModeId } from './game/modes'
+import {
+  readMode,
+  writeMode,
+  readSkipped,
+  writeSkipped,
+  modeById,
+  DEFAULT_MODE,
+  type ModeId,
+} from './game/modes'
 import { useGameState } from './hooks/useGameState'
 
 /*
@@ -87,6 +95,23 @@ function Game() {
     game.reset()
     writeSkipped(false)
     setSkipped(false)
+    /*
+     * THE MODE GOES BACK TOO, AND IT HAS TO.
+     *
+     * Three separate things open the door to Everything: finishing Survival,
+     * skipping it, and Cheater mode, which reveals the whole graph. Reset was
+     * clearing the first two and leaving the third, so a wipe from Cheater
+     * landed on a title screen with the tutorial un-skipped, nothing
+     * discovered, and Everything still wide open. Leo: "i wiped it but the
+     * everything is stayed locked. make sure locking mechanism unskips."
+     *
+     * The rule is the same one that put the skip in here: start over has one
+     * plain meaning, and a control that leaves a door open is one nobody can
+     * predict. Re-picking a mode is one press of a key that is still there.
+     */
+    writeMode(DEFAULT_MODE)
+    setMode(DEFAULT_MODE)
+    setShowProcesses(false)
     setShowInventory(false)
     setRealm(null)
   }
