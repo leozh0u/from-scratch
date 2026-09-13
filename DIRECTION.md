@@ -394,6 +394,50 @@ another place the fence has to hold.
 
 ---
 
+## Challenges — yes, and here is why they fit
+
+Leo: *"what do you think about adding features like competitive or like
+challegnes and events, like make all things needed to play football, or all
+things needed to make a rocket etc etc."*
+
+**Yes, and it solves a problem the game actually has.** There are two goal
+structures today and an enormous hole between them: Survival's three targets
+is a finish line fifteen elements away, and Everything's completion is 1,021.
+A player who has made forty things has nothing to aim at. Challenges are
+exactly the missing middle.
+
+**It is also the thesis stated as a goal.** "Everything you need to play
+football" is not a list of objects, it is a lesson about how one ordinary
+afternoon depends on a dozen industries — a ball, boots, socks, a net, a
+whistle, a marked pitch. That is the point of the whole project, phrased as
+something to do rather than something to read.
+
+**And it is mostly data.** A challenge is a named set of element ids. The
+solver already does reachability and routes (`pathToTarget`,
+`nextUnfoundTarget`), the targets bar already renders a set with progress, and
+give-up already walks a dependency chain. Checked against the shipping data:
+football, boot, sock, net, whistle and pitch all exist; so do rocket, rocket
+engine, liquid oxygen, kerosene, alloy frame, valve and pump.
+
+**Two rules if it gets built.** Set membership has to be as honest as a recipe
+— if a challenge says football needs it, it genuinely needs it. And every item
+must be provably reachable, which `edgetest.ts` already knows how to check for
+realms and would check the same way here.
+
+### Competitive: the local half yes, the rest no
+
+**Leaderboards need a server**, and the absence of one is a tradeoff we defend
+on camera. Adding accounts to rank people would trade the strongest
+architectural argument for a feature nobody asked for.
+
+**Local records cost nothing and are honest**: fewest attempts to a target,
+fastest run, best hit rate. The stats panel already counts all three.
+
+**Time-limited events** need either a server to distribute them or dates baked
+into the bundle. Low value for a hackathon; skip.
+
+---
+
 ## The learning side, and what makes this not Little Alchemy
 
 Leo: *"think also about how we could target more the learning side, making it
