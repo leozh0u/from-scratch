@@ -60,3 +60,33 @@ hand-read, as only eight recipes carry one right now and the rest say zero rathe
 than guess, and doing one full chain properly would let us show the embodied
 water and carbon of a t-shirt from the soil upward. And a classroom version, as
 the thing it is good at is making someone ask where something came from.
+
+## Built With (25 tags)
+
+In priority order, so cutting from the bottom costs the least. Every one is
+something the repository actually uses; nothing here is padding for the count.
+
+react · typescript · vite · tailwind · vercel · google-gemini · serverless ·
+node.js · rest-api · playwright · k6 · oxlint · javascript · html5 · css3 ·
+canvas · svg · localstorage · json · wikipedia · google-fonts · figma · ffmpeg ·
+github · npm
+
+Where each one is used, if anyone asks:
+
+- **canvas** — four scenes draw to `<canvas>`: `Starfield`, `PixelEarth`,
+  `CityScene`, `ForestScene`.
+- **svg** — the icons and these slides.
+- **localstorage** — six keys; the save and the settings. There is no database.
+- **playwright** — the 14-device sweep, rasterising the slides, video capture.
+- **k6** — `load/gameplay.js` and `load/adjudicate.js`.
+- **oxlint** — `npm run lint`.
+- **wikipedia** — 2,071 of the 2,074 citations; `npm run links` fetches each one
+  and checks its page title.
+- **google-fonts** — Press Start 2P, Silkscreen, Nunito.
+- **figma** — the pixel-art direction the whole look came from, see
+  `docs/DESIGN.md`.
+- **ffmpeg** — `scripts/film.mjs` and `scripts/capture.mjs` encode the timelapse.
+
+**Add `godaddy` only if the domain is actually registered**, and drop `npm` to
+make room. Three slides already claim GoDaddy, so this tag and those chips
+should be true or gone together.
