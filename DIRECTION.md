@@ -264,7 +264,80 @@ None of that is on screen. The fix is exposition, not infrastructure:
 `docs/diagram-stack.png` and `docs/diagram-gate.png`, plus thirty seconds of
 script.
 
-### The one piece of real infrastructure worth adding
+### The bundle split is not a backend
+
+Leo: *"so do we add like a backedn or soemthing."* No — it is the opposite of
+one, and the distinction matters because they sound similar.
+
+A backend is a *server that holds state*: a database, a session, a thing that
+remembers you between visits and has to be running for the game to work.
+
+The split is: take the 490KB of recipe data out of the JavaScript bundle, write
+it as static JSON beside it, and fetch the part you need when you need it.
+**Still no server, still nothing running, still one static site on a CDN.** The
+same files, cut differently. It gets safer, not riskier, because the failure
+mode of a fetch that does not answer is a loading state rather than a broken
+game — and the fallback is exactly what ships today.
+
+Two numbers come out of it, which is the point for the video: how much smaller
+the first load is, and how much sooner the first tile is clickable.
+
+### MathWorks, in full, and why it is hours rather than minutes
+
+Leo: *"explain the mathworks thing more in dpth. you said it works right. but
+why does it take so much tie."*
+
+**What Leontief input-output analysis is.** Wassily Leontief won a Nobel for it
+in 1973. The idea: write down an economy as a matrix `A` where `A[i][j]` is how
+much of thing *i* it takes to make one unit of thing *j*. Then the TOTAL of
+everything needed to satisfy some final demand `d` — direct and indirect, at
+every depth, including the steel that made the machine that spun the yarn — is
+`(I − A)⁻¹ d`. One matrix inverse gives you every path at once.
+
+**Why that is the right tool here and not a flourish.** A recipe graph is
+exactly that matrix. And the naive alternative is what the game does today:
+walk the ancestors of an element and add up what each step cost. That works for
+a tree and starts lying the moment the graph is a DAG rather than a tree, which
+this one is — water, fire and charcoal appear in dozens of branches, and a walk
+that visits each path separately counts the shared ones more than once.
+Life-cycle assessment has this problem professionally, and this is the method
+it settled on. So the MATLAB piece would not be a bolt-on; it would be a
+genuinely better answer to the question the game exists to ask.
+
+**Why it is not two hours of work.** The code is not the cost. Building the
+matrix from `gameData.ts`, solving it and exporting a lookup table the game
+reads at runtime is an afternoon at the outside, and it should never be called
+live — a demo that depends on MATLAB responding is a demo with a new way to
+fail.
+
+The cost is the **numbers**, and it is the standing rule doing it: *never
+invent a number*. Today almost every footprint in the game is zero, honestly,
+because a figure requires a human to have opened a source. Feed the matrix
+zeros and you get zeros — an integration that is technically correct and says
+nothing, which is worse than not claiming the category.
+
+So it needs real per-step figures, and each one is:
+
+1. find a credible source — a published life-cycle assessment, an industry
+   body, a government dataset. Not a blog, not a number a model produced.
+2. locate the figure for **this specific step**, not for the finished product.
+3. check the unit. Per kilogram, per tonne, per item, per square metre — these
+   differ by three orders of magnitude and the mistake is invisible afterwards.
+4. check the **system boundary**. Cradle-to-gate and cradle-to-grave are
+   different numbers for the same process, and mixing them inside one chain
+   produces a total that is confidently wrong.
+5. record it with its citation, which `npm test` then enforces.
+
+Fifteen to twenty minutes each when it goes well, and a good fraction of steps
+have no public figure at all, which is its own decision to make. **Forty to
+sixty figures is ten to fifteen hours.**
+
+**The realistic version: do one chain.** The cotton t-shirt is about fifteen
+steps. Fifteen figures is three to four hours, it makes the matrix mean
+something for the one chain the demo actually walks, and the receipt at the end
+of it stops being mostly zeros. That is the version worth doing **if a teammate
+takes the sourcing** — and it must not come out of the video's time.
+
 
 **The graph has outgrown the bundle.** `gameData.ts` is 490KB of source and the
 whole JS bundle is 831KB, 212KB gzipped — the data is most of it. Every player
@@ -372,13 +445,12 @@ minutes.
 
 **Claim — Games & Gamification.** Obviously, and it is the thinnest field.
 
-**Conditional — MathWorks.** There is a genuine fit and it is worth stating
-because it is not obvious. Computing embodied footprint over a graph where
-sub-paths are shared is **Leontief input-output analysis** — the standard method
-in life-cycle assessment, and exactly what this game claims to do. Build the
-recipe graph as a sparse matrix in MATLAB, solve for total embodied water and
-CO2 per element, export a lookup table the game reads at runtime. Never call
-MATLAB live.
+**Conditional — MathWorks.** There is a genuine fit, explained in full under
+*MathWorks, in full* below. In one line: computing embodied footprint over a
+graph where sub-paths are shared is **Leontief input-output analysis**, the
+standard method in life-cycle assessment and exactly what this game claims to
+do. The code is an hour. The DATA is ten to fifteen hours, and that is the
+whole decision.
 
 The catch is real: **most footprints here are zero**, because a figure needs a
 human to have read the source, so the matrix would be mostly zeros and the

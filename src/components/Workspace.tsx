@@ -751,9 +751,15 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
 
     void play()
     return () => {
-      // Invalidate this run. The next one claims the ref; if there is no next
-      // one, `alive()` stays false and the loop unwinds at its next await.
-      demoRunRef.current++
+      /*
+       * Invalidate this run by bumping the ref past the id this closure holds.
+       * The lint rule warns about reading `.current` in a cleanup because it
+       * will have changed by then — which is exactly the point here: if a
+       * later run has already claimed the ref, `alive()` is false for this one
+       * and there is nothing to do. Comparing rather than assigning is what
+       * makes that safe.
+       */
+      if (demoRunRef.current === myRun) demoRunRef.current = myRun + 1
     }
   }, [demo.mode, demo.ms, demo.stop, demo.hitRate, demo.seed, realm, data])
 
