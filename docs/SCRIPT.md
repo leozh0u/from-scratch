@@ -51,54 +51,57 @@ Two alternatives, same length:
 
 ## The one-minute technical, four slides
 
-`stack` then `play` then `gemini` then `tally`. Around 230 words, which is a
-minute at Leo's pace. Roughly 18 / 15 / 17 / 12 seconds.
+`stack` then `play` then `gemini` then `tally`.
+
+**TIMED AT LEO'S REAL PACE.** The 265-word version of this ran 1:30 with him
+speaking fast, which puts him at roughly 175 words a minute rather than the 220
+I assumed. This is 152 words, so about 50 to 55 seconds with headroom. When in
+doubt, cut another sentence: he has never once run short.
 
 **1. THE STACK**
 
-> So the whole game runs in the browser, React and TypeScript and Tailwind, and
-> the entire recipe graph is a 514 kilobyte import bundled straight into the
-> page, so once it loads you can play it offline. The only backend is two
-> serverless functions on Vercel, and they exist for one reason, to hold the
-> Gemini key so it is never in the browser. There are no accounts and no
-> database, your progress just sits in your own browser. Vite builds it, Oxlint
-> checks it, and Playwright and k6 are how we test it.
+> The whole game runs in the browser. React, TypeScript, Tailwind, and the
+> entire recipe graph is bundled into the page, so it plays offline. The only
+> backend is two functions on Vercel, and they exist to hold the Gemini key so
+> it is never in the browser.
 
 **2. HOW IT PLAYS**
 
-> Every press does this. You put two things together, and if it is a real
-> process you get the item and a card showing what it took, and if it is not,
-> one of 36 rules tells you why not, locally, in under a millisecond. Those
-> percentages are the size of the search space, not your hit rate. Half a
-> million possible pairs and about a thousand real ones, so you get there by
-> reasoning about what actually goes into things.
+> Every press does this. If the pair is a real process you get the item and a
+> card showing what went into it, and if it is not, one of 36 rules tells you
+> why not, instantly. Those percentages are the search space, not your hit rate.
 
 *Never say "you are wrong 99.8% of the time" as a hit rate.* Leo: *"the percent
-is bad, because it takes skill to figure out."* He is right, and it is the
-better argument anyway: stated as a hit rate it makes the game sound like dice,
-stated as the search space it makes finding a chain an achievement.
+is bad, because it takes skill to figure out."* Stated as a hit rate it makes
+the game sound like dice; stated as the search space it makes finding a chain an
+achievement.
 
 **3. FOUR USES OF GEMINI**
 
-> Gemini does four things. Two run while you play, the why not explanation and
-> learn more, which is three fixed questions rather than a chat box, so a player
-> can never send it free text. The other two are developer tools, one probes the
-> graph for gaps and one drafts recipe chains, and we approve or reject every one
-> of those by hand. And the recipe list never goes to any of them, so Gemini can
-> tell you why two things don't react, but every item you make comes from the
-> game itself, never from the model.
+> Gemini does four things and only two run while you play. Learn more is three
+> fixed questions, not a chat box. And the recipe list never goes to any of
+> them, so it can tell you why two things do not react, but every item comes
+> from the game.
 
 **4. NUMBERS**
 
-> That's everything counted, and the number I'd point at is 2,074 citations with
-> zero unsourced recipes, so nothing in this game is invented.
+> 2,074 citations and zero unsourced recipes. Nothing in this game is invented.
 
-If you are running long, cut the Vite/Oxlint sentence on slide 1 and the
-developer-tools clause on slide 3. The fence line is the one that must survive.
+### Held back on purpose, for questions
 
-Hold the k6 figure back for a question. "We load tested it to 250 new players a
-second" is a much better answer to *"does this scale?"* than a line nobody asked
-for, and it is the only scaling claim here that was measured.
+All true, all cut, and all better as answers than as script.
+
+- **"Does it scale?"** We load tested it to 250 new players a second. It is one
+  static bundle on a CDN and two stateless functions, and there are no accounts
+  and no database, so a player's progress sits in their own browser. This is the
+  only scaling claim here that was measured; do not spend it unprompted.
+- **"What else does the model do?"** Two developer tools, a probe that finds
+  gaps in the graph and a proposer that drafts recipe chains, and we approve or
+  reject every one of those by hand.
+- **"How do you know the sources are real?"** Every URL is fetched on every
+  build and its page title is checked against the label it is shown under.
+- **"What did you use to build it?"** Vite builds it, Oxlint checks it, and
+  Playwright and k6 are how we test it.
 
 ## 1. Why this exists at all — 20 seconds
 
