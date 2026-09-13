@@ -74,6 +74,20 @@ export function worstLines(candidates: string[], cols: number): number {
   return candidates.reduce((most, text) => Math.max(most, wrappedLines(text, cols)), 1)
 }
 
+/**
+ * The key's label, longest first.
+ *
+ * "why not?" is the clearest and it is also the most expensive, because the
+ * key's box is reserved on both sides of the message: every character costs
+ * the message two. At 320px that is the difference between a five-line strip
+ * and a seven-line one.
+ *
+ * So the label is chosen the same way the font size is — by what fits — rather
+ * than by a width threshold somebody picked. A bare "?" sits directly beside
+ * the sentence it refers to, which is enough of a question on a phone.
+ */
+export const KEY_LABELS = ['why not?', 'why?', '?'] as const
+
 export type ReadoutLayout = {
   fontPx: number
   lines: number
@@ -91,12 +105,71 @@ export type ReadoutLayout = {
  * message really is. Growing the strip is fine — it happens once, at this
  * width, for every state. Clipping the message is not.
  */
+/**
+ * Pick the label and the layout together.
+ *
+ * Fewest lines first, because a short strip is the point; then the largest
+ * type, because legibility beats a shorter label; then the longest label,
+ * because when nothing else separates them "why not?" says more than "?".
+ *
+ * `widthOf` is passed in rather than imported so this file stays pure
+ * arithmetic and the test can drive it with the same function the component
+ * uses.
+ */
+export function chooseKey(
+  innerWidth: number,
+  candidates: string[],
+  widthOf: (label: string) => number,
+): { label: string; keyWidth: number; layout: ReadoutLayout } {
+  let best: { label: string; keyWidth: number; layout: ReadoutLayout } | null = null
+  for (const label of KEY_LABELS) {
+    const keyWidth = widthOf(label)
+    // A label whose own box will not fit twice over is not a candidate at all.
+    if (innerWidth - 2 * (keyWidth + GAP) < MIN_TEXT_WIDTH) continue
+    const layout = readoutLayout(innerWidth, keyWidth, candidates)
+    if (
+      !best ||
+      layout.lines < best.layout.lines ||
+      (layout.lines === best.layout.lines && layout.fontPx > best.layout.fontPx)
+    ) {
+      best = { label, keyWidth, layout }
+    }
+  }
+  /*
+   * Nothing fitted, which means a window narrower than anything with a
+   * browser on it. Take the shortest label and let readoutLayout's own floor
+   * handle the rest, rather than returning nothing and rendering no strip.
+   */
+  if (!best) {
+    const label = KEY_LABELS[KEY_LABELS.length - 1]
+    const keyWidth = widthOf(label)
+    return { label, keyWidth, layout: readoutLayout(innerWidth, keyWidth, candidates) }
+  }
+  return best
+}
+
 export function readoutLayout(
   innerWidth: number,
   keyWidth: number,
   candidates: string[],
 ): ReadoutLayout {
-  const textWidth = Math.max(MIN_TEXT_WIDTH, innerWidth - keyWidth - GAP)
+  /*
+   * THE KEY'S WIDTH IS RESERVED ON BOTH SIDES, NOT JUST THE ONE IT SITS ON.
+   *
+   * Leo: "plant fibre + torch is not centered." It was not, and the reason is
+   * worth stating because the fix looks wasteful. Holding the key's box open
+   * only on the right leaves the message centred in what is left, which is
+   * half the key's width off the middle of the strip — visible the moment the
+   * message is short, which is most of the time.
+   *
+   * Mirroring it puts the message on the strip's true centre line and keeps the
+   * key where it belongs. It costs width, so the message wraps sooner: nothing
+   * at all above 700px, and fourteen to twenty-nine pixels of a taller strip on
+   * a phone. That is a price worth paying for a line of text that sits where
+   * the eye expects it, and the strip is still the same height in every state,
+   * which is the property that mattered.
+   */
+  const textWidth = Math.max(MIN_TEXT_WIDTH, innerWidth - 2 * (keyWidth + GAP))
 
   for (const fontPx of FONT_STEPS) {
     const lines = worstLines(candidates, Math.floor(textWidth / fontPx))

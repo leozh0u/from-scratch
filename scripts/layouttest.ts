@@ -13,7 +13,7 @@
  * window size at a time.
  */
 import { startScreenLayout, startScreenContentHeight, arcTitleWidth } from '../src/components/startLayout'
-import { readoutLayout, wrappedLines, worstLines } from '../src/components/ui/readoutFit'
+import { chooseKey, wrappedLines, worstLines } from '../src/components/ui/readoutFit'
 import { faceWidthFor } from '../src/components/ui/legend'
 import { RULE_MESSAGES, explainFailure } from '../src/adjudicator/explain'
 import { hintTexts } from '../src/solver/hint'
@@ -158,17 +158,17 @@ function candidatesFor(): string[] {
 
 /** Exactly what Workspace measures, so the widths cannot drift either. */
 function stripFor(viewportWidth: number) {
-  // Mirrors Workspace: the key's box is reserved whether or not the key is
-  // there, so its label is part of the strip's arithmetic.
+  // Mirrors Workspace: the key's box is reserved on BOTH sides so the message
+  // is centred, and the strip picks how much the label is allowed to say.
   const whyUnit = viewportWidth < 520 ? 2 : 3
-  const whyWidth = faceWidthFor(whyUnit, viewportWidth < 520 ? 'why?' : 'why not?')
   // The estimate Workspace hands the strip before its observer reports. The
   // running component measures its own box, so this is the starting point, not
   // the authority — which is why the assertions below are about the FIT, not
   // about matching a number in the DOM.
   const page = Math.max(240, Math.min(768, viewportWidth) - 40)
   const stripInner = page - 2 * (4 + 12) - 2 * (3 + 9)
-  return { layout: readoutLayout(stripInner, whyWidth, candidatesFor()), whyWidth, stripInner }
+  const chosen = chooseKey(stripInner, candidatesFor(), (l) => faceWidthFor(whyUnit, l))
+  return { layout: chosen.layout, whyWidth: chosen.keyWidth, label: chosen.label, stripInner }
 }
 
 console.log('\n=== the readout holds every message it can ever be given ===')
@@ -202,7 +202,7 @@ console.log('\n=== the readout holds every message it can ever be given ===')
     ok(
       `${name} (${w}px): ${layout.lines} lines at ${layout.fontPx}px holds all of them`,
       over.length === 0 && layout.textWidth > 0 && stripInner > 0,
-      `strip ${layout.textHeight}px, ${cols} cols${over.length ? `, ${over.length} overflow` : ''}`,
+      `strip ${layout.textHeight}px, ${cols} cols, key "${stripFor(w).label}"${over.length ? `, ${over.length} overflow` : ''}`,
     )
   }
 }
@@ -242,7 +242,9 @@ console.log('\n=== and its height does not depend on what it is saying ===')
   let overflowing = 0
   for (const [, w] of DEVICES.map((d) => [d[0], d[1]] as [string, number])) {
     const { layout, whyWidth, stripInner } = stripFor(w)
-    if (layout.textWidth + 8 + whyWidth > stripInner) overflowing++
+    // Mirrored: the key's box is held open on both sides so the message is
+    // centred, so the sum has to account for both.
+    if (layout.textWidth + 2 * (8 + whyWidth) > stripInner) overflowing++
   }
   ok('the message, the gap and the key fit inside the recess', overflowing === 0, `${overflowing} of ${DEVICES.length} overflow`)
 

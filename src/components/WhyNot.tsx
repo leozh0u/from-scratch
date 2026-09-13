@@ -1,7 +1,10 @@
+import { useState } from 'react'
 import { Card } from './ui/Card'
 import { Overlay } from './ui/Overlay'
 import { PixelButton } from './ui/PixelButton'
-import { LearnMore } from './LearnMore'
+import { FALLBACK_MESSAGE } from '../adjudicator/ask'
+import { QUESTION_KEYS, QUESTION_LABELS } from '../adjudicator/questions'
+import { useAsk } from '../adjudicator/useAsk'
 import { playPress } from '../audio/sfx'
 
 /**
@@ -15,26 +18,42 @@ import { playPress } from '../audio/sfx'
  * amount every time somebody asked, and the entire inventory below it moved.
  * There is no honest way to reserve space for prose you have not received.
  *
- * A panel also gives the answer the room it deserves. The instant local reason
- * stays on the bench's readout where it costs nothing; this is the thing the
- * player actively asked a question to get, and the three follow-ups sit under
- * it rather than three scroll-lengths away.
+ * WHY SUBJECT FIRST, THEN QUESTION
+ *
+ * This began as two collapsed "learn more" keys side by side, each opening
+ * into its own three questions. Leo: *"those three questions are so hard to
+ * see and read."* Two faults, and the size was the smaller one. The real
+ * fault was that an opened one lost its own name — three questions appeared
+ * under a heading that said "want to know more about" and the thing they were
+ * about had gone, with the other element's key still sitting underneath
+ * looking like a fourth option.
+ *
+ * One subject row and one question row fixes both. Which thing you are asking
+ * about is always on screen and always selected, the questions are one set
+ * rather than two nested ones, and there is room to set them at a size a
+ * person can read.
  *
  * The fence is unchanged: two names and a realm go out, prose comes back, and
- * nothing here can grant an element. See api/adjudicate.ts.
+ * nothing here can grant an element. See api/adjudicate.ts and api/ask.ts.
  */
 type WhyNotProps = {
   pair: [string, string]
   names: [string, string]
-  /** Undefined while the model is still answering. */
+  /** The local reason, which is instant. Undefined while the model answers. */
   answer?: string
   onClose: () => void
 }
 
 export function WhyNot({ pair, names, answer, onClose }: WhyNotProps) {
+  /** Which of the two the questions are about. The first, until told otherwise. */
+  const [subject, setSubject] = useState(0)
+  const { ask, answer: deeper, showing, asking } = useAsk()
+
+  const label = (text: string) => text.toLowerCase()
+
   return (
-    <Overlay onClose={onClose} labelledBy="whynot-pair">
-      <Card unit={5} className="flex w-full max-w-sm flex-col items-center gap-4 text-center">
+    <Overlay onClose={onClose} labelledBy="whynot-pair" className="px-5 py-8">
+      <Card unit={5} className="flex w-full max-w-md flex-col items-center gap-4 text-center">
         <p
           style={{
             fontFamily: 'var(--font-display)',
@@ -60,19 +79,19 @@ export function WhyNot({ pair, names, answer, onClose }: WhyNotProps) {
             margin: 0,
           }}
         >
-          {names[0].toLowerCase()} + {names[1].toLowerCase()}
+          {label(names[0])} + {label(names[1])}
         </h2>
 
         <p
           role="status"
           style={{
             fontFamily: 'var(--font-display)',
-            fontSize: 9,
-            lineHeight: 2.1,
+            fontSize: 10,
+            lineHeight: 2,
             letterSpacing: '0.02em',
             color: answer ? '#ded9f5' : 'var(--color-muted)',
             textTransform: 'lowercase',
-            maxWidth: '30ch',
+            maxWidth: '32ch',
             margin: 0,
           }}
         >
@@ -84,24 +103,103 @@ export function WhyNot({ pair, names, answer, onClose }: WhyNotProps) {
          *
          * The player has just been told what happens between two things and is
          * more curious than they will be at any other point in the session.
-         * Either of the two is a door into the same three fixed questions the
-         * discovery card uses — the same closed set of keys, the same server
-         * wording, no new way for text to reach a model.
+         * The same closed set of three keys the discovery card uses, the same
+         * server-owned wording — no new way for text to reach a model.
          */}
         {answer && (
-          <div className="flex w-full flex-col items-center gap-2">
+          <>
+            <div
+              style={{
+                width: '100%',
+                height: 2,
+                background: '#241f4d',
+                margin: '2px 0',
+              }}
+            />
+
             <p
-              className="font-display text-[9px] lowercase text-star-mid"
-              style={{ letterSpacing: '0.04em', margin: 0 }}
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 9,
+                letterSpacing: '0.1em',
+                color: 'var(--color-muted)',
+                textTransform: 'uppercase',
+                margin: 0,
+              }}
             >
-              want to know more about
+              ask about
             </p>
-            <div className="flex flex-wrap justify-center gap-2">
+
+            {/*
+             * The subject stays on screen and stays selected. Two keys that
+             * both look pressable, with the chosen one lit, rather than one
+             * that has disappeared into whatever it opened.
+             */}
+            <div className="flex flex-wrap justify-center gap-3">
               {pair.map((id, i) => (
-                <LearnMore key={id} elementId={id} name={names[i]} label={names[i]} unit={3} />
+                <PixelButton
+                  key={id}
+                  tone={subject === i ? 'survival' : 'default'}
+                  unit={3}
+                  onClick={() => {
+                    playPress()
+                    setSubject(i)
+                    // Carry the question across, so switching subject answers
+                    // the same question about the other thing rather than
+                    // emptying the panel.
+                    if (showing) ask(id, names[i], showing.question)
+                  }}
+                >
+                  {label(names[i])}
+                </PixelButton>
               ))}
             </div>
-          </div>
+
+            {/*
+             * Full width and set at 9px rather than 6. They were `unit - 1`
+             * beside a `unit` subject key, which put a seventeen-character
+             * question into a six-pixel font — a face built from one-pixel
+             * stems, at the size where the stems stop resolving.
+             */}
+            <div className="flex w-full flex-col items-stretch gap-2">
+              {QUESTION_KEYS.map((question) => (
+                <PixelButton
+                  key={question}
+                  tone={
+                    showing?.question === question && showing.elementId === pair[subject]
+                      ? 'survival'
+                      : 'default'
+                  }
+                  unit={3}
+                  block
+                  onClick={() => {
+                    playPress()
+                    ask(pair[subject], names[subject], question)
+                  }}
+                >
+                  {QUESTION_LABELS[question]}
+                </PixelButton>
+              ))}
+            </div>
+
+            {showing && (
+              <p
+                role="status"
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 10,
+                  lineHeight: 2,
+                  letterSpacing: '0.02em',
+                  color: deeper === FALLBACK_MESSAGE ? 'var(--color-muted)' : '#ded9f5',
+                  textTransform: 'lowercase',
+                  maxWidth: '32ch',
+                  margin: 0,
+                }}
+              >
+                {asking ? 'asking...' : deeper}
+              </p>
+            )}
+          </>
         )}
 
         <PixelButton

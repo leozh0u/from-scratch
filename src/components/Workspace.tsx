@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { adjudicate } from '../adjudicator/client'
 import { explainFailure, RULE_MESSAGES } from '../adjudicator/explain'
 import { resolveIcon } from '../data/iconRegistry'
@@ -330,15 +330,18 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
    * advance, and both of them open a panel instead. See ui/readoutFit.ts.
    */
   /*
-   * The key's box is reserved whether or not the key is there, so on a phone
-   * every character of its label costs the message a character of its own. At
-   * 320px "why not?" took 76 of the strip's 224 and pushed the worst message
-   * to seven lines; "why?" takes 50 and it sits directly beside the reason it
-   * refers to, which is all the sentence it needs.
+   * The key's box is reserved whether or not the key is there, AND mirrored on
+   * the left so the message sits on the strip's centre line — so every
+   * character of its label costs the message two. Which is why the strip picks
+   * the label rather than being handed one: "why not?" where there is room for
+   * it, "why?" or a bare "?" where the alternative is a seven-line strip on a
+   * phone. See chooseKey in ui/readoutFit.ts.
    */
-  const whyLabel = viewportWidth < 520 ? 'why?' : 'why not?'
   const whyUnit = viewportWidth < 520 ? 2 : 3
-  const whyWidth = faceWidthFor(whyUnit, whyLabel)
+  const whyWidthOf = useCallback(
+    (label: string) => faceWidthFor(whyUnit, label),
+    [whyUnit],
+  )
 
   /*
    * Every message the strip can ever hold. The failure table is a fixed list,
@@ -966,7 +969,7 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
         <Readout
           candidates={readoutCandidates}
           estimatedWidth={readoutEstimate}
-          keyWidth={whyWidth}
+          keyWidthOf={whyWidthOf}
           keyUnit={whyUnit}
           tone={
             hint
@@ -975,7 +978,7 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
                 ? 'var(--color-star-mid)'
                 : 'var(--color-muted)'
           }
-          action={
+          action={(label) =>
             feedback?.kind === 'no-match' ? (
               /*
                * "WHY NOT" — the model, on request.
@@ -988,7 +991,7 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
                * inside a fixed slot is a second thing moving.
                */
               <PixelButton tone="default" unit={whyUnit} onClick={askWhyNot}>
-                {whyLabel}
+                {label}
               </PixelButton>
             ) : null
           }

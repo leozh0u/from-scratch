@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { steppedNotch, OUTLINE } from './pixelShape'
 import { faceHeightFor } from './legend'
-import { GAP, LEADING, readoutLayout } from './readoutFit'
+import { GAP, LEADING, chooseKey } from './readoutFit'
 
 /**
  * The bench's display: what just happened, in a hole in the machine.
@@ -50,10 +50,15 @@ type ReadoutProps = {
   children?: ReactNode
   /** Type colour, so a hint and a dead end do not read the same. */
   tone?: string
-  /** The key beside the message, if this state has one. Its box is always reserved. */
-  action?: ReactNode
-  /** The key's width and unit, so its box can be held open before it exists. */
-  keyWidth: number
+  /**
+   * The key beside the message, if this state has one. Its box is always
+   * reserved — and mirrored on the left, so the message is centred. Given the
+   * label the strip has chosen, since the width it can afford decides how much
+   * the key is allowed to say.
+   */
+  action?: (label: string) => ReactNode
+  /** How wide a key with this label would be, at the unit the key is drawn at. */
+  keyWidthOf: (label: string) => number
   keyUnit: number
   /**
    * What to assume until the observer has reported. Only ever visible for one
@@ -68,7 +73,7 @@ export function Readout({
   children,
   tone = 'var(--color-star-mid)',
   action,
-  keyWidth,
+  keyWidthOf,
   keyUnit,
   estimatedWidth,
   unit = 3,
@@ -110,9 +115,9 @@ export function Readout({
     return () => window.removeEventListener('orientationchange', onChange)
   }, [])
 
-  const layout = useMemo(
-    () => readoutLayout(width, keyWidth, candidates),
-    [width, keyWidth, candidates],
+  const { label, keyWidth, layout } = useMemo(
+    () => chooseKey(width, candidates, keyWidthOf),
+    [width, candidates, keyWidthOf],
   )
 
   return (
@@ -145,6 +150,12 @@ export function Readout({
           boxShadow: `inset 0 -${unit}px 0 0 ${EDGE}, inset 0 ${unit}px 0 0 #12102a`,
         }}
       >
+        {/*
+         * The mirror. Same width as the key's slot, holding nothing — which is
+         * what puts the message on the strip's centre line rather than half a
+         * key to the left of it.
+         */}
+        <span aria-hidden="true" style={{ flex: `0 0 ${keyWidth}px`, width: keyWidth }} />
         <p
           role="status"
           style={{
@@ -182,7 +193,7 @@ export function Readout({
           className="flex items-center justify-center"
           style={{ flex: `0 0 ${keyWidth}px`, width: keyWidth }}
         >
-          {action}
+          {action?.(label)}
         </span>
       </div>
     </div>

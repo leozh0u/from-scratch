@@ -81,12 +81,22 @@ export function LearnMore({ elementId, name, label, unit = 3 }: LearnMoreProps) 
 
   return (
     <div className="flex w-full flex-col items-center gap-2">
-      <div className="flex flex-wrap justify-center gap-2">
+      {/*
+       * Full width, at the panel's own unit rather than one below it.
+       *
+       * Leo: "those three questions are so hard to see and read." They were
+       * `unit - 1`, which puts a seventeen-character question into a six-pixel
+       * font — a face built from one-pixel stems, at the size where the stems
+       * stop resolving. Stacked rather than wrapped, so the three read as one
+       * set of choices instead of two-and-a-bit rows.
+       */}
+      <div className="flex w-full flex-col items-stretch gap-2">
         {QUESTION_KEYS.map((key) => (
           <PixelButton
             key={key}
             tone={showing === key ? 'survival' : 'default'}
-            unit={unit - 1}
+            unit={unit}
+            block
             disabled={asking !== null}
             onClick={() => onAsk(key)}
           >
@@ -104,12 +114,12 @@ export function LearnMore({ elementId, name, label, unit = 3 }: LearnMoreProps) 
           role="status"
           style={{
             fontFamily: 'var(--font-display)',
-            fontSize: 9,
-            lineHeight: 2.1,
+            fontSize: 10,
+            lineHeight: 2,
             letterSpacing: '0.02em',
             color: answer === FALLBACK_MESSAGE ? 'var(--color-muted)' : '#ded9f5',
             textTransform: 'lowercase',
-            maxWidth: '30ch',
+            maxWidth: '32ch',
             margin: 0,
             textAlign: 'center',
           }}
