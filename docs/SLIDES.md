@@ -3,7 +3,7 @@
 Leo: *"these diagrams should last us to the end of the thing. as soon as the
 demo ends, these diagrams have to last us many minutes."*
 
-36 slides, nine acts, in `docs/slides/diagram-*.png`. At roughly twenty seconds each
+33 slides, nine acts, in `docs/slides/diagram-*.png`. At roughly twenty seconds each
 that is about ten minutes of material — so this is a menu, not a script. Take
 the acts the room wants and skip the rest; every slide stands alone.
 
@@ -109,21 +109,13 @@ now.
 
 **`failure`** — 405, 400, and 200-with-null for everything else. Nothing throws.
 
-## Act 8 — outcome and close (5 slides)
+## Act 8 — outcome and close (2 slides)
 
-**`outcome`** — Open a link, make a thing, check it. 1,033 things, 2,074
-citations, 24 steps from soil to a t-shirt.
+**`close`** — Why it exists, what it is good for, what building it taught us,
+and the link, on one card. The four-card ending it replaced was a section where
+a card would do.
 
-**`learned`** — Three recipes that surprised us, straight out of the data. Soap
-comes back to salt and water; paper needs steel. Nobody on the team knew that
-until the gate made us open the page.
-
-**`impact`** — Free with no account so a school can use it, every claim cited so
-a teacher can check it, 557 processes named rather than skipped.
-
-**`ending`** — The callback to `point`, with the link big enough to write down.
-
-**`thanks`** — The three names from the commit history, HackRice 16, the link.
+**`thanks`** — Three faces, three names, HackRice 16, the link.
 
 ## Act 9 — sponsors (2 slides)
 

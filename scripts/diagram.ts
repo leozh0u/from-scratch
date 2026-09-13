@@ -30,7 +30,7 @@
  *
  *   npm run diagram
  */
-import { writeFileSync, mkdirSync, statSync, readdirSync } from 'node:fs'
+import { writeFileSync, mkdirSync, statSync, readdirSync, readFileSync } from 'node:fs'
 import { resolveIcon, COMPOSED } from '../src/data/iconRegistry'
 import { spriteRuns } from '../src/components/PixelArt'
 import { composeSprite, FORMS, type FormId } from '../src/art/forms'
@@ -1371,77 +1371,65 @@ const tally = slide(
 )
 
 /*
- * THE CLOSING PAIR.
+ * ONE CLOSING SLIDE INSTEAD OF FOUR.
  *
- * `outcome` is what the thing does now that it exists, and `ending` is the card
- * that stays up while Leo stops talking — which in practice means it is the
- * card a judge writes the link down from, so the link is the biggest thing on
- * it. Both stay in the same vocabulary as the rest; neither carries a slogan.
+ * Leo: *"just make two slides, one concise one with everything like refelction
+ * why etc."* The four-card ending (`outcome`, `learned`, `impact`, `ending`)
+ * was a section where a card would do: by that point in a demo nobody wants
+ * four more screens, they want the reason and the link. So the callback, what
+ * it is good for, what building it taught us, and the URL are on one card, and
+ * the four are gone.
  */
 const LIVE_URL = 'from-scratch-three.vercel.app'
 
-const outcome = slide(
-  'WHAT IT DOES NOW',
-  () =>
-    row(
-      [
-        { title: 'OPEN A LINK', tone: 'teal', lines: ['nothing to install'] },
-        { title: 'MAKE A THING', tone: 'orange', lines: ['and see what it took'] },
-        { title: 'CHECK IT', tone: 'green', lines: ['every claim is cited'] },
-      ],
-      ['', ''],
-    ),
-  `${n(FACTS.things)} things, ${n(FACTS.sourced + FACTS.referenced)} citations, ${FACTS.deepest} steps from soil to a t-shirt.`,
-  343,
-)
-
-const ending = slide(
-  'FROM SCRATCH',
+const close = slide(
+  'WHY WE MADE IT',
   () => {
     const out: string[] = []
-    out.push(text(W / 2, 330, 'WE ASKED FOUR PEOPLE TO DRAW', 40, MUTED, { spacing: 3 }))
-    out.push(text(W / 2, 400, 'HOW SOMETHING THEY OWN IS MADE.', 40, MUTED, { spacing: 3 }))
-    out.push(text(W / 2, 500, 'NONE COULD.', 56, BRAND, { spacing: 5, shadow: INK }))
+    out.push(text(W / 2, 210, 'WE ASKED FOUR PEOPLE TO DRAW HOW', 34, MUTED, { spacing: 3 }))
+    out.push(text(W / 2, 262, 'SOMETHING THEY OWN IS MADE. NONE COULD.', 34, MUTED, { spacing: 3 }))
 
-    const w = 1180
-    const x = Math.round((W - w) / 2)
-    out.push(key(x, 640, w, 170, 'teal'))
-    out.push(text(W / 2, 730, LIVE_URL, fit(LIVE_URL, 40, w - 90, 2), TEXT, { spacing: 2, shadow: INK }))
+    const MARGIN = 80
+    const gap = 60
+    const w = Math.floor((W - MARGIN * 2 - gap * 2) / 3)
+    const h = 150
+    const cards: [string, string, ToneId][] = [
+      ['FREE, NO ACCOUNT', 'a school can use it', 'green'],
+      ['EVERY CLAIM CITED', 'a teacher can check it', 'teal'],
+      ['WE LEARNED IT TOO', 'soap comes back to salt', 'purple'],
+    ]
+    cards.forEach(([title, line, tone], i) => {
+      const x = MARGIN + i * (w + gap)
+      out.push(key(x, 350, w, h, tone))
+      out.push(text(x + w / 2, 428, title, fit(title, 28, w - 60, 2), TEXT, { spacing: 2, shadow: INK }))
+      out.push(text(x + w / 2, 570, line, fit(line, 24, w), MUTED))
+    })
+
+    const uw = 1100
+    const ux = Math.round((W - uw) / 2)
+    out.push(key(ux, 680, uw, 160, 'orange'))
+    out.push(text(W / 2, 765, LIVE_URL, fit(LIVE_URL, 38, uw - 90, 2), TEXT, { spacing: 2, shadow: INK }))
     return out.join('')
   },
-  'no account. no install. it works on the phone in your pocket.',
-  359,
-)
-
-/*
- * WHAT BUILDING IT TAUGHT US.
- *
- * Leo: *"talk abuot why we wanted to make the app, we learnt a lot while making
- * it when we were doiuble checking and learning each combo, lern more about the
- * products and stuff."*
- *
- * The honest version of that is not a sentence about learning, it is three
- * recipes that are surprising when you first read them, pulled straight out of
- * the shipped data. Soap really does come back to salt and water. Nobody on
- * this team knew that before the gate made us open the page.
- */
-const learned = slide(
-  'WE LEARNED IT TOO',
-  () =>
-    equation([
-      ['SOAP', 'SODIUM HYDROXIDE', 'BEESWAX'],
-      ['SODIUM HYDROXIDE', 'SALT', 'WATER'],
-      ['PAPER', 'WOOD PULP', 'HIGH-CARBON STEEL'],
-    ]),
-  'none of us knew that before we had to open the source and check it.',
-  373,
+  'most people have never been given a reason to ask where their things come from.',
+  343,
 )
 
 /*
  * The last card. Names come from the repository's own commit history rather
  * than from anywhere else, so nobody is invented and nobody is promoted.
+ *
+ * THE HEADSHOTS ARE PIXELATED ON PURPOSE. A photograph at full resolution in
+ * this deck is the one element that would not belong to it, so each one is
+ * downscaled to 64 pixels square in `scripts/faces/` and scaled back up on the
+ * grid with nearest-neighbour. Still recognisably a person, still the same
+ * world as everything else on screen.
  */
-const TEAM = ['LEO ZHOU', 'NATHALIE RODRIGUEZ', 'ELIZA LAMAR']
+const TEAM: [string, string][] = [
+  ['LEO ZHOU', 'leo'],
+  ['NATHALIE RODRIGUEZ', 'nat'],
+  ['ELIZA LAMAR', 'eli'],
+]
 
 const thanks = slide(
   'THANK YOU',
@@ -1452,44 +1440,30 @@ const thanks = slide(
     const gap = 40
     const span = TEAM.length * w + (TEAM.length - 1) * gap
     const x0 = Math.round((W - span) / 2)
-    TEAM.forEach((name, i) => {
+    const FACE = 224
+    const faceY = 260
+
+    TEAM.forEach(([name, file], i) => {
       const x = x0 + i * (w + gap)
-      out.push(key(x, 380, w, h, 'purple'))
-      out.push(text(x + w / 2, 440, name, fit(name, 26, w - 60, 1), TEXT, { spacing: 1, shadow: INK }))
+      const fx = Math.round(x + (w - FACE) / 2)
+      // A hard plate behind the photo, cut to the same staircase as every other
+      // surface, so the portrait sits in a frame rather than floating.
+      out.push(`<polygon points="${stepped(fx - 8, faceY - 8, FACE + 16, FACE + 16, 4, 3)}" fill="${INK}"/>`)
+      const data = readFileSync(`scripts/faces/${file}.png`).toString('base64')
+      RESERVED.push({ x: fx - 8, y: faceY - 8, w: FACE + 16, h: FACE + 16 })
+      out.push(
+        `<image x="${fx}" y="${faceY}" width="${FACE}" height="${FACE}" image-rendering="pixelated" style="image-rendering:pixelated" preserveAspectRatio="xMidYMid slice" href="data:image/png;base64,${data}"/>`,
+      )
+      out.push(key(x, 560, w, h, 'purple'))
+      out.push(text(x + w / 2, 620, name, fit(name, 26, w - 60, 1), TEXT, { spacing: 1, shadow: INK }))
     })
-    out.push(text(W / 2, 640, 'HACKRICE 16', 44, TEXT, { spacing: 5, shadow: INK }))
-    out.push(text(W / 2, 740, LIVE_URL, 30, MUTED, { spacing: 2 }))
+
+    out.push(text(W / 2, 790, 'HACKRICE 16', 44, TEXT, { spacing: 5, shadow: INK }))
+    out.push(text(W / 2, 880, LIVE_URL, 30, MUTED, { spacing: 2 }))
     return out.join('')
   },
   null,
   389,
-)
-
-/*
- * THE EDUCATION POINT, WITHOUT THE SERMON.
- *
- * Leo: *"also the positive outcomes, educaton, inrterest in life around us, a
- * lot of people lack that."* He is right that it belongs in the outcome, and
- * the risk with it is obvious: a slide about curiosity is one sentence away
- * from a moral, and a moral is the thing he cuts every time.
- *
- * So the three keys are properties a school could check rather than claims
- * about what the game does to a person, and the one line underneath is a
- * statement about the world rather than an instruction about how to feel.
- */
-const impact = slide(
-  'WHY IT IS WORTH MAKING',
-  () =>
-    row(
-      [
-        { title: 'FREE, NO ACCOUNT', tone: 'green', lines: ['a school can use it'] },
-        { title: 'EVERY CLAIM CITED', tone: 'teal', lines: ['a teacher can check it'] },
-        { title: `${n(FACTS.processes)} PROCESSES`, tone: 'purple', lines: ['named, not skipped'] },
-      ],
-      ['', ''],
-    ),
-  'most people have never been given a reason to ask where their things come from.',
-  401,
 )
 
 /* ------------------------------------------------------------------- write */
@@ -1497,7 +1471,7 @@ const impact = slide(
 mkdirSync(SVG_OUT, { recursive: true })
 const SLIDES: [string, string][] = [
   ['tally', tally], ['numbers', numbers], ['count', count],
-  ['outcome', outcome], ['impact', impact], ['learned', learned], ['ending', ending], ['thanks', thanks], ['graph', graph], ['depth', depth],
+  ['close', close], ['thanks', thanks], ['graph', graph], ['depth', depth],
   ['chain', chain], ['icons', icons], ['forms', forms], ['stack', stack],
   ['combine', combine], ['fence', fence], ['gate', gate],
   ['honesty', honesty], ['checks', checks], ['loop', loop], ['wrong', wrong],
