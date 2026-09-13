@@ -200,6 +200,85 @@ board, a plastic bottle, a rope bridge, a knife, a lamp.
 
 ---
 
+## Should there be a backend?
+
+Leo: *"is there actually no backend. why. what about the api call. is that bad.
+should we have a backend. whose idea was this"* and *"should we add a backend,
+or atleast make more complex infrastracutre to explain."*
+
+**There is server code: two stateless functions.** `api/adjudicate.ts` and
+`api/ask.ts` run on Vercel. What there is no of is a *stateful* backend — no
+database, no sessions, no accounts, no server-held game state.
+
+**Whose idea:** Nathalie's. She scaffolded the project on 2026-09-11 and wrote
+the first adjudicator endpoint; the Vite SPA plus serverless-functions shape
+predates everything in this file. What has been added since is the fence, the
+gate, the load testing and the argument below — not the architecture.
+
+### Why there is no database
+
+**1. There is nothing to share.** The save is one player's list of discoveries.
+No multiplayer, no leaderboard, no cross-device promise. `localStorage` is the
+correct store for it and it beats a network round trip on every axis: instant,
+works offline, and it cannot leak because it never leaves the machine.
+
+**2. No accounts means no personal data at all.** No auth, no password reset,
+no session fixation, no breach surface, no consent banner. For a judge who
+opens a link and plays, "no sign-up" is a feature, not a gap.
+
+**3. The one thing that genuinely needs a server, has one.** `GEMINI_API_KEY`
+must not reach a browser or anybody can drain it. That is precisely and only
+what the two functions do.
+
+### Is the API call bad?
+
+No, and two things make it defensible rather than merely necessary. The key
+stays server-side, and the endpoints receive **two names and an enum key,
+never the recipe graph** — so the model cannot recite an answer it was never
+shown. That is the fence, and it is checkable in devtools in fifteen seconds.
+
+### Should we add one anyway, to have more to explain?
+
+**No — and the reasoning is the same one that killed Tiger Data.** A database
+would need a real use, and the only honest one (logging anonymous attempts)
+contradicts the thing the pitch leads with. It would also put a new failure
+mode into a live demo the night before submission, which is the one
+unrecoverable kind of mistake at a hackathon.
+
+**The problem is not that there is too little depth. It is that the depth is
+invisible.** What is actually hard here:
+
+- a **structural** guarantee about a model, not a prompt-level one
+- a build-time verifier that fetches 926 citations and title-matches every one,
+  and has rejected real fabrications
+- a 932-node DAG with cycle detection, a footprint accumulator that walks
+  ancestors, reachability, route generation and solver-chosen hints
+- composed sprite art: 65 shared forms plus one colour, with automated
+  lightness-first separation in HSL and a rebalancer capping members per form
+- 295 assertions, including a 13-device layout sweep and a line-wrap simulator
+  that matches how the browser actually breaks a line
+- k6 at 401 req/s with zero failures — and the reason it holds is the
+  architecture
+
+None of that is on screen. The fix is exposition, not infrastructure:
+`docs/diagram-stack.png` and `docs/diagram-gate.png`, plus thirty seconds of
+script.
+
+### The one piece of real infrastructure worth adding
+
+**The graph has outgrown the bundle.** `gameData.ts` is 490KB of source and the
+whole JS bundle is 831KB, 212KB gzipped — the data is most of it. Every player
+downloads all 932 elements before they can make their first combination, and
+Survival needs eighteen of them.
+
+Splitting the data out and loading it on demand is a real, measurable
+engineering win with a number to quote, it gets worse as the count goes to a
+thousand rather than better, and it cannot break the demo because the fallback
+is exactly what ships today. **That is the honest answer to "we need more
+technical stuff": fix the thing that is actually wrong.**
+
+---
+
 ## The ceiling — how many elements is realistic
 
 **Where it stands: 932 elements, 935 recipes, 920 of them craftable.** Sixty-eight
