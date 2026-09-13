@@ -110,6 +110,58 @@ All true, all cut, and all better as answers than as script.
 - **"What did you use to build it?"** Vite builds it, Oxlint checks it, and
   Playwright and k6 are how we test it.
 
+## Outcome and conclusion, with what is on screen
+
+Five slides, about 75 seconds. `outcome`, `learned`, `impact`, then `ending`,
+then `thanks`.
+
+**`outcome` — WHAT IT DOES NOW**
+
+> So what we ended up with is live right now. You open a link, you make
+> something, and you see what it took to make it, and every claim in there has a
+> source you can go and check. There are 1,033 things in it and the deepest
+> chain is 24 steps, so a cotton t-shirt goes all the way back to soil, and back
+> to a fire you start by spinning wood against wood.
+
+**`learned` — WE LEARNED IT TOO**
+
+> The part I didn't expect is how much we learned building it, because every
+> single combination had to be checked against a source before it could ship. I
+> did not know that soap comes back to salt and water, or that you need steel
+> before you can make paper, and none of us did until we opened the page and
+> read it.
+
+**`impact` — WHY IT IS WORTH MAKING**
+
+> It's free and there's no account, so a school can just use it, and because
+> every claim is cited a teacher can check it rather than take our word for it.
+> And I think most people have never really been given a reason to ask where
+> their things come from, so that's what we were trying to build, something that
+> makes you ask.
+
+**`ending` — FROM SCRATCH**
+
+> We asked four people to draw how something they own is made and none of them
+> could. It's a simplification, I know that, a real t-shirt is a lot more than
+> twenty-four steps. But I think it's the first time a lot of people will ever
+> ask the question at all.
+
+**`thanks` — THANK YOU**
+
+> Thank you. That's From Scratch, and the link is up there if you want to play
+> it.
+
+### Do we introduce ourselves?
+
+**Names on the thanks slide, and nothing else spoken.** No class year, no major,
+no "we are sophomore CS students". Two reasons. Judges do not score the team's
+seniority, and saying it invites the discount: "good, for sophomores." And it
+breaks the rule Leo holds everywhere else, which is that you do the work and do
+not narrate who you are while doing it.
+
+The names are on the final card so a judge can put a face to the project without
+anybody spending speaking time on it.
+
 ## 1. Why this exists at all — 20 seconds
 
 Follows straight out of the intro, where four people try to draw how something

@@ -1370,11 +1370,134 @@ const tally = slide(
   331,
 )
 
+/*
+ * THE CLOSING PAIR.
+ *
+ * `outcome` is what the thing does now that it exists, and `ending` is the card
+ * that stays up while Leo stops talking — which in practice means it is the
+ * card a judge writes the link down from, so the link is the biggest thing on
+ * it. Both stay in the same vocabulary as the rest; neither carries a slogan.
+ */
+const LIVE_URL = 'from-scratch-three.vercel.app'
+
+const outcome = slide(
+  'WHAT IT DOES NOW',
+  () =>
+    row(
+      [
+        { title: 'OPEN A LINK', tone: 'teal', lines: ['nothing to install'] },
+        { title: 'MAKE A THING', tone: 'orange', lines: ['and see what it took'] },
+        { title: 'CHECK IT', tone: 'green', lines: ['every claim is cited'] },
+      ],
+      ['', ''],
+    ),
+  `${n(FACTS.things)} things, ${n(FACTS.sourced + FACTS.referenced)} citations, ${FACTS.deepest} steps from soil to a t-shirt.`,
+  343,
+)
+
+const ending = slide(
+  'FROM SCRATCH',
+  () => {
+    const out: string[] = []
+    out.push(text(W / 2, 330, 'WE ASKED FOUR PEOPLE TO DRAW', 40, MUTED, { spacing: 3 }))
+    out.push(text(W / 2, 400, 'HOW SOMETHING THEY OWN IS MADE.', 40, MUTED, { spacing: 3 }))
+    out.push(text(W / 2, 500, 'NONE COULD.', 56, BRAND, { spacing: 5, shadow: INK }))
+
+    const w = 1180
+    const x = Math.round((W - w) / 2)
+    out.push(key(x, 640, w, 170, 'teal'))
+    out.push(text(W / 2, 730, LIVE_URL, fit(LIVE_URL, 40, w - 90, 2), TEXT, { spacing: 2, shadow: INK }))
+    return out.join('')
+  },
+  'no account. no install. it works on the phone in your pocket.',
+  359,
+)
+
+/*
+ * WHAT BUILDING IT TAUGHT US.
+ *
+ * Leo: *"talk abuot why we wanted to make the app, we learnt a lot while making
+ * it when we were doiuble checking and learning each combo, lern more about the
+ * products and stuff."*
+ *
+ * The honest version of that is not a sentence about learning, it is three
+ * recipes that are surprising when you first read them, pulled straight out of
+ * the shipped data. Soap really does come back to salt and water. Nobody on
+ * this team knew that before the gate made us open the page.
+ */
+const learned = slide(
+  'WE LEARNED IT TOO',
+  () =>
+    equation([
+      ['SOAP', 'SODIUM HYDROXIDE', 'BEESWAX'],
+      ['SODIUM HYDROXIDE', 'SALT', 'WATER'],
+      ['PAPER', 'WOOD PULP', 'HIGH-CARBON STEEL'],
+    ]),
+  'none of us knew that before we had to open the source and check it.',
+  373,
+)
+
+/*
+ * The last card. Names come from the repository's own commit history rather
+ * than from anywhere else, so nobody is invented and nobody is promoted.
+ */
+const TEAM = ['LEO ZHOU', 'NATHALIE RODRIGUEZ', 'ELIZA LAMAR']
+
+const thanks = slide(
+  'THANK YOU',
+  () => {
+    const out: string[] = []
+    const w = 560
+    const h = 120
+    const gap = 40
+    const span = TEAM.length * w + (TEAM.length - 1) * gap
+    const x0 = Math.round((W - span) / 2)
+    TEAM.forEach((name, i) => {
+      const x = x0 + i * (w + gap)
+      out.push(key(x, 380, w, h, 'purple'))
+      out.push(text(x + w / 2, 440, name, fit(name, 26, w - 60, 1), TEXT, { spacing: 1, shadow: INK }))
+    })
+    out.push(text(W / 2, 640, 'HACKRICE 16', 44, TEXT, { spacing: 5, shadow: INK }))
+    out.push(text(W / 2, 740, LIVE_URL, 30, MUTED, { spacing: 2 }))
+    return out.join('')
+  },
+  null,
+  389,
+)
+
+/*
+ * THE EDUCATION POINT, WITHOUT THE SERMON.
+ *
+ * Leo: *"also the positive outcomes, educaton, inrterest in life around us, a
+ * lot of people lack that."* He is right that it belongs in the outcome, and
+ * the risk with it is obvious: a slide about curiosity is one sentence away
+ * from a moral, and a moral is the thing he cuts every time.
+ *
+ * So the three keys are properties a school could check rather than claims
+ * about what the game does to a person, and the one line underneath is a
+ * statement about the world rather than an instruction about how to feel.
+ */
+const impact = slide(
+  'WHY IT IS WORTH MAKING',
+  () =>
+    row(
+      [
+        { title: 'FREE, NO ACCOUNT', tone: 'green', lines: ['a school can use it'] },
+        { title: 'EVERY CLAIM CITED', tone: 'teal', lines: ['a teacher can check it'] },
+        { title: `${n(FACTS.processes)} PROCESSES`, tone: 'purple', lines: ['named, not skipped'] },
+      ],
+      ['', ''],
+    ),
+  'most people have never been given a reason to ask where their things come from.',
+  401,
+)
+
 /* ------------------------------------------------------------------- write */
 
 mkdirSync(SVG_OUT, { recursive: true })
 const SLIDES: [string, string][] = [
-  ['tally', tally], ['numbers', numbers], ['count', count], ['graph', graph], ['depth', depth],
+  ['tally', tally], ['numbers', numbers], ['count', count],
+  ['outcome', outcome], ['impact', impact], ['learned', learned], ['ending', ending], ['thanks', thanks], ['graph', graph], ['depth', depth],
   ['chain', chain], ['icons', icons], ['forms', forms], ['stack', stack],
   ['combine', combine], ['fence', fence], ['gate', gate],
   ['honesty', honesty], ['checks', checks], ['loop', loop], ['wrong', wrong],
