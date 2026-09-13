@@ -11,15 +11,16 @@ import { chromium } from 'playwright'
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 
-const DIR = 'docs'
+const SRC = 'docs/slides/svg'
+const DIR = 'docs/slides'
 const FONTS =
   'https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap'
 
 const browser = await chromium.launch()
 const page = await browser.newPage({ deviceScaleFactor: 2 })
 
-for (const file of readdirSync(DIR).filter((f) => f.endsWith('.svg'))) {
-  const svg = readFileSync(join(DIR, file), 'utf8')
+for (const file of readdirSync(SRC).filter((f) => f.endsWith('.svg'))) {
+  const svg = readFileSync(join(SRC, file), 'utf8')
   const [, w, h] = svg.match(/width="(\d+)" height="(\d+)"/) ?? []
   await page.setViewportSize({ width: Number(w), height: Number(h) })
   await page.setContent(

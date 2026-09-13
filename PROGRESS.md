@@ -943,7 +943,7 @@ Leo: *"for one of the stack ones, we should include more like react, typescript,
 vite more specifics but no paragrpahs. like tech used page? i like the minimal
 stuff."*
 
-`docs/diagram-tech.png`, added to `scripts/diagram.ts` as a new `tile()` helper
+`docs/slides/diagram-tech.png`, added to `scripts/diagram.ts` as a new `tile()` helper
 plus a 4x2 grid. A list was the obvious layout and the wrong one — a column of
 bullets is what every other team's stack slide looks like — so the eight facts
 sit on eight of the game's own keys. The key face is a hard width limit, which

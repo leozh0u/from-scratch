@@ -30,14 +30,21 @@
  *
  *   npm run diagram
  */
-import { writeFileSync, mkdirSync } from 'node:fs'
+import { writeFileSync, mkdirSync, statSync, readdirSync } from 'node:fs'
 import { resolveIcon, COMPOSED } from '../src/data/iconRegistry'
 import { spriteRuns } from '../src/components/PixelArt'
 import { composeSprite, FORMS, type FormId } from '../src/art/forms'
 import { GAME_DATA } from '../src/data/gameData'
 import { RULE_IDS } from '../src/adjudicator/explain'
 
-const OUT = 'docs'
+/*
+ * Leo: *"inside docs, make a new folder with all the new ones you made for me
+ * to use."* The PNGs are the deliverable and go in `docs/slides/`; the SVGs are
+ * the source and sit under it in `svg/`, so the folder he opens is 32 images
+ * and nothing else.
+ */
+const OUT = 'docs/slides'
+const SVG_OUT = 'docs/slides/svg'
 const W = 1920
 const H = 1080
 const FONT = "'Press Start 2P'"
@@ -130,6 +137,22 @@ const FACTS = (() => {
     zeroCost: R.filter((r) => r.cost.waterL === 0 && r.cost.co2kg === 0).length,
     rules: RULE_IDS.length,
     graphKB: Math.round(JSON.stringify(GAME_DATA).length / 1024),
+    /*
+     * MEASURED OFF dist/, IN THE SAME UNIT AS graphKB.
+     *
+     * This was typed in as "898 KB", which is the byte count divided by 1000
+     * while the fence slide beside it divides by 1024. Two conventions on two
+     * slides is the kind of thing a judge notices and nobody can defend.
+     */
+    bundleKB: (() => {
+      try {
+        const js = readdirSync('dist/assets').filter((f) => f.endsWith('.js'))
+        if (!js.length) return null
+        return Math.round(statSync(`dist/assets/${js[0]}`).size / 1024)
+      } catch {
+        return null
+      }
+    })(),
   }
 })()
 
@@ -1093,7 +1116,7 @@ const where = slide(
       [
         { title: 'A DOMAIN', tone: 'green', lines: ['godaddy'] },
         { title: 'THE EDGE', tone: 'purple', lines: ['vercel, cached'] },
-        { title: 'ONE BUNDLE', tone: 'teal', lines: ['898 KB, static'] },
+        { title: 'ONE BUNDLE', tone: 'teal', lines: [FACTS.bundleKB ? `${FACTS.bundleKB} KB, static` : 'static'] },
       ],
       ['dns', 'one file'],
     ),
@@ -1133,9 +1156,53 @@ const feel = slide(
   301,
 )
 
+
+/*
+ * WHAT THE DATA ACTUALLY IS.
+ *
+ * Leo: *"did we use nodes, graphs? what was the data like."* `graph` answers
+ * the first half. This is the second: one record, every field, no prose. It is
+ * the slide for a judge who wants to know whether there is a real schema under
+ * this or a pile of strings.
+ */
+const record = slide(
+  'ONE RECORD',
+  () => {
+    const out: string[] = []
+    const x = 150
+    const w = W - x * 2
+    const block = (y: number, head: string, lines: [string, string][]) => {
+      // The pad has to clear the panel's bottom bevel; at 90 the last field
+      // sat on it.
+      out.push(sunk(x, y, w, 100 + lines.length * 54))
+      out.push(text(x + 56, y + 68, head, 32, TEXT, { spacing: 2, align: 'start' }))
+      lines.forEach(([field, value], i) => {
+        out.push(text(x + 90, y + 122 + i * 54, field, 26, BRAND, { align: 'start' }))
+        out.push(text(x + 470, y + 122 + i * 54, value, fit(value, 26, w - 540), MUTED, { align: 'start' }))
+      })
+    }
+    block(200, 'RecipeDef', [
+      ['inputs', '[string, string]'],
+      ['output', 'string'],
+      ['process', "'ginning'"],
+      ['cost', '{ waterL, co2kg }'],
+      ['sources', '{ label, url, tier }[]'],
+    ])
+    block(620, 'ElementDef', [
+      ['id', 'string'],
+      ['name', 'string'],
+      ['icon', 'a form and a colour'],
+      ['realm', "'survival' | 'everyday'"],
+    ])
+    return out.join('')
+  },
+  'two ids in, one id out. the graph is the data; there is no other store.',
+  313,
+)
+
 /* ------------------------------------------------------------------- write */
 
-mkdirSync(OUT, { recursive: true })
+mkdirSync(SVG_OUT, { recursive: true })
 const SLIDES: [string, string][] = [
   ['numbers', numbers], ['count', count], ['graph', graph], ['depth', depth],
   ['chain', chain], ['icons', icons], ['forms', forms], ['stack', stack],
@@ -1145,9 +1212,9 @@ const SLIDES: [string, string][] = [
   ['sponsors', sponsors], ['journey', journey],
   ['tests', tests], ['load', load], ['slides', slides],
   ['gemini', gemini], ['hints', hints], ['responsible', responsible],
-  ['where', where], ['theloop', theloop], ['feel', feel],
+  ['where', where], ['theloop', theloop], ['feel', feel], ['record', record],
 ]
 for (const [name, doc] of SLIDES) {
-  writeFileSync(`${OUT}/diagram-${name}.svg`, doc)
-  console.log(`  ${OUT}/diagram-${name}.svg`)
+  writeFileSync(`${SVG_OUT}/diagram-${name}.svg`, doc)
+  console.log(`  ${SVG_OUT}/diagram-${name}.svg`)
 }

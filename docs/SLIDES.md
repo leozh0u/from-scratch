@@ -3,7 +3,7 @@
 Leo: *"these diagrams should last us to the end of the thing. as soon as the
 demo ends, these diagrams have to last us many minutes."*
 
-31 slides, eight acts, in `docs/diagram-*.png`. At roughly twenty seconds each
+31 slides, eight acts, in `docs/slides/diagram-*.png`. At roughly twenty seconds each
 that is about ten minutes of material — so this is a menu, not a script. Take
 the acts the room wants and skip the rest; every slide stands alone.
 
