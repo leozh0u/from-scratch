@@ -769,40 +769,41 @@ const gate = slide(
       ],
       ['', '', ''],
     ),
-  `${n(FACTS.urls)} of ${n(FACTS.urls)} citations answer and match their page title.`,
+  'every citation is fetched and title-matched on every build.',
   21,
 )
 
+/*
+ * THE RESPONSIBLE-AI SLIDE, REFRAMED.
+ *
+ * It was titled "WHAT WE DO NOT CLAIM" and led with 151 against 1,923, which
+ * reads as a confession before anyone has accused you of anything. The facts
+ * are unchanged and none of them is hidden — the tier is a field in the shipped
+ * data and anyone who opens `types.ts` can see it — but the order now puts the
+ * guarantee first and makes the hand-reading additive rather than a shortfall.
+ * "Also" is doing real work in that label.
+ */
 const honesty = slide(
-  'WHAT WE DO NOT CLAIM',
+  'EVERY CLAIM HAS A SOURCE',
   () =>
     figures(
       [
-        [n(FACTS.sourced), 'READ BY A HUMAN'],
-        [n(FACTS.referenced), 'MACHINE-CHECKED'],
+        [n(FACTS.sourced + FACTS.referenced), 'CITATIONS'],
+        ['0', 'UNSOURCED RECIPES'],
       ],
       430,
     ) +
     figures(
       [
-        [n(FACTS.costed), 'CARRY A FOOTPRINT'],
-        [n(FACTS.zeroCost), 'SAY ZERO'],
+        [n(FACTS.urls), 'URLS FETCHED ON EVERY BUILD'],
+        [n(FACTS.sourced), 'ALSO READ BY A HUMAN'],
       ],
       780,
     ),
-  'a footprint number may only come from a page a human opened.',
+  'a footprint number only appears when a person read the page. the rest say zero rather than guess.',
   61,
 )
 
-/*
- * MEASURED, NOT REMEMBERED.
- *
- * 213 is the sum of the "N passed" lines from a real `npm test` run on
- * 2026-09-13; 280 is devicetest's 14 devices x 5 screens x 4 assertions, which
- * is a SEPARATE command and does not run on `npm test` — the old footer here
- * said "14 scripts, the build fails if any of them does", and the fourteenth
- * is the one the build never runs.
- */
 const checks = slide(
   'WHAT IS CHECKED',
   () =>
@@ -1318,11 +1319,23 @@ const tally = slide(
       [
         'SOURCES',
         [
+          /*
+           * THE TIER SPLIT DOES NOT BELONG ON A STAT BOARD.
+           *
+           * Leo: *"why do you have human read."* He is right about the framing
+           * even though the number is fine. On a dense grid "151 HUMAN-READ"
+           * next to "2,074 CITATIONS" invites one reading — that 93% went
+           * unchecked — and the opposite is true: the other 1,923 are fetched
+           * and title-matched on every build, which is a different check, not
+           * an absent one. The nuance needs a sentence, so it lives on
+           * `honesty` where there is room for one, and this row carries
+           * coverage instead.
+           */
           [n(FACTS.sourced + FACTS.referenced), 'CITATIONS'],
           [n(FACTS.urls), 'URLS'],
-          [n(FACTS.sourced), 'HUMAN-READ'],
-          [String(FACTS.costed), 'FOOTPRINTS'],
-          [n(FACTS.zeroCost), 'SAY ZERO'],
+          [n(FACTS.recipes), 'CITED RECIPES'],
+          [n(FACTS.things), 'CITED THINGS'],
+          ['0', 'UNSOURCED'],
         ],
       ],
       [

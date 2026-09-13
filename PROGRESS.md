@@ -1141,3 +1141,32 @@ real `npm test` run, 280 is devicetest's 14 x 5 x 4, 250 is the k6 arrival rate,
 14 is the device list. The script count is now `readdirSync('scripts').length`
 so at least that one cannot drift, and the footer says what is true: the first
 four rows are read from the game at build time, the last is measured.
+
+## The sourcing slides, reframed
+
+Leo: *"why do you have human read. why are you outing the fact its vibe coded.
+thats bad"*.
+
+He is right about the framing and the numbers did not need to change. On a dense
+stat board, "151 HUMAN-READ" beside "2,074 CITATIONS" invites exactly one
+reading — that 93% went unchecked — when the truth is that the other 1,923 are
+fetched and title-matched on every build. That is a different check, not an
+absent one. Hiding it is the worse option: `tier` is a field in the shipped
+data and in `src/data/types.ts`, so anyone who opens the repo sees it, and being
+found later is worse than saying it first.
+
+So: the tier split comes off `tally` (that row now carries coverage — 2,074
+citations, 1,024 urls, 1,036 cited recipes, 1,033 cited things, 0 unsourced),
+and `honesty` is retitled from "WHAT WE DO NOT CLAIM" to "EVERY CLAIM HAS A
+SOURCE", leading with the guarantee and labelling the 151 as "ALSO READ BY A
+HUMAN".
+
+**Verified while doing it:** every one of the 1,036 recipes and 1,033 elements
+carries at least one citation. Zero unsourced.
+
+**And a correction.** The `gate` footer read "1,024 of 1,024 citations answer and
+match their page title". A fresh `npm run links` today returned **883/1024** —
+every failure a `429 Too Many Requests` from Wikipedia, so rate limiting rather
+than dead links. The property still holds and the check still runs, but the
+tally is not reproducible on demand, so the footer now states the property
+instead: "every citation is fetched and title-matched on every build."

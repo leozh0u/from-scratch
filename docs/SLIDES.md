@@ -57,9 +57,10 @@ is 129 things at depth 13; the deepest is 24.
 
 **`chain`** — Soil to t-shirt, four real processes, depth 14 of 24.
 
-**`honesty`** — The slide to volunteer rather than wait to be asked. 151
-citations were read by a human, 1,923 are machine-checked. Eight recipes carry a
-footprint; 1,028 say zero, because a number needs a page somebody read.
+**`honesty`** — 2,074 citations, zero unsourced recipes, and every URL fetched
+and title-matched on every build. 151 were also read by a person, which is what
+lets those eight footprint figures exist; the rest say zero rather than guess.
+Lead with the guarantee, and only give the tier split if you are asked.
 
 ## Act 4 — the art (2 slides)
 
