@@ -84,7 +84,7 @@ export const MODES: Mode[] = [
      * rather than play it should be able to, and calling that door something
      * gentler would be pretending the door was not there.
      */
-    blurb: 'everything open',
+    blurb: 'open',
     hints: true,
     infiniteHints: true,
     giveUp: true,

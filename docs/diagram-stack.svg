@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1720" height="648" viewBox="0 0 1720 648" shape-rendering="crispEdges">
+<rect width="1720" height="648" fill="#191536"/>
+<text x="860" y="60" font-family="'Press Start 2P'" font-size="22" fill="#ffffff" text-anchor="middle" letter-spacing="3">THE STACK</text>
+<text x="860" y="96" font-family="'Press Start 2P'" font-size="10" fill="#e8752c" text-anchor="middle" letter-spacing="1">no database.  no accounts.  no server-held state.</text>
+<text x="860" y="130" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">one static bundle, two stateless functions, and the model behind them</text>
+<polygon points="72,190 68,194 64,198 60,202 520,202 516,198 512,194 508,190 520,369 516,373 512,377 508,381 72,381 68,377 64,373 60,369" fill="#100d20"/>
+<polygon points="72,194 68,198 64,202 516,202 512,198 508,194 516,369 512,373 508,377 72,377 68,373 64,369" fill="#332f57"/>
+<rect x="72" y="194" width="436" height="4" fill="#4a4578"/>
+<rect x="72" y="373" width="436" height="4" fill="#231f40"/>
+<text x="290" y="226" font-family="'Press Start 2P'" font-size="12" fill="#ffffff" text-anchor="middle" letter-spacing="1">THE BROWSER</text>
+<text x="290" y="250" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">react 19 · typescript · vite</text>
+<text x="290" y="284" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">gameData.ts   932 elements, 935 recipes</text>
+<text x="290" y="301" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">solver.ts     reachability over the DAG</text>
+<text x="290" y="318" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">explain.ts    37 failure rules, local</text>
+<text x="290" y="335" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">localStorage  the entire save</text>
+<polygon points="642,190 638,194 634,198 630,202 1090,202 1086,198 1082,194 1078,190 1090,369 1086,373 1082,377 1078,381 642,381 638,377 634,373 630,369" fill="#100d20"/>
+<polygon points="642,194 638,198 634,202 1086,202 1082,198 1078,194 1086,369 1082,373 1078,377 642,377 638,373 634,369" fill="#332f57"/>
+<rect x="642" y="194" width="436" height="4" fill="#4a4578"/>
+<rect x="642" y="373" width="436" height="4" fill="#231f40"/>
+<text x="860" y="226" font-family="'Press Start 2P'" font-size="12" fill="#ffffff" text-anchor="middle" letter-spacing="1">TWO FUNCTIONS</text>
+<text x="860" y="250" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">vercel · stateless · no storage</text>
+<text x="860" y="284" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">api/adjudicate.ts</text>
+<text x="860" y="301" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">   "why did nothing happen?"</text>
+<text x="860" y="318" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">api/ask.ts</text>
+<text x="860" y="335" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">   one of { how, why, where }</text>
+<polygon points="1212,190 1208,194 1204,198 1200,202 1660,202 1656,198 1652,194 1648,190 1660,369 1656,373 1652,377 1648,381 1212,381 1208,377 1204,373 1200,369" fill="#100d20"/>
+<polygon points="1212,194 1208,198 1204,202 1656,202 1652,198 1648,194 1656,369 1652,373 1648,377 1212,377 1208,373 1204,369" fill="#332f57"/>
+<rect x="1212" y="194" width="436" height="4" fill="#4a4578"/>
+<rect x="1212" y="373" width="436" height="4" fill="#231f40"/>
+<text x="1430" y="226" font-family="'Press Start 2P'" font-size="12" fill="#e8752c" text-anchor="middle" letter-spacing="1">GEMINI</text>
+<text x="1430" y="250" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">receives two element NAMES</text>
+<text x="1430" y="267" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">and a realm. or one key out</text>
+<text x="1430" y="284" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">of a closed set of three.</text>
+<text x="1430" y="318" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">cannot name a recipe,</text>
+<text x="1430" y="335" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">because it has never</text>
+<text x="1430" y="352" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">been shown one.</text>
+<rect x="520" y="253.5" width="98" height="4" fill="#e8752c"/>
+<rect x="626" y="253.5" width="4" height="4" fill="#e8752c"/>
+<rect x="622" y="249.5" width="4" height="12" fill="#e8752c"/>
+<rect x="618" y="245.5" width="4" height="20" fill="#e8752c"/>
+<text x="575" y="239.5" font-family="'Press Start 2P'" font-size="8" fill="#e8752c" text-anchor="middle" letter-spacing="0">two names</text>
+<rect x="520" y="323.5" width="98" height="4" fill="#a29ec4"/>
+<rect x="524" y="323.5" width="4" height="4" fill="#a29ec4"/>
+<rect x="528" y="319.5" width="4" height="12" fill="#a29ec4"/>
+<rect x="532" y="315.5" width="4" height="20" fill="#a29ec4"/>
+<text x="575" y="309.5" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">prose</text>
+<rect x="1090" y="253.5" width="98" height="4" fill="#e8752c"/>
+<rect x="1196" y="253.5" width="4" height="4" fill="#e8752c"/>
+<rect x="1192" y="249.5" width="4" height="12" fill="#e8752c"/>
+<rect x="1188" y="245.5" width="4" height="20" fill="#e8752c"/>
+<text x="1145" y="239.5" font-family="'Press Start 2P'" font-size="8" fill="#e8752c" text-anchor="middle" letter-spacing="0">the prompt</text>
+<rect x="1090" y="323.5" width="98" height="4" fill="#a29ec4"/>
+<rect x="1094" y="323.5" width="4" height="4" fill="#a29ec4"/>
+<rect x="1098" y="319.5" width="4" height="12" fill="#a29ec4"/>
+<rect x="1102" y="315.5" width="4" height="20" fill="#a29ec4"/>
+<text x="1145" y="309.5" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">prose</text>
+<polygon points="72,421 68,425 64,429 60,433 1660,433 1656,429 1652,425 1648,421 1660,566 1656,570 1652,574 1648,578 72,578 68,574 64,570 60,566" fill="#100d20"/>
+<polygon points="72,425 68,429 64,433 1656,433 1652,429 1648,425 1656,566 1652,570 1648,574 72,574 68,570 64,566" fill="#1e1b38"/>
+<rect x="72" y="570" width="1576" height="4" fill="#3a3560"/>
+<rect x="72" y="425" width="1576" height="4" fill="#12102a"/>
+<text x="860" y="457" font-family="'Press Start 2P'" font-size="12" fill="#e8752c" text-anchor="middle" letter-spacing="1">THE FENCE</text>
+<text x="860" y="481" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">the two endpoints have never seen gameData.ts and cannot import it — they are bundled separately</text>
+<text x="860" y="498" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">no model output is ever a number.  every footprint figure is hand-read from a cited source</text>
+<text x="860" y="515" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">no player-typed text reaches a model.  the "learn more" wire carries the string "how", "why" or "where"</text>
+<text x="860" y="549" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">only the recipe index grants an element. that is structural, not a promise made in a prompt.</text>
+<text x="860" y="622" font-family="'Press Start 2P'" font-size="8" fill="#6fc48d" text-anchor="middle" letter-spacing="0">open devtools and watch the request. it is the whole demo, and it takes fifteen seconds.</text>
+</svg>

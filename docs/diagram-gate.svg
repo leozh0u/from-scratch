@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="655" viewBox="0 0 1680 655" shape-rendering="crispEdges">
+<rect width="1680" height="655" fill="#191536"/>
+<text x="840" y="60" font-family="'Press Start 2P'" font-size="22" fill="#ffffff" text-anchor="middle" letter-spacing="3">HOW A RECIPE GETS IN</text>
+<text x="840" y="96" font-family="'Press Start 2P'" font-size="10" fill="#e8752c" text-anchor="middle" letter-spacing="1">the model proposes.  it never ships.</text>
+<polygon points="72,180 68,184 64,188 60,192 390,192 386,188 382,184 378,180 390,393 386,397 382,401 378,405 72,405 68,401 64,397 60,393" fill="#100d20"/>
+<polygon points="72,184 68,188 64,192 386,192 382,188 378,184 386,393 382,397 378,401 72,401 68,397 64,393" fill="#332f57"/>
+<rect x="72" y="184" width="306" height="4" fill="#4a4578"/>
+<rect x="72" y="397" width="306" height="4" fill="#231f40"/>
+<text x="225" y="216" font-family="'Press Start 2P'" font-size="12" fill="#e8752c" text-anchor="middle" letter-spacing="1">PROPOSE</text>
+<text x="225" y="240" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">npm run propose</text>
+<text x="225" y="274" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">the model drafts</text>
+<text x="225" y="291" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">chains into</text>
+<text x="225" y="308" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">data/staging/</text>
+<text x="225" y="342" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">src/ cannot import</text>
+<text x="225" y="359" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">from there</text>
+<rect x="390" y="290.5" width="68" height="4" fill="#a29ec4"/>
+<rect x="466" y="290.5" width="4" height="4" fill="#a29ec4"/>
+<rect x="462" y="286.5" width="4" height="12" fill="#a29ec4"/>
+<rect x="458" y="282.5" width="4" height="20" fill="#a29ec4"/>
+<polygon points="482,180 478,184 474,188 470,192 800,192 796,188 792,184 788,180 800,393 796,397 792,401 788,405 482,405 478,401 474,397 470,393" fill="#100d20"/>
+<polygon points="482,184 478,188 474,192 796,192 792,188 788,184 796,393 792,397 788,401 482,401 478,397 474,393" fill="#1e1b38"/>
+<rect x="482" y="397" width="306" height="4" fill="#3a3560"/>
+<rect x="482" y="184" width="306" height="4" fill="#12102a"/>
+<text x="635" y="216" font-family="'Press Start 2P'" font-size="12" fill="#d4564a" text-anchor="middle" letter-spacing="1">THE GATE</text>
+<text x="635" y="240" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">npm run import</text>
+<text x="635" y="274" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">fetches every citation</text>
+<text x="635" y="291" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">checks its title</text>
+<text x="635" y="308" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">against its label</text>
+<text x="635" y="342" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">rejects taken pairs,</text>
+<text x="635" y="359" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">cycles, dead URLs</text>
+<rect x="800" y="290.5" width="68" height="4" fill="#a29ec4"/>
+<rect x="876" y="290.5" width="4" height="4" fill="#a29ec4"/>
+<rect x="872" y="286.5" width="4" height="12" fill="#a29ec4"/>
+<rect x="868" y="282.5" width="4" height="20" fill="#a29ec4"/>
+<polygon points="892,180 888,184 884,188 880,192 1210,192 1206,188 1202,184 1198,180 1210,393 1206,397 1202,401 1198,405 892,405 888,401 884,397 880,393" fill="#100d20"/>
+<polygon points="892,184 888,188 884,192 1206,192 1202,188 1198,184 1206,393 1202,397 1198,401 892,401 888,397 884,393" fill="#332f57"/>
+<rect x="892" y="184" width="306" height="4" fill="#4a4578"/>
+<rect x="892" y="397" width="306" height="4" fill="#231f40"/>
+<text x="1045" y="216" font-family="'Press Start 2P'" font-size="12" fill="#ffffff" text-anchor="middle" letter-spacing="1">A HUMAN READS IT</text>
+<text x="1045" y="240" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">does this really</text>
+<text x="1045" y="257" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">happen?</text>
+<text x="1045" y="274" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">does the page</text>
+<text x="1045" y="291" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">actually say so?</text>
+<text x="1045" y="325" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">the only step that</text>
+<text x="1045" y="342" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">cannot be automated,</text>
+<text x="1045" y="359" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">and the only one</text>
+<text x="1045" y="376" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">that decides</text>
+<rect x="1210" y="290.5" width="68" height="4" fill="#a29ec4"/>
+<rect x="1286" y="290.5" width="4" height="4" fill="#a29ec4"/>
+<rect x="1282" y="286.5" width="4" height="12" fill="#a29ec4"/>
+<rect x="1278" y="282.5" width="4" height="20" fill="#a29ec4"/>
+<polygon points="1302,180 1298,184 1294,188 1290,192 1620,192 1616,188 1612,184 1608,180 1620,393 1616,397 1612,401 1608,405 1302,405 1298,401 1294,397 1290,393" fill="#100d20"/>
+<polygon points="1302,184 1298,188 1294,192 1616,192 1612,188 1608,184 1616,393 1612,397 1608,401 1302,401 1298,397 1294,393" fill="#332f57"/>
+<rect x="1302" y="184" width="306" height="4" fill="#4a4578"/>
+<rect x="1302" y="397" width="306" height="4" fill="#231f40"/>
+<text x="1455" y="216" font-family="'Press Start 2P'" font-size="12" fill="#6fc48d" text-anchor="middle" letter-spacing="1">IT SHIPS</text>
+<text x="1455" y="240" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">gameData.ts,</text>
+<text x="1455" y="257" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">edited by hand</text>
+<text x="1455" y="291" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">926 of 926</text>
+<text x="1455" y="308" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">citations answer</text>
+<text x="1455" y="325" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">and match</text>
+<text x="1455" y="342" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">their label</text>
+<polygon points="72,455 68,459 64,463 60,467 1620,467 1616,463 1612,459 1608,455 1620,583 1616,587 1612,591 1608,595 72,595 68,591 64,587 60,583" fill="#100d20"/>
+<polygon points="72,459 68,463 64,467 1616,467 1612,463 1608,459 1616,583 1612,587 1608,591 72,591 68,587 64,583" fill="#1e1b38"/>
+<rect x="72" y="587" width="1536" height="4" fill="#3a3560"/>
+<rect x="72" y="459" width="1536" height="4" fill="#12102a"/>
+<text x="840" y="491" font-family="'Press Start 2P'" font-size="12" fill="#d4564a" text-anchor="middle" letter-spacing="1">WHAT THE GATE HAS ACTUALLY CAUGHT, IN THIRTY BATCHES</text>
+<text x="840" y="515" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">fabricated URLs, by their own 404.  redirects — Propene to Propylene, Dike to Levee, Lavender to Lavandula</text>
+<text x="840" y="532" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">pairs already spoken for.  forward references.  chains that close a loop the footprint walk cannot survive</text>
+<text x="840" y="549" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">placeholder verbs — "creating", "processing" — which is the model reaching when it does not know the real one</text>
+<text x="840" y="566" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">and a tap and a valve that both claimed brass + washer, in the same batch as each other</text>
+<text x="840" y="631" font-family="'Press Start 2P'" font-size="8" fill="#a29ec4" text-anchor="middle" letter-spacing="0">every one of those is a citation nobody had to open.</text>
+</svg>
