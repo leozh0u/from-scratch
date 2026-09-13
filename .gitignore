@@ -33,3 +33,9 @@ design-exports
 data/staging
 scratch/
 capture/
+
+# Local context for the coding assistant, and its editor config. Kept on disk
+# because they are how the tooling works, kept out of the repo because they are
+# nobody else's business and they are not part of the project.
+CLAUDE.md
+.claude/

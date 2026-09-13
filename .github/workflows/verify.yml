@@ -1,0 +1,26 @@
+# Every push runs the whole check, because the project's claim is that the
+# content is verified rather than asserted — and a claim nobody re-checks is
+# just a claim. `npm test` type-checks, runs 297 assertions and builds.
+#
+# The link pass is deliberately NOT here. It fetches a thousand URLs, and a
+# suite that needs the internet is a suite that fails on a hotel wifi at two in
+# the morning. It runs on demand instead: `npm run links`.
+name: verify
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
