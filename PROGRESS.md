@@ -962,3 +962,67 @@ Every line checked rather than recalled:
 `docs/SCRIPT.md` updated: seven diagrams not six, the stack cue corrected (the
 fence is a footer line now, not a panel), and a cue for the new slide with the
 one line worth saying over it.
+
+## The diagram set, rebuilt — 31 slides
+
+Leo's notes, in order: *"all the coerners are glitched"*, *"stuff like this so
+vibe coded"* (a crop of a subtitle with stars showing through the letters),
+*"very minimal, only wrtie was is actually needed"*, *"make sure everything is
+accurate"*, *"have diagrams of very technical stuff and very not, all levels"*,
+*"talk about how things are tested too... like edgetest.ts, k6"*, *"make sure
+diagrams catering to the sponsors we want to win from. and gaming stuff too"*,
+*"these diagrams have to last us many minutes"*.
+
+### The corner bug
+
+`stepped()` emitted ONE point per tread, so the renderer joined them with a
+straight diagonal and drew an antialiased slope — the triangular slivers Leo
+photographed. A staircase needs three points a tread (along, down, along), which
+is what `ui/pixelShape.ts` has always done for the live game. One corner
+routine, called four times with different anchors, so the four cannot disagree.
+
+### The stars through the type
+
+Every `text()` and `key()` now registers its box before the sky is generated,
+and `starfield()` skips any star landing in one. Press Start 2P advances exactly
+1em a character plus tracking, so a text box is arithmetic, not a measurement.
+
+### Overflow
+
+Added `fit()`: the biggest size at which a string fits a box. Applied to panel
+titles, equation cells, figures, tile roles and footers. Every overflow on the
+first pass — "1,021 YOU MAKE" running out of its key, "gameData.ts" wider than a
+fifth of the frame, two footers off the edge — was the same mistake, choosing a
+size without knowing the longest string that would land in it.
+
+### Accuracy
+
+All figures now come from a single `FACTS` block computed from `GAME_DATA` at
+build time. Three errors the old set carried:
+
+- "37 rules" — `RULE_IDS.length` is **36**.
+- "15 things can be made two ways" — **14** outputs have more than one route;
+  15 is the number of EXTRA routes (13 with two, 1 with three).
+- "963 icons" against "1033 things" — not a contradiction and now its own
+  slide: 963 composed + 70 hand-drawn = 1,033, one per element.
+
+Answering Leo's other count question the same way: 1,033 things = 12 starters +
+1,021 that are the output of some recipe; 1,036 recipes = those 1,021 outputs +
+15 alternative routes.
+
+### Removed
+
+- "twenty-four steps from nothing. this is one branch of three." (`chain`)
+- "one silhouette, one colour. nobody hand-drew a thousand sprites." (`icons`)
+- The fourth column of gloss on the equation slide.
+
+### The 31
+
+Plain: `point`, `what`. Game: `journey`, `theloop`, `wrong`, `hints`, `feel`.
+Data: `numbers`, `count`, `graph`, `depth`, `chain`, `honesty`. Art: `icons`,
+`forms`. Stack: `stack`, `tech`, `where`, `combine`, `api`, `fence`. Process:
+`gate`, `loop`, `responsible`, `slides`. Proof: `tests`, `checks`, `load`,
+`failure`. Sponsors: `gemini`, `sponsors`.
+
+Running order with what to say over each: `docs/SLIDES.md`. Eight acts, about
+ten minutes, and a ninety-second cut (`point` → `wrong` → `fence` → `honesty`).
