@@ -1170,3 +1170,33 @@ every failure a `429 Too Many Requests` from Wikipedia, so rate limiting rather
 than dead links. The property still holds and the check still runs, but the
 tally is not reproducible on demand, so the footer now states the property
 instead: "every citation is fetched and title-matched on every build."
+
+## Cheater opens the bench, not only the book
+
+Leo: *"make it so cheating mode has everythhing unlocked, for survival and
+everthing"*, then *"not only for the inventory"*.
+
+`revealAll` reached the inventory and the process list but never the bench, so
+Cheater was a reference book you could read and not a game you could play from
+anywhere. `Workspace.tsx` now splits two ideas that used to be one variable:
+`held` is what the player has genuinely made, `shown` is what the shelf shows.
+In Cheater, `shown` is every element in the realm, using the same realm filter
+the normal shelf uses, since Survival needs nothing from Everyday and pouring
+bauxite onto the tutorial bench was the exact bug that filter was written to fix.
+
+Everything that could be made to lie was pointed at `held` instead: the target
+counter, the hint picker, the give-up route, and the ordering of the "still
+missing" strip.
+
+**Checked by running it** (`scratch/cheatcheck.mjs`, headless against `dist/`):
+
+- Cheater / Survival: **18** element tiles on the bench, which is every Survival
+  element.
+- Cheater / Everything: **1,033** on the bench, plus the 6 in the missing strip.
+- Standard / Survival, fresh browser context: **3** starters. Unchanged.
+
+The doc comment in `modes.ts` said the reveal "is a VIEW and never a write... 
+turning it off gives you back exactly the game you had". Half of that is still
+true and half is not, so it now says what happens: the reveal writes nothing, but
+anything you go on to COMBINE is recorded like any other discovery, because it is
+one. What the mode never does is mark things found that you did not make.

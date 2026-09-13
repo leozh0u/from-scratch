@@ -36,14 +36,24 @@ export type Mode = {
    * Every element is already yours.
    *
    * This is the only thing in the game that changes what you HAVE rather than
-   * how much help you get, and it turns the inventory into a reference book:
-   * open anything, see the two things that make it, open either of those, and
-   * walk the whole tree down to stone and wood. That is the point of it. It
-   * lives behind a mode called Cheater because that is what it is, and calling
-   * it something gentler would be pretending.
+   * how much help you get. It turns the inventory into a reference book: open
+   * anything, see the two things that make it, open either of those, and walk
+   * the whole tree down to stone and wood. It lives behind a mode called
+   * Cheater because that is what it is, and calling it something gentler would
+   * be pretending.
    *
-   * It is a VIEW and never a write. The save is untouched, so turning it off
-   * gives you back exactly the game you had.
+   * IT OPENS THE BENCH TOO, IN BOTH REALMS. Leo: *"make it so cheating mode has
+   * everythhing unlocked, for survival and everthing"*, and then *"not only for
+   * the inventory"*. Reveal used to stop at the inventory and the process list,
+   * which made Cheater a book you could read and not a game you could play from
+   * anywhere: you could look up how a t-shirt is made and still not put cotton
+   * on the bench.
+   *
+   * The reveal itself is still a view and writes nothing. Anything you go on to
+   * COMBINE is recorded like any other discovery, because it is one — the
+   * recipe was real and you ran it. What the mode never does is mark things
+   * found that you did not make, so every counter in the game still reports
+   * what actually happened.
    */
   revealAll: boolean
 }

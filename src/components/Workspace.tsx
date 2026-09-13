@@ -100,6 +100,9 @@ const LONGEST_REALM_EMS = (
 export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: WorkspaceProps) {
   const [slots, setSlots] = useState<Slots>([null, null])
   const { width: viewportWidth } = useViewport()
+  // Read here rather than from `rules` below, because the shelf is built above
+  // that line.
+  const revealAll = modeById(mode).revealAll
   /*
    * The HUD's two buttons plus the realm name have to share one strip. At a
    * 335px viewport the three of them wanted 383px and the title was clipped
@@ -155,10 +158,37 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
    * Survival shows only Survival. Everyday shows everything, because there it
    * is true.
    */
-  const shown =
+  /**
+   * WHAT THE PLAYER HAS ACTUALLY MADE.
+   *
+   * Kept separate from what the shelf shows, because Cheater now shows more
+   * than it holds. Progress, hints and the give-up route are all computed from
+   * this one, so the counters cannot be made to lie by changing a setting.
+   */
+  const held =
     realm === 'survival'
       ? game.allDiscovered().filter((id) => elementById(id)?.realm === 'survival')
       : game.allDiscovered()
+
+  /*
+   * CHEATER OPENS THE BENCH, NOT ONLY THE BOOK.
+   *
+   * Leo: *"make it so cheating mode has everythhing unlocked, for survival and
+   * everthing"*, and then *"not only for the inventory"*. Reveal used to stop
+   * at the inventory and the processes list, which made Cheater a reference
+   * book you could read and not a game you could play from anywhere: you could
+   * look up how a t-shirt is made and still not put cotton on the bench.
+   *
+   * The realm filter is the same one the normal shelf uses and has to be.
+   * Survival needs nothing from Everyday, so pouring bauxite and soda ash onto
+   * the tutorial bench would be a wall of minerals with no use — which is the
+   * exact bug the filter below was written to fix in the first place.
+   */
+  const shown = revealAll
+    ? data.elements
+        .filter((e) => realm === 'everyday' || e.realm === 'survival')
+        .map((e) => e.id)
+    : held
 
   /*
    * THE SHELF CAN NEVER BE EMPTY.
@@ -174,6 +204,8 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
    * game, and the cost of the guard is one comparison.
    */
   const inventory = shown.length > 0 ? shown : [...data.starters[realm]]
+  /** The same empty-shelf guard, applied to what is genuinely held. */
+  const heldOrStarters = held.length > 0 ? held : [...data.starters[realm]]
 
   /*
    * HOW MUCH OF THIS REALM IS MADE.
@@ -203,13 +235,16 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
    */
   const MISSING_SHOWN = 6
   const missingAll = (() => {
-    const held = new Set(inventory)
+    // The genuinely-held set, not the shelf: in Cheater the shelf holds
+    // everything, and ordering "what is still missing" by how much of it you
+    // are holding would then rank every row identically.
+    const inHand = new Set(heldOrStarters)
     const byOutput = new Map(data.recipes.map((r) => [r.output, r]))
     return [...new Set(craftableIds)]
       .filter((id) => !game.isDiscovered(id))
       .map((id) => {
         const recipe = byOutput.get(id)
-        const ready = recipe ? recipe.inputs.filter((i) => held.has(i)).length : 0
+        const ready = recipe ? recipe.inputs.filter((i) => inHand.has(i)).length : 0
         return { element: elementById(id), ready }
       })
       .sort((a, b) => b.ready - a.ready || a.element.name.localeCompare(b.element.name))
@@ -268,12 +303,12 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
    * as it is — seven steps deep in places — so in the bench's flow it moved
    * every tile in the inventory by however many steps were left.
    */
-  const giveUpTarget = nextUnfoundTarget(data, new Set(inventory), realm)
+  const giveUpTarget = nextUnfoundTarget(data, new Set(heldOrStarters), realm)
 
   function confirmGiveUp() {
     setGivingUp(false)
     if (!giveUpTarget) return
-    const steps = pathToTarget(data, new Set(inventory), giveUpTarget)
+    const steps = pathToTarget(data, new Set(heldOrStarters), giveUpTarget)
     /*
      * An empty route means the target cannot be reached from here at all,
      * which should be impossible — `scripts/edgetest.ts` asserts every realm
@@ -430,7 +465,7 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
   function takeHint() {
     if (!rules.hints || hintsLeft <= 0) return
     playPress()
-    const found = pickHint(data, new Set(inventory), realm, game.hintsSpent[realm] ?? 0)
+    const found = pickHint(data, new Set(heldOrStarters), realm, game.hintsSpent[realm] ?? 0)
     if (!found) {
       // Not charged for. Being told there is nothing to find is not a hint.
       setHint(NOTHING_IN_REACH)
@@ -446,7 +481,8 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
     }
   }
 
-  const discoveredIds = new Set(inventory)
+  // The real set, so Cheater cannot push the target counter to full.
+  const discoveredIds = new Set(heldOrStarters)
   const targets = data.targets[realm].map(elementById)
   const foundCount = targets.filter((t) => discoveredIds.has(t.id)).length
   // Guard divide-by-zero for a realm with no targets yet (Everyday, pre-step-15).
