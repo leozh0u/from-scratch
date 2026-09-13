@@ -32,3 +32,4 @@ design-exports
 # applies the rubric and hand-copies the result into src/data/gameData.ts
 data/staging
 scratch/
+capture/

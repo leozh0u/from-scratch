@@ -184,28 +184,22 @@ export const LOCKED: Tone = {
  * of the extrusion underneath it, so centring in that box hung the lock low
  * enough to sit across the side face — and at a 320px viewport it landed on
  * top of the legend printed there. A padlock goes on the door, not on the
- * step. Bounding it to the face fixes the collision at every width rather
- * than nudging it out of the way at the ones that were checked.
+ * step.
+ *
+ * Then it landed on the LABEL instead. Bounded to the face and offset from the
+ * left edge, it still overlapped a centred label whenever the button was
+ * narrow enough — "skipped" on the title screen wore the lock through its
+ * first letter. Absolute positioning was the fault both times: a thing that
+ * must not collide with the text has no business being outside the text's
+ * layout. It is an inline icon now, exactly like the hint bulb and the give-up
+ * flag, so overlapping is not a state it can be in.
  */
-function Lock({ unit, depth }: { unit: number; depth: number }) {
+function Lock({ unit }: { unit: number }) {
   return (
-    <span
-      aria-hidden="true"
-      style={{
-        position: 'absolute',
-        // Measured from the left edge rather than centred: dead centre puts it
-        // straight through the label.
-        left: unit * 4,
-        top: 0,
-        bottom: depth,
-        display: 'flex',
-        alignItems: 'center',
-        zIndex: 2,
-        pointerEvents: 'none',
-      }}
-    >
-      <PixelArt sprite={PADLOCK} scale={Math.max(2, Math.round(unit * 0.75))} />
-    </span>
+    <PixelArt
+      sprite={PADLOCK}
+      scale={Math.max(2, Math.round(unit * 0.75))}
+    />
   )
 }
 
@@ -516,13 +510,13 @@ export function PixelButton({
               whiteSpace: 'nowrap',
             }}
           >
+            {locked && <Lock unit={unit} />}
             {icon}
             {children}
           </span>
         </span>
       </span>
 
-      {locked && <Lock unit={unit} depth={depth} />}
     </button>
   )
 }

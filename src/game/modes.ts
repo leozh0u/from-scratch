@@ -121,9 +121,10 @@ export function modeById(id: ModeId): Mode {
 /**
  * Whether the player has chosen to skip Survival.
  *
- * A preference rather than progress, so it lives beside the mode rather than
- * in the save: wiping what you made should not put the tutorial back in front
- * of somebody who has already played it.
+ * Stored beside the mode rather than inside the save, because it is a
+ * preference rather than progress — but RESET CLEARS IT ANYWAY. See
+ * `resetEverything` in App.tsx: "start over" has one plain meaning, and a
+ * control that leaves something behind is one nobody can predict.
  */
 const SKIP_KEY = 'from-scratch:skipped'
 

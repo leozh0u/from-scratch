@@ -66,12 +66,25 @@ function Game() {
     GAME_DATA.targets.survival.every((id) => game.isDiscovered(id))
 
   /*
-   * Starting over means starting over: the save is wiped and the player lands
-   * back on the title screen. Shared by the inventory's button and the one in
-   * the title screen's corner, so the two can never drift apart.
+   * Starting over means starting over: the save is wiped, the tutorial is put
+   * back in front of the player, and they land on the title screen. Shared by
+   * the inventory's button and the one in the title screen's corner, so the
+   * two can never drift apart.
+   *
+   * THE SKIP GOES WITH IT, and it did not used to.
+   *
+   * I kept it out on the argument that skipping is a preference rather than
+   * progress, so wiping what you made should not put the tutorial back in
+   * front of somebody who has already played it. Leo: "once its skipped, the
+   * reset doenst reset the skip." He is right and the argument was too clever.
+   * "Start over" has one plain meaning, a control that leaves something behind
+   * is a control nobody can predict, and re-skipping costs one press of a
+   * button that is still sitting there.
    */
   function resetEverything() {
     game.reset()
+    writeSkipped(false)
+    setSkipped(false)
     setShowInventory(false)
     setRealm(null)
   }
