@@ -1281,7 +1281,7 @@ const record = slide(
  * k6 arrival rate. Those are noted where they are written.
  */
 const tally = slide(
-  'BY THE NUMBERS',
+  'NUMBERS',
   () => {
     const out: string[] = []
     const bands: [string, [string, string][]][] = [
@@ -1352,7 +1352,9 @@ const tally = slide(
     })
     return out.join('')
   },
-  'the first four rows are read from the game at build time. the last is measured.',
+  // No footer: the figures are the whole slide, and a line of green under
+  // them was the only sentence on it.
+  null,
   331,
 )
 
