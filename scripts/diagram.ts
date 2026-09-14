@@ -808,7 +808,7 @@ const checks = slide(
   () =>
     figures(
       [
-        ['213', 'ASSERTIONS'],
+        ['315', 'ASSERTIONS'],
         [n(FACTS.urls), 'URLS FETCHED'],
         ['280', 'LAYOUT CHECKS'],
         ['250', 'PLAYERS A SECOND'],
@@ -1340,8 +1340,8 @@ const tally = slide(
       [
         'PROOF',
         [
-          // Measured on 2026-09-13: `npm test` prints 213 passed, 0 failed.
-          ['213', 'ASSERTIONS'],
+          // Measured from a real `npm test` run: 315 across both output formats.
+          ['315', 'ASSERTIONS'],
           // devicetest.mjs: 14 devices x 5 screens x 4 checks.
           ['280', 'LAYOUT CHECKS'],
           ['250', 'PLAYERS A SECOND'],

@@ -100,8 +100,8 @@ only if you ask.
 **`tests`** — Named files, not a claim: `datatest.ts`, `edgetest.ts`,
 `apitest.ts`, `devicetest.mjs`.
 
-**`checks`** — 14 scripts, 1,024 URLs fetched, 280 layout checks, 250 players a
-second.
+**`checks`** — 315 assertions, 1,024 URLs fetched, 280 layout checks, 250
+players a second.
 
 **`load`** — The k6 ramp, and the honest story: we aimed it at production once
 and Vercel's mitigation denied our whole IP. It runs against a local preview

@@ -234,7 +234,7 @@ one; almost none can say what theirs is not allowed to do.
   hand-draws a thousand sprites. The tradeoff is that two things sharing a
   shape rely on colour, so a minimum separation is enforced by the test suite.
 - **Everything is measured, not eyeballed.** At this size you cannot see a
-  regression: 213 assertions on `npm test`, plus a 280-check sweep of 14 screen sizes, catch what looking
+  regression: 315 assertions on `npm test`, plus a 280-check sweep of 14 screen sizes, catch what looking
   cannot.
 
 ## 6. Design — 40 seconds, and every beat has a picture

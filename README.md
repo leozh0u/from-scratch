@@ -35,7 +35,7 @@ twenty-two ancestors back through the ember and the hand drill to a stone and a
 stick. Survival comes first because the graph genuinely needs it, not because
 we wanted a gate.
 
-There are 1,004 elements and 1,007 recipes, and thirteen of those elements can be
+There are 1,033 elements and 1,036 recipes, and fourteen of those elements can be
 made more than one real way. The receipt records which road you took.
 
 ---
@@ -92,14 +92,14 @@ solver picks and phrases them.
 
 ### The part that does the most teaching
 
-Over 97% of the pairs you can try produce nothing, so "that didn't work" is by
+Over 99% of the pairs you can try produce nothing, so "that didn't work" is by
 far the sentence this game says most. In a game about how things are made,
 that's where the teaching has to happen.
 
 It answers instantly from a local rule table built on element properties. A
 tool works on a material, so two tools have nothing to work on. Cold metal
 keeps its shape. Two reagents need a third thing. Thirty-six rules cover all but
-4% of the 503,503 pairs that aren't recipes, and the whole space resolves in
+4% of the 533,025 pairs that aren't recipes, and the whole space resolves in
 well under a second with no network. We think this beats a per-pair fact,
 because it's the grammar of making things. Learn it and you start predicting
 instead of guessing.
@@ -122,7 +122,7 @@ The dev server comes up on http://localhost:5173. There's a styleguide at
 
 | Command | What it does |
 | --- | --- |
-| `npm test` | Type-check, 297 assertions, production build |
+| `npm test` | Type-check, 315 assertions, production build |
 | `npm run solve` | Reachability and cost report over the recipe graph |
 | `npm run walkthrough` | Regenerate WALKTHROUGH.md from the data |
 | `npm run probe` | Ask the live endpoint which missing pairs are real |
@@ -141,7 +141,7 @@ top. `DIRECTION.md` is the standing answer to what to work on next.
 
 ## The tests
 
-297 assertions, because a project whose whole claim is rigour ought to be able
+315 assertions, because a project whose whole claim is rigour ought to be able
 to prove it. The ones worth knowing about are the ones that caught something
 real.
 
@@ -201,8 +201,8 @@ claims, and confirmed the units. 151 citations are this.
 **Referenced** means `npm run links` fetched the URL, got an answer, and
 confirmed the page title still matches the label printed beside it. That proves
 the article exists and nothing more, which is why the game marks it on the card
-instead of hiding it. 1,865 citations are this, across 998 distinct URLs, and
-all 998 currently answer and match.
+instead of hiding it. 1,923 citations are this, across 1,024 distinct URLs, and
+every one of them is fetched and title-matched on each build.
 
 A footprint figure may only ever rest on a Sourced citation. "This page exists"
 is no evidence for "this costs 2,340 litres", and `npm test` fails the build if
