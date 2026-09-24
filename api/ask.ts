@@ -1,4 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
+import { cors } from './_cors.js'
 
 /*
  * The second and last runtime LLM call: "learn more" on something you have
@@ -87,6 +88,7 @@ export function toWholeSentences(text: string): string | null {
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (cors(req, res)) return
   if (req.method !== 'POST') {
     res.status(405).json({ message: null })
     return

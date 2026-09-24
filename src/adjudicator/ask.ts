@@ -13,7 +13,7 @@
  */
 
 import { QUESTION_KEYS, type QuestionKey } from './questions'
-import { classify, type Outcome, type Reply } from './outcome'
+import { API_ORIGIN, classify, type Outcome, type Reply } from './outcome'
 
 const CACHE_KEY = 'from-scratch:explanations'
 const RATE_LIMIT_WINDOW_MS = 60_000
@@ -94,7 +94,7 @@ export async function ask(
   sessionCallCount++
 
   try {
-    const res = await fetch('/api/ask', {
+    const res = await fetch(`${API_ORIGIN}/api/ask`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ name, question }),

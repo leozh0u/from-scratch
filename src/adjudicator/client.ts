@@ -1,4 +1,4 @@
-import { classify, type Outcome, type Reply } from './outcome'
+import { API_ORIGIN, classify, type Outcome, type Reply } from './outcome'
 /*
  * Client side of the adjudicator: decides whether a request is even worth
  * sending, before it's sent. This is where the credit actually gets
@@ -109,7 +109,7 @@ export async function adjudicate(
   sessionCallCount++
 
   try {
-    const res = await fetch('/api/adjudicate', {
+    const res = await fetch(`${API_ORIGIN}/api/adjudicate`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ a: nameA, b: nameB, realm }),

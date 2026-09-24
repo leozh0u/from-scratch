@@ -1,4 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
+import { cors } from './_cors.js'
 
 /*
  * Runtime adjudicator — the ONLY place this game calls an LLM at runtime.
@@ -82,6 +83,7 @@ Then respond with exactly ONE short sentence, under 30 words:
 Rules: output only that one sentence, nothing else. Never mention any other material, object, or recipe by name — you don't know what else exists in this game, so don't guess or suggest what the player should try instead.${SCOPE[realm]}`
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (cors(req, res)) return
   if (req.method !== 'POST') {
     res.status(405).json({ message: null })
     return

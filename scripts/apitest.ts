@@ -42,7 +42,12 @@ const ok = (label: string, condition: boolean, detail = '') => {
 
 /** The smallest thing a Vercel handler will accept as a response. */
 function mockRes() {
-  const out: { code: number | null; body: unknown } = { code: null, body: null }
+  const out: { code: number | null; body: unknown; headers: Record<string, string>; ended: boolean } = {
+    code: null,
+    body: null,
+    headers: {},
+    ended: false,
+  }
   const res = {
     status(code: number) {
       out.code = code
@@ -50,6 +55,14 @@ function mockRes() {
     },
     json(body: unknown) {
       out.body = body
+      return res
+    },
+    setHeader(name: string, value: string) {
+      out.headers[name.toLowerCase()] = value
+      return res
+    },
+    end() {
+      out.ended = true
       return res
     },
   }
@@ -204,6 +217,35 @@ async function main() {
       Math.max(...sent.map((s) => s.body.length)) < 4000,
       `largest body ${Math.max(...sent.map((s) => s.body.length))} bytes against a ${(JSON.stringify(GAME_DATA).length / 1024).toFixed(0)}KB graph`,
     )
+  }
+
+  /*
+   * ONE OTHER ORIGIN, AND ONLY ONE.
+   *
+   * The GitHub Pages copy in Leo's fork calls these across origins. It must be
+   * let in, nothing else may be, and a preflight must be answered without
+   * going anywhere near the model.
+   */
+  console.log('\n=== cors: the pages copy is let in, and nothing else ===')
+  {
+    const sent = stubGemini('A sentence that ends properly and is long enough.')
+    const pages = { origin: 'https://leozh0u.github.io' }
+    for (const [label, handler, body] of [
+      ['ask', askHandler, { name: 'Quicklime', question: 'how' }],
+      ['adjudicate', adjudicateHandler, { a: 'Stone', b: 'Beeswax', realm: 'everyday' }],
+    ] as const) {
+      const pre = await call(handler, { method: 'OPTIONS', headers: pages })
+      ok(`${label}: a preflight from the pages copy is answered`, pre.code === 204 && pre.ended)
+      ok(`${label}: and allowed`, pre.headers['access-control-allow-origin'] === pages.origin)
+      const real = await call(handler, { method: 'POST', headers: pages, body })
+      ok(`${label}: the real request is allowed too`, real.headers['access-control-allow-origin'] === pages.origin)
+      const other = await call(handler, { method: 'POST', headers: { origin: 'https://example.com' }, body })
+      ok(`${label}: any other origin gets no allowance`, !('access-control-allow-origin' in other.headers))
+      const same = await call(handler, { method: 'POST', body })
+      ok(`${label}: and the game's own origin is unchanged`, same.code === 200 && !('access-control-allow-origin' in same.headers))
+    }
+    const preflightsReachedModel = sent.length - 6
+    ok('a preflight never reaches the model', preflightsReachedModel === 0, `${sent.length} requests for 6 real calls`)
   }
 
   console.log(`\n${pass} passed, ${fail} failed\n`)

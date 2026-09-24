@@ -48,3 +48,11 @@ export function classify(status: number | null): Exclude<Outcome, 'answer'> {
   if (status === 429) return 'limited'
   return 'quiet'
 }
+
+/*
+ * Where the two functions live. Empty means this origin, which is the Vercel
+ * deployment. The GitHub Pages copy in Leo's fork is built with
+ * VITE_API_ORIGIN pointing back at Vercel, because Pages serves files and
+ * cannot hold a key.
+ */
+export const API_ORIGIN: string = import.meta.env.VITE_API_ORIGIN ?? ''

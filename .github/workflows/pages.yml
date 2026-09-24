@@ -1,0 +1,51 @@
+# A second home for the game at leozh0u.github.io/from-scratch.
+#
+# Vercel serves the team's copy at from-scratch-three.vercel.app, which is on
+# Nathalie's account and cannot be renamed from anyone else's. Leo's fork
+# builds the same code here, under his own name, for a link that reads as
+# his. It only runs in that fork; in the original repository it does nothing.
+#
+# The two Gemini functions are not rebuilt here, because GitHub Pages serves
+# files and cannot hold a key. The page calls the Vercel copy's functions
+# instead (VITE_API_ORIGIN), which allow this one origin. If they are ever
+# unreachable, "why not?" and "learn more" say so and everything else plays.
+name: pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    if: github.repository == 'leozh0u/from-scratch'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          BASE_PATH: /from-scratch/
+          VITE_API_ORIGIN: https://from-scratch-three.vercel.app
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - id: deployment
+        uses: actions/deploy-pages@v4
