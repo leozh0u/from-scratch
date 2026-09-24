@@ -64,7 +64,7 @@ export const WORLDS: WorldDef[] = [
     name: 'Football',
     kit: 'everything you need to play football',
     // Hide for the leather, latex and sulfur for the rubber, plant fibre for
-    // the net's cord. The ball is Goodyear's: vulcanised rubber inside leather.
+    // the net's cord. The ball is leather over a vulcanised rubber bladder.
     starters: ['fire', 'wood', 'stone', 'plant_fibre', 'water', 'hide', 'latex', 'sulfur'],
     targets: ['football', 'football_boot', 'goal'],
     scene: 'forest',

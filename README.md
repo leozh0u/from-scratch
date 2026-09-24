@@ -1,13 +1,15 @@
 # From Scratch
 
-A crafting game where nothing is made up. You start with three things you could
-pick up on a walk, combine two at a time, and work your way to a finished
-object. Every recipe is a transformation that really happens, and every one of
-them has a source you can click.
+A crafting game about how things are really made. You start with three things
+you could pick up on a walk, combine two at a time, and work your way to a
+finished object. Every recipe has a source you can click, and the card says
+how much checking that source has had.
 
 Finish something and you get a receipt for what it cost to make.
 
 Play it: https://from-scratch-three.vercel.app
+
+Then try the planets: five small worlds, each a kit to make from scratch.
 
 ---
 
@@ -35,7 +37,7 @@ twenty-two ancestors back through the ember and the hand drill to a stone and a
 stick. Survival comes first because the graph genuinely needs it, not because
 we wanted a gate.
 
-There are 1,032 elements and 1,033 recipes, and fourteen of those elements can be
+There are 1,047 elements and 1,044 recipes, and sixteen of those elements can be
 made more than one real way. The receipt records which road you took.
 
 ---
@@ -55,6 +57,39 @@ made more than one real way. The receipt records which road you took.
 - Cotton comes from a watered field, or from shredded textile waste, which
   skips the 2,340 litres rather than charging a smaller number for it.
 - Dye comes from boiled plants, from red ochre, or from bark tannin.
+
+## Planets
+
+Five small worlds, each with one job: make everything you need to do one
+thing. They open once Survival is finished, from the planets key on the title
+screen.
+
+| World | The kit | You start with | Crafts |
+| --- | --- | --- | --- |
+| Football | ball, boots, goal | wood, stone, plant fibre, water, hide, latex, sulfur, fire | 13 |
+| Fencing | blade, mask, jacket | wood, stone, water, iron ore, soil, beeswax, fire | 19 |
+| Chess | board, pieces, sandglass | wood, stone, water, iron ore, fire | 16 |
+| Drums | drum, sticks, cymbal | wood, water, hide, iron ore, copper ore, tin ore, fire | 14 |
+| Navigation | compass, map, sextant | wood, stone, water, seawater, iron ore, lodestone, hide, limestone, copper ore, tin ore, fire | 19 |
+
+A world is Survival's shape again, with its own save. It adds no recipes of its
+own: stone on stone still makes a sharp stone on the football planet. What a
+world chooses is where you start and what you are aiming for. Fire is handed
+over, because you already learned it in Survival.
+
+The football is leather over a vulcanised rubber bladder, which is what
+vulcanisation made possible, and the chess clock is a sandglass, which is how
+games were timed before the chess clock existed.
+
+None of the art is new. Each backdrop is the forest or the city re-lit one
+palette colour at a time (`src/art/moods.ts`, `npm run relight`), and each
+planet is the title screen's Earth in the world's colours with its coastlines
+turned over.
+
+Adding a world is one entry in `src/data/worlds.ts`. `scripts/worldtest.ts`
+rejects it if a starter goes unused, a target cannot be reached, the kit is
+shorter than 10 crafts or longer than 20, the name will not fit the header, or
+anything it needs leaks onto the tutorial's shelf.
 
 ---
 
@@ -99,7 +134,7 @@ that's where the teaching has to happen.
 It answers instantly from a local rule table built on element properties. A
 tool works on a material, so two tools have nothing to work on. Cold metal
 keeps its shape. Two reagents need a third thing. Thirty-six rules cover all but
-4% of the 531,995 pairs that aren't recipes, and the whole space resolves in
+4% of the 547,584 pairs that aren't recipes, and the whole space resolves in
 well under a second with no network. We think this beats a per-pair fact,
 because it's the grammar of making things. Learn it and you start predicting
 instead of guessing.
@@ -141,8 +176,9 @@ top. `DIRECTION.md` is the standing answer to what to work on next.
 
 ## The tests
 
-315 assertions, because a project whose whole claim is rigour ought to be able
-to prove it. The ones worth knowing about are the ones that caught something
+410 assertions, and 686 layout checks in a real browser at fourteen screen
+sizes, because a project whose whole claim is rigour ought to be able to prove
+it. The ones worth knowing about are the ones that caught something
 real.
 
 **The footprint accumulator doesn't double-count.** The graph is a DAG where a
@@ -196,13 +232,20 @@ an article that has never existed. By eye you cannot tell it from a good one.
 So a citation now says how much checking it has actually had.
 
 **Sourced** means a person opened the page, confirmed it says what the game
-claims, and confirmed the units. 151 citations are this.
+claims, and confirmed the units. 149 citations are this.
 
 **Referenced** means `npm run links` fetched the URL, got an answer, and
 confirmed the page title still matches the label printed beside it. That proves
 the article exists and nothing more, which is why the game marks it on the card
-instead of hiding it. 1,919 citations are this, across 1,023 distinct URLs, and
-every one of them is fetched and title-matched on each build.
+instead of hiding it. 1,948 citations are this, across 1,038 distinct URLs, and
+every one of them is fetched and title-matched by `npm run links`, which runs by
+hand rather than in CI because a suite that needs the internet fails on bad wifi.
+
+**What that does not prove.** A page that exists is not a recipe that is true,
+and the bulk batches from the hackathon weekend have wrong ones in them. A pass
+on 23 September fixed about twenty on the paths players actually walk (leather
+was made from wool, tin from iron slag, steel by adding carbon to pig iron) and
+lists the ones it found and left in `docs/WORLDS.md`.
 
 A footprint figure may only ever rest on a Sourced citation. "This page exists"
 is no evidence for "this costs 2,340 litres", and `npm test` fails the build if
