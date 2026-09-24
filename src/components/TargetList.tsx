@@ -15,6 +15,17 @@ type TargetListProps = {
  */
 export function TargetList({ targets, discoveredIds }: TargetListProps) {
   return (
+    /*
+     * A TWO-WORD NAME WRAPS INSIDE ITS TILE BEFORE THE TILE WRAPS.
+     *
+     * The worlds brought "fencing jacket" and "football boots", and at 375 to
+     * 390 wide the third tile dropped to a second row, so the strip was a
+     * different height on different planets and the bench below it jumped.
+     * Each tile may take a third of the row at most, so a long name breaks at
+     * its space onto a second line instead. A strip whose names already fit is
+     * exactly as it was. The row still wraps as a last resort, because a
+     * single word too long for a third of a 320px phone must not be clipped.
+     */
     <ul className="flex flex-wrap justify-center gap-3" aria-label="Targets">
       {targets.map((target) => {
         const found = discoveredIds.has(target.id)
@@ -34,6 +45,8 @@ export function TargetList({ targets, discoveredIds }: TargetListProps) {
               background: OUTLINE,
               clipPath: steppedNotch(3, 2),
               padding: 3,
+              flex: '0 1 auto',
+              maxWidth: `calc((100% - ${(targets.length - 1) * 12}px) / ${Math.max(1, targets.length)})`,
             }}
           >
             <div

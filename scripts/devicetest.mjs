@@ -130,8 +130,35 @@ async function audit(page) {
       }
     }
 
-    return { sideways, clipped, tiny, offscreen }
+    /*
+     * Below the fold, on a screen that cannot scroll. The title clips its
+     * overflow so the planet can sit on the bottom edge, which means a key
+     * pushed below it is not merely out of sight but out of reach. Only
+     * checked where the page itself does not scroll.
+     */
+    const main = document.querySelector('main')
+    const clips = main && getComputedStyle(main).overflowY === 'hidden'
+    const belowFold = []
+    if (clips) {
+      for (const el of document.querySelectorAll('button')) {
+        const box = el.getBoundingClientRect()
+        if (box.width === 0) continue
+        if (box.bottom > window.innerHeight + 1) belowFold.push(`"${(el.textContent ?? '').trim().slice(0, 18)}"`)
+      }
+    }
+
+    return { sideways, clipped, tiny, offscreen, belowFold }
   })
+}
+
+const SCREENS = 9
+
+/** Something only that screen says, for the screens reached by several clicks. */
+const SHOULD_SAY = {
+  planets: 'navigation',
+  football: 'football boots',
+  navigation: 'sextant',
+  "a world's inventory": 'fencing ·',
 }
 
 async function main() {
@@ -177,14 +204,46 @@ async function main() {
         await clickLabel(page, 'inventory')
         await clickLabel(page, 'processes')
       }],
+      ['planets', async () => {
+        await page.goto(`${base}/`)
+        await clickLabel(page, 'planets')
+      }],
+      ['football', async () => {
+        await page.goto(`${base}/`)
+        await clickLabel(page, 'planets')
+        await clickLabel(page, 'football')
+      }],
+      // The longest world name, which is what the HUD title is sized for.
+      ['navigation', async () => {
+        await page.goto(`${base}/`)
+        await clickLabel(page, 'planets')
+        await clickLabel(page, 'navigation')
+      }],
+      ["a world's inventory", async () => {
+        await page.goto(`${base}/`)
+        await clickLabel(page, 'planets')
+        await clickLabel(page, 'fencing')
+        await clickLabel(page, 'inventory')
+      }],
     ]) {
       await go()
       await page.waitForTimeout(220)
+      /*
+       * `clickLabel` does nothing when it finds nothing, so without this a
+       * screen that never opened would pass every check below by auditing
+       * whichever screen was left showing.
+       */
+      const mustSay = SHOULD_SAY[screen]
+      if (mustSay) {
+        const text = (await page.evaluate(() => document.body.innerText)).toLowerCase()
+        ok(`${name} ${width}x${height} · ${screen} actually opened`, text.includes(mustSay), `looked for "${mustSay}"`)
+      }
       const found = await audit(page)
       ok(`${name} ${width}x${height} · ${screen} does not scroll sideways`, found.sideways <= 1, `${found.sideways}px over`)
       ok(`${name} ${width}x${height} · ${screen} clips no text`, found.clipped.length === 0, found.clipped.slice(0, 3).join(', '))
       ok(`${name} ${width}x${height} · ${screen} has no unhittable control`, found.tiny.length === 0, found.tiny.slice(0, 3).join(', '))
       ok(`${name} ${width}x${height} · ${screen} keeps every control on screen`, found.offscreen.length === 0, found.offscreen.slice(0, 3).join(', '))
+      ok(`${name} ${width}x${height} · ${screen} leaves nothing below a fold it cannot scroll to`, found.belowFold.length === 0, found.belowFold.slice(0, 3).join(', '))
     }
 
     await context.close()
@@ -194,7 +253,7 @@ async function main() {
   await browser.close()
   server.close()
 
-  console.log(`\n${pass} passed, ${fail} failed  (${DEVICES.length} sizes, 5 screens each)\n`)
+  console.log(`\n${pass} passed, ${fail} failed  (${DEVICES.length} sizes, ${SCREENS} screens each)\n`)
   process.exit(fail === 0 ? 0 : 1)
 }
 

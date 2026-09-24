@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useViewport } from '../hooks/useViewport'
+import { backdropFile, relightCss, type MoodId } from '../art/moods'
 import {
   coverTransform,
   windowLitAt,
@@ -224,9 +225,22 @@ function analyse(data: Uint8ClampedArray) {
   return { clouds, treetops }
 }
 
-type CitySceneProps = { className?: string }
+type CitySceneProps = {
+  className?: string
+  /**
+   * The light the street is seen in, for a world.
+   *
+   * THE ANALYSIS STILL READS THE DAYLIGHT PICTURE. Windows, clouds and
+   * treetops are found by colour tests written against it: a lit window is
+   * warm and bright, a cloud is near white, a leaf is green. Re-lit, a dusk sky
+   * passes the window test and the whole sky flickers, and pink clouds fail the
+   * cloud test and stop drifting. So positions come from the original, and
+   * only the colours painted over them go through the mood.
+   */
+  mood?: MoodId
+}
 
-export function CityScene({ className }: CitySceneProps) {
+export function CityScene({ className, mood = 'day' }: CitySceneProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const windowsRef = useRef<Window[] | null>(null)
   const cloudsRef = useRef<Cloud[]>([])
@@ -268,6 +282,9 @@ export function CityScene({ className }: CitySceneProps) {
     if (!context) return
     // Narrowed once: `ctx` inside `draw` is a closure over the checked value.
     const ctx = context
+    const lit = (colour: string) => relightCss(colour, mood)
+    // Birds and a plane crossing a night sky would be drawn as holes in it.
+    const daylight = mood !== 'night'
 
     const { scale, offsetX, offsetY } = coverTransform(IMAGE_SIZE, width, height, OBJECT_POSITION_Y)
     // Whole pixels: a light drawn at a fractional offset is a blurred smear.
@@ -288,7 +305,7 @@ export function CityScene({ className }: CitySceneProps) {
         for (let i = 0; i < windows.length; i++) {
           if (windowLitAt(now, i + 1)) continue
           const w = windows[i]
-          ctx.fillStyle = w.off
+          ctx.fillStyle = lit(w.off)
           ctx.fillRect(
             Math.round(offsetX + w.x * scale),
             Math.round(offsetY + w.y * scale),
@@ -309,7 +326,7 @@ export function CityScene({ className }: CitySceneProps) {
         if (dx === 0) continue
         const cloud = clouds[c]
         const paint = (px: number, py: number, colour: string) => {
-          ctx.fillStyle = colour
+          ctx.fillStyle = lit(colour)
           ctx.fillRect(
             Math.round(offsetX + px * scale),
             Math.round(offsetY + py * scale),
@@ -340,14 +357,14 @@ export function CityScene({ className }: CitySceneProps) {
         const dx = swayAt(now, t * 3 + 1, 6_400)
         if (dx === 0) continue
         const tip = treetops[t]
-        ctx.fillStyle = tip.above
+        ctx.fillStyle = lit(tip.above)
         ctx.fillRect(
           Math.round(offsetX + tip.x * scale),
           Math.round(offsetY + tip.y * scale),
           block,
           block,
         )
-        ctx.fillStyle = tip.leaf
+        ctx.fillStyle = lit(tip.leaf)
         ctx.fillRect(
           Math.round(offsetX + (tip.x + dx) * scale),
           Math.round(offsetY + tip.y * scale),
@@ -362,15 +379,15 @@ export function CityScene({ className }: CitySceneProps) {
        * and an event you are not told to wait for is the only kind worth
        * having.
        */
-      const plane = planeAt(now, 1, width, skyHeight)
+      const plane = daylight ? planeAt(now, 1, width, skyHeight) : null
       if (plane) {
         // The contrail first, so the aircraft draws over its own leading edge.
-        ctx.fillStyle = '#7b83a8'
+        ctx.fillStyle = lit('#7b83a8')
         for (let i = 1; i <= plane.trail; i++) {
           const tx = plane.x + (plane.leftToRight ? -i * block * 2 : i * block * 2)
           ctx.fillRect(tx, plane.y + block, block, block)
         }
-        ctx.fillStyle = '#39405e'
+        ctx.fillStyle = lit('#39405e')
         for (let ry = 0; ry < PLANE_ROWS.length; ry++) {
           for (let rx = 0; rx < PLANE_ROWS[ry].length; rx++) {
             if (PLANE_ROWS[ry][rx] !== '#') continue
@@ -380,16 +397,16 @@ export function CityScene({ className }: CitySceneProps) {
       }
 
       // Distant birds: one pixel, high up, slower than the near ones.
-      ctx.fillStyle = '#4a5170'
-      for (let seed = 1; seed <= 5; seed++) {
+      ctx.fillStyle = lit('#4a5170')
+      for (let seed = 1; daylight && seed <= 5; seed++) {
         const far = farBirdAt(now, seed, width, skyHeight)
         if (!far) continue
         ctx.fillRect(far.x, far.y, block, block)
       }
 
       // Birds, in the sky and nowhere else.
-      ctx.fillStyle = '#3b3f5c'
-      for (let seed = 1; seed <= 3; seed++) {
+      ctx.fillStyle = lit('#3b3f5c')
+      for (let seed = 1; daylight && seed <= 3; seed++) {
         const bird = birdAt(now, seed, width, skyHeight)
         if (!bird) continue
         const rows = BIRD_FRAMES[bird.flap]
@@ -420,7 +437,7 @@ export function CityScene({ className }: CitySceneProps) {
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [width, height])
+  }, [width, height, mood])
 
   return (
     <div
@@ -429,7 +446,7 @@ export function CityScene({ className }: CitySceneProps) {
       style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none' }}
     >
       <img
-        src={`${import.meta.env.BASE_URL}big-city.png`}
+        src={`${import.meta.env.BASE_URL}${backdropFile('city', mood)}`}
         alt=""
         style={{
           position: 'absolute',

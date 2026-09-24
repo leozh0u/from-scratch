@@ -45,6 +45,8 @@ type StartScreenProps = {
   everydayUnlocked: boolean
   /** Wipes both realms. Confirmed first, always. */
   onReset: () => void
+  /** Worlds open when Everything does, by the same three doors. */
+  onOpenWorlds: () => void
 }
 
 export function StartScreen({
@@ -56,6 +58,7 @@ export function StartScreen({
   onOpenInventory,
   everydayUnlocked,
   onReset,
+  onOpenWorlds,
 }: StartScreenProps) {
   const { width, height } = useViewport()
 
@@ -224,14 +227,43 @@ export function StartScreen({
 
         </div>
 
-        <PixelButton
-          tone="default"
-          unit={unit - 1}
-          onClick={onOpenInventory}
-          style={{ marginTop: unit * 2 }}
+        {/*
+         * THE PLANETS KEY SITS BESIDE THE INVENTORY, NOT UNDER THE DOORS.
+         *
+         * A third door was the obvious place and the wrong one. The layout
+         * search is sized for exactly two doors and one key, and with a third
+         * it lost the wordmark a size at 844x390 and could not fit at all in
+         * 168 of the windows it sweeps; this screen clips rather than scrolls,
+         * so a door that does not fit cannot be reached. A second key on the
+         * key's own row costs no height.
+         *
+         * Locked the way Everything is, with the padlock and nothing written
+         * on it. "finish survival first" is already said once, on the door
+         * above, and a side legend here would force a width that scrolls
+         * sideways at 320.
+         */}
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            gap: unit * 3,
+            marginTop: unit * 2,
+          }}
         >
-          inventory
-        </PixelButton>
+          <PixelButton tone="default" unit={unit - 1} onClick={onOpenInventory}>
+            inventory
+          </PixelButton>
+          <PixelButton
+            tone="default"
+            unit={unit - 1}
+            locked={!everydayUnlocked}
+            onClick={() => everydayUnlocked && onOpenWorlds()}
+            aria-label={everydayUnlocked ? 'Planets' : 'Planets, locked until Survival is finished'}
+          >
+            planets
+          </PixelButton>
+        </div>
       </div>
 
       {/*

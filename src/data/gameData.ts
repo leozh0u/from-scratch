@@ -84,6 +84,11 @@ export const GAME_DATA: RecipeData = {
     { id: 'crude_oil', name: 'Crude Oil', icon: 'crude_oil', realm: 'everyday', blurb: "Plankton buried under pressure for something like a hundred million years. Heat it carefully and it comes apart into everything from petrol to candle wax.", sources: [{ label: 'Petroleum', url: 'https://en.wikipedia.org/wiki/Petroleum' }] },
     { id: 'natural_gas', name: 'Natural Gas', icon: 'natural_gas', realm: 'everyday', blurb: "Mostly methane. It is a fuel, but the thing it really does for the world is feed the reaction that makes fertiliser.", sources: [{ label: 'Natural gas', url: 'https://en.wikipedia.org/wiki/Natural_gas' }] },
     { id: 'beeswax', name: 'Beeswax', icon: 'beeswax', realm: 'everyday', blurb: "Bees make it to build comb with. For most of history it was the good candle wax, and priced like it.", sources: [{ label: 'Beeswax', url: 'https://en.wikipedia.org/wiki/Beeswax' }] },
+    { id: 'hide', name: 'Hide', icon: 'hide', realm: 'everyday', blurb: "Skin off an animal, before anything has been done to it. Left alone it rots within days, and every use it has begins by stopping that.", sources: [{ label: 'Hide (skin)', url: 'https://en.wikipedia.org/wiki/Hide_(skin)', tier: 'referenced' }] },
+    { id: 'latex', name: 'Latex', icon: 'latex', realm: 'everyday', blurb: "The white sap that runs from a cut rubber tree. It is already rubber, just suspended in water, and on its own it goes sticky in the heat and brittle in the cold.", sources: [{ label: 'Natural rubber', url: 'https://en.wikipedia.org/wiki/Natural_rubber', tier: 'referenced' }] },
+    { id: 'sulfur', name: 'Sulfur', icon: 'sulfur', realm: 'everyday', blurb: "Yellow crystals that collect round volcanic vents. The Bible calls it brimstone.", sources: [{ label: 'Sulfur', url: 'https://en.wikipedia.org/wiki/Sulfur', tier: 'referenced' }] },
+    { id: 'tin_ore', name: 'Tin Ore', icon: 'tin_ore', realm: 'everyday', blurb: "Cassiterite, heavy and nearly black. Tin is rare enough that Bronze Age traders carried it thousands of kilometres to reach the copper.", sources: [{ label: 'Cassiterite', url: 'https://en.wikipedia.org/wiki/Cassiterite', tier: 'referenced' }] },
+    { id: 'seawater', name: 'Seawater', icon: 'seawater', realm: 'everyday', blurb: "About three and a half per cent salt by weight. Leave it in a shallow pan in the sun and the water goes and the salt stays.", sources: [{ label: 'Seawater', url: 'https://en.wikipedia.org/wiki/Seawater', tier: 'referenced' }] },
     { id: 'salt', name: 'Salt', icon: 'salt', realm: 'everyday', blurb: "Seawater left in the sun, or boiled, until only the solid is left. Probably the oldest chemistry anyone did on purpose, and it feeds two whole industries from here.", sources: [{ label: 'Salt evaporation pond', url: 'https://en.wikipedia.org/wiki/Salt_evaporation_pond' }] },
     { id: 'ammonia', name: 'Ammonia', icon: 'ammonia', realm: 'everyday', blurb: "Nitrogen taken out of the air and forced onto hydrogen stripped from methane. Haber Bosch feeds roughly half the people alive and almost nobody can name it, which seems like an oversight.", sources: [{ label: 'Haber process', url: 'https://en.wikipedia.org/wiki/Haber_process' }] },
     { id: 'farmland', name: 'Farmland', icon: 'farmland', realm: 'everyday', blurb: "Soil that can carry a crop, as someone put the nitrogen back into it.", sources: [{ label: 'Fertilizer', url: 'https://en.wikipedia.org/wiki/Fertilizer' }] },
@@ -770,6 +775,7 @@ export const GAME_DATA: RecipeData = {
     { id: 'sundial', name: 'Sundial', icon: 'sundial', realm: 'everyday', blurb: "The pointer has to lie parallel to the earth's axis, which means a sundial is built for one latitude only.", sources: [{ label: 'Sundial', url: 'https://en.wikipedia.org/wiki/Sundial', tier: 'referenced' }] },
     { id: 'water_clock', name: 'Water Clock', icon: 'water_clock', realm: 'everyday', blurb: "Older than the sundial and it works at night. Keeping the flow even as the vessel empties is the hard part.", sources: [{ label: 'Water clock', url: 'https://en.wikipedia.org/wiki/Water_clock', tier: 'referenced' }] },
     { id: 'hourglass', name: 'Hourglass', icon: 'hourglass', realm: 'everyday', blurb: "Sand runs at a rate that does not care how much is left above it, which water does not manage.", sources: [{ label: 'Hourglass', url: 'https://en.wikipedia.org/wiki/Hourglass', tier: 'referenced' }] },
+    { id: 'forest_glass', name: 'Forest Glass', icon: 'forest_glass', realm: 'everyday', blurb: "Sand melted with potash from burnt wood, made where the forests were rather than by the sea. The iron in the sand turns it green.", sources: [{ label: 'Forest glass', url: 'https://en.wikipedia.org/wiki/Forest_glass', tier: 'referenced' }] },
     { id: 'calendar', name: 'Calendar', icon: 'calendar', realm: 'everyday', blurb: "A year is not a whole number of days. Every calendar ever made is an argument about what to do with the remainder.", sources: [{ label: 'Calendar', url: 'https://en.wikipedia.org/wiki/Calendar', tier: 'referenced' }] },
     { id: 'almanac', name: 'Almanac', icon: 'almanac', realm: 'everyday', blurb: "Tides, sunrise, planting dates. For most people it was the only book in the house apart from one other.", sources: [{ label: 'Almanac', url: 'https://en.wikipedia.org/wiki/Almanac', tier: 'referenced' }] },
     { id: 'logarithm_table', name: 'Log Table', icon: 'logarithm_table', realm: 'everyday', blurb: "Turning multiplication into addition. Every navigator and engineer carried one until about 1975.", sources: [{ label: 'Mathematical table', url: 'https://en.wikipedia.org/wiki/Mathematical_table', tier: 'referenced' }] },
@@ -1172,6 +1178,17 @@ export const GAME_DATA: RecipeData = {
     { id: 'rain_barrel', name: 'Rain Barrel', icon: 'rain_barrel', realm: 'everyday', blurb: "a roof is a catchment. one millimetre of rain gives you a litre for every square metre of it, so an ordinary house shed sheds a bathful in a light shower.", sources: [{ label: 'Rain barrel', url: 'https://en.wikipedia.org/wiki/Rain_barrel', tier: 'referenced' }] },
     { id: 'dibber', name: 'Dibber', icon: 'dibber', realm: 'everyday', blurb: "a pointed stick that makes a hole of a known depth. sowing depth matters more than almost anything else: too deep and the seedling runs out of food before it reaches light.", sources: [{ label: 'Dibber', url: 'https://en.wikipedia.org/wiki/Dibber', tier: 'referenced' }] },
     { id: 'compost_sieve', name: 'Riddle', icon: 'compost_sieve', realm: 'everyday', blurb: "mesh in a frame, shaken. what falls through has finished rotting and what stays on top has not, and goes back on the heap for another turn.", sources: [{ label: 'Sieve', url: 'https://en.wikipedia.org/wiki/Sieve', tier: 'referenced' }] },
+
+    // data/staging/worlds.json
+    { id: 'rubber_compound', name: 'Rubber Compound', icon: 'rubber_compound', realm: 'everyday', blurb: "Raw rubber with sulfur worked into it. Nothing has happened yet; it needs heat before the sulfur does anything.", sources: [{ label: 'Vulcanization', url: 'https://en.wikipedia.org/wiki/Vulcanization', tier: 'referenced' }] },
+    { id: 'vulcanised_rubber', name: 'Vulcanised Rubber', icon: 'vulcanised_rubber', realm: 'everyday', blurb: "Rubber cooked with sulfur so its chains tie to each other. Before that it melted in summer and cracked in winter, and Goodyear found the fix by spilling some on a stove.", sources: [{ label: 'Vulcanization', url: 'https://en.wikipedia.org/wiki/Vulcanization', tier: 'referenced' }] },
+    { id: 'football_boot', name: 'Football Boots', icon: 'football_boot', realm: 'everyday', blurb: "A boot with studs for grip. The first rules of the game, in 1863, had to ban nails and iron plates sticking out of the soles.", sources: [{ label: 'Football boot', url: 'https://en.wikipedia.org/wiki/Football_boot', tier: 'referenced' }] },
+    { id: 'goal', name: 'Goal', icon: 'goal', realm: 'everyday', blurb: "Two posts, a bar and a net. The net only arrived in 1891, after one argument too many about whether the ball had gone in.", sources: [{ label: 'Goal (sports)', url: 'https://en.wikipedia.org/wiki/Goal_(sports)', tier: 'referenced' }] },
+    { id: 'cotton_drill', name: 'Cotton Drill', icon: 'cotton_drill', realm: 'everyday', blurb: "Heavy cotton woven on the diagonal, which is what makes it hard to tear. Fencing whites were drill long before anyone made them from Kevlar.", sources: [{ label: 'Drill (fabric)', url: 'https://en.wikipedia.org/wiki/Drill_(fabric)', tier: 'referenced' }] },
+    { id: 'fencing_jacket', name: 'Fencing Jacket', icon: 'fencing_jacket', realm: 'everyday', blurb: "Heavy cotton cut to cover the chest and the sword arm. It does up on the side away from your opponent, so no seam faces the point.", sources: [{ label: 'Fencing', url: 'https://en.wikipedia.org/wiki/Fencing', tier: 'referenced' }] },
+    { id: 'chessboard', name: 'Chessboard', icon: 'chessboard', realm: 'everyday', blurb: "Sixty-four squares of two woods, one light and one dark. The rule for setting it up is light square on your right.", sources: [{ label: 'Chessboard', url: 'https://en.wikipedia.org/wiki/Chessboard', tier: 'referenced' }] },
+    { id: 'chess_pieces', name: 'Chess Pieces', icon: 'chess_pieces', realm: 'everyday', blurb: "The Staunton pattern, from 1849, drawn so that any piece can be told apart at a glance. Every tournament still uses it.", sources: [{ label: 'Staunton chess set', url: 'https://en.wikipedia.org/wiki/Staunton_chess_set', tier: 'referenced' }] },
+    { id: 'drumsticks', name: 'Drumsticks', icon: 'drumsticks', realm: 'everyday', blurb: "Usually hickory, shaped to a taper so the weight sits in the hand and the tip bounces back off the head on its own.", sources: [{ label: 'Drumstick', url: 'https://en.wikipedia.org/wiki/Drumstick', tier: 'referenced' }] },
   ],
   recipes: [
     {
@@ -1199,6 +1216,7 @@ export const GAME_DATA: RecipeData = {
       inputs: ['stone', 'plant_fibre'],
       output: 'tinder_bundle',
       process: 'shredding',
+      route: 'fibre',
       cost: ZERO_COST,
       sources: [{ label: 'Tinder', url: 'https://en.wikipedia.org/wiki/Tinder' }],
     },
@@ -1289,6 +1307,7 @@ export const GAME_DATA: RecipeData = {
       inputs: ['bark', 'sharp_stone'],
       output: 'tinder_bundle',
       process: 'shredding',
+      route: 'bark',
       cost: ZERO_COST,
       sources: [{ label: 'Tinder', url: 'https://en.wikipedia.org/wiki/Tinder' }],
     },
@@ -1321,7 +1340,9 @@ export const GAME_DATA: RecipeData = {
       sources: [{ label: 'Torch', url: 'https://en.wikipedia.org/wiki/Torch' }],
     },
     {
-      inputs: ['water', 'fire'],
+      // Seawater, not water. Boiling fresh water leaves nothing behind, which
+      // salt's own blurb already said.
+      inputs: ['seawater', 'fire'],
       output: 'salt',
       process: 'evaporating',
       cost: ZERO_COST,
@@ -1360,13 +1381,6 @@ export const GAME_DATA: RecipeData = {
       sources: [{ label: 'Calcination', url: 'https://en.wikipedia.org/wiki/Calcination' }],
     },
     {
-      inputs: ['salt', 'quicklime'],
-      output: 'soda_ash',
-      process: 'the Solvay process',
-      cost: ZERO_COST,
-      sources: [{ label: 'Solvay process', url: 'https://en.wikipedia.org/wiki/Solvay_process' }],
-    },
-    {
       inputs: ['salt', 'water'],
       output: 'sodium_hydroxide',
       process: 'electrolysing',
@@ -1381,11 +1395,15 @@ export const GAME_DATA: RecipeData = {
       sources: [{ label: 'Bloomery', url: 'https://en.wikipedia.org/wiki/Bloomery' }],
     },
     {
+      // Pig iron is already about 4% carbon, more than any steel, so steel is
+      // not made by adding charcoal to it. It is fined: burned back to nearly
+      // pure wrought iron over a charcoal hearth, and carburised from there
+      // (the cementation recipe below). This used to say "carburising".
       inputs: ['pig_iron', 'charcoal'],
-      output: 'high_carbon_steel',
-      process: 'carburising',
+      output: 'wrought_iron',
+      process: 'fining',
       cost: ZERO_COST,
-      sources: [{ label: 'Carbon steel', url: 'https://en.wikipedia.org/wiki/Carbon_steel' }],
+      sources: [{ label: 'Finery forge', url: 'https://en.wikipedia.org/wiki/Finery_forge' }],
     },
     {
       inputs: ['high_carbon_steel', 'wood'],
@@ -1571,28 +1589,20 @@ export const GAME_DATA: RecipeData = {
       sources: [{ label: 'Direct reduced iron', url: 'https://en.wikipedia.org/wiki/Direct_reduced_iron' }],
     },
     {
-      // Solvay's actual inputs are brine and limestone; the quicklime route
-      // already in the game is the same cycle seen a step later. Both are real
-      // and the receipt records which one you took.
+      // Solvay's actual inputs are brine and limestone. There used to be a second
+      // road, salt + quicklime, described as the same cycle a step later. It is
+      // not: the carbonate in soda ash comes from the CO2 that burning the
+      // limestone drives off, and quicklime is what is left once that has gone.
       inputs: ['limestone', 'salt'],
       output: 'soda_ash',
       process: 'the Solvay process',
-      route: 'brine and limestone',
       cost: ZERO_COST,
       sources: [{ label: 'Solvay process', url: 'https://en.wikipedia.org/wiki/Solvay_process' }],
-    },
-    {
-      inputs: ['quicklime', 'pig_iron'],
-      output: 'wrought_iron',
-      process: 'refining',
-      cost: ZERO_COST,
-      sources: [{ label: 'Finery forge', url: 'https://en.wikipedia.org/wiki/Finery_forge' }],
     },
     {
       inputs: ['wrought_iron', 'charcoal'],
       output: 'high_carbon_steel',
       process: 'blister steelmaking',
-      route: 'cementation',
       cost: ZERO_COST,
       sources: [{ label: 'Cementation process', url: 'https://en.wikipedia.org/wiki/Cementation_process' }],
     },
@@ -1807,9 +1817,9 @@ export const GAME_DATA: RecipeData = {
     { inputs: ['quicklime', 'charcoal'], output: 'acetylene', process: 'carbide smelting', cost: ZERO_COST, sources: [{ label: 'Acetylene', url: 'https://en.wikipedia.org/wiki/Acetylene', tier: 'referenced' }] },
     { inputs: ['acetylene', 'high_carbon_steel'], output: 'welded_steel', process: 'welding', cost: ZERO_COST, sources: [{ label: 'Oxy-fuel welding and cutting', url: 'https://en.wikipedia.org/wiki/Oxy-fuel_welding_and_cutting', tier: 'referenced' }] },
     { inputs: ['welded_steel', 'reinforced_concrete'], output: 'steel_frame', process: 'erecting', cost: ZERO_COST, sources: [{ label: 'Steel frame', url: 'https://en.wikipedia.org/wiki/Steel_frame', tier: 'referenced' }] },
-    { inputs: ['molten_glass', 'slag'], output: 'glass_pane', process: 'floating', cost: ZERO_COST, sources: [{ label: 'Float glass', url: 'https://en.wikipedia.org/wiki/Float_glass', tier: 'referenced' }] },
+    { inputs: ['molten_glass', 'tin'], output: 'glass_pane', process: 'floating', cost: ZERO_COST, sources: [{ label: 'Float glass', url: 'https://en.wikipedia.org/wiki/Float_glass', tier: 'referenced' }] },
     { inputs: ['glass_pane', 'plank'], output: 'window', process: 'glazing', cost: ZERO_COST, sources: [{ label: 'Window', url: 'https://en.wikipedia.org/wiki/Window', tier: 'referenced' }] },
-    { inputs: ['glass_pane', 'sodium_hydroxide'], output: 'mirror', process: 'silvering', cost: ZERO_COST, sources: [{ label: 'Silvering', url: 'https://en.wikipedia.org/wiki/Silvering', tier: 'referenced' }] },
+    { inputs: ['glass_pane', 'tin'], output: 'mirror', process: 'tin foiling', cost: ZERO_COST, sources: [{ label: 'Silvering', url: 'https://en.wikipedia.org/wiki/Silvering', tier: 'referenced' }] },
     { inputs: ['brick', 'lime_mortar'], output: 'brick_wall', process: 'laying', cost: ZERO_COST, sources: [{ label: 'Brickwork', url: 'https://en.wikipedia.org/wiki/Brickwork', tier: 'referenced' }] },
     { inputs: ['slaked_lime', 'wood_ash'], output: 'plaster', process: 'gauging', cost: ZERO_COST, sources: [{ label: 'Plaster', url: 'https://en.wikipedia.org/wiki/Plaster', tier: 'referenced' }] },
     { inputs: ['carbon_black', 'tannin'], output: 'ink', process: 'grinding', cost: ZERO_COST, sources: [{ label: 'Ink', url: 'https://en.wikipedia.org/wiki/Ink', tier: 'referenced' }] },
@@ -1846,9 +1856,9 @@ export const GAME_DATA: RecipeData = {
     { inputs: ['speaker', 'copper_wire'], output: 'microphone', process: 'reversing', cost: ZERO_COST, sources: [{ label: 'Microphone', url: 'https://en.wikipedia.org/wiki/Microphone', tier: 'referenced' }] },
     { inputs: ['speaker', 'steel_spring'], output: 'headphones', process: 'assembling', cost: ZERO_COST, sources: [{ label: 'Headphones', url: 'https://en.wikipedia.org/wiki/Headphones', tier: 'referenced' }] },
     { inputs: ['pvc', 'microphone'], output: 'record', process: 'cutting', cost: ZERO_COST, sources: [{ label: 'Phonograph record', url: 'https://en.wikipedia.org/wiki/Phonograph_record', tier: 'referenced' }] },
-    { inputs: ['copper_wire', 'hardened_steel'], output: 'wire_mesh', process: 'weaving', cost: ZERO_COST, sources: [{ label: 'Wire mesh', url: 'https://en.wikipedia.org/wiki/Mesh', tier: 'referenced' }] },
-    { inputs: ['wire_mesh', 'cotton_jersey'], output: 'fencing_mask', process: 'shaping', cost: ZERO_COST, sources: [{ label: 'Fencing', url: 'https://en.wikipedia.org/wiki/Fencing', tier: 'referenced' }] },
-    { inputs: ['tempered_steel', 'hardened_steel'], output: 'fencing_blade', process: 'forging', cost: ZERO_COST, sources: [{ label: 'Foil (fencing)', url: 'https://en.wikipedia.org/wiki/Foil_(fencing)', tier: 'referenced' }] },
+    { inputs: ['steel_wire', 'steel_wire'], output: 'wire_mesh', process: 'weaving', cost: ZERO_COST, sources: [{ label: 'Wire mesh', url: 'https://en.wikipedia.org/wiki/Mesh', tier: 'referenced' }] },
+    { inputs: ['wire_mesh', 'cotton_drill'], output: 'fencing_mask', process: 'shaping', cost: ZERO_COST, sources: [{ label: 'Fencing', url: 'https://en.wikipedia.org/wiki/Fencing', tier: 'referenced' }] },
+    { inputs: ['tempered_steel', 'stone'], output: 'fencing_blade', process: 'grinding', cost: ZERO_COST, sources: [{ label: 'Foil (fencing)', url: 'https://en.wikipedia.org/wiki/Foil_(fencing)', tier: 'referenced' }] },
     { inputs: ['fencing_mask', 'fencing_blade'], output: 'fencing_kit', process: 'kitting out', cost: ZERO_COST, sources: [{ label: 'Fencing', url: 'https://en.wikipedia.org/wiki/Fencing', tier: 'referenced' }] },
     { inputs: ['farmland', 'sharp_stone'], output: 'wool', process: 'shearing', cost: ZERO_COST, sources: [{ label: 'Wool', url: 'https://en.wikipedia.org/wiki/Wool', tier: 'referenced' }] },
     { inputs: ['wool', 'water'], output: 'felt', process: 'fulling', cost: ZERO_COST, sources: [{ label: 'Felt', url: 'https://en.wikipedia.org/wiki/Felt', tier: 'referenced' }] },
@@ -1872,8 +1882,7 @@ export const GAME_DATA: RecipeData = {
     { inputs: ['willow_bark', 'vinegar'], output: 'aspirin', process: 'acetylating', cost: ZERO_COST, sources: [{ label: 'Aspirin', url: 'https://en.wikipedia.org/wiki/Aspirin', tier: 'referenced' }] },
     { inputs: ['ethanol', 'filtered_water'], output: 'antiseptic', process: 'diluting', cost: ZERO_COST, sources: [{ label: 'Antiseptic', url: 'https://en.wikipedia.org/wiki/Antiseptic', tier: 'referenced' }] },
     { inputs: ['linen', 'antiseptic'], output: 'bandage', process: 'dressing', cost: ZERO_COST, sources: [{ label: 'Bandage', url: 'https://en.wikipedia.org/wiki/Bandage', tier: 'referenced' }] },
-    { inputs: ['iron_ore', 'copper_ore'], output: 'lodestone', process: 'sorting', cost: ZERO_COST, sources: [{ label: 'Lodestone', url: 'https://en.wikipedia.org/wiki/Lodestone', tier: 'referenced' }] },
-    { inputs: ['lodestone', 'wrought_iron'], output: 'compass', process: 'magnetising', cost: ZERO_COST, sources: [{ label: 'Compass', url: 'https://en.wikipedia.org/wiki/Compass', tier: 'referenced' }] },
+    { inputs: ['lodestone', 'high_carbon_steel'], output: 'compass', process: 'magnetising', cost: ZERO_COST, sources: [{ label: 'Compass', url: 'https://en.wikipedia.org/wiki/Compass', tier: 'referenced' }] },
     { inputs: ['mirror', 'bronze'], output: 'sextant', process: 'graduating', cost: ZERO_COST, sources: [{ label: 'Sextant', url: 'https://en.wikipedia.org/wiki/Sextant', tier: 'referenced' }] },
     { inputs: ['clock', 'bearing'], output: 'chronometer', process: 'regulating', cost: ZERO_COST, sources: [{ label: 'Marine chronometer', url: 'https://en.wikipedia.org/wiki/Marine_chronometer', tier: 'referenced' }] },
     { inputs: ['charcoal', 'paraffin_wax'], output: 'pitch', process: 'boiling down', cost: ZERO_COST, sources: [{ label: 'Pitch (resin)', url: 'https://en.wikipedia.org/wiki/Pitch_(resin)', tier: 'referenced' }] },
@@ -1895,9 +1904,9 @@ export const GAME_DATA: RecipeData = {
     { inputs: ['mirror', 'silicon_wafer'], output: 'camera', process: 'focusing', cost: ZERO_COST, sources: [{ label: 'Camera', url: 'https://en.wikipedia.org/wiki/Camera', tier: 'referenced' }] },
 
     // Batch 6.
-    { inputs: ['tannin', 'wool'], output: 'leather', process: 'tanning', cost: ZERO_COST, sources: [{ label: 'Tanning (leather)', url: 'https://en.wikipedia.org/wiki/Tanning_(leather)', tier: 'referenced' }] },
+    { inputs: ['tannin', 'hide'], output: 'leather', process: 'tanning', cost: ZERO_COST, sources: [{ label: 'Tanning (leather)', url: 'https://en.wikipedia.org/wiki/Tanning_(leather)', tier: 'referenced' }] },
     { inputs: ['leather', 'sewing_thread'], output: 'shoe', process: 'lasting', cost: ZERO_COST, sources: [{ label: 'Shoe', url: 'https://en.wikipedia.org/wiki/Shoe', tier: 'referenced' }] },
-    { inputs: ['leather', 'pot'], output: 'drum', process: 'stretching', cost: ZERO_COST, sources: [{ label: 'Drum', url: 'https://en.wikipedia.org/wiki/Drum', tier: 'referenced' }] },
+    { inputs: ['hide', 'wood'], output: 'drum', process: 'stretching', cost: ZERO_COST, sources: [{ label: 'Drum', url: 'https://en.wikipedia.org/wiki/Drum', tier: 'referenced' }] },
     { inputs: ['plank', 'steel_spring'], output: 'guitar', process: 'luthiery', cost: ZERO_COST, sources: [{ label: 'Guitar', url: 'https://en.wikipedia.org/wiki/Guitar', tier: 'referenced' }] },
     { inputs: ['woollen_yarn', 'pitch'], output: 'bow_hair', process: 'rosining', cost: ZERO_COST, sources: [{ label: 'Rosin', url: 'https://en.wikipedia.org/wiki/Rosin', tier: 'referenced' }] },
     { inputs: ['glass_pane', 'pipe'], output: 'telescope', process: 'grinding lenses', cost: ZERO_COST, sources: [{ label: 'Telescope', url: 'https://en.wikipedia.org/wiki/Telescope', tier: 'referenced' }] },
@@ -1926,7 +1935,7 @@ export const GAME_DATA: RecipeData = {
     { inputs: ['cart_wheel', 'boat'], output: 'water_wheel', process: 'damming', cost: ZERO_COST, sources: [{ label: 'Water wheel', url: 'https://en.wikipedia.org/wiki/Water_wheel', tier: 'referenced' }] },
 
     // Batch 7: tools, workshop, optics, casting.
-    { inputs: ['tempered_steel', 'wire_mesh'], output: 'steel_wire', process: 'drawing', cost: ZERO_COST, sources: [{ label: 'Wire', url: 'https://en.wikipedia.org/wiki/Wire', tier: 'referenced' }] },
+    { inputs: ['high_carbon_steel', 'hardened_steel'], output: 'steel_wire', process: 'drawing', cost: ZERO_COST, sources: [{ label: 'Wire', url: 'https://en.wikipedia.org/wiki/Wire', tier: 'referenced' }] },
     { inputs: ['steel_wire', 'anvil'], output: 'chain', process: 'linking', cost: ZERO_COST, sources: [{ label: 'Chain', url: 'https://en.wikipedia.org/wiki/Chain', tier: 'referenced' }] },
     { inputs: ['hardened_steel', 'chalk'], output: 'nail_file', process: 'cutting teeth', cost: ZERO_COST, sources: [{ label: 'File (tool)', url: 'https://en.wikipedia.org/wiki/File_(tool)', tier: 'referenced' }] },
     { inputs: ['tempered_steel', 'nail_file'], output: 'saw', process: 'setting', cost: ZERO_COST, sources: [{ label: 'Saw', url: 'https://en.wikipedia.org/wiki/Saw', tier: 'referenced' }] },
@@ -1943,7 +1952,7 @@ export const GAME_DATA: RecipeData = {
     { inputs: ['linen', 'varnish'], output: 'canvas', process: 'priming', cost: ZERO_COST, sources: [{ label: 'Canvas', url: 'https://en.wikipedia.org/wiki/Canvas', tier: 'referenced' }] },
     { inputs: ['canvas', 'paint'], output: 'painting', process: 'painting', cost: ZERO_COST, sources: [{ label: 'Painting', url: 'https://en.wikipedia.org/wiki/Painting', tier: 'referenced' }] },
     { inputs: ['wool', 'knife'], output: 'quill', process: 'cutting', cost: ZERO_COST, sources: [{ label: 'Quill', url: 'https://en.wikipedia.org/wiki/Quill', tier: 'referenced' }] },
-    { inputs: ['leather', 'chalk'], output: 'parchment', process: 'stretching', cost: ZERO_COST, sources: [{ label: 'Parchment', url: 'https://en.wikipedia.org/wiki/Parchment', tier: 'referenced' }] },
+    { inputs: ['hide', 'quicklime'], output: 'parchment', process: 'liming', cost: ZERO_COST, sources: [{ label: 'Parchment', url: 'https://en.wikipedia.org/wiki/Parchment', tier: 'referenced' }] },
     { inputs: ['parchment', 'compass'], output: 'map', process: 'surveying', cost: ZERO_COST, sources: [{ label: 'Map', url: 'https://en.wikipedia.org/wiki/Map', tier: 'referenced' }] },
     { inputs: ['molten_glass', 'sandpaper'], output: 'glass_lens', process: 'grinding', cost: ZERO_COST, sources: [{ label: 'Lens', url: 'https://en.wikipedia.org/wiki/Lens', tier: 'referenced' }] },
     { inputs: ['glass_lens', 'copper_wire'], output: 'spectacles', process: 'fitting', cost: ZERO_COST, sources: [{ label: 'Glasses', url: 'https://en.wikipedia.org/wiki/Glasses', tier: 'referenced' }] },
@@ -2024,7 +2033,7 @@ export const GAME_DATA: RecipeData = {
     { inputs: ['slag', 'coke'], output: 'zinc', process: 'retorting', cost: ZERO_COST, sources: [{ label: 'Zinc', url: 'https://en.wikipedia.org/wiki/Zinc', tier: 'referenced' }] },
     { inputs: ['zinc', 'high_carbon_steel'], output: 'galvanised_steel', process: 'dipping', cost: ZERO_COST, sources: [{ label: 'Galvanization', url: 'https://en.wikipedia.org/wiki/Galvanization', tier: 'referenced' }] },
     { inputs: ['galvanised_steel', 'chain'], output: 'bucket', process: 'seaming', cost: ZERO_COST, sources: [{ label: 'Bucket', url: 'https://en.wikipedia.org/wiki/Bucket', tier: 'referenced' }] },
-    { inputs: ['slag', 'charcoal'], output: 'tin', process: 'smelting', cost: ZERO_COST, sources: [{ label: 'Tin', url: 'https://en.wikipedia.org/wiki/Tin', tier: 'referenced' }] },
+    { inputs: ['tin_ore', 'charcoal'], output: 'tin', process: 'smelting', cost: ZERO_COST, sources: [{ label: 'Tin', url: 'https://en.wikipedia.org/wiki/Tin', tier: 'referenced' }] },
     { inputs: ['tin', 'aluminum_sheet'], output: 'tin_can', process: 'seaming', cost: ZERO_COST, sources: [{ label: 'Tin can', url: 'https://en.wikipedia.org/wiki/Tin_can', tier: 'referenced' }] },
     { inputs: ['tin', 'lead'], output: 'pewter', process: 'alloying', cost: ZERO_COST, sources: [{ label: 'Pewter', url: 'https://en.wikipedia.org/wiki/Pewter', tier: 'referenced' }] },
     { inputs: ['stone', 'filtered_water'], output: 'gold', process: 'panning', cost: ZERO_COST, sources: [{ label: 'Gold', url: 'https://en.wikipedia.org/wiki/Gold', tier: 'referenced' }] },
@@ -2045,7 +2054,7 @@ export const GAME_DATA: RecipeData = {
     { inputs: ['cotton_yarn', 'synthetic_dye'], output: 'denim', process: 'weaving', cost: ZERO_COST, sources: [{ label: 'Denim', url: 'https://en.wikipedia.org/wiki/Denim', tier: 'referenced' }] },
     { inputs: ['denim', 'zip'], output: 'jeans', process: 'riveting', cost: ZERO_COST, sources: [{ label: 'Jeans', url: 'https://en.wikipedia.org/wiki/Jeans', tier: 'referenced' }] },
     { inputs: ['nylon', 'wire_mesh'], output: 'velcro', process: 'hooking', cost: ZERO_COST, sources: [{ label: 'Velcro', url: 'https://en.wikipedia.org/wiki/Hook-and-loop_fastener', tier: 'referenced' }] },
-    { inputs: ['leather', 'filtered_water'], output: 'glue', process: 'boiling', cost: ZERO_COST, sources: [{ label: 'Animal glue', url: 'https://en.wikipedia.org/wiki/Animal_glue', tier: 'referenced' }] },
+    { inputs: ['hide', 'water'], output: 'glue', process: 'boiling', cost: ZERO_COST, sources: [{ label: 'Animal glue', url: 'https://en.wikipedia.org/wiki/Animal_glue', tier: 'referenced' }] },
     { inputs: ['cardboard', 'glue'], output: 'cardboard_box', process: 'folding', cost: ZERO_COST, sources: [{ label: 'Corrugated box design', url: 'https://en.wikipedia.org/wiki/Corrugated_box_design', tier: 'referenced' }] },
     { inputs: ['plywood', 'nail'], output: 'pallet', process: 'nailing', cost: ZERO_COST, sources: [{ label: 'Pallet', url: 'https://en.wikipedia.org/wiki/Pallet', tier: 'referenced' }] },
     { inputs: ['galvanised_steel', 'welded_steel'], output: 'shipping_container', process: 'corrugating', cost: ZERO_COST, sources: [{ label: 'Intermodal container', url: 'https://en.wikipedia.org/wiki/Intermodal_container', tier: 'referenced' }] },
@@ -2112,7 +2121,7 @@ export const GAME_DATA: RecipeData = {
     { inputs: ['paper', 'glue'], output: 'envelope', process: 'folding', cost: ZERO_COST, sources: [{ label: 'Envelope', url: 'https://en.wikipedia.org/wiki/Envelope', tier: 'referenced' }] },
     { inputs: ['cast_iron', 'paint'], output: 'postbox', process: 'casting', cost: ZERO_COST, sources: [{ label: 'Post box', url: 'https://en.wikipedia.org/wiki/Post_box', tier: 'referenced' }] },
     { inputs: ['chain', 'gear'], output: 'bicycle_chain', process: 'meshing', cost: ZERO_COST, sources: [{ label: 'Roller chain', url: 'https://en.wikipedia.org/wiki/Roller_chain', tier: 'referenced' }] },
-    { inputs: ['synthetic_rubber', 'glue'], output: 'rubber_pad', process: 'moulding', cost: ZERO_COST, sources: [{ label: 'Brake pad', url: 'https://en.wikipedia.org/wiki/Brake_pad', tier: 'referenced' }] },
+    { inputs: ['synthetic_rubber', 'glue'], output: 'rubber_pad', process: 'moulding', route: 'synthetic', cost: ZERO_COST, sources: [{ label: 'Brake pad', url: 'https://en.wikipedia.org/wiki/Brake_pad', tier: 'referenced' }] },
     { inputs: ['rubber_pad', 'steel_wire'], output: 'brake', process: 'cabling', cost: ZERO_COST, sources: [{ label: 'Brake', url: 'https://en.wikipedia.org/wiki/Brake', tier: 'referenced' }] },
     { inputs: ['polypropylene', 'felt'], output: 'helmet', process: 'moulding', cost: ZERO_COST, sources: [{ label: 'Helmet', url: 'https://en.wikipedia.org/wiki/Helmet', tier: 'referenced' }] },
 
@@ -2216,8 +2225,8 @@ export const GAME_DATA: RecipeData = {
     { inputs: ['plank', 'button'], output: 'abacus', process: 'stringing', cost: ZERO_COST, sources: [{ label: 'Abacus', url: 'https://en.wikipedia.org/wiki/Abacus', tier: 'referenced' }] },
     { inputs: ['bone_china', 'ink'], output: 'dice', process: 'marking', cost: ZERO_COST, sources: [{ label: 'Dice', url: 'https://en.wikipedia.org/wiki/Dice', tier: 'referenced' }] },
     { inputs: ['cardboard', 'poster'], output: 'playing_card', process: 'cutting', cost: ZERO_COST, sources: [{ label: 'Playing card', url: 'https://en.wikipedia.org/wiki/Playing_card', tier: 'referenced' }] },
-    { inputs: ['dice', 'plywood'], output: 'chess_set', process: 'turning', cost: ZERO_COST, sources: [{ label: 'Chess', url: 'https://en.wikipedia.org/wiki/Chess', tier: 'referenced' }] },
-    { inputs: ['leather', 'synthetic_rubber'], output: 'football', process: 'stitching', cost: ZERO_COST, sources: [{ label: 'Ball (association football)', url: 'https://en.wikipedia.org/wiki/Ball_(association_football)', tier: 'referenced' }] },
+    { inputs: ['chessboard', 'chess_pieces'], output: 'chess_set', process: 'setting up', cost: ZERO_COST, sources: [{ label: 'Chess', url: 'https://en.wikipedia.org/wiki/Chess', tier: 'referenced' }] },
+    { inputs: ['leather', 'synthetic_rubber'], output: 'football', process: 'stitching', route: 'synthetic', cost: ZERO_COST, sources: [{ label: 'Ball (association football)', url: 'https://en.wikipedia.org/wiki/Ball_(association_football)', tier: 'referenced' }] },
     { inputs: ['alloy_frame', 'nylon'], output: 'racket', process: 'stringing', cost: ZERO_COST, sources: [{ label: 'Racket (sports equipment)', url: 'https://en.wikipedia.org/wiki/Racket_(sports_equipment)', tier: 'referenced' }] },
     { inputs: ['plywood', 'varnish'], output: 'ski', process: 'camber', cost: ZERO_COST, sources: [{ label: 'Ski', url: 'https://en.wikipedia.org/wiki/Ski', tier: 'referenced' }] },
     { inputs: ['stainless_steel', 'boot'], output: 'skate', process: 'riveting', cost: ZERO_COST, sources: [{ label: 'Ice skate', url: 'https://en.wikipedia.org/wiki/Ice_skate', tier: 'referenced' }] },
@@ -2294,7 +2303,7 @@ export const GAME_DATA: RecipeData = {
     { inputs: ['compressed_air', 'trumpet'], output: 'foghorn', process: 'sounding', cost: ZERO_COST, sources: [{ label: 'Foghorn', url: 'https://en.wikipedia.org/wiki/Foghorn', tier: 'referenced' }] },
     { inputs: ['boat', 'cork'], output: 'lifeboat', process: 'buoying', cost: ZERO_COST, sources: [{ label: 'Lifeboat (rescue)', url: 'https://en.wikipedia.org/wiki/Lifeboat_(rescue)', tier: 'referenced' }] },
     { inputs: ['cast_iron', 'chain'], output: 'anchor', process: 'forging', cost: ZERO_COST, sources: [{ label: 'Anchor', url: 'https://en.wikipedia.org/wiki/Anchor', tier: 'referenced' }] },
-    { inputs: ['rope', 'needle'], output: 'net', process: 'netting', cost: ZERO_COST, sources: [{ label: 'Fishing net', url: 'https://en.wikipedia.org/wiki/Fishing_net', tier: 'referenced' }] },
+    { inputs: ['rope', 'needle'], output: 'net', process: 'netting', route: 'rope', cost: ZERO_COST, sources: [{ label: 'Fishing net', url: 'https://en.wikipedia.org/wiki/Fishing_net', tier: 'referenced' }] },
     { inputs: ['net', 'boat'], output: 'fishing_boat', process: 'rigging', cost: ZERO_COST, sources: [{ label: 'Fishing vessel', url: 'https://en.wikipedia.org/wiki/Fishing_vessel', tier: 'referenced' }] },
     { inputs: ['quarry', 'concrete'], output: 'breakwater', process: 'armouring', cost: ZERO_COST, sources: [{ label: 'Breakwater (structure)', url: 'https://en.wikipedia.org/wiki/Breakwater_(structure)', tier: 'referenced' }] },
     { inputs: ['breakwater', 'crane'], output: 'quay', process: 'piling', cost: ZERO_COST, sources: [{ label: 'Wharf', url: 'https://en.wikipedia.org/wiki/Wharf', tier: 'referenced' }] },
@@ -2396,7 +2405,7 @@ export const GAME_DATA: RecipeData = {
     { inputs: ['bell', 'timber_frame'], output: 'bell_tower', process: 'hanging', cost: ZERO_COST, sources: [{ label: 'Bell tower', url: 'https://en.wikipedia.org/wiki/Bell_tower', tier: 'referenced' }] },
     { inputs: ['stone', 'survey'], output: 'sundial', process: 'gnomon setting', cost: ZERO_COST, sources: [{ label: 'Sundial', url: 'https://en.wikipedia.org/wiki/Sundial', tier: 'referenced' }] },
     { inputs: ['pot', 'valve'], output: 'water_clock', process: 'dripping', cost: ZERO_COST, sources: [{ label: 'Water clock', url: 'https://en.wikipedia.org/wiki/Water_clock', tier: 'referenced' }] },
-    { inputs: ['glass_blowing', 'sugar'], output: 'hourglass', process: 'calibrating', cost: ZERO_COST, sources: [{ label: 'Hourglass', url: 'https://en.wikipedia.org/wiki/Hourglass', tier: 'referenced' }] },
+    { inputs: ['forest_glass', 'silica_sand'], output: 'hourglass', process: 'sealing', cost: ZERO_COST, sources: [{ label: 'Hourglass', url: 'https://en.wikipedia.org/wiki/Hourglass', tier: 'referenced' }] },
     { inputs: ['sundial', 'printed_book'], output: 'calendar', process: 'intercalating', cost: ZERO_COST, sources: [{ label: 'Calendar', url: 'https://en.wikipedia.org/wiki/Calendar', tier: 'referenced' }] },
     { inputs: ['calendar', 'forecast'], output: 'almanac', process: 'compiling', cost: ZERO_COST, sources: [{ label: 'Almanac', url: 'https://en.wikipedia.org/wiki/Almanac', tier: 'referenced' }] },
     { inputs: ['almanac', 'calculator'], output: 'logarithm_table', process: 'tabulating', cost: ZERO_COST, sources: [{ label: 'Mathematical table', url: 'https://en.wikipedia.org/wiki/Mathematical_table', tier: 'referenced' }] },
@@ -2705,7 +2714,7 @@ export const GAME_DATA: RecipeData = {
     { inputs: ['carbon_black', 'insulated_wire'], output: 'resistor', process: 'moulding', cost: ZERO_COST, sources: [{ label: 'Resistor', url: 'https://en.wikipedia.org/wiki/Resistor', tier: 'referenced' }] },
     { inputs: ['aluminum_sheet', 'plastic_film'], output: 'capacitor', process: 'winding', cost: ZERO_COST, sources: [{ label: 'Capacitor', url: 'https://en.wikipedia.org/wiki/Capacitor', tier: 'referenced' }] },
     { inputs: ['electromagnet', 'steel_spring'], output: 'relay', process: 'latching', cost: ZERO_COST, sources: [{ label: 'Relay', url: 'https://en.wikipedia.org/wiki/Relay', tier: 'referenced' }] },
-    { inputs: ['brass', 'anvil'], output: 'cymbal', process: 'hammering', cost: ZERO_COST, sources: [{ label: 'Cymbal', url: 'https://en.wikipedia.org/wiki/Cymbal', tier: 'referenced' }] },
+    { inputs: ['brass', 'anvil'], output: 'cymbal', process: 'hammering', route: 'brass', cost: ZERO_COST, sources: [{ label: 'Cymbal', url: 'https://en.wikipedia.org/wiki/Cymbal', tier: 'referenced' }] },
     { inputs: ['tempered_steel', 'lathe'], output: 'tuning_fork', process: 'grinding', cost: ZERO_COST, sources: [{ label: 'Tuning fork', url: 'https://en.wikipedia.org/wiki/Tuning_fork', tier: 'referenced' }] },
     { inputs: ['brass', 'reed'], output: 'saxophone', process: 'keying', cost: ZERO_COST, sources: [{ label: 'Saxophone', url: 'https://en.wikipedia.org/wiki/Saxophone', tier: 'referenced' }] },
     { inputs: ['paraffin_wax', 'dye'], output: 'crayon', process: 'moulding', cost: ZERO_COST, sources: [{ label: 'Crayon', url: 'https://en.wikipedia.org/wiki/Crayon', tier: 'referenced' }] },
@@ -2799,6 +2808,23 @@ export const GAME_DATA: RecipeData = {
     { inputs: ['barrel', 'guttering'], output: 'rain_barrel', process: 'plumbing', cost: ZERO_COST, sources: [{ label: 'Rain barrel', url: 'https://en.wikipedia.org/wiki/Rain_barrel', tier: 'referenced' }] },
     { inputs: ['wood', 'nail'], output: 'dibber', process: 'pointing', cost: ZERO_COST, sources: [{ label: 'Dibber', url: 'https://en.wikipedia.org/wiki/Dibber', tier: 'referenced' }] },
     { inputs: ['wire_mesh', 'timber_frame'], output: 'compost_sieve', process: 'sifting', cost: ZERO_COST, sources: [{ label: 'Sieve', url: 'https://en.wikipedia.org/wiki/Sieve', tier: 'referenced' }] },
+    // Worlds (docs/WORLDS.md): the second roads the kits need.
+    { inputs: ['leather', 'vulcanised_rubber'], output: 'football', process: 'stitching', route: 'vulcanised', cost: ZERO_COST, sources: [{ label: 'Ball (association football)', url: 'https://en.wikipedia.org/wiki/Ball_(association_football)', tier: 'referenced' }] },
+    { inputs: ['vulcanised_rubber', 'glue'], output: 'rubber_pad', process: 'moulding', route: 'vulcanised', cost: ZERO_COST, sources: [{ label: 'Vulcanization', url: 'https://en.wikipedia.org/wiki/Vulcanization', tier: 'referenced' }] },
+    { inputs: ['cordage', 'tannin'], output: 'net', process: 'barking', route: 'barked cord', cost: ZERO_COST, sources: [{ label: 'Net (textile)', url: 'https://en.wikipedia.org/wiki/Net_(textile)', tier: 'referenced' }, { label: 'Catechu', url: 'https://en.wikipedia.org/wiki/Catechu', tier: 'referenced' }] },
+    { inputs: ['bronze', 'hammer'], output: 'cymbal', process: 'hammering', route: 'bronze', cost: ZERO_COST, sources: [{ label: 'Cymbal', url: 'https://en.wikipedia.org/wiki/Cymbal', tier: 'referenced' }] },
+    { inputs: ['silica_sand', 'potash'], output: 'forest_glass', process: 'melting', cost: ZERO_COST, sources: [{ label: 'Forest glass', url: 'https://en.wikipedia.org/wiki/Forest_glass', tier: 'referenced' }] },
+
+    // data/staging/worlds.json
+    { inputs: ['latex', 'sulfur'], output: 'rubber_compound', process: 'compounding', cost: ZERO_COST, sources: [{ label: 'Vulcanization', url: 'https://en.wikipedia.org/wiki/Vulcanization', tier: 'referenced' }] },
+    { inputs: ['rubber_compound', 'fire'], output: 'vulcanised_rubber', process: 'vulcanising', cost: ZERO_COST, sources: [{ label: 'Vulcanization', url: 'https://en.wikipedia.org/wiki/Vulcanization', tier: 'referenced' }] },
+    { inputs: ['boot', 'vulcanised_rubber'], output: 'football_boot', process: 'studding', cost: ZERO_COST, sources: [{ label: 'Football boot', url: 'https://en.wikipedia.org/wiki/Football_boot', tier: 'referenced' }] },
+    { inputs: ['net', 'wood'], output: 'goal', process: 'framing', cost: ZERO_COST, sources: [{ label: 'Goal (sports)', url: 'https://en.wikipedia.org/wiki/Goal_(sports)', tier: 'referenced' }] },
+    { inputs: ['cotton_yarn', 'wood'], output: 'cotton_drill', process: 'weaving', cost: ZERO_COST, sources: [{ label: 'Drill (fabric)', url: 'https://en.wikipedia.org/wiki/Drill_(fabric)', tier: 'referenced' }] },
+    { inputs: ['cotton_drill', 'sewing_thread'], output: 'fencing_jacket', process: 'tailoring', cost: ZERO_COST, sources: [{ label: 'Fencing', url: 'https://en.wikipedia.org/wiki/Fencing', tier: 'referenced' }] },
+    { inputs: ['plank', 'plank'], output: 'chessboard', process: 'inlaying', cost: ZERO_COST, sources: [{ label: 'Chessboard', url: 'https://en.wikipedia.org/wiki/Chessboard', tier: 'referenced' }] },
+    { inputs: ['wood', 'chisel'], output: 'chess_pieces', process: 'carving', cost: ZERO_COST, sources: [{ label: 'Staunton chess set', url: 'https://en.wikipedia.org/wiki/Staunton_chess_set', tier: 'referenced' }] },
+    { inputs: ['wood', 'knife'], output: 'drumsticks', process: 'whittling', cost: ZERO_COST, sources: [{ label: 'Drumstick', url: 'https://en.wikipedia.org/wiki/Drumstick', tier: 'referenced' }] },
   ],
   starters: {
     // Three. Everything else in the game is earned from them.
@@ -2851,6 +2877,20 @@ export const GAME_DATA: RecipeData = {
        */
       'copper_ore',
       'willow_bark',
+      /*
+       * Also gathered, and each one is here because a recipe that pretended
+       * otherwise was wrong. Leather was tannin and WOOL, when its own blurb
+       * says hide; tin came out of iron slag rather than its ore; lodestone
+       * was iron ore mixed with copper ore, when it is magnetite magnetised in
+       * the ground. Latex and sulfur are what a rubber ball was made of before
+       * there was synthetic rubber. See docs/WORLDS.md.
+       */
+      'hide',
+      'tin_ore',
+      'lodestone',
+      'latex',
+      'sulfur',
+      'seawater',
       'crude_oil',
       'natural_gas',
       'beeswax',

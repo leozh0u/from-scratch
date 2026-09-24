@@ -123,6 +123,18 @@ type PixelEarthProps = {
   /** Starting longitude in degrees, so a still frame can be art-directed. */
   startLongitude?: number
   palette?: Partial<Palette>
+  /**
+   * For the worlds' planets, all drawn from Earth's own coastline mask. Turned
+   * over, the continents stop reading as Earth in a different colour. Off by
+   * default, so the title Earth is exactly what it was.
+   */
+  mirror?: Mirror
+  /**
+   * Outline every pixel on the edge of the disc. The depth band that outlines
+   * the title Earth is 0.14 of the radius, which at 24px rounds to nothing:
+   * the small planets on the picker came out with no outline at all.
+   */
+  rim?: boolean
   className?: string
   style?: React.CSSProperties
 }
@@ -142,12 +154,22 @@ type PixelEarthProps = {
  * this several times a second and a fresh RGBA buffer per step is garbage
  * for no reason.
  */
+export type Mirror = 'none' | 'x' | 'y' | 'xy'
+
 export function projectEarth(
   out: Uint8ClampedArray,
   size: number,
   longitude: number,
   colours: Record<keyof Palette, [number, number, number]>,
+  options: { mirror?: Mirror; rim?: boolean } = {},
 ) {
+  const flipX = options.mirror === 'x' || options.mirror === 'xy'
+  const flipY = options.mirror === 'y' || options.mirror === 'xy'
+  const outside = (px: number, py: number) => {
+    const nx = (px + 0.5 - size / 2) / (size / 2)
+    const ny = (py + 0.5 - size / 2) / (size / 2)
+    return nx * nx + ny * ny > 1
+  }
   const radius = size / 2
   const centre = size / 2
   const sinTilt = Math.sin(AXIAL_TILT)
@@ -181,13 +203,18 @@ export function projectEarth(
       // Mask row 0 is the north pole.
       const row = Math.floor(((Math.PI / 2 - latitude) / Math.PI) * LAND_ROWS)
       const rawCol = Math.floor((longitudeAt / (2 * Math.PI)) * LAND_COLS)
-      const col = ((rawCol % LAND_COLS) + LAND_COLS) % LAND_COLS
+      const wrapped = ((rawCol % LAND_COLS) + LAND_COLS) % LAND_COLS
+      const col = flipX ? LAND_COLS - 1 - wrapped : wrapped
+      const clampedRow = Math.min(LAND_ROWS - 1, Math.max(0, row))
 
-      const land = isLand(col, Math.min(LAND_ROWS - 1, Math.max(0, row)))
+      const land = isLand(col, flipY ? LAND_ROWS - 1 - clampedRow : clampedRow)
       const polar = Math.abs(latitude) >= ICE_LATITUDE
 
       let colour: [number, number, number]
-      if (nz < OUTLINE_Z) colour = colours.outline
+      const onRim =
+        options.rim &&
+        (outside(px - 1, py) || outside(px + 1, py) || outside(px, py - 1) || outside(px, py + 1))
+      if (nz < OUTLINE_Z || onRim) colour = colours.outline
       else if (polar) colour = colours.ice
       else if (land) colour = nz < SHADE_Z ? colours.landDim : colours.landLit
       else colour = nz < SHADE_Z ? colours.oceanDim : colours.oceanLit
@@ -228,6 +255,8 @@ export function PixelEarth({
   secondsPerTurn = 32,
   startLongitude = 20,
   palette,
+  mirror = 'none',
+  rim = false,
   className,
   style,
 }: PixelEarthProps) {
@@ -249,7 +278,7 @@ export function PixelEarth({
     const COLOURS = rgbPalette(palette)
 
     function draw(longitude: number) {
-      projectEarth(image.data, size, longitude, COLOURS)
+      projectEarth(image.data, size, longitude, COLOURS, { mirror, rim })
       ctx.putImageData(image, 0, 0)
     }
 
@@ -297,7 +326,7 @@ export function PixelEarth({
 
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [size, secondsPerTurn, palette])
+  }, [size, secondsPerTurn, palette, mirror, rim])
 
   return (
     <canvas

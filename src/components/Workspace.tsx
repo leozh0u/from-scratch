@@ -29,6 +29,8 @@ import {
 import { modeById, type ModeId } from '../game/modes'
 import { readDemoSettings, nextDemoStep, nextHumanTurn, rng } from '../game/demo'
 import { inRealm } from '../game/realms'
+import { WORLDS, type WorldDef } from '../data/worlds'
+import { kitParts, kitSize, kitSteps } from '../game/worlds'
 import { minWidthForSide, faceWidthFor } from './ui/legend'
 import { Readout } from './ui/Readout'
 import { WhyNot } from './WhyNot'
@@ -50,6 +52,12 @@ type WorkspaceProps = {
   game: ReturnType<typeof useGameState>
   onBack: () => void
   onOpenInventory: () => void
+  /**
+   * Set when this is a world rather than a realm. The world runs on Survival's
+   * rules with its own data and its own save (see game/worlds.ts); this is for
+   * the few things that are the world's own: its name, its backdrop, its kit.
+   */
+  world?: WorldDef
 }
 
 type Slots = [string | null, string | null]
@@ -95,10 +103,16 @@ const REALM_LABEL: Record<RealmId, string> = {
  * Derived rather than typed, so renaming a realm cannot leave it stale.
  */
 const LONGEST_REALM_EMS = (
-  Math.max(...Object.values(REALM_LABEL).map((label) => label.length)) * 1.04
+  Math.max(
+    ...Object.values(REALM_LABEL).map((label) => label.length),
+    // A world's name sits in the same slot, so the slot is sized for it too.
+    // "Navigation" is ten, the same as "Everything", and scripts/worldtest.ts
+    // keeps every world at ten or fewer so the realms never shrink for it.
+    ...WORLDS.map((world) => world.name.length),
+  ) * 1.04
 ).toFixed(2)
 
-export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: WorkspaceProps) {
+export function Workspace({ realm, data, game, mode, onBack, onOpenInventory, world }: WorkspaceProps) {
   const [slots, setSlots] = useState<Slots>([null, null])
   const { width: viewportWidth, height: viewportHeight } = useViewport()
   // Read here rather than from `rules` below, because the shelf is built above
@@ -222,9 +236,14 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
    * exact bug the filter below was written to fix in the first place.
    */
   const shown = revealAll
-    ? data.elements
-        .map((e) => e.id)
-        .filter((id) => inRealm(data, realm, id))
+    ? world
+      // A world's reach from iron, fire and water is hundreds of tiles. Cheater
+      // lays out the kit's own parts, plus anything already made off them, so
+      // nothing the player made disappears when the mode changes.
+      ? [...new Set([...kitParts(world), ...held])]
+      : data.elements
+          .map((e) => e.id)
+          .filter((id) => inRealm(data, realm, id))
     : held
 
   /*
@@ -257,6 +276,34 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
     .filter((id) => inRealm(data, realm, id))
   const realmTotal = new Set(craftableIds).size
   const realmFound = [...new Set(craftableIds)].filter((id) => game.isDiscovered(id)).length
+
+  /*
+   * A WORLD COUNTS THE KIT, NOT THE REACH.
+   *
+   * From fire, wood and iron you can make a great deal that has nothing to do
+   * with a chessboard, so "made 3 of 212" would be a true number about the
+   * wrong thing. A world counts crafts toward its kit instead: the shortest
+   * route from its starters is the denominator, and progress is how much of
+   * that is no longer standing between the player and the kit. It is measured
+   * from where the player actually is, so taking a different road still ends
+   * at full, and wandering off to make a hand drill does not move it.
+   *
+   * Fire is a starter in most worlds and also craftable, which is why worlds
+   * do not use `realmFound`: it would start the counter, and the hint budget
+   * that is earned from it, at one.
+   */
+  const kitLeft = useMemo(
+    () => (world ? kitSteps(world, new Set(held)) : []),
+    // `held` is rebuilt every render; its contents only change with a discovery.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [world, held.join('|')],
+  )
+  const kitTotal = world ? kitSize(world) : 0
+  const madeCount = world ? Math.max(0, Math.min(kitTotal, kitTotal - kitLeft.length)) : realmFound
+  const madeTotal = world ? kitTotal : realmTotal
+  const foundForHints = world
+    ? held.filter((id) => !world.starters.includes(id)).length
+    : realmFound
 
   /*
    * A handful of what is still missing, for the Everything bar.
@@ -487,7 +534,7 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
       // label underneath already says what it counts.
       : String(MISSES_PER_HINT - (deadEnds % MISSES_PER_HINT))
   const earned =
-    hintsEarned(realmFound, (game.misses[realm] ?? []).length) - (game.hintsSpent[realm] ?? 0)
+    hintsEarned(foundForHints, (game.misses[realm] ?? []).length) - (game.hintsSpent[realm] ?? 0)
   const hintsLeft = rules.infiniteHints ? Infinity : earned
 
   /*
@@ -499,7 +546,13 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
   function takeHint() {
     if (!rules.hints || hintsLeft <= 0) return
     playPress()
-    const found = pickHint(data, new Set(heldOrStarters), realm, game.hintsSpent[realm] ?? 0)
+    const found = pickHint(
+      data,
+      new Set(heldOrStarters),
+      realm,
+      game.hintsSpent[realm] ?? 0,
+      world ? new Set(kitLeft.map((step) => step.output)) : undefined,
+    )
     if (!found) {
       // Not charged for. Being told there is nothing to find is not a hint.
       setHint(NOTHING_IN_REACH)
@@ -627,8 +680,10 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
    * watch is the grid filling and the counter climbing.
    */
   const demo = useMemo(
-    () => readDemoSettings(typeof window === 'undefined' ? '' : window.location.search),
-    [],
+    // Not in a world: the drivers walk the whole reach and would fill a
+    // planet's save with things that have nothing to do with its kit.
+    () => readDemoSettings(typeof window === 'undefined' || world ? '' : window.location.search),
+    [world],
   )
   const demoMade = useRef(0)
   /*
@@ -1156,7 +1211,10 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
     setFeedback({ ...feedback, asking: true })
     const [a, b] = feedback.pair
     const [nameA, nameB] = feedback.names
-    void adjudicate(a, b, nameA, nameB, realm).then((deeper) => {
+    // A world sends `everyday`. `survival` tells the model the player is in
+    // the fire-making chapter with three starters, which is untrue on every
+    // planet, and the answer cache is keyed by it.
+    void adjudicate(a, b, nameA, nameB, world ? 'everyday' : realm).then((deeper) => {
       // A newer attempt has already started — this response is stale.
       if (attemptRef.current !== attempt) return
       setFeedback((current) =>
@@ -1171,7 +1229,13 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
     <>
       {/* The room the game is played in. Fixed and behind everything, so the
        * UI scrolls over it rather than with it. */}
-      {realm === 'survival' ? <ForestScene /> : <CityScene />}
+      {world ? (
+        world.scene === 'forest' ? <ForestScene mood={world.mood} /> : <CityScene mood={world.mood} />
+      ) : realm === 'survival' ? (
+        <ForestScene />
+      ) : (
+        <CityScene />
+      )}
       <main className="relative z-[1] mx-auto flex min-h-dvh max-w-3xl flex-col gap-6 px-5 py-8">
       {/*
        * A solid HUD strip, not floating text.
@@ -1213,10 +1277,10 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
           tone="default"
           unit={hudUnit}
           onClick={onBack}
-          aria-label="Back to realms"
+          aria-label={world ? 'Back to planets' : 'Back to realms'}
         >
           <BackArrow unit={hudUnit} />
-          {viewportWidth >= 380 && 'realms'}
+          {viewportWidth >= 380 && (world ? 'planets' : 'realms')}
         </PixelButton>
         {/*
          * THE TITLE IS SIZED BY THE ROOM IT HAS, NOT BY THE WINDOW.
@@ -1259,7 +1323,7 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
               margin: 0,
             }}
           >
-            {REALM_LABEL[realm]}
+            {world ? world.name : REALM_LABEL[realm]}
           </h1>
         </div>
         <PixelButton tone="default" unit={hudUnit} onClick={onOpenInventory}>
@@ -1410,7 +1474,7 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
           >
             <StatPanel
               stats={[
-                { label: 'made', value: `${realmFound}/${realmTotal}`, lead: true },
+                { label: 'made', value: `${madeCount}/${madeTotal}`, lead: true },
                 { label: 'tries', value: String(game.attempts[realm] ?? 0) },
                 { label: 'dead ends', value: String((game.misses[realm] ?? []).length) },
                 /*

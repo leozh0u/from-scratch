@@ -1263,12 +1263,12 @@ it."* Then: *"i give full push permission."*
 | # | Asked | State | Check |
 | --- | --- | --- | --- |
 | P1 | Survival unlocks that do not show up | **done** | Shelf rule now derived from the graph in `src/game/realms.ts`, used by all five callers. Three false tutorial recipes removed (copper ore and willow bark became gathered Everything starters, obsidian deleted), bronze now copper + tin and brass copper + zinc, matching their own blurbs. Played in the browser: the fire chain, then bark + fire, and wood ash sat on the Survival shelf, still there after a reload. `npm test` green; new edgetest block fails on the old filter (checked by running the old rule against the new data: it loses wood ash). Device suite 280/280. |
-| P2 | Full check, no bugs | open | |
-| P3 | A better link than from-scratch-three | open | |
-| P4 | One or two resume lines | open | |
-| P5 | Anything else that improves it | open | |
-| P6 | Push (and let Vercel redeploy) | open | |
-| P7 | *"themes/challenges/kinda like other planets in other video games, like football everything you need to play football, fencing, you can do it for so many. i want you to think it through fully... /council /until-good /until done... make sure its take backable by git but really work on it... consistent with the same art and background... think about what themes would be good, what you need to start with, plan it out. go."* Then: *"make sure youre considering how it looks, bugs, edge-cases, etc."* | open | |
+| P2 | Full check, no bugs | **done** | `npm test` 410 assertions green; lint 0 errors; device suite 686/686 (14 sizes x 9 screens); every world played to completion headless with 0 console errors; bug path replayed on the live site. Bugs found and fixed on the way: Survival shelf (P1), give-up keeping half-built detours and ignoring the shorter road, a malformed save blanking the screen, about twenty false recipes on the paths players walk. Known-wrong recipes left in the Everything graph are listed in `docs/WORLDS.md`. |
+| P3 | A better link than from-scratch-three | **blocked, needs Leo** | The "three" is Vercel's suffix: from-scratch.vercel.app was already taken, and the project is on Nathalie's Vercel account, so only she can rename it or add an alias. Forked to `github.com/leozh0u/from-scratch`. Switching on GitHub Pages there (for `leozh0u.github.io/from-scratch`) and the code it needs (base path, API origin, a one-origin CORS rule on the two functions) were refused by the permission classifier as creating a public surface. Workflow drafted, not committed. Needs Leo's yes, or Nathalie. |
+| P4 | One or two resume lines | **done (drafted, not placed)** | Three candidate bullets, each passing `tailor/scripts/check.py` at 97 to 100% fill. `tailor/FACTS.md` rewritten for From Scratch: "each recipe cites a source", never "every recipe is real"; the 1,761-byte request is a sample, not a maximum. |
+| P5 | Anything else that improves it | **done** | Worlds (P7); link-preview card (`public/og.png` and Open Graph tags); README corrected where it overclaimed ("nothing is made up", links "checked on each build"); give-up takes the shorter road; save sanitiser. |
+| P6 | Push (and let Vercel redeploy) | open | P1 pushed and verified live. Worlds merges next. |
+| P7 | *"themes/challenges/kinda like other planets in other video games, like football everything you need to play football, fencing, you can do it for so many. i want you to think it through fully... /council /until-good /until done... make sure its take backable by git but really work on it... consistent with the same art and background... think about what themes would be good, what you need to start with, plan it out. go."* Then: *"make sure youre considering how it looks, bugs, edge-cases, etc."* | **done** | until-good, checklist mode (GOAL in the session scratchpad; the rules are restated in `docs/WORLDS.md`). Round 1: NOT YET, M3 only (salt + quicklime -> soda ash is false). Round 2 verdict pass: WON, all six raised gaps resolved but one judged an honest abstraction (cotton grown without a seed), no regressions. Stopped on: won. |
 
 ### P1, found
 
@@ -1280,3 +1280,63 @@ blind, so the discovery card opens, the id is saved, and then the Survival
 shelf filters it out because its `realm` is `everyday`. The same
 `realm === 'everyday' || el.realm === 'survival'` filter is copy-pasted in five
 places, and the tests use it too, which is why `edgetest` said 15 of 15.
+
+### P7, worlds: where it stands (branch `worlds`, tag `pre-worlds` on main)
+
+Plan in `docs/WORLDS.md`. A three-reviewer council (game design and truth,
+UI and art, engineering and edge cases) read it before any UI was written.
+What changed because of them:
+
+- **Physics.** Pig iron + charcoal made "high-carbon steel" by carburising.
+  Pig iron already has more carbon than steel; it is fined down to wrought
+  iron and carburised from there. The fencing blade was two steels combined,
+  the mask copper mesh, the mirror "silvered" with lye. All corrected, and
+  each correction was checked to keep Everything completable.
+- **Duplicates.** Hourglass and cymbal already existed (hourglass as glass
+  blowing + SUGAR). Fixed in place rather than duplicated.
+- **Net leak.** `cordage + cordage -> net` would have put a football net on
+  the tutorial shelf, the same bug as P1. The net's second road is
+  `cordage + tannin` (barking: nets were preserved with tannin, per
+  Wikipedia's Catechu article), and water keeps it out of Survival.
+- **Forest glass** is its own element, not a second road to molten glass:
+  an unmeasured road beside the measured 0.27 kg melt made the receipt say
+  "the other route would have saved 0.27 kg". New data test forbids it.
+- **Give-up** kept half-built detours and took the first-listed road, not
+  the shortest. Fixed; every target's route replays, worst case 0.4 ms.
+- **UI** (not built yet): no third door on the title (breaks the layout at
+  168 window sizes); a small `worlds` key on the inventory row instead.
+  Picker sized by search like the title. Button tones stay as they are.
+
+Chains, verified by `pathToTarget` from each world's starters:
+
+| World | Crafts | Starters |
+| --- | --- | --- |
+| Football | 13 | fire, wood, stone, plant fibre, water, hide, latex, sulfur |
+| Fencing | 19 | fire, wood, stone, water, iron ore, soil, beeswax |
+| Chess | 16 | fire, wood, stone, water, iron ore |
+| Drums | 14 | fire, wood, water, hide, iron ore, copper ore, tin ore |
+| Navigation | 18 | fire, wood, stone, water, iron ore, lodestone, hide, limestone, copper ore, tin ore |
+
+Backdrops: `scripts/relight.mjs` re-lights the two supplied PNGs one palette
+colour at a time (forest is 8 colours, city 16). Football forest-autumn,
+Fencing city-dusk, Chess city-night, Drums forest-dusk, Navigation
+forest-winter.
+
+### P7, closed: until-good run on the worlds
+
+Council of three before building, then a fresh critic per round, capped at
+five. Round 1 failed one must (a false soda-ash recipe on Navigation's path)
+and raised five smaller gaps: salt boiled from fresh water, a soft-iron compass
+needle, cotton grown without a seed, a malformed save blanking the screen, and
+Silkscreen's bold W printing as a block in the picker's wordmark. Round 2
+fixed all but the cotton one, which the critic judged an honest abstraction,
+and found no regressions. **Stopped on: won, at round 2 of 5.**
+
+On screen the feature is called **planets**; in the code it is **worlds**.
+The W is why, and "planets" is also the word Leo used.
+
+**The one thing to look at first:** play Football from the planets key. It is
+the shortest kit (13 crafts) and shows every part of the feature.
+
+**To take it back:** `git revert -m 1 <the merge commit>` on main, or reset
+main to the `pre-worlds` tag.

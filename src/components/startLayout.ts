@@ -174,3 +174,96 @@ export function startScreenContentHeight(layout: StartLayout): number {
 
 /** Re-exported so callers need only this module. */
 export { arcTitleWidth }
+
+/*
+ * THE WORLDS PICKER, SIZED THE SAME WAY AS THE TITLE.
+ *
+ * Searched rather than stepped by breakpoints, for the reason the title is: a
+ * width threshold does not know how tall the window is, and a phone held
+ * sideways has plenty of one and almost none of the other. Five planets, each
+ * over its own key, laid out five across, three and two, or two, two and one,
+ * never four and an orphan.
+ *
+ * If nothing fits, the smallest layout is returned and the picker scrolls.
+ * Unlike the title it can: there is nothing pinned to the bottom of it.
+ */
+export type PickerLayout = {
+  unit: number
+  titleUnit: number
+  columns: number
+  /** Screen pixels per planet pixel. */
+  planetScale: number
+  /** Width of every key, so the grid lines up whatever the name. */
+  keyWidth: number
+  gap: number
+  topInset: number
+  padBlock: number
+  fits: boolean
+}
+
+export const PLANET_PIXELS = 24
+const PICKER_TITLE = 'Planets'
+
+/** A PixelButton's width for a label: 3u font, 0.08em tracking, 5u padding each side. */
+export function keyWidthFor(label: string, unit: number): number {
+  return Math.ceil(label.length * unit * 3 * 1.08 + unit * 10)
+}
+
+export function pickerRows(count: number, columns: number): number[] {
+  if (columns >= count) return [count]
+  if (columns === 3) return [3, count - 3]
+  return [2, 2, count - 4]
+}
+
+export function pickerContentHeight(layout: PickerLayout, count: number): number {
+  const rows = pickerRows(count, layout.columns).length
+  const cell = PLANET_PIXELS * layout.planetScale + layout.unit * 2 + menuButtonHeight(layout.unit)
+  return (
+    layout.topInset +
+    layout.padBlock * 2 +
+    arcTitleHeight(PICKER_TITLE, layout.titleUnit) +
+    layout.gap +
+    rows * cell +
+    (rows - 1) * layout.gap
+  )
+}
+
+export function pickerLayout(width: number, height: number, names: string[]): PickerLayout {
+  const topInset = Math.max(64, Math.min(78, Math.round(height * 0.12)))
+  const longest = names.reduce((a, b) => (b.length > a.length ? b : a), '')
+  // Never bigger than the title screen's own wordmark, so the picker reads as
+  // a room off the title rather than a louder one.
+  const titleCap = startScreenLayout(width, height).titleUnit
+  const byWidth = Math.min(titleCap, fitArcUnit(PICKER_TITLE, width - 24, 14))
+  let fallback: PickerLayout | null = null
+
+  for (let unit = width < 560 ? 4 : 5; unit >= 3; unit--) {
+    const keyWidth = keyWidthFor(longest, unit)
+    const gap = height < 560 ? unit * 3 : unit * 5
+    const padBlock = height < 560 ? unit * 2 : unit * 5
+    for (const columns of [5, 3, 2]) {
+      if (columns * keyWidth + (columns - 1) * gap > width - 32) continue
+      for (let planetScale = 4; planetScale >= 2; planetScale--) {
+        if (PLANET_PIXELS * planetScale > keyWidth) continue
+        for (let titleUnit = byWidth; titleUnit >= 2; titleUnit--) {
+          const layout = { unit, titleUnit, columns, planetScale, keyWidth, gap, topInset, padBlock, fits: true }
+          if (pickerContentHeight(layout, names.length) <= height) return layout
+        }
+      }
+      fallback ??= { unit, titleUnit: 2, columns, planetScale: 2, keyWidth, gap, topInset, padBlock, fits: false }
+    }
+  }
+  return (
+    fallback ?? {
+      unit: 3,
+      titleUnit: 2,
+      columns: 2,
+      planetScale: 2,
+      keyWidth: keyWidthFor(longest, 3),
+      gap: 9,
+      topInset,
+      padBlock: 6,
+      fits: false,
+    }
+  )
+}

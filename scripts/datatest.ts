@@ -652,5 +652,47 @@ console.log('\n=== the hand-drawn registry has no entries for nobody ===')
      orphans.length ? orphans.join(', ') : `${Object.keys(REGISTRY).length} keys, all claimed`)
 }
 
+/*
+ * TWO ROADS, AND NEITHER IS "FREE" BECAUSE NOBODY MEASURED IT.
+ *
+ * The receipt compares the road you took with the other one and says "the
+ * other route would have saved 0.27 kg. Try it next time." That sentence is
+ * only true if both roads were measured. An unmeasured road carries zero, and
+ * zero beside a real number reads as a saving. Adding potash glass as a second
+ * road to molten glass did exactly that to the glass bottle, and the test
+ * above only caught it because the bottle is a target.
+ *
+ * And each road carries its own name, or the receipt cannot say which one you
+ * took and falls back to whichever is cheapest.
+ */
+console.log('\n=== every second road is named, and none is cheap by being unmeasured ===')
+{
+  const byOutput = new Map<string, typeof GAME_DATA.recipes>()
+  for (const r of GAME_DATA.recipes) byOutput.set(r.output, [...(byOutput.get(r.output) ?? []), r])
+  /*
+   * Where zero IS the measurement. Recycled cotton skips the field entirely,
+   * so it has no cultivation step to cost: its zero is the absence of 2,340
+   * litres of irrigation, which is the lesson the route exists to teach.
+   */
+  const MEASURED_ZERO = new Set(['ginned_cotton'])
+  const unnamed: string[] = []
+  const lopsided: string[] = []
+  for (const [id, roads] of byOutput) {
+    if (roads.length < 2) continue
+    const names = roads.map((r) => r.route)
+    // One road may be the unnamed default; the rest must be named and distinct.
+    if (names.filter((n) => n === undefined).length > 1 || new Set(names).size !== names.length) {
+      unnamed.push(id)
+    }
+    const costs = roads.map((r) => {
+      const d = computeFootprintDetail(GAME_DATA, id, { [id]: r.route })
+      return d ? d.total.co2kg + d.total.waterL : 0
+    })
+    if (costs.some((c) => c > 0) && costs.some((c) => c === 0) && !MEASURED_ZERO.has(id)) lopsided.push(id)
+  }
+  ok('every output with several roads can say which one was taken', unnamed.length === 0, unnamed.join(', '))
+  ok('no road looks cheaper only because nobody measured it', lopsided.length === 0, lopsided.join(', '))
+}
+
 console.log(`\n${fail === 0 ? 'Game data and solver hold.' : `${fail} FAILED`}  (${pass} checks)`)
 process.exit(fail === 0 ? 0 : 1)

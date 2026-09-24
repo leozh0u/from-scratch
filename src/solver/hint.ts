@@ -51,10 +51,18 @@ export function pickHint(
   discoveredIds: Set<string>,
   realm: RealmId,
   nth: number,
+  /**
+   * What the player is actually trying to make, when that is narrower than the
+   * realm. A world's hint should point at the kit: from stone, wood and fire
+   * on the football planet you can make a hand drill, and a hint that spends
+   * itself on a hand drill is a hint wasted. Falls back to everything in reach
+   * when nothing in the focus can be made yet.
+   */
+  focus?: Set<string>,
 ): Hint | null {
   const byId = new Map(data.elements.map((e) => [e.id, e]))
 
-  const reachable = data.recipes.filter((recipe) => {
+  const inReach = data.recipes.filter((recipe) => {
     if (discoveredIds.has(recipe.output)) return false
     if (!recipe.inputs.every((id) => discoveredIds.has(id))) return false
     /*
@@ -65,6 +73,8 @@ export function pickHint(
      */
     return byId.has(recipe.output) && inRealm(data, realm, recipe.output)
   })
+  const focused = focus ? inReach.filter((recipe) => focus.has(recipe.output)) : []
+  const reachable = focused.length > 0 ? focused : inReach
 
   if (reachable.length === 0) return null
 
@@ -196,10 +206,28 @@ export function pathToTarget(
   const building = new Set<string>()
 
   /*
-   * Depth first, cheapest branch first, with `building` guarding against a
-   * graph that has somehow gained a cycle. The solver already rejects cyclic
-   * data at build time; this is belt and braces, because a stack overflow
-   * inside a help feature is a worse failure than an incomplete answer.
+   * Everything added since `mark`, taken back out. Steps and `held` only ever
+   * grow together, one output per step, so undoing the steps undoes both.
+   */
+  function rollback(mark: number) {
+    for (const step of steps.splice(mark)) held.delete(step.output)
+  }
+
+  /*
+   * Depth first, with `building` guarding against a graph that has somehow
+   * gained a cycle. The solver already rejects cyclic data at build time; this
+   * is belt and braces, because a stack overflow inside a help feature is a
+   * worse failure than an incomplete answer.
+   *
+   * A ROUTE THAT FAILS HALFWAY LEAVES NOTHING BEHIND. The first version kept
+   * the steps for a recipe's first input when its second turned out to be
+   * unreachable, so the route it printed could include a detour to nowhere.
+   *
+   * AND WHERE THERE ARE TWO ROADS, IT TAKES THE SHORTER ONE FROM HERE. This
+   * said "cheapest branch first" and took whichever recipe was listed first.
+   * With the worlds that stopped being harmless: a football can be made from
+   * synthetic rubber or from vulcanised latex, and on the football planet the
+   * first one is a trip through a refinery the planet does not have.
    */
   function make(id: string): boolean {
     if (held.has(id)) return true
@@ -208,20 +236,33 @@ export function pathToTarget(
     if (!routes || routes.length === 0) return false
 
     building.add(id)
-    for (const recipe of routes) {
-      if (recipe.inputs.every((input) => make(input))) {
-        building.delete(id)
-        held.add(id)
-        steps.push({
-          inputs: [recipe.inputs[0], recipe.inputs[1]],
-          output: id,
-          process: recipe.process,
-        })
-        return true
+    const mark = steps.length
+    const build = (recipe: RecipeDef) => recipe.inputs.every((input) => make(input))
+    let best: RecipeDef | null = null
+    if (routes.length === 1) {
+      // One road: walk it once. Trying it and then walking it again doubles
+      // the work at every level, which is exponential down a deep chain.
+      if (build(routes[0])) best = routes[0]
+      else rollback(mark)
+    } else {
+      let bestCost = Infinity
+      for (const recipe of routes) {
+        const ok = build(recipe)
+        const cost = steps.length - mark
+        rollback(mark)
+        if (ok && cost < bestCost) {
+          best = recipe
+          bestCost = cost
+        }
       }
+      if (best) build(best)
     }
     building.delete(id)
-    return false
+    if (!best) return false
+
+    held.add(id)
+    steps.push({ inputs: [best.inputs[0], best.inputs[1]], output: id, process: best.process })
+    return true
   }
 
   return make(targetId) ? steps : []

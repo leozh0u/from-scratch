@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useViewport } from '../hooks/useViewport'
+import { backdropFile, relightCss, type MoodId } from '../art/moods'
 
 /**
  * The Survival backdrop: Leo's hillside SVG, with a thin layer of life on top.
@@ -120,9 +121,16 @@ type ForestSceneProps = {
   /** CSS pixels per overlay pixel. Integers only. */
   pixelScale?: number
   className?: string
+  /**
+   * The light the hillside is seen in, for a world. The tufts and leaves are
+   * drawn in the backdrop's own palette colours, so they go through the same
+   * re-lighting as the picture or they would stay summer-green on an autumn
+   * hill. See art/moods.ts.
+   */
+  mood?: MoodId
 }
 
-export function ForestScene({ pixelScale = 4, className }: ForestSceneProps) {
+export function ForestScene({ pixelScale = 4, className, mood = 'day' }: ForestSceneProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const { width: vw, height: vh } = useViewport()
 
@@ -138,6 +146,11 @@ export function ForestScene({ pixelScale = 4, className }: ForestSceneProps) {
     const context = canvas.getContext('2d')
     if (!context) return
     const ctx = context
+    const deep = relightCss(CANOPY_DEEP, mood)
+    const dark = relightCss(CANOPY_DARK, mood)
+    const mid = relightCss(CANOPY_MID, mood)
+    const leafLight = relightCss(LEAF_LIGHT, mood)
+    const leafMid = relightCss(LEAF_MID, mood)
 
     /**
      * A tuft of foliage: overlapping rows narrowing upward, with a jittered
@@ -221,7 +234,7 @@ export function ForestScene({ pixelScale = 4, className }: ForestSceneProps) {
         const x = Math.round(hash(i * 151) * width)
         const w = 6 + Math.round(hash(i * 173) * 7)
         const h = 5 + Math.round(hash(i * 191) * 8)
-        tuft(x, height - 1, w, h, i % 2 ? CANOPY_DARK : CANOPY_DEEP, i * 31, lowSway, true)
+        tuft(x, height - 1, w, h, i % 2 ? dark : deep, i * 31, lowSway, true)
       }
 
       /*
@@ -236,7 +249,7 @@ export function ForestScene({ pixelScale = 4, className }: ForestSceneProps) {
         if (x > width * 0.24 && x < width * 0.76) continue
         const w = 5 + Math.round(hash(i * 233) * 6)
         const h = 4 + Math.round(hash(i * 251) * 7)
-        tuft(x, 0, w, h, i % 2 ? CANOPY_DEEP : CANOPY_MID, i * 47, highSway, false)
+        tuft(x, 0, w, h, i % 2 ? deep : mid, i * 47, highSway, false)
       }
 
       /*
@@ -259,7 +272,7 @@ export function ForestScene({ pixelScale = 4, className }: ForestSceneProps) {
           y,
           w,
           h,
-          i % 3 === 0 ? CANOPY_MID : CANOPY_DARK,
+          i % 3 === 0 ? mid : dark,
           i * 53,
           sideSway,
           true,
@@ -270,7 +283,7 @@ export function ForestScene({ pixelScale = 4, className }: ForestSceneProps) {
       for (let i = 0; i < 8; i++) {
         const { x, y, frame } = leafAt(now, i + 1, width, height)
         if (y < -4 || y > height) continue
-        ctx.fillStyle = i % 2 ? LEAF_LIGHT : LEAF_MID
+        ctx.fillStyle = i % 2 ? leafLight : leafMid
         // Two frames: flat, then edge-on — a leaf turning over as it falls.
         if (frame === 0) {
           ctx.fillRect(x, y, 2, 1)
@@ -301,7 +314,7 @@ export function ForestScene({ pixelScale = 4, className }: ForestSceneProps) {
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [width, height])
+  }, [width, height, mood])
 
   return (
     <div
@@ -310,7 +323,7 @@ export function ForestScene({ pixelScale = 4, className }: ForestSceneProps) {
       style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none' }}
     >
       <img
-        src={`${import.meta.env.BASE_URL}forest-hillside.png`}
+        src={`${import.meta.env.BASE_URL}${backdropFile('forest', mood)}`}
         alt=""
         style={{
           position: 'absolute',
