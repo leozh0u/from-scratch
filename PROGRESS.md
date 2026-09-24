@@ -1267,7 +1267,7 @@ it."* Then: *"i give full push permission."*
 | P3 | A better link than from-scratch-three | **blocked, needs Leo** | The "three" is Vercel's suffix: from-scratch.vercel.app was already taken, and the project is on Nathalie's Vercel account, so only she can rename it or add an alias. Forked to `github.com/leozh0u/from-scratch`. Switching on GitHub Pages there (for `leozh0u.github.io/from-scratch`) and the code it needs (base path, API origin, a one-origin CORS rule on the two functions) were refused by the permission classifier as creating a public surface. Workflow drafted, not committed. Needs Leo's yes, or Nathalie. |
 | P4 | One or two resume lines | **done (drafted, not placed)** | Three candidate bullets, each passing `tailor/scripts/check.py` at 97 to 100% fill. `tailor/FACTS.md` rewritten for From Scratch: "each recipe cites a source", never "every recipe is real"; the 1,761-byte request is a sample, not a maximum. |
 | P5 | Anything else that improves it | **done** | Worlds (P7); link-preview card (`public/og.png` and Open Graph tags); README corrected where it overclaimed ("nothing is made up", links "checked on each build"); give-up takes the shorter road; save sanitiser. |
-| P6 | Push (and let Vercel redeploy) | open | P1 pushed and verified live. Worlds merges next. |
+| P6 | Push (and let Vercel redeploy) | **done** | Merged `worlds` into main as one `--no-ff` merge (3dee104); tag `pre-worlds` and branch `worlds` pushed. On the merge: `npm test` green, lint 0 errors, device suite 686/686, GitHub CI green, Vercel deploy green. On the live site: Football played to 3/3 and 13/13 headless with no console errors, the picker showed it done, and `/og.png` serves as the link card. Leo's fork synced to the same commit. |
 | P7 | *"themes/challenges/kinda like other planets in other video games, like football everything you need to play football, fencing, you can do it for so many. i want you to think it through fully... /council /until-good /until done... make sure its take backable by git but really work on it... consistent with the same art and background... think about what themes would be good, what you need to start with, plan it out. go."* Then: *"make sure youre considering how it looks, bugs, edge-cases, etc."* | **done** | until-good, checklist mode (GOAL in the session scratchpad; the rules are restated in `docs/WORLDS.md`). Round 1: NOT YET, M3 only (salt + quicklime -> soda ash is false). Round 2 verdict pass: WON, all six raised gaps resolved but one judged an honest abstraction (cotton grown without a seed), no regressions. Stopped on: won. |
 
 ### P1, found
@@ -1340,3 +1340,11 @@ the shortest kit (13 crafts) and shows every part of the feature.
 
 **To take it back:** `git revert -m 1 <the merge commit>` on main, or reset
 main to the `pre-worlds` tag.
+
+### Where it ended, 2026-09-24
+
+Everything asked for is done and live except the link (P3), which needs Leo:
+either say yes to switching on GitHub Pages in his fork (the permission
+classifier would not do it unasked, as it publishes a new public site), or ask
+Nathalie to rename the Vercel project, which only she can do. Until then the
+live link is still from-scratch-three.vercel.app.
