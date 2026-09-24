@@ -228,7 +228,7 @@ export function StartScreen({
         </div>
 
         {/*
-         * THE WORLDS KEY SITS BESIDE THE INVENTORY, NOT UNDER THE DOORS.
+         * THE PLANETS KEY SITS BESIDE THE INVENTORY, NOT UNDER THE DOORS.
          *
          * A third door was the obvious place and the wrong one. The layout
          * search is sized for exactly two doors and one key, and with a third
@@ -259,9 +259,9 @@ export function StartScreen({
             unit={unit - 1}
             locked={!everydayUnlocked}
             onClick={() => everydayUnlocked && onOpenWorlds()}
-            aria-label={everydayUnlocked ? 'Worlds' : 'Worlds, locked until Survival is finished'}
+            aria-label={everydayUnlocked ? 'Planets' : 'Planets, locked until Survival is finished'}
           >
-            worlds
+            planets
           </PixelButton>
         </div>
       </div>

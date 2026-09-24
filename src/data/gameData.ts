@@ -88,6 +88,7 @@ export const GAME_DATA: RecipeData = {
     { id: 'latex', name: 'Latex', icon: 'latex', realm: 'everyday', blurb: "The white sap that runs from a cut rubber tree. It is already rubber, just suspended in water, and on its own it goes sticky in the heat and brittle in the cold.", sources: [{ label: 'Natural rubber', url: 'https://en.wikipedia.org/wiki/Natural_rubber', tier: 'referenced' }] },
     { id: 'sulfur', name: 'Sulfur', icon: 'sulfur', realm: 'everyday', blurb: "Yellow crystals that collect round volcanic vents. The Bible calls it brimstone.", sources: [{ label: 'Sulfur', url: 'https://en.wikipedia.org/wiki/Sulfur', tier: 'referenced' }] },
     { id: 'tin_ore', name: 'Tin Ore', icon: 'tin_ore', realm: 'everyday', blurb: "Cassiterite, heavy and nearly black. Tin is rare enough that Bronze Age traders carried it thousands of kilometres to reach the copper.", sources: [{ label: 'Cassiterite', url: 'https://en.wikipedia.org/wiki/Cassiterite', tier: 'referenced' }] },
+    { id: 'seawater', name: 'Seawater', icon: 'seawater', realm: 'everyday', blurb: "About three and a half per cent salt by weight. Leave it in a shallow pan in the sun and the water goes and the salt stays.", sources: [{ label: 'Seawater', url: 'https://en.wikipedia.org/wiki/Seawater', tier: 'referenced' }] },
     { id: 'salt', name: 'Salt', icon: 'salt', realm: 'everyday', blurb: "Seawater left in the sun, or boiled, until only the solid is left. Probably the oldest chemistry anyone did on purpose, and it feeds two whole industries from here.", sources: [{ label: 'Salt evaporation pond', url: 'https://en.wikipedia.org/wiki/Salt_evaporation_pond' }] },
     { id: 'ammonia', name: 'Ammonia', icon: 'ammonia', realm: 'everyday', blurb: "Nitrogen taken out of the air and forced onto hydrogen stripped from methane. Haber Bosch feeds roughly half the people alive and almost nobody can name it, which seems like an oversight.", sources: [{ label: 'Haber process', url: 'https://en.wikipedia.org/wiki/Haber_process' }] },
     { id: 'farmland', name: 'Farmland', icon: 'farmland', realm: 'everyday', blurb: "Soil that can carry a crop, as someone put the nitrogen back into it.", sources: [{ label: 'Fertilizer', url: 'https://en.wikipedia.org/wiki/Fertilizer' }] },
@@ -1339,7 +1340,9 @@ export const GAME_DATA: RecipeData = {
       sources: [{ label: 'Torch', url: 'https://en.wikipedia.org/wiki/Torch' }],
     },
     {
-      inputs: ['water', 'fire'],
+      // Seawater, not water. Boiling fresh water leaves nothing behind, which
+      // salt's own blurb already said.
+      inputs: ['seawater', 'fire'],
       output: 'salt',
       process: 'evaporating',
       cost: ZERO_COST,
@@ -1376,13 +1379,6 @@ export const GAME_DATA: RecipeData = {
       process: 'calcining',
       cost: ZERO_COST,
       sources: [{ label: 'Calcination', url: 'https://en.wikipedia.org/wiki/Calcination' }],
-    },
-    {
-      inputs: ['salt', 'quicklime'],
-      output: 'soda_ash',
-      process: 'the Solvay process',
-      cost: ZERO_COST,
-      sources: [{ label: 'Solvay process', url: 'https://en.wikipedia.org/wiki/Solvay_process' }],
     },
     {
       inputs: ['salt', 'water'],
@@ -1593,13 +1589,13 @@ export const GAME_DATA: RecipeData = {
       sources: [{ label: 'Direct reduced iron', url: 'https://en.wikipedia.org/wiki/Direct_reduced_iron' }],
     },
     {
-      // Solvay's actual inputs are brine and limestone; the quicklime route
-      // already in the game is the same cycle seen a step later. Both are real
-      // and the receipt records which one you took.
+      // Solvay's actual inputs are brine and limestone. There used to be a second
+      // road, salt + quicklime, described as the same cycle a step later. It is
+      // not: the carbonate in soda ash comes from the CO2 that burning the
+      // limestone drives off, and quicklime is what is left once that has gone.
       inputs: ['limestone', 'salt'],
       output: 'soda_ash',
       process: 'the Solvay process',
-      route: 'brine and limestone',
       cost: ZERO_COST,
       sources: [{ label: 'Solvay process', url: 'https://en.wikipedia.org/wiki/Solvay_process' }],
     },
@@ -1886,7 +1882,7 @@ export const GAME_DATA: RecipeData = {
     { inputs: ['willow_bark', 'vinegar'], output: 'aspirin', process: 'acetylating', cost: ZERO_COST, sources: [{ label: 'Aspirin', url: 'https://en.wikipedia.org/wiki/Aspirin', tier: 'referenced' }] },
     { inputs: ['ethanol', 'filtered_water'], output: 'antiseptic', process: 'diluting', cost: ZERO_COST, sources: [{ label: 'Antiseptic', url: 'https://en.wikipedia.org/wiki/Antiseptic', tier: 'referenced' }] },
     { inputs: ['linen', 'antiseptic'], output: 'bandage', process: 'dressing', cost: ZERO_COST, sources: [{ label: 'Bandage', url: 'https://en.wikipedia.org/wiki/Bandage', tier: 'referenced' }] },
-    { inputs: ['lodestone', 'wrought_iron'], output: 'compass', process: 'magnetising', cost: ZERO_COST, sources: [{ label: 'Compass', url: 'https://en.wikipedia.org/wiki/Compass', tier: 'referenced' }] },
+    { inputs: ['lodestone', 'high_carbon_steel'], output: 'compass', process: 'magnetising', cost: ZERO_COST, sources: [{ label: 'Compass', url: 'https://en.wikipedia.org/wiki/Compass', tier: 'referenced' }] },
     { inputs: ['mirror', 'bronze'], output: 'sextant', process: 'graduating', cost: ZERO_COST, sources: [{ label: 'Sextant', url: 'https://en.wikipedia.org/wiki/Sextant', tier: 'referenced' }] },
     { inputs: ['clock', 'bearing'], output: 'chronometer', process: 'regulating', cost: ZERO_COST, sources: [{ label: 'Marine chronometer', url: 'https://en.wikipedia.org/wiki/Marine_chronometer', tier: 'referenced' }] },
     { inputs: ['charcoal', 'paraffin_wax'], output: 'pitch', process: 'boiling down', cost: ZERO_COST, sources: [{ label: 'Pitch (resin)', url: 'https://en.wikipedia.org/wiki/Pitch_(resin)', tier: 'referenced' }] },
@@ -2894,6 +2890,7 @@ export const GAME_DATA: RecipeData = {
       'lodestone',
       'latex',
       'sulfur',
+      'seawater',
       'crude_oil',
       'natural_gas',
       'beeswax',

@@ -17,7 +17,7 @@ type WorldsScreenProps = {
 const NAMES = WORLDS.map((world) => world.name)
 
 /**
- * The worlds, as a sky of planets.
+ * The worlds, as a sky of planets, and called planets on screen.
  *
  * A room off the title screen and built from nothing else: the same starfield,
  * the same arc wordmark, the same keys. Each world is the title Earth's own
@@ -84,10 +84,16 @@ export function WorldsScreen({ onBack, onSelectWorld }: WorldsScreenProps) {
           paddingInline: 16,
         }}
       >
-        <ArcTitle text="Worlds" unit={layout.titleUnit} />
+        {/*
+         * "Planets", not "Worlds", on every key a player reads. Silkscreen's
+         * bold W fills its own gaps and prints as a block; the wordmark's font
+         * is the one thing on this screen that has to match the title's, so
+         * the word changed instead of the weight. It is also the word Leo used.
+         */}
+        <ArcTitle text="Planets" unit={layout.titleUnit} />
 
         <ul
-          aria-label="Worlds"
+          aria-label="Planets"
           style={{ display: 'flex', flexDirection: 'column', gap: layout.gap, margin: 0, padding: 0 }}
         >
           {rows.map((row, r) => (

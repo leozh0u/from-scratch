@@ -155,7 +155,7 @@ const SCREENS = 9
 
 /** Something only that screen says, for the screens reached by several clicks. */
 const SHOULD_SAY = {
-  worlds: 'navigation',
+  planets: 'navigation',
   football: 'football boots',
   navigation: 'sextant',
   "a world's inventory": 'fencing ·',
@@ -204,24 +204,24 @@ async function main() {
         await clickLabel(page, 'inventory')
         await clickLabel(page, 'processes')
       }],
-      ['worlds', async () => {
+      ['planets', async () => {
         await page.goto(`${base}/`)
-        await clickLabel(page, 'worlds')
+        await clickLabel(page, 'planets')
       }],
       ['football', async () => {
         await page.goto(`${base}/`)
-        await clickLabel(page, 'worlds')
+        await clickLabel(page, 'planets')
         await clickLabel(page, 'football')
       }],
       // The longest world name, which is what the HUD title is sized for.
       ['navigation', async () => {
         await page.goto(`${base}/`)
-        await clickLabel(page, 'worlds')
+        await clickLabel(page, 'planets')
         await clickLabel(page, 'navigation')
       }],
       ["a world's inventory", async () => {
         await page.goto(`${base}/`)
-        await clickLabel(page, 'worlds')
+        await clickLabel(page, 'planets')
         await clickLabel(page, 'fencing')
         await clickLabel(page, 'inventory')
       }],

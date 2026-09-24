@@ -159,13 +159,16 @@ export const WORLDS: WorldDef[] = [
     id: 'navigation',
     name: 'Navigation',
     kit: 'a compass, a map and a sextant',
-    // The hard one. Lodestone magnetises the needle, limed hide becomes the
-    // parchment, and the sextant needs glass, a tin-backed mirror and bronze.
+    // The hard one, and the only one by the sea. Lodestone magnetises a steel
+    // needle, limed hide becomes the parchment, and the sextant needs glass
+    // (salt from seawater, then Solvay's soda ash), a tin-backed mirror and
+    // bronze.
     starters: [
       'fire',
       'wood',
       'stone',
       'water',
+      'seawater',
       'iron_ore',
       'lodestone',
       'hide',

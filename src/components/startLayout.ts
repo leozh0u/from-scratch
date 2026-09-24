@@ -202,7 +202,7 @@ export type PickerLayout = {
 }
 
 export const PLANET_PIXELS = 24
-const PICKER_TITLE = 'Worlds'
+const PICKER_TITLE = 'Planets'
 
 /** A PixelButton's width for a label: 3u font, 0.08em tracking, 5u padding each side. */
 export function keyWidthFor(label: string, unit: number): number {

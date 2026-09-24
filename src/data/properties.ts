@@ -175,6 +175,7 @@ export const PROPERTIES: Record<string, Properties> = {
   latex: P('liquid', 'organic', 'raw'),
   sulfur: P('granular', 'mineral', 'raw'),
   tin_ore: P('solid', 'mineral', 'raw'),
+  seawater: P('liquid', 'chemical', 'raw'),
   compass: P('solid', 'tool', 'finished'),
   sextant: P('solid', 'tool', 'finished'),
   chronometer: P('solid', 'tool', 'finished'),

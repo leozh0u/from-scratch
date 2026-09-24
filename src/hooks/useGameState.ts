@@ -48,16 +48,57 @@ export function readStorage(key: string = STORAGE_KEY): PersistedState | null {
   try {
     const raw = localStorage.getItem(key)
     if (!raw) return null
-    const parsed = JSON.parse(raw)
-    // Pre-route-tracking saves lack `.discovered` — treat as absent rather
-    // than crash on a shape from before this field existed.
-    if (!parsed?.discovered) return null
-    return parsed as PersistedState
+    return sanitize(JSON.parse(raw))
   } catch {
     // Corrupt or blocked storage (private mode, quota) — start fresh rather
     // than crash the app over save data.
     return null
   }
+}
+
+/*
+ * EVERY FIELD IS COERCED TO ITS SHAPE, NOT TRUSTED.
+ *
+ * Parsing was the only check, so a save that was valid JSON but the wrong
+ * shape got through: `discovered.everyday` as a string reached
+ * `ids.filter(...)` and the whole screen went blank. Found by the review of
+ * the worlds, where a world's save is one more thing that can be edited by
+ * hand or left behind by an older build; the main save had the same hole.
+ *
+ * A malformed field falls back to what a new player has, field by field, so
+ * one bad value costs that value and not the whole save.
+ */
+function sanitize(parsed: unknown): PersistedState | null {
+  if (!isRecord(parsed) || !isRecord(parsed.discovered)) return null
+  const d = parsed.discovered
+  return {
+    discovered: { survival: strings(d.survival), everyday: strings(d.everyday) },
+    routes: isRecord(parsed.routes)
+      ? (Object.fromEntries(
+          Object.entries(parsed.routes).filter(([, v]) => typeof v === 'string'),
+        ) as RouteMap)
+      : {},
+    hintsSpent: counts(parsed.hintsSpent),
+    attempts: counts(parsed.attempts),
+    successes: counts(parsed.successes),
+    misses: isRecord(parsed.misses)
+      ? { survival: strings(parsed.misses.survival), everyday: strings(parsed.misses.everyday) }
+      : undefined,
+  }
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
+function strings(value: unknown): string[] {
+  return Array.isArray(value) ? value.filter((v): v is string => typeof v === 'string') : []
+}
+
+function counts(value: unknown): Record<RealmId, number> | undefined {
+  if (!isRecord(value)) return undefined
+  const n = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) && v >= 0 ? Math.floor(v) : 0)
+  return { survival: n(value.survival), everyday: n(value.everyday) }
 }
 
 function writeStorage(key: string, state: PersistedState) {

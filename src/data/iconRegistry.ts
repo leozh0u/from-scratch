@@ -1070,6 +1070,7 @@ export const COMPOSED: Record<string, { form: FormId; colour: string }> = {
   latex: { form: 'liquid', colour: '#fcffc0' },
   sulfur: { form: 'crystal', colour: '#e6d23a' },
   tin_ore: { form: 'lump', colour: '#663a3f' },
+  seawater: { form: 'wave', colour: '#277796' },
   compass: { form: 'cross', colour: '#2f739a' },
   sextant: { form: 'cross', colour: '#47474f' },
   chronometer: { form: 'ring', colour: '#633636' },

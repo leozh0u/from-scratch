@@ -32,6 +32,7 @@ const store = new Map<string, string>()
 } as Storage
 const { worldData, kitSteps, kitSize, kitParts, readWorldProgress, clearWorldSaves, worldStorageKey } =
   await import('../src/game/worlds')
+const { readStorage } = await import('../src/hooks/useGameState')
 
 let pass = 0, fail = 0
 const ok = (label: string, cond: boolean, detail = '') => {
@@ -124,7 +125,7 @@ console.log('\n=== the tutorial is exactly what it was ===')
   const missing = expected.filter((id) => !reach.has(id))
   ok('the Survival shelf can hold exactly its nineteen', extra.length === 0 && missing.length === 0,
      [...extra.map((id) => '+' + id), ...missing.map((id) => '-' + id)].join(', ') || `${reach.size} ids`)
-  const raws = ['hide', 'latex', 'sulfur', 'tin_ore', 'lodestone']
+  const raws = ['hide', 'latex', 'sulfur', 'tin_ore', 'lodestone', 'seawater']
   ok('the new raw materials are Everything starters too',
      raws.every((id) => GAME_DATA.starters.everyday.includes(id)))
 }
@@ -149,6 +150,38 @@ console.log('\n=== saves: one per planet, and reset clears them all ===')
   ok('and leaves the main save to the main reset', left.includes('from-scratch:discovered'))
   ok('a world\'s data object is stable, so effects keyed on it do not restart',
      worldData(football) === worldData(football))
+}
+
+console.log('\n=== a save of the wrong shape costs that field, not the game ===')
+{
+  /*
+   * Valid JSON of the wrong shape used to get straight through: a list stored
+   * as a string reached `.filter` and the screen went blank. The review of the
+   * worlds found it in a world's save; the main save had the same hole.
+   */
+  const read = (raw: string) => {
+    store.set('from-scratch:discovered', raw)
+    try { return { ok: true, value: readStorage() } } catch (e) { return { ok: false, value: String(e) } }
+  }
+  const cases: [string, string][] = [
+    ['a list stored as a string', '{"discovered":{"survival":["fire"],"everyday":"oops"}}'],
+    ['a list stored as a number', '{"discovered":{"survival":7,"everyday":[]}}'],
+    ['counts and misses as strings', '{"discovered":{},"hintsSpent":"x","misses":{"survival":"a"}}'],
+    ['an array at the top', '[1,2]'],
+    ['null', 'null'],
+    ['discovered set to null', '{"discovered":null}'],
+  ]
+  for (const [label, raw] of cases) {
+    const got = read(raw)
+    const v = got.value as ReturnType<typeof readStorage>
+    const shaped = v === null || (Array.isArray(v.discovered.survival) && Array.isArray(v.discovered.everyday))
+    ok(`${label}: read without throwing, every list a list`, got.ok && shaped, JSON.stringify(v))
+  }
+  const kept = read('{"discovered":{"survival":["fire",3,"wood"],"everyday":"oops"}}').value as ReturnType<typeof readStorage>
+  ok('and the good values in it survive', JSON.stringify(kept?.discovered.survival) === '["fire","wood"]')
+  store.set(worldStorageKey(WORLDS[0]), '{"discovered":{"survival":"football","everyday":["goal"]}}')
+  ok('a world save of the wrong shape counts only what is really there', readWorldProgress(WORLDS[0]).found === 1)
+  store.clear()
 }
 
 console.log('\n=== the re-lit backdrops still match the rules ===')

@@ -1277,10 +1277,10 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory, wo
           tone="default"
           unit={hudUnit}
           onClick={onBack}
-          aria-label={world ? 'Back to worlds' : 'Back to realms'}
+          aria-label={world ? 'Back to planets' : 'Back to realms'}
         >
           <BackArrow unit={hudUnit} />
-          {viewportWidth >= 380 && (world ? 'worlds' : 'realms')}
+          {viewportWidth >= 380 && (world ? 'planets' : 'realms')}
         </PixelButton>
         {/*
          * THE TITLE IS SIZED BY THE ROOM IT HAS, NOT BY THE WINDOW.
