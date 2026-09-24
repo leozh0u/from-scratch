@@ -84,6 +84,10 @@ export const GAME_DATA: RecipeData = {
     { id: 'crude_oil', name: 'Crude Oil', icon: 'crude_oil', realm: 'everyday', blurb: "Plankton buried under pressure for something like a hundred million years. Heat it carefully and it comes apart into everything from petrol to candle wax.", sources: [{ label: 'Petroleum', url: 'https://en.wikipedia.org/wiki/Petroleum' }] },
     { id: 'natural_gas', name: 'Natural Gas', icon: 'natural_gas', realm: 'everyday', blurb: "Mostly methane. It is a fuel, but the thing it really does for the world is feed the reaction that makes fertiliser.", sources: [{ label: 'Natural gas', url: 'https://en.wikipedia.org/wiki/Natural_gas' }] },
     { id: 'beeswax', name: 'Beeswax', icon: 'beeswax', realm: 'everyday', blurb: "Bees make it to build comb with. For most of history it was the good candle wax, and priced like it.", sources: [{ label: 'Beeswax', url: 'https://en.wikipedia.org/wiki/Beeswax' }] },
+    { id: 'hide', name: 'Hide', icon: 'hide', realm: 'everyday', blurb: "Skin off an animal, before anything has been done to it. Left alone it rots within days, and every use it has begins by stopping that.", sources: [{ label: 'Hide (skin)', url: 'https://en.wikipedia.org/wiki/Hide_(skin)', tier: 'referenced' }] },
+    { id: 'latex', name: 'Latex', icon: 'latex', realm: 'everyday', blurb: "The white sap that runs from a cut rubber tree. It is already rubber, just suspended in water, and on its own it goes sticky in the heat and brittle in the cold.", sources: [{ label: 'Natural rubber', url: 'https://en.wikipedia.org/wiki/Natural_rubber', tier: 'referenced' }] },
+    { id: 'sulfur', name: 'Sulfur', icon: 'sulfur', realm: 'everyday', blurb: "Yellow crystals that collect round volcanic vents. The Bible calls it brimstone.", sources: [{ label: 'Sulfur', url: 'https://en.wikipedia.org/wiki/Sulfur', tier: 'referenced' }] },
+    { id: 'tin_ore', name: 'Tin Ore', icon: 'tin_ore', realm: 'everyday', blurb: "Cassiterite, heavy and nearly black. Tin is rare enough that Bronze Age traders carried it thousands of kilometres to reach the copper.", sources: [{ label: 'Cassiterite', url: 'https://en.wikipedia.org/wiki/Cassiterite', tier: 'referenced' }] },
     { id: 'salt', name: 'Salt', icon: 'salt', realm: 'everyday', blurb: "Seawater left in the sun, or boiled, until only the solid is left. Probably the oldest chemistry anyone did on purpose, and it feeds two whole industries from here.", sources: [{ label: 'Salt evaporation pond', url: 'https://en.wikipedia.org/wiki/Salt_evaporation_pond' }] },
     { id: 'ammonia', name: 'Ammonia', icon: 'ammonia', realm: 'everyday', blurb: "Nitrogen taken out of the air and forced onto hydrogen stripped from methane. Haber Bosch feeds roughly half the people alive and almost nobody can name it, which seems like an oversight.", sources: [{ label: 'Haber process', url: 'https://en.wikipedia.org/wiki/Haber_process' }] },
     { id: 'farmland', name: 'Farmland', icon: 'farmland', realm: 'everyday', blurb: "Soil that can carry a crop, as someone put the nitrogen back into it.", sources: [{ label: 'Fertilizer', url: 'https://en.wikipedia.org/wiki/Fertilizer' }] },
@@ -1807,7 +1811,7 @@ export const GAME_DATA: RecipeData = {
     { inputs: ['quicklime', 'charcoal'], output: 'acetylene', process: 'carbide smelting', cost: ZERO_COST, sources: [{ label: 'Acetylene', url: 'https://en.wikipedia.org/wiki/Acetylene', tier: 'referenced' }] },
     { inputs: ['acetylene', 'high_carbon_steel'], output: 'welded_steel', process: 'welding', cost: ZERO_COST, sources: [{ label: 'Oxy-fuel welding and cutting', url: 'https://en.wikipedia.org/wiki/Oxy-fuel_welding_and_cutting', tier: 'referenced' }] },
     { inputs: ['welded_steel', 'reinforced_concrete'], output: 'steel_frame', process: 'erecting', cost: ZERO_COST, sources: [{ label: 'Steel frame', url: 'https://en.wikipedia.org/wiki/Steel_frame', tier: 'referenced' }] },
-    { inputs: ['molten_glass', 'slag'], output: 'glass_pane', process: 'floating', cost: ZERO_COST, sources: [{ label: 'Float glass', url: 'https://en.wikipedia.org/wiki/Float_glass', tier: 'referenced' }] },
+    { inputs: ['molten_glass', 'tin'], output: 'glass_pane', process: 'floating', cost: ZERO_COST, sources: [{ label: 'Float glass', url: 'https://en.wikipedia.org/wiki/Float_glass', tier: 'referenced' }] },
     { inputs: ['glass_pane', 'plank'], output: 'window', process: 'glazing', cost: ZERO_COST, sources: [{ label: 'Window', url: 'https://en.wikipedia.org/wiki/Window', tier: 'referenced' }] },
     { inputs: ['glass_pane', 'sodium_hydroxide'], output: 'mirror', process: 'silvering', cost: ZERO_COST, sources: [{ label: 'Silvering', url: 'https://en.wikipedia.org/wiki/Silvering', tier: 'referenced' }] },
     { inputs: ['brick', 'lime_mortar'], output: 'brick_wall', process: 'laying', cost: ZERO_COST, sources: [{ label: 'Brickwork', url: 'https://en.wikipedia.org/wiki/Brickwork', tier: 'referenced' }] },
@@ -1872,7 +1876,6 @@ export const GAME_DATA: RecipeData = {
     { inputs: ['willow_bark', 'vinegar'], output: 'aspirin', process: 'acetylating', cost: ZERO_COST, sources: [{ label: 'Aspirin', url: 'https://en.wikipedia.org/wiki/Aspirin', tier: 'referenced' }] },
     { inputs: ['ethanol', 'filtered_water'], output: 'antiseptic', process: 'diluting', cost: ZERO_COST, sources: [{ label: 'Antiseptic', url: 'https://en.wikipedia.org/wiki/Antiseptic', tier: 'referenced' }] },
     { inputs: ['linen', 'antiseptic'], output: 'bandage', process: 'dressing', cost: ZERO_COST, sources: [{ label: 'Bandage', url: 'https://en.wikipedia.org/wiki/Bandage', tier: 'referenced' }] },
-    { inputs: ['iron_ore', 'copper_ore'], output: 'lodestone', process: 'sorting', cost: ZERO_COST, sources: [{ label: 'Lodestone', url: 'https://en.wikipedia.org/wiki/Lodestone', tier: 'referenced' }] },
     { inputs: ['lodestone', 'wrought_iron'], output: 'compass', process: 'magnetising', cost: ZERO_COST, sources: [{ label: 'Compass', url: 'https://en.wikipedia.org/wiki/Compass', tier: 'referenced' }] },
     { inputs: ['mirror', 'bronze'], output: 'sextant', process: 'graduating', cost: ZERO_COST, sources: [{ label: 'Sextant', url: 'https://en.wikipedia.org/wiki/Sextant', tier: 'referenced' }] },
     { inputs: ['clock', 'bearing'], output: 'chronometer', process: 'regulating', cost: ZERO_COST, sources: [{ label: 'Marine chronometer', url: 'https://en.wikipedia.org/wiki/Marine_chronometer', tier: 'referenced' }] },
@@ -1895,7 +1898,7 @@ export const GAME_DATA: RecipeData = {
     { inputs: ['mirror', 'silicon_wafer'], output: 'camera', process: 'focusing', cost: ZERO_COST, sources: [{ label: 'Camera', url: 'https://en.wikipedia.org/wiki/Camera', tier: 'referenced' }] },
 
     // Batch 6.
-    { inputs: ['tannin', 'wool'], output: 'leather', process: 'tanning', cost: ZERO_COST, sources: [{ label: 'Tanning (leather)', url: 'https://en.wikipedia.org/wiki/Tanning_(leather)', tier: 'referenced' }] },
+    { inputs: ['tannin', 'hide'], output: 'leather', process: 'tanning', cost: ZERO_COST, sources: [{ label: 'Tanning (leather)', url: 'https://en.wikipedia.org/wiki/Tanning_(leather)', tier: 'referenced' }] },
     { inputs: ['leather', 'sewing_thread'], output: 'shoe', process: 'lasting', cost: ZERO_COST, sources: [{ label: 'Shoe', url: 'https://en.wikipedia.org/wiki/Shoe', tier: 'referenced' }] },
     { inputs: ['leather', 'pot'], output: 'drum', process: 'stretching', cost: ZERO_COST, sources: [{ label: 'Drum', url: 'https://en.wikipedia.org/wiki/Drum', tier: 'referenced' }] },
     { inputs: ['plank', 'steel_spring'], output: 'guitar', process: 'luthiery', cost: ZERO_COST, sources: [{ label: 'Guitar', url: 'https://en.wikipedia.org/wiki/Guitar', tier: 'referenced' }] },
@@ -1943,7 +1946,7 @@ export const GAME_DATA: RecipeData = {
     { inputs: ['linen', 'varnish'], output: 'canvas', process: 'priming', cost: ZERO_COST, sources: [{ label: 'Canvas', url: 'https://en.wikipedia.org/wiki/Canvas', tier: 'referenced' }] },
     { inputs: ['canvas', 'paint'], output: 'painting', process: 'painting', cost: ZERO_COST, sources: [{ label: 'Painting', url: 'https://en.wikipedia.org/wiki/Painting', tier: 'referenced' }] },
     { inputs: ['wool', 'knife'], output: 'quill', process: 'cutting', cost: ZERO_COST, sources: [{ label: 'Quill', url: 'https://en.wikipedia.org/wiki/Quill', tier: 'referenced' }] },
-    { inputs: ['leather', 'chalk'], output: 'parchment', process: 'stretching', cost: ZERO_COST, sources: [{ label: 'Parchment', url: 'https://en.wikipedia.org/wiki/Parchment', tier: 'referenced' }] },
+    { inputs: ['hide', 'quicklime'], output: 'parchment', process: 'liming', cost: ZERO_COST, sources: [{ label: 'Parchment', url: 'https://en.wikipedia.org/wiki/Parchment', tier: 'referenced' }] },
     { inputs: ['parchment', 'compass'], output: 'map', process: 'surveying', cost: ZERO_COST, sources: [{ label: 'Map', url: 'https://en.wikipedia.org/wiki/Map', tier: 'referenced' }] },
     { inputs: ['molten_glass', 'sandpaper'], output: 'glass_lens', process: 'grinding', cost: ZERO_COST, sources: [{ label: 'Lens', url: 'https://en.wikipedia.org/wiki/Lens', tier: 'referenced' }] },
     { inputs: ['glass_lens', 'copper_wire'], output: 'spectacles', process: 'fitting', cost: ZERO_COST, sources: [{ label: 'Glasses', url: 'https://en.wikipedia.org/wiki/Glasses', tier: 'referenced' }] },
@@ -2024,7 +2027,7 @@ export const GAME_DATA: RecipeData = {
     { inputs: ['slag', 'coke'], output: 'zinc', process: 'retorting', cost: ZERO_COST, sources: [{ label: 'Zinc', url: 'https://en.wikipedia.org/wiki/Zinc', tier: 'referenced' }] },
     { inputs: ['zinc', 'high_carbon_steel'], output: 'galvanised_steel', process: 'dipping', cost: ZERO_COST, sources: [{ label: 'Galvanization', url: 'https://en.wikipedia.org/wiki/Galvanization', tier: 'referenced' }] },
     { inputs: ['galvanised_steel', 'chain'], output: 'bucket', process: 'seaming', cost: ZERO_COST, sources: [{ label: 'Bucket', url: 'https://en.wikipedia.org/wiki/Bucket', tier: 'referenced' }] },
-    { inputs: ['slag', 'charcoal'], output: 'tin', process: 'smelting', cost: ZERO_COST, sources: [{ label: 'Tin', url: 'https://en.wikipedia.org/wiki/Tin', tier: 'referenced' }] },
+    { inputs: ['tin_ore', 'charcoal'], output: 'tin', process: 'smelting', cost: ZERO_COST, sources: [{ label: 'Tin', url: 'https://en.wikipedia.org/wiki/Tin', tier: 'referenced' }] },
     { inputs: ['tin', 'aluminum_sheet'], output: 'tin_can', process: 'seaming', cost: ZERO_COST, sources: [{ label: 'Tin can', url: 'https://en.wikipedia.org/wiki/Tin_can', tier: 'referenced' }] },
     { inputs: ['tin', 'lead'], output: 'pewter', process: 'alloying', cost: ZERO_COST, sources: [{ label: 'Pewter', url: 'https://en.wikipedia.org/wiki/Pewter', tier: 'referenced' }] },
     { inputs: ['stone', 'filtered_water'], output: 'gold', process: 'panning', cost: ZERO_COST, sources: [{ label: 'Gold', url: 'https://en.wikipedia.org/wiki/Gold', tier: 'referenced' }] },
@@ -2045,7 +2048,7 @@ export const GAME_DATA: RecipeData = {
     { inputs: ['cotton_yarn', 'synthetic_dye'], output: 'denim', process: 'weaving', cost: ZERO_COST, sources: [{ label: 'Denim', url: 'https://en.wikipedia.org/wiki/Denim', tier: 'referenced' }] },
     { inputs: ['denim', 'zip'], output: 'jeans', process: 'riveting', cost: ZERO_COST, sources: [{ label: 'Jeans', url: 'https://en.wikipedia.org/wiki/Jeans', tier: 'referenced' }] },
     { inputs: ['nylon', 'wire_mesh'], output: 'velcro', process: 'hooking', cost: ZERO_COST, sources: [{ label: 'Velcro', url: 'https://en.wikipedia.org/wiki/Hook-and-loop_fastener', tier: 'referenced' }] },
-    { inputs: ['leather', 'filtered_water'], output: 'glue', process: 'boiling', cost: ZERO_COST, sources: [{ label: 'Animal glue', url: 'https://en.wikipedia.org/wiki/Animal_glue', tier: 'referenced' }] },
+    { inputs: ['hide', 'water'], output: 'glue', process: 'boiling', cost: ZERO_COST, sources: [{ label: 'Animal glue', url: 'https://en.wikipedia.org/wiki/Animal_glue', tier: 'referenced' }] },
     { inputs: ['cardboard', 'glue'], output: 'cardboard_box', process: 'folding', cost: ZERO_COST, sources: [{ label: 'Corrugated box design', url: 'https://en.wikipedia.org/wiki/Corrugated_box_design', tier: 'referenced' }] },
     { inputs: ['plywood', 'nail'], output: 'pallet', process: 'nailing', cost: ZERO_COST, sources: [{ label: 'Pallet', url: 'https://en.wikipedia.org/wiki/Pallet', tier: 'referenced' }] },
     { inputs: ['galvanised_steel', 'welded_steel'], output: 'shipping_container', process: 'corrugating', cost: ZERO_COST, sources: [{ label: 'Intermodal container', url: 'https://en.wikipedia.org/wiki/Intermodal_container', tier: 'referenced' }] },
@@ -2851,6 +2854,19 @@ export const GAME_DATA: RecipeData = {
        */
       'copper_ore',
       'willow_bark',
+      /*
+       * Also gathered, and each one is here because a recipe that pretended
+       * otherwise was wrong. Leather was tannin and WOOL, when its own blurb
+       * says hide; tin came out of iron slag rather than its ore; lodestone
+       * was iron ore mixed with copper ore, when it is magnetite magnetised in
+       * the ground. Latex and sulfur are what a rubber ball was made of before
+       * there was synthetic rubber. See docs/WORLDS.md.
+       */
+      'hide',
+      'tin_ore',
+      'lodestone',
+      'latex',
+      'sulfur',
       'crude_oil',
       'natural_gas',
       'beeswax',
