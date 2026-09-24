@@ -1280,3 +1280,44 @@ blind, so the discovery card opens, the id is saved, and then the Survival
 shelf filters it out because its `realm` is `everyday`. The same
 `realm === 'everyday' || el.realm === 'survival'` filter is copy-pasted in five
 places, and the tests use it too, which is why `edgetest` said 15 of 15.
+
+### P7, worlds: where it stands (branch `worlds`, tag `pre-worlds` on main)
+
+Plan in `docs/WORLDS.md`. A three-reviewer council (game design and truth,
+UI and art, engineering and edge cases) read it before any UI was written.
+What changed because of them:
+
+- **Physics.** Pig iron + charcoal made "high-carbon steel" by carburising.
+  Pig iron already has more carbon than steel; it is fined down to wrought
+  iron and carburised from there. The fencing blade was two steels combined,
+  the mask copper mesh, the mirror "silvered" with lye. All corrected, and
+  each correction was checked to keep Everything completable.
+- **Duplicates.** Hourglass and cymbal already existed (hourglass as glass
+  blowing + SUGAR). Fixed in place rather than duplicated.
+- **Net leak.** `cordage + cordage -> net` would have put a football net on
+  the tutorial shelf, the same bug as P1. The net's second road is
+  `cordage + tannin` (barking: nets were preserved with tannin, per
+  Wikipedia's Catechu article), and water keeps it out of Survival.
+- **Forest glass** is its own element, not a second road to molten glass:
+  an unmeasured road beside the measured 0.27 kg melt made the receipt say
+  "the other route would have saved 0.27 kg". New data test forbids it.
+- **Give-up** kept half-built detours and took the first-listed road, not
+  the shortest. Fixed; every target's route replays, worst case 0.4 ms.
+- **UI** (not built yet): no third door on the title (breaks the layout at
+  168 window sizes); a small `worlds` key on the inventory row instead.
+  Picker sized by search like the title. Button tones stay as they are.
+
+Chains, verified by `pathToTarget` from each world's starters:
+
+| World | Crafts | Starters |
+| --- | --- | --- |
+| Football | 13 | fire, wood, stone, plant fibre, water, hide, latex, sulfur |
+| Fencing | 19 | fire, wood, stone, water, iron ore, soil, beeswax |
+| Chess | 16 | fire, wood, stone, water, iron ore |
+| Drums | 14 | fire, wood, water, hide, iron ore, copper ore, tin ore |
+| Navigation | 18 | fire, wood, stone, water, iron ore, lodestone, hide, limestone, copper ore, tin ore |
+
+Backdrops: `scripts/relight.mjs` re-lights the two supplied PNGs one palette
+colour at a time (forest is 8 colours, city 16). Football forest-autumn,
+Fencing city-dusk, Chess city-night, Drums forest-dusk, Navigation
+forest-winter.

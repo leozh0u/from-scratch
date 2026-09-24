@@ -32,6 +32,13 @@ type InventoryProps = {
    * it off gives back exactly the game that was there.
    */
   revealAll?: boolean
+  /**
+   * A world's inventory, in place of the two realms. A world shares the
+   * thousand-element graph, so the realm split would list all of it under
+   * "Everything · 4 of 1,000" for a planet whose whole job is thirteen things.
+   * It lists the kit's parts instead, and whatever else was made on the way.
+   */
+  sections?: { label: string; ids: string[] }[]
 }
 
 const REALM_LABEL: Record<RealmId, string> = {
@@ -56,6 +63,7 @@ export function Inventory({
   onReset,
   onOpenProcesses,
   revealAll = false,
+  sections,
 }: InventoryProps) {
   /*
    * The bar's keys step down on a narrow screen, and the back key drops its
@@ -106,8 +114,18 @@ export function Inventory({
   const isReallyFound = (id: string) =>
     game.discovered.survival.includes(id) || game.discovered.everyday.includes(id)
 
-  const foundCount = (realm: RealmId) =>
-    craftable[realm].filter((e) => isReallyFound(e.id)).length
+  const byId = new Map(data.elements.map((element) => [element.id, element]))
+  const shelves = sections
+    ? sections.map((section) => ({
+        key: section.label,
+        label: section.label,
+        entries: section.ids.flatMap((id) => byId.get(id) ?? []),
+      }))
+    : (['survival', 'everyday'] as RealmId[]).map((realm) => ({
+        key: realm,
+        label: REALM_LABEL[realm],
+        entries: craftable[realm],
+      }))
 
   function recipeFor(element: ElementDef) {
     const options = data.recipes.filter((r) => r.output === element.id)
@@ -190,15 +208,14 @@ export function Inventory({
       </HudBar>
 
       <div className="flex flex-col gap-8">
-        {(['survival', 'everyday'] as RealmId[]).map((realm) => {
-          const entries = craftable[realm]
+        {shelves.map(({ key, label, entries }) => {
           if (entries.length === 0) return null
-          const found = foundCount(realm)
+          const found = entries.filter((e) => isReallyFound(e.id)).length
 
           return (
-            <div key={realm} className="flex flex-col gap-3">
+            <div key={key} className="flex flex-col gap-3">
               <p className="font-display text-[9px] tracking-widest text-muted uppercase">
-                {REALM_LABEL[realm]} · {found} of {entries.length}
+                {label} · {found} of {entries.length}
               </p>
               <div
                 className="grid justify-items-center gap-3"

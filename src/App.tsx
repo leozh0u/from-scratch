@@ -16,6 +16,9 @@ import {
   type ModeId,
 } from './game/modes'
 import { useGameState } from './hooks/useGameState'
+import { WorldsScreen } from './components/WorldsScreen'
+import { worldById, type WorldDef, type WorldId } from './data/worlds'
+import { clearWorldSaves, kitParts, worldData, worldStorageKey } from './game/worlds'
 
 /*
  * Dev-only route, gated so a stray /styleguide hit in production never
@@ -39,8 +42,71 @@ const isStyleguide =
  * free.
  */
 
+/*
+ * A WORLD OWNS ITS OWN SAVE, SO IT OWNS ITS OWN HOOK.
+ *
+ * Mounted with `key={world.id}`, so moving from one planet to another is an
+ * unmount and a fresh mount rather than a live hook re-pointed at a different
+ * save, which would write the first world's state into the second's slot on
+ * the first render. Its inventory and processes are its own for the same
+ * reason: the main game's would show the main save.
+ */
+function WorldGame({ world, mode, onBack }: { world: WorldDef; mode: ModeId; onBack: () => void }) {
+  const data = worldData(world)
+  const game = useGameState(data, worldStorageKey(world))
+  const [showInventory, setShowInventory] = useState(false)
+  const [showProcesses, setShowProcesses] = useState(false)
+  const revealAll = modeById(mode).revealAll
+
+  if (showProcesses) {
+    return (
+      <Processes data={data} game={game} revealAll={revealAll} onBack={() => setShowProcesses(false)} />
+    )
+  }
+
+  if (showInventory) {
+    const parts = kitParts(world).filter((id) => !world.starters.includes(id))
+    const extras = game
+      .allDiscovered()
+      .filter((id) => !world.starters.includes(id) && !parts.includes(id))
+    return (
+      <Inventory
+        data={data}
+        game={game}
+        revealAll={revealAll}
+        onBack={() => setShowInventory(false)}
+        // Starts this planet over and nothing else. The title's reset is the
+        // one that wipes everything.
+        onReset={() => {
+          game.reset()
+          setShowInventory(false)
+        }}
+        onOpenProcesses={() => setShowProcesses(true)}
+        sections={[
+          { label: world.name, ids: parts },
+          { label: 'also made here', ids: extras },
+        ]}
+      />
+    )
+  }
+
+  return (
+    <Workspace
+      realm="survival"
+      world={world}
+      data={data}
+      game={game}
+      mode={mode}
+      onBack={onBack}
+      onOpenInventory={() => setShowInventory(true)}
+    />
+  )
+}
+
 function Game() {
   const [realm, setRealm] = useState<RealmId | null>(null)
+  const [showWorlds, setShowWorlds] = useState(false)
+  const [worldId, setWorldId] = useState<WorldId | null>(null)
   // An overlay, not a third state alongside `realm` — closing it returns to
   // whichever screen was already showing, start or workspace, for free.
   const [showInventory, setShowInventory] = useState(false)
@@ -111,6 +177,9 @@ function Game() {
      */
     writeMode(DEFAULT_MODE)
     setMode(DEFAULT_MODE)
+    clearWorldSaves()
+    setWorldId(null)
+    setShowWorlds(false)
     setShowProcesses(false)
     setShowInventory(false)
     setRealm(null)
@@ -144,9 +213,21 @@ function Game() {
     )
   }
 
+  const world = worldId ? worldById(worldId) : undefined
+  if (world) {
+    return <WorldGame key={world.id} world={world} mode={mode} onBack={() => setWorldId(null)} />
+  }
+
+  // The gate is re-checked here as well as on the key, so a worlds screen can
+  // never be showing behind a door that has since been locked by a reset.
+  if (showWorlds && everydayUnlocked) {
+    return <WorldsScreen onBack={() => setShowWorlds(false)} onSelectWorld={setWorldId} />
+  }
+
   if (realm === null) {
     return (
       <StartScreen
+        onOpenWorlds={() => setShowWorlds(true)}
         onSelectRealm={setRealm}
         onOpenInventory={() => setShowInventory(true)}
         everydayUnlocked={everydayUnlocked}

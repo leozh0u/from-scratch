@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { RealmId, RecipeData, RecipeDef } from '../data/types'
 
-const STORAGE_KEY = 'from-scratch:discovered'
+/** The main game's save. Each world keeps its own under `from-scratch:world:<id>`. */
+export const STORAGE_KEY = 'from-scratch:discovered'
 
 type StoredState = Record<RealmId, string[]>
 /** Which route produced an element, for the (usually few) ids with more than one real recipe. */
@@ -43,9 +44,9 @@ type PersistedState = {
   misses?: Record<RealmId, string[]>
 }
 
-function readStorage(): PersistedState | null {
+export function readStorage(key: string = STORAGE_KEY): PersistedState | null {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY)
+    const raw = localStorage.getItem(key)
     if (!raw) return null
     const parsed = JSON.parse(raw)
     // Pre-route-tracking saves lack `.discovered` — treat as absent rather
@@ -59,9 +60,9 @@ function readStorage(): PersistedState | null {
   }
 }
 
-function writeStorage(state: PersistedState) {
+function writeStorage(key: string, state: PersistedState) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+    localStorage.setItem(key, JSON.stringify(state))
   } catch {
     // Best-effort. A failed save shouldn't break the current session.
   }
@@ -85,11 +86,19 @@ export type CombineResult =
   | { status: 'already-known'; recipe: RecipeDef; alreadyKnown: true }
   | { status: 'no-match' }
 
-export function useGameState(data: RecipeData) {
+/*
+ * `storageKey` is fixed for the life of the hook. A world mounts its own
+ * instance under its own key, keyed in React by the world's id, so leaving one
+ * planet for another unmounts this rather than pointing a live hook at a
+ * different save — which would write world A's state into world B's slot on
+ * the first render.
+ */
+export function useGameState(data: RecipeData, storageKey: string = STORAGE_KEY) {
+  const [key] = useState(storageKey)
   const [recipeIndex] = useState(() => buildRecipeIndex(data))
 
   const [discovered, setDiscovered] = useState<StoredState>(() => {
-    const stored = readStorage()?.discovered
+    const stored = readStorage(key)?.discovered
     /*
      * A save from an older build can name elements this build no longer has.
      * The rebuild from three starters retired a dozen ids, and anyone who
@@ -112,14 +121,14 @@ export function useGameState(data: RecipeData) {
 
   // Only ever gets an entry for ids with more than one real recipe (see
   // `combine` below) — most elements never appear here at all.
-  const [routes, setRoutes] = useState<RouteMap>(() => readStorage()?.routes ?? {})
+  const [routes, setRoutes] = useState<RouteMap>(() => readStorage(key)?.routes ?? {})
 
   /*
    * Hints spent, per realm. See the note on PersistedState: the balance is
    * derived from this and the discovery count, never stored.
    */
   const [hintsSpent, setHintsSpent] = useState<Record<RealmId, number>>(
-    () => readStorage()?.hintsSpent ?? { survival: 0, everyday: 0 },
+    () => readStorage(key)?.hintsSpent ?? { survival: 0, everyday: 0 },
   )
 
   const spendHint = useCallback((realm: RealmId) => {
@@ -132,7 +141,7 @@ export function useGameState(data: RecipeData) {
    * a number that resets when you leave the room is not a statistic.
    */
   const [attempts, setAttempts] = useState<Record<RealmId, number>>(
-    () => readStorage()?.attempts ?? { survival: 0, everyday: 0 },
+    () => readStorage(key)?.attempts ?? { survival: 0, everyday: 0 },
   )
 
   const countAttempt = useCallback((realm: RealmId) => {
@@ -140,7 +149,7 @@ export function useGameState(data: RecipeData) {
   }, [])
 
   const [successes, setSuccesses] = useState<Record<RealmId, number>>(
-    () => readStorage()?.successes ?? { survival: 0, everyday: 0 },
+    () => readStorage(key)?.successes ?? { survival: 0, everyday: 0 },
   )
 
   const countSuccess = useCallback((realm: RealmId) => {
@@ -153,7 +162,7 @@ export function useGameState(data: RecipeData) {
    * way in.
    */
   const [misses, setMisses] = useState<Record<RealmId, string[]>>(
-    () => readStorage()?.misses ?? { survival: [], everyday: [] },
+    () => readStorage(key)?.misses ?? { survival: [], everyday: [] },
   )
 
   const countMiss = useCallback((realm: RealmId, a: string, b: string) => {
@@ -166,8 +175,8 @@ export function useGameState(data: RecipeData) {
   }, [])
 
   useEffect(() => {
-    writeStorage({ discovered, routes, hintsSpent, attempts, successes, misses })
-  }, [discovered, routes, hintsSpent, attempts, successes, misses])
+    writeStorage(key, { discovered, routes, hintsSpent, attempts, successes, misses })
+  }, [key, discovered, routes, hintsSpent, attempts, successes, misses])
 
   const isDiscovered = useCallback(
     (elementId: string) =>

@@ -11,7 +11,7 @@
  *
  *   npm run sheet && open scratch/sprites.html
  */
-import { mkdirSync, writeFileSync } from 'node:fs'
+import { writeFileSync } from 'node:fs'
 import { GAME_DATA } from '../src/data/gameData'
 import { resolveIcon } from '../src/data/iconRegistry'
 

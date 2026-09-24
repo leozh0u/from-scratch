@@ -51,10 +51,18 @@ export function pickHint(
   discoveredIds: Set<string>,
   realm: RealmId,
   nth: number,
+  /**
+   * What the player is actually trying to make, when that is narrower than the
+   * realm. A world's hint should point at the kit: from stone, wood and fire
+   * on the football planet you can make a hand drill, and a hint that spends
+   * itself on a hand drill is a hint wasted. Falls back to everything in reach
+   * when nothing in the focus can be made yet.
+   */
+  focus?: Set<string>,
 ): Hint | null {
   const byId = new Map(data.elements.map((e) => [e.id, e]))
 
-  const reachable = data.recipes.filter((recipe) => {
+  const inReach = data.recipes.filter((recipe) => {
     if (discoveredIds.has(recipe.output)) return false
     if (!recipe.inputs.every((id) => discoveredIds.has(id))) return false
     /*
@@ -65,6 +73,8 @@ export function pickHint(
      */
     return byId.has(recipe.output) && inRealm(data, realm, recipe.output)
   })
+  const focused = focus ? inReach.filter((recipe) => focus.has(recipe.output)) : []
+  const reachable = focused.length > 0 ? focused : inReach
 
   if (reachable.length === 0) return null
 
