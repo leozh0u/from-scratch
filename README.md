@@ -7,7 +7,8 @@ how much checking that source has had.
 
 Finish something and you get a receipt for what it cost to make.
 
-Play it: https://from-scratch-three.vercel.app
+Play it: https://from-scratch-three.vercel.app (also at
+https://leozh0u.github.io/from-scratch/, built from Leo's fork)
 
 Then try the planets: five small worlds, each a kit to make from scratch.
 
