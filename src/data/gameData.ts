@@ -842,7 +842,6 @@ export const GAME_DATA: RecipeData = {
     { id: 'goggles', name: 'Goggles', icon: 'goggles', realm: 'everyday', blurb: "A seal round the eye, and a coating so your own breath does not blind you.", sources: [{ label: 'Goggles', url: 'https://en.wikipedia.org/wiki/Goggles', tier: 'referenced' }] },
 
     // Batch 24: stone, reeds, music, film, games.
-    { id: 'obsidian', name: 'Obsidian', icon: 'obsidian', realm: 'everyday', blurb: "Volcanic glass. It takes an edge a few molecules thick, sharper than any steel scalpel, and surgeons still use it.", sources: [{ label: 'Obsidian', url: 'https://en.wikipedia.org/wiki/Obsidian', tier: 'referenced' }] },
     { id: 'flint', name: 'Flint', icon: 'flint', realm: 'everyday', blurb: "It breaks in curved shells rather than along grain, which is why you can shape it at all.", sources: [{ label: 'Flint', url: 'https://en.wikipedia.org/wiki/Flint', tier: 'referenced' }] },
     { id: 'fire_steel', name: 'Fire Steel', icon: 'fire_steel', realm: 'everyday', blurb: "The spark is a scrap of steel burning. The flint does not spark, it shaves the steel.", sources: [{ label: 'Fire striker', url: 'https://en.wikipedia.org/wiki/Fire_striker', tier: 'referenced' }] },
     { id: 'gun_flint', name: 'Flintlock', icon: 'gun_flint', realm: 'everyday', blurb: "The same spark, but mechanical, repeatable and pointed at something. It lasted two hundred years.", sources: [{ label: 'Flintlock', url: 'https://en.wikipedia.org/wiki/Flintlock', tier: 'referenced' }] },
@@ -1817,9 +1816,8 @@ export const GAME_DATA: RecipeData = {
     { inputs: ['ink', 'paper'], output: 'newspaper', process: 'printing', cost: ZERO_COST, sources: [{ label: 'Printing press', url: 'https://en.wikipedia.org/wiki/Printing_press', tier: 'referenced' }] },
 
     // Batch 3.
-    { inputs: ['stone', 'sharp_stone'], output: 'copper_ore', process: 'prospecting', cost: ZERO_COST, sources: [{ label: 'Copper extraction', url: 'https://en.wikipedia.org/wiki/Copper_extraction', tier: 'referenced' }] },
     { inputs: ['copper_ore', 'charcoal'], output: 'copper', process: 'smelting', cost: ZERO_COST, sources: [{ label: 'Smelting', url: 'https://en.wikipedia.org/wiki/Smelting', tier: 'referenced' }] },
-    { inputs: ['copper', 'slag'], output: 'bronze', process: 'alloying', cost: ZERO_COST, sources: [{ label: 'Bronze', url: 'https://en.wikipedia.org/wiki/Bronze', tier: 'referenced' }] },
+    { inputs: ['copper', 'tin'], output: 'bronze', process: 'alloying', cost: ZERO_COST, sources: [{ label: 'Bronze', url: 'https://en.wikipedia.org/wiki/Bronze', tier: 'referenced' }] },
     { inputs: ['copper', 'hardened_steel'], output: 'copper_wire', process: 'drawing', cost: ZERO_COST, sources: [{ label: 'Wire drawing', url: 'https://en.wikipedia.org/wiki/Wire_drawing', tier: 'referenced' }] },
     { inputs: ['copper_wire', 'pvc'], output: 'insulated_wire', process: 'sheathing', cost: ZERO_COST, sources: [{ label: 'Electrical wiring', url: 'https://en.wikipedia.org/wiki/Electrical_wiring', tier: 'referenced' }] },
     { inputs: ['insulated_wire', 'wrought_iron'], output: 'electromagnet', process: 'winding', cost: ZERO_COST, sources: [{ label: 'Electromagnet', url: 'https://en.wikipedia.org/wiki/Electromagnet', tier: 'referenced' }] },
@@ -1871,7 +1869,6 @@ export const GAME_DATA: RecipeData = {
     { inputs: ['soda_ash', 'water'], output: 'soap_bar', process: 'dissolving', cost: ZERO_COST, sources: [{ label: 'Sodium carbonate', url: 'https://en.wikipedia.org/wiki/Sodium_carbonate', tier: 'referenced' }] },
 
     // Batch 5.
-    { inputs: ['bark', 'plant_fibre'], output: 'willow_bark', process: 'stripping', cost: ZERO_COST, sources: [{ label: 'Salicylic acid', url: 'https://en.wikipedia.org/wiki/Salicylic_acid', tier: 'referenced' }] },
     { inputs: ['willow_bark', 'vinegar'], output: 'aspirin', process: 'acetylating', cost: ZERO_COST, sources: [{ label: 'Aspirin', url: 'https://en.wikipedia.org/wiki/Aspirin', tier: 'referenced' }] },
     { inputs: ['ethanol', 'filtered_water'], output: 'antiseptic', process: 'diluting', cost: ZERO_COST, sources: [{ label: 'Antiseptic', url: 'https://en.wikipedia.org/wiki/Antiseptic', tier: 'referenced' }] },
     { inputs: ['linen', 'antiseptic'], output: 'bandage', process: 'dressing', cost: ZERO_COST, sources: [{ label: 'Bandage', url: 'https://en.wikipedia.org/wiki/Bandage', tier: 'referenced' }] },
@@ -2007,7 +2004,7 @@ export const GAME_DATA: RecipeData = {
     { inputs: ['nylon', 'steel_spring'], output: 'umbrella', process: 'ribbing', cost: ZERO_COST, sources: [{ label: 'Umbrella', url: 'https://en.wikipedia.org/wiki/Umbrella', tier: 'referenced' }] },
     { inputs: ['nylon', 'rope'], output: 'tent', process: 'pitching', cost: ZERO_COST, sources: [{ label: 'Tent', url: 'https://en.wikipedia.org/wiki/Tent', tier: 'referenced' }] },
     { inputs: ['nylon', 'leather'], output: 'backpack', process: 'stitching', cost: ZERO_COST, sources: [{ label: 'Backpack', url: 'https://en.wikipedia.org/wiki/Backpack', tier: 'referenced' }] },
-    { inputs: ['copper', 'limestone'], output: 'brass', process: 'alloying', cost: ZERO_COST, sources: [{ label: 'Brass', url: 'https://en.wikipedia.org/wiki/Brass', tier: 'referenced' }] },
+    { inputs: ['copper', 'zinc'], output: 'brass', process: 'alloying', cost: ZERO_COST, sources: [{ label: 'Brass', url: 'https://en.wikipedia.org/wiki/Brass', tier: 'referenced' }] },
     { inputs: ['brass', 'nylon'], output: 'zip', process: 'meshing', cost: ZERO_COST, sources: [{ label: 'Zipper', url: 'https://en.wikipedia.org/wiki/Zipper', tier: 'referenced' }] },
     { inputs: ['brass', 'pipe'], output: 'trumpet', process: 'belling', cost: ZERO_COST, sources: [{ label: 'Trumpet', url: 'https://en.wikipedia.org/wiki/Trumpet', tier: 'referenced' }] },
     { inputs: ['steel_wire', 'felt'], output: 'piano', process: 'voicing', cost: ZERO_COST, sources: [{ label: 'Piano', url: 'https://en.wikipedia.org/wiki/Piano', tier: 'referenced' }] },
@@ -2472,7 +2469,6 @@ export const GAME_DATA: RecipeData = {
     { inputs: ['sunglasses', 'synthetic_rubber'], output: 'goggles', process: 'sealing', cost: ZERO_COST, sources: [{ label: 'Goggles', url: 'https://en.wikipedia.org/wiki/Goggles', tier: 'referenced' }] },
 
     // Batch 24: stone, reeds, music, film, games.
-    { inputs: ['stone', 'fire'], output: 'obsidian', process: 'quenching', cost: ZERO_COST, sources: [{ label: 'Obsidian', url: 'https://en.wikipedia.org/wiki/Obsidian', tier: 'referenced' }] },
     { inputs: ['quarry', 'hammer'], output: 'flint', process: 'knapping', cost: ZERO_COST, sources: [{ label: 'Flint', url: 'https://en.wikipedia.org/wiki/Flint', tier: 'referenced' }] },
     { inputs: ['flint', 'hardened_steel'], output: 'fire_steel', process: 'striking', cost: ZERO_COST, sources: [{ label: 'Fire striker', url: 'https://en.wikipedia.org/wiki/Fire_striker', tier: 'referenced' }] },
     { inputs: ['fire_steel', 'steel_spring'], output: 'gun_flint', process: 'cocking', cost: ZERO_COST, sources: [{ label: 'Flintlock', url: 'https://en.wikipedia.org/wiki/Flintlock', tier: 'referenced' }] },
@@ -2844,6 +2840,17 @@ export const GAME_DATA: RecipeData = {
       'limestone',
       'bauxite',
       'iron_ore',
+      /*
+       * Copper ore and willow bark are gathered, like the iron ore above and
+       * the beeswax below. Both used to have recipes out of Survival's own
+       * starters, stone on sharp stone for the ore and bark on plant fibre for
+       * the willow, and neither is true: breaking a rock does not put copper
+       * in it, and no fibre turns bark into a willow's. They were also the
+       * reason those tiles appeared in the tutorial and then vanished from its
+       * shelf. See src/game/realms.ts.
+       */
+      'copper_ore',
+      'willow_bark',
       'crude_oil',
       'natural_gas',
       'beeswax',

@@ -1,4 +1,5 @@
 import type { RealmId, RecipeData, RecipeDef } from '../data/types'
+import { inRealm } from '../game/realms'
 
 /**
  * Hints, and the rule that the model never gives one.
@@ -62,9 +63,7 @@ export function pickHint(
      * bauxite in the opening chapter would point at a tile that is not on
      * the screen.
      */
-    const output = byId.get(recipe.output)
-    if (!output) return false
-    return realm === 'everyday' || output.realm === 'survival'
+    return byId.has(recipe.output) && inRealm(data, realm, recipe.output)
   })
 
   if (reachable.length === 0) return null

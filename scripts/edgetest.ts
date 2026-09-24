@@ -11,6 +11,7 @@
  */
 import { nextDemoStep } from '../src/game/demo'
 import { GAME_DATA } from '../src/data/gameData'
+import { inRealm } from '../src/game/realms'
 import { pickHint, hintsEarned, pathToTarget, nextUnfoundTarget } from '../src/solver/hint'
 import { explainFailure } from '../src/adjudicator/explain'
 import { resolveIcon } from '../src/data/iconRegistry'
@@ -309,10 +310,7 @@ console.log('\n=== the game can play itself to the end of both realms ===')
     const craftable = new Set(
       GAME_DATA.recipes
         .map((r) => r.output)
-        .filter((id) => {
-          const el = GAME_DATA.elements.find((e) => e.id === id)
-          return el && (realm === 'everyday' || el.realm === 'survival')
-        }),
+        .filter((id) => inRealm(GAME_DATA, realm, id)),
     )
     const made = [...craftable].filter((id) => held.has(id)).length
     ok(
@@ -328,6 +326,34 @@ console.log('\n=== the game can play itself to the end of both realms ===')
     'and it returns null when nothing is left to make',
     nextDemoStep(GAME_DATA, everything, 'everyday') === null,
   )
+}
+
+/*
+ * WHATEVER THE BENCH MAKES, THE SHELF SHOWS.
+ *
+ * `combine` is realm-blind and the shelf is not. For three days they
+ * disagreed: bark and fire made wood ash in Survival, the card opened, and the
+ * Survival shelf hid the tile because it filtered on the element's `realm`
+ * field. Every test above used that same filter, so the driver reported 15 of
+ * 15 and could not see the gap. This one asks the question the player asks: of
+ * every recipe that can fire from tiles on a realm's shelf, does its output land
+ * on that shelf?
+ */
+console.log('\n=== whatever the bench makes, the shelf shows ===')
+{
+  for (const realm of ['survival', 'everyday'] as const) {
+    const lost = GAME_DATA.recipes.filter(
+      (r) => r.inputs.every((id) => inRealm(GAME_DATA, realm, id)) && !inRealm(GAME_DATA, realm, r.output),
+    )
+    ok(`${realm}: no discovery lands off the shelf it was made on`, lost.length === 0,
+       lost.map((r) => `${r.inputs.join(' + ')} -> ${r.output}`).join('; '))
+  }
+
+  // The tutorial still opens clean: nothing Everything starts with is on it.
+  const leaked = GAME_DATA.starters.everyday.filter(
+    (id) => !GAME_DATA.starters.survival.includes(id) && inRealm(GAME_DATA, 'survival', id),
+  )
+  ok('and the tutorial shelf holds none of the minerals', leaked.length === 0, leaked.join(', '))
 }
 
 console.log(`\n${pass} passed, ${fail} failed\n`)

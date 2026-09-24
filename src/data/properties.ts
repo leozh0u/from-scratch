@@ -729,7 +729,6 @@ export const PROPERTIES: Record<string, Properties> = {
   contact_lens: P('solid', 'product', 'finished'),
   sunglasses: P('solid', 'product', 'finished'),
   goggles: P('solid', 'product', 'finished'),
-  obsidian: P('solid', 'mineral', 'raw'),
   flint: P('solid', 'mineral', 'raw'),
   fire_steel: P('solid', 'tool', 'finished'),
   gun_flint: P('solid', 'tool', 'finished'),

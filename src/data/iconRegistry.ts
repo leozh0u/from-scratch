@@ -484,7 +484,6 @@ export const COMPOSED: Record<string, { form: FormId; colour: string }> = {
   noticeboard: { form: 'plate', colour: '#e99945' },
   school: { form: 'tower', colour: '#463e2f' },
   exam_paper: { form: 'card', colour: '#d8ca72' },
-  obsidian: { form: 'lump', colour: '#673d3e' },
   flint: { form: 'lump', colour: '#736a31' },
   fire_steel: { form: 'ingot', colour: '#385d96' },
   gun_flint: { form: 'rod', colour: '#7c776b' },

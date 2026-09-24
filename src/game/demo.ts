@@ -33,6 +33,7 @@
  * Inert without the parameter, so nothing about the normal game changes.
  */
 import type { RecipeData, RecipeDef } from '../data/types'
+import { inRealm } from './realms'
 
 /**
  * TWO WAYS TO PLAY FOR THE CAMERA.
@@ -165,9 +166,7 @@ export function nextDemoStep(
     if (!recipe.inputs.every((id) => discovered.has(id))) continue
     // Survival only makes Survival, the same rule the hints follow: its
     // tutorial deliberately shows only its own elements.
-    const output = byId.get(recipe.output)
-    if (!output) continue
-    if (realm === 'survival' && output.realm !== 'survival') continue
+    if (!byId.has(recipe.output) || !inRealm(data, realm, recipe.output)) continue
 
     const score = onward.get(recipe.output) ?? 0
     if (score > bestScore || (score === bestScore && best && recipe.output < best.output)) {
@@ -226,10 +225,7 @@ export function nextHumanTurn(
     if (step) return { kind: 'hit', inputs: [step.inputs[0], step.inputs[1]] }
   }
 
-  const held = [...discovered].filter((id) => {
-    const el = data.elements.find((e) => e.id === id)
-    return el && (realm === 'everyday' || el.realm === 'survival')
-  })
+  const held = [...discovered].filter((id) => inRealm(data, realm, id))
   if (held.length < 2) return { kind: 'stuck' }
 
   const real = new Set(data.recipes.map((r) => [r.inputs[0], r.inputs[1]].sort().join('+')))

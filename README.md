@@ -35,7 +35,7 @@ twenty-two ancestors back through the ember and the hand drill to a stone and a
 stick. Survival comes first because the graph genuinely needs it, not because
 we wanted a gate.
 
-There are 1,033 elements and 1,036 recipes, and fourteen of those elements can be
+There are 1,032 elements and 1,033 recipes, and fourteen of those elements can be
 made more than one real way. The receipt records which road you took.
 
 ---
@@ -99,7 +99,7 @@ that's where the teaching has to happen.
 It answers instantly from a local rule table built on element properties. A
 tool works on a material, so two tools have nothing to work on. Cold metal
 keeps its shape. Two reagents need a third thing. Thirty-six rules cover all but
-4% of the 533,025 pairs that aren't recipes, and the whole space resolves in
+4% of the 531,995 pairs that aren't recipes, and the whole space resolves in
 well under a second with no network. We think this beats a per-pair fact,
 because it's the grammar of making things. Learn it and you start predicting
 instead of guessing.
@@ -201,7 +201,7 @@ claims, and confirmed the units. 151 citations are this.
 **Referenced** means `npm run links` fetched the URL, got an answer, and
 confirmed the page title still matches the label printed beside it. That proves
 the article exists and nothing more, which is why the game marks it on the card
-instead of hiding it. 1,923 citations are this, across 1,024 distinct URLs, and
+instead of hiding it. 1,919 citations are this, across 1,023 distinct URLs, and
 every one of them is fetched and title-matched on each build.
 
 A footprint figure may only ever rest on a Sourced citation. "This page exists"

@@ -28,6 +28,7 @@ import {
 } from '../solver/hint'
 import { modeById, type ModeId } from '../game/modes'
 import { readDemoSettings, nextDemoStep, nextHumanTurn, rng } from '../game/demo'
+import { inRealm } from '../game/realms'
 import { minWidthForSide, faceWidthFor } from './ui/legend'
 import { Readout } from './ui/Readout'
 import { WhyNot } from './WhyNot'
@@ -204,10 +205,7 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
    * than it holds. Progress, hints and the give-up route are all computed from
    * this one, so the counters cannot be made to lie by changing a setting.
    */
-  const held =
-    realm === 'survival'
-      ? game.allDiscovered().filter((id) => elementById(id)?.realm === 'survival')
-      : game.allDiscovered()
+  const held = game.allDiscovered().filter((id) => inRealm(data, realm, id))
 
   /*
    * CHEATER OPENS THE BENCH, NOT ONLY THE BOOK.
@@ -225,8 +223,8 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
    */
   const shown = revealAll
     ? data.elements
-        .filter((e) => realm === 'everyday' || e.realm === 'survival')
         .map((e) => e.id)
+        .filter((id) => inRealm(data, realm, id))
     : held
 
   /*
@@ -256,10 +254,7 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
    */
   const craftableIds = data.recipes
     .map((r) => r.output)
-    .filter((id) => {
-      const el = elementById(id)
-      return el && (realm === 'everyday' || el.realm === 'survival')
-    })
+    .filter((id) => inRealm(data, realm, id))
   const realmTotal = new Set(craftableIds).size
   const realmFound = [...new Set(craftableIds)].filter((id) => game.isDiscovered(id)).length
 
@@ -948,10 +943,7 @@ export function Workspace({ realm, data, game, mode, onBack, onOpenInventory }: 
     const total = new Set(
       data.recipes
         .map((r) => r.output)
-        .filter((id) => {
-          const el = data.elements.find((e) => e.id === id)
-          return el && (realm === 'everyday' || el.realm === 'survival')
-        }),
+        .filter((id) => inRealm(data, realm, id)),
     ).size
 
     /** How many frames a scroll is spread over. More is smoother and slower. */

@@ -1247,3 +1247,36 @@ flow changes height. That is a new UI surface and the standing rule before
 filming is not to add one, so it is written down rather than built.
 
 `npm run test:device`: 280 passed, 0 failed.
+
+---
+
+## Post-hackathon pass — 2026-09-23
+
+Leo: *"Can you improve from scratch. It has a glitch. Sometimes you unlock
+items in survival and they don't show up. I want to include it on my resume
+just shortly, so do a full check of it, and also find a better link, not from
+scratch three... make sure no bugs, and do everything you think will improve
+it."* Then: *"i give full push permission."*
+
+### Ledger
+
+| # | Asked | State | Check |
+| --- | --- | --- | --- |
+| P1 | Survival unlocks that do not show up | **done** | Shelf rule now derived from the graph in `src/game/realms.ts`, used by all five callers. Three false tutorial recipes removed (copper ore and willow bark became gathered Everything starters, obsidian deleted), bronze now copper + tin and brass copper + zinc, matching their own blurbs. Played in the browser: the fire chain, then bark + fire, and wood ash sat on the Survival shelf, still there after a reload. `npm test` green; new edgetest block fails on the old filter (checked by running the old rule against the new data: it loses wood ash). Device suite 280/280. |
+| P2 | Full check, no bugs | open | |
+| P3 | A better link than from-scratch-three | open | |
+| P4 | One or two resume lines | open | |
+| P5 | Anything else that improves it | open | |
+| P6 | Push (and let Vercel redeploy) | open | |
+| P7 | *"themes/challenges/kinda like other planets in other video games, like football everything you need to play football, fencing, you can do it for so many. i want you to think it through fully... /council /until-good /until done... make sure its take backable by git but really work on it... consistent with the same art and background... think about what themes would be good, what you need to start with, plan it out. go."* Then: *"make sure youre considering how it looks, bugs, edge-cases, etc."* | open | |
+
+### P1, found
+
+Four recipes take only Survival inputs and make an Everything element:
+`bark + fire -> wood_ash`, `stone + sharp_stone -> copper_ore`,
+`bark + plant_fibre -> willow_bark`, `stone + fire -> obsidian`, and
+`copper_ore + charcoal -> copper` follows from one of them. `combine` is realm
+blind, so the discovery card opens, the id is saved, and then the Survival
+shelf filters it out because its `realm` is `everyday`. The same
+`realm === 'everyday' || el.realm === 'survival'` filter is copy-pasted in five
+places, and the tests use it too, which is why `edgetest` said 15 of 15.
