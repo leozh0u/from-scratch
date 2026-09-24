@@ -203,6 +203,15 @@ const PLACEHOLDER = FLAME
  * replaces them.
  */
 export const COMPOSED: Record<string, { form: FormId; colour: string }> = {
+  rubber_compound: { form: 'heap', colour: '#cdcc86' },
+  vulcanised_rubber: { form: 'bar', colour: '#2c2c30' },
+  football_boot: { form: 'cloth', colour: '#f84108' },
+  goal: { form: 'arch', colour: '#f4f4f8' },
+  cotton_drill: { form: 'roll', colour: '#cdbd86' },
+  fencing_jacket: { form: 'cloth', colour: '#cffffa' },
+  chessboard: { form: 'grid', colour: '#b7864f' },
+  chess_pieces: { form: 'tower', colour: '#fedfb3' },
+  drumsticks: { form: 'pin', colour: '#d9b26b' },
   crampon: { form: 'tool', colour: '#a8a49a' },
   ice_axe: { form: 'anvilf', colour: '#79b4d6' },
   snowshoe: { form: 'tool', colour: '#d8c9a8' },
@@ -597,6 +606,7 @@ export const COMPOSED: Record<string, { form: FormId; colour: string }> = {
   sundial: { form: 'ring', colour: '#225878' },
   water_clock: { form: 'liquid', colour: '#607a93' },
   hourglass: { form: 'ring', colour: '#a8d4e4' },
+  forest_glass: { form: 'liquid', colour: '#73b276' },
   calendar: { form: 'fibre', colour: '#cd6b24' },
   almanac: { form: 'book', colour: '#caa566' },
   logarithm_table: { form: 'box', colour: '#e99945' },
